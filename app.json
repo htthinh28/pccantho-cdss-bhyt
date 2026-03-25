@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "CDSS BHYT Phuong Chau",
+    "slug": "ung_dung_cdss_bhyt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./tai_nguyen/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.phuongchau.cdss.bhyt"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FF66A3",
+        "foregroundImage": "./tai_nguyen/icon.png"
+      },
+      "package": "com.phuongchau.cdss.bhyt"
+    },
+    "web": {
+      "favicon": "./tai_nguyen/icon.png"
+    }
+  }
+}

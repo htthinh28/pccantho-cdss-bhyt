@@ -1,0 +1,47 @@
+/**
+ * THÔNG TIN CƠ SỞ KHÁM BỆNH, CHỮA BỆNH BHYT
+ * Được mã hóa từ Hợp đồng KBCB BHYT năm 2025
+ */
+
+export const THONG_TIN_CO_SO = {
+  // --- THÔNG TIN HÀNH CHÍNH CƠ BẢN ---
+  MA_CSKCB: "94027", 
+  TEN_CSKCB: "Bệnh viện Quốc tế Phương Châu Sóc Trăng", 
+  DON_VI_THU_HUONG: "Chi Nhánh Công Ty TNHH MTV Phương Châu Sóc Trăng",
+  
+  // --- PHÂN TUYẾN & CHUYÊN MÔN ---
+  CAP_CHUYEN_MON: "Cơ bản", 
+  TUYEN_CHUYEN_MON: "Huyện", 
+  DIEM_XEP_CAP: 48,
+  MO_HINH_TO_CHUC: "Ngoài công lập",
+  HINH_THUC_TO_CHUC: "Bệnh viện đa khoa",
+  GIA_AP_DUNG: "Tư nhân theo giá công lập", 
+  
+  // --- LIÊN HỆ & PHÁP LÝ ---
+  DIA_CHI: "Số 373, đường Phú Lợi, Phường Phú Lợi, Thành phố Cần Thơ", 
+  DIEN_THOAI: "02993526868",
+  FAX: "02993526868",
+  EMAIL: "khth.st@phuongchau.com",
+  MA_SO_THUE: "2200750211-001",
+  TAI_KHOAN_NGAN_HANG: "115884686868 tại VietinBank Chi Nhánh Sóc Trăng",
+  
+  // --- NHÂN SỰ CHỦ CHỐT ---
+  GIAM_DOC: "Dư Huỳnh Hồng Ngọc",
+  NGUOI_CHIU_TRACH_NHIEM_CM: "Dư Huỳnh Hồng Ngọc",
+  CCHN_NGUOI_PHU_TRACH: "000012/ST-CCHN",
+  
+  // --- GIẤY PHÉP & QUY MÔ ---
+  GIAY_PHEP_HOAT_DONG: "Số 303/BYT-GPHĐ, ngày 03/12/2025",
+  GIUONG_PHE_DUYET: 100,
+  SO_BAN_KHAM: 19,
+  
+  // --- THẺ ĐĂNG KÝ BHYT BAN ĐẦU (NĂM 2025) ---
+  THE_BHYT_BAN_DAU: 518,
+  
+  // --- THỜI GIAN LÀM VIỆC ĐĂNG KÝ VỚI BHXH ---
+  THOI_GIAN_KHAM_BENH: {
+    TRONG_GIO: "07:00 - 11:30 và 13:00 - 16:30 (Thứ 2 - Thứ 7)",
+    NGAY_NGHI: "07:00 - 11:30 và 13:00 - 16:30 (Chủ nhật)",
+    CAP_CUU: "24/24"
+  }
+};
