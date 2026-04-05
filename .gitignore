@@ -46,6 +46,10 @@ app-example
 tai_nguyen/*.json
 tai_nguyen/*.pdf
 .tmp_web_export/
+.tmp_*/
+.tmp_*.jsx
 firebase-debug.log
 .firebaserc
 full_source_code.txt
+__pycache__/
+*.pyc
