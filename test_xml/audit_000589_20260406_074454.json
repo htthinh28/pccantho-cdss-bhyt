@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "generated_at": "2026-04-06T00:44:54.592Z",
+    "claim_path": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\xml2_ip\\PC022300757_000589.xml",
+    "ma_lk": "000589",
+    "total_warnings": 8,
+    "by_severity": {
+      "Warning": 8
+    },
+    "by_namespace": {
+      "HANH_CHINH_HARDCODED": 2,
+      "N/A": 1,
+      "THUOC_HARDCODED": 5
+    },
+    "by_source": {
+      "luat_hanh_chinh_hardcoded": 2,
+      "luat_thuoc_hardcoded": 5,
+      "N/A": 1
+    },
+    "focus_summary": {}
+  },
+  "unique_rule_codes": [
+    "HC_171",
+    "HC_194",
+    "THUOC_207",
+    "THUOC_391",
+    "THUOC_417",
+    "THUOC_63",
+    "XML_121"
+  ],
+  "rule_summary": {
+    "HC_171": 1,
+    "HC_194": 1,
+    "THUOC_207": 1,
+    "THUOC_391": 2,
+    "THUOC_417": 1,
+    "THUOC_63": 1,
+    "XML_121": 1
+  },
+  "warnings": [
+    {
+      "id": "HC_171",
+      "phan_he": "XML1",
+      "truong_loi": "MA_LOAI_KCB",
+      "canh_bao": "⛔ Lỗi hồ sơ: Điều trị nội trú bắt buộc phải có dữ liệu diễn biến bệnh hàng ngày (XML5).",
+      "muc_do": "Warning",
+      "index": -1,
+      "ma_luat": "HC_171",
+      "ten_quy_tac": "Hồ sơ nội trú thiếu bảng diễn biến",
+      "dieu_kien": "XML1.MA_LOAI_KCB == '3' AND COUNT(XML5) == 0",
+      "co_so_phap_ly": "Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT. Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử.",
+      "namespace_quy_tac": "HANH_CHINH_HARDCODED",
+      "nguon_quy_tac": "luat_hanh_chinh_hardcoded",
+      "luong_giai_trinh": "XML1 -> hardcoded hành chính",
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+    },
+    {
+      "id": "HC_194",
+      "phan_he": "XML1",
+      "truong_loi": "DIEN_THOAI",
+      "canh_bao": "⚠️ Lỗi hành chính: Số điện thoại liên lạc không đủ 10 chữ số.",
+      "muc_do": "Warning",
+      "index": -1,
+      "ma_luat": "HC_194",
+      "ten_quy_tac": "Sai định dạng số điện thoại",
+      "dieu_kien": "LEN(XML1.DIEN_THOAI) < 10 AND XML1.DIEN_THOAI != ''",
+      "co_so_phap_ly": "Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT. Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử.",
+      "namespace_quy_tac": "HANH_CHINH_HARDCODED",
+      "nguon_quy_tac": "luat_hanh_chinh_hardcoded",
+      "luong_giai_trinh": "XML1 -> hardcoded hành chính",
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+    },
+    {
+      "id": "THUOC_207",
+      "phan_he": "XML2",
+      "truong_loi": "MA_THUOC",
+      "canh_bao": "⛔ [XUẤT TOÁN]: Thuốc Hoastex chỉ được thanh toán cho chẩn đoán Viêm hô hấp trên (J06), Viêm phế quản (J20) hoặc Ho (R05). Chi tiết thuốc: [05C.150] Hoastex.",
+      "muc_do": "Warning",
+      "index": 4,
+      "ma_luat": "THUOC_207",
+      "ten_quy_tac": "[Húng chanh, Núc nác, Cineol] Kiểm tra Chỉ định ICD-10",
+      "dieu_kien": "XML2.MA_THUOC == '05C.150' AND XML1.MA_BENH_CHINH NOT LIKE 'J06%' AND XML1.MA_BENH_CHINH NOT LIKE 'J20%' AND XML1.MA_BENH_CHINH NOT LIKE 'R05%' AND XML1.MA_BENH_KT NOT LIKE '%J06%' AND XML1.MA_BENH_KT NOT LIKE '%J20%' AND XML1.MA_BENH_KT NOT LIKE '%R05%'",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_391",
+      "phan_he": "XML2",
+      "truong_loi": "SO_LUONG",
+      "canh_bao": "⚠️ [KIỂM TRA]: Số lượng cấp phát thấp hơn y lệnh. Vui lòng xác nhận bệnh nhân có tự túc thuốc hay không. Chi tiết thuốc: [40.173] Tenamyd-Cefotaxime 1000. Cách tính: Cấp phát 3 < y lệnh 1650 = 1650 đơn vị/ngày x 1 ngày; Thiếu 1647 đơn vị; Liều dùng: 550 mg/lần * 3 lần/ngày * 01 ngày [1650 mg/ngày].",
+      "muc_do": "Warning",
+      "index": 0,
+      "ma_luat": "THUOC_391",
+      "ten_quy_tac": "Cảnh báo sai lệch y lệnh và số lượng",
+      "dieu_kien": "XML2.SO_LUONG < (XML2.SL_MOI_NGAY * XML2.SO_NGAY)",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_391",
+      "phan_he": "XML2",
+      "truong_loi": "SO_LUONG",
+      "canh_bao": "⚠️ [KIỂM TRA]: Số lượng cấp phát thấp hơn y lệnh. Vui lòng xác nhận bệnh nhân có tự túc thuốc hay không. Chi tiết thuốc: [40.173] Tenamyd-Cefotaxime 1000. Cách tính: Cấp phát 3 < y lệnh 1650 = 1650 đơn vị/ngày x 1 ngày; Thiếu 1647 đơn vị; Liều dùng: 550 mg/lần * 3 lần/ngày * 01 ngày [1650 mg/ngày].",
+      "muc_do": "Warning",
+      "index": 3,
+      "ma_luat": "THUOC_391",
+      "ten_quy_tac": "Cảnh báo sai lệch y lệnh và số lượng",
+      "dieu_kien": "XML2.SO_LUONG < (XML2.SL_MOI_NGAY * XML2.SO_NGAY)",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_417",
+      "phan_he": "XML2",
+      "truong_loi": "SO_LUONG",
+      "canh_bao": "⛔ [XUẤT TOÁN]: Thuốc DOMUVAR cấp dư 4 đơn vị. (Kê đơn: 6, Y lệnh thực tế: 2 Ống/ngày x 1 ngày). Chi tiết thuốc: [40.718] DOMUVAR.",
+      "muc_do": "Warning",
+      "index": 1,
+      "ma_luat": "THUOC_417",
+      "ten_quy_tac": "Giám định thuốc cấp dư (Dựa trên y lệnh)",
+      "dieu_kien": "XML2.SO_LUONG > (XML2.SL_MOI_NGAY * XML2.SO_NGAY)",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_63",
+      "phan_he": "XML2",
+      "truong_loi": "MA_THUOC",
+      "canh_bao": "⛔ [XUẤT TOÁN]: Thuốc DOMUVAR chỉ được thanh toán cho chẩn đoán Tiêu chảy (A09) hoặc Loạn khuẩn ruột (K59.1, R19.7). Chi tiết thuốc: [40.718] DOMUVAR.",
+      "muc_do": "Warning",
+      "index": 1,
+      "ma_luat": "THUOC_63",
+      "ten_quy_tac": "[Bacillus subtilis] Kiểm tra Chỉ định ICD-10",
+      "dieu_kien": "XML2.MA_THUOC == '40.718' AND XML1.MA_BENH_CHINH NOT IN ('A09', 'K59.1', 'R19.7') AND XML1.MA_BENH_KT NOT LIKE '%A09%' AND XML1.MA_BENH_KT NOT LIKE '%K59.1%' AND XML1.MA_BENH_KT NOT LIKE '%R19.7%' AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TIÊU CHẢY|RỐI LOẠN NHU ĐỘNG RUỘT)'",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "XML_121",
+      "phan_he": "XML1",
+      "truong_loi": "UNKNOWN",
+      "canh_bao": "⚠️ Có dấu hiệu kê trùng 1 loại thuốc nhiều lần trong cùng một ngày y lệnh.",
+      "muc_do": "Warning",
+      "index": -1,
+      "ma_luat": "XML_121",
+      "ten_quy_tac": "Trùng lặp Thuốc cùng ngày",
+      "dieu_kien": "COUNT_DISTINCT(XML2, item => item.MA_THUOC + SUBSTR(item.NGAY_YL, 1, 8)) < COUNT_IF(XML2, item => !IS_EMPTY(item.MA_THUOC))",
+      "co_so_phap_ly": "Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT. Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử.",
+      "namespace_quy_tac": "",
+      "nguon_quy_tac": "",
+      "luong_giai_trinh": "",
+      "tab_quan_tri_goi_y": ""
+    }
+  ]
+}
