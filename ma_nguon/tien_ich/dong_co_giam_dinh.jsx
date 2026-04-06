@@ -234,6 +234,51 @@ const MATCH_ANY_MA_LOAI_KCB = (actualValue, ...expectedValues) => {
     return expectedValues.some((value) => MATCH_MA_LOAI_KCB(actualValue, value));
 };
 
+const chuanHoaTokenDonViThuoc = (value) => String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\u0111/g, 'd')
+    .toUpperCase()
+    .replace(/[^A-Z]/g, '');
+
+const laDonViDongGoiThuoc = (value) => /^(VIEN|GOI|ONG|LO|CHAI|BOM|TUYP|MIENG|CAI)$/.test(chuanHoaTokenDonViThuoc(value));
+const laDonViKhoiLuongTheTichThuoc = (value) => /^(MG|MCG|G|GRAM|KG|ML|L|IU|UI)$/.test(chuanHoaTokenDonViThuoc(value));
+const QUY_DOI_DON_VI_THUOC = Object.freeze({
+    MCG: { dimension: 'mass', factor: 0.001 },
+    MG: { dimension: 'mass', factor: 1 },
+    G: { dimension: 'mass', factor: 1000 },
+    GRAM: { dimension: 'mass', factor: 1000 },
+    KG: { dimension: 'mass', factor: 1000000 },
+    ML: { dimension: 'volume', factor: 1 },
+    L: { dimension: 'volume', factor: 1000 },
+});
+
+const quyDoiGiaTriDonViThuoc = (value, fromUnit, toUnit) => {
+    const from = QUY_DOI_DON_VI_THUOC[chuanHoaTokenDonViThuoc(fromUnit)];
+    const to = QUY_DOI_DON_VI_THUOC[chuanHoaTokenDonViThuoc(toUnit)];
+    const numericValue = TO_NUMBER(value);
+    if (!(numericValue > 0) || !from || !to || from.dimension !== to.dimension) return 0;
+    return (numericValue * from.factor) / to.factor;
+};
+
+const layHamLuongMotDonViQuyDoi = (row = {}, targetUnit = '') => {
+    const hamLuongText = String(row?.HAM_LUONG || '').toUpperCase();
+    if (!hamLuongText || !targetUnit) return 0;
+    const match = hamLuongText.match(/(\d+(?:[.,]\d+)?)\s*(MCG|MG|G|GRAM|KG|ML|L)\b/);
+    if (!match) return 0;
+    const soLuong = parseFloat(String(match[1] || '0').replace(',', '.'));
+    return quyDoiGiaTriDonViThuoc(soLuong, match[2], targetUnit);
+};
+
+const coDauHieuDonViCapPhatDangKhaiTheoHamLuongDonVi = (row = {}) => {
+    const donViCapPhat = chuanHoaTokenDonViThuoc(row?.DON_VI_TINH || '');
+    const soLuongXuat = TO_NUMBER(row?.SO_LUONG);
+    if (!laDonViKhoiLuongTheTichThuoc(donViCapPhat) || !(soLuongXuat > 0)) return false;
+    const hamLuongMotDonVi = layHamLuongMotDonViQuyDoi(row, donViCapPhat);
+    if (!(hamLuongMotDonVi > 0)) return false;
+    return soLuongXuat < hamLuongMotDonVi;
+};
+
 const laHoSoNgoaiTruTheoQd824 = (xml1 = {}) => MA_LOAI_KCB_KHAM_VA_NGOAI_TRU.has(normalizeMaLoaiKcb(xml1?.MA_LOAI_KCB));
 const laHoSoNoiTruTheoQd824 = (xml1 = {}) => {
     const maLoai = normalizeMaLoaiKcb(xml1?.MA_LOAI_KCB);
@@ -242,7 +287,7 @@ const laHoSoNoiTruTheoQd824 = (xml1 = {}) => {
 const laHoSoNoiTruBanNgayTheoQd824 = (xml1 = {}) => MA_LOAI_KCB_NOI_TRU_BAN_NGAY.has(normalizeMaLoaiKcb(xml1?.MA_LOAI_KCB));
 
 const CO_SO_PHAP_LY_THUOC = Object.freeze({
-    DANH_MUC_BHYT: '15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20.',
+    DANH_MUC_BHYT: '15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.',
     KE_DON_NGOAI_TRU: '26/2025/TT-BYT: Điều 4, Điều 5, Điều 6 (quy định về kê đơn thuốc ngoại trú).',
     SO_NGAY_SU_DUNG: '26/2025/TT-BYT: Điều 6 khoản 8 (số ngày sử dụng mỗi thuốc).',
     NOI_BO_GIA_THAU: '15/VBHN-BYT (2024) + danh mục, giá trúng thầu nội bộ đã phê duyệt tại cơ sở KCB.',
@@ -396,6 +441,7 @@ const boSungNamespaceVaGiaiTrinhQuyTac = (danhSach = []) => (Array.isArray(danhS
 // ============================================================
 const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
     let tanSuat = 0, slMoiLan = 0, slMoiNgay = 0, soNgay = 0;
+    let donViLieuDung = '', donViTongNgay = '';
     const rawText = String(lieuDungText || '').toLowerCase();
     const text = rawText.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd');
     const slTong = TO_NUMBER(soLuongXuat);
@@ -421,16 +467,20 @@ const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
     if (tanSuat > 0) slMoiLan = slMoiNgay / tanSuat;
     if (slMoiNgay === 0) {
         const matchTongNgay = text.match(/\*\s*(\d+(?:[.,]\d+)?)\s*ngay\b/i);
-        const matchMoiLanVaLanNgay = text.match(/(\d+(?:[.,]\d+)?)\s*(?:vien|lo|ong|goi|chai|bom|ml|mg|g)\s*\/\s*lan.*?(\d+(?:[.,]\d+)?)\s*lan\s*\/\s*ngay/i);
-        const matchTongNgayTrongNgoac = text.match(/\[\s*(\d+(?:[.,]\d+)?)\s*(?:vien|lo|ong|goi|chai|bom|ml|mg|g)\s*\/\s*ngay\s*\]/i);
+        const matchMoiLanVaLanNgay = text.match(/(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui)\s*\/\s*lan.*?(\d+(?:[.,]\d+)?)\s*lan\s*\/\s*ngay/i);
+        const matchTongNgayTrongNgoac = text.match(/\[\s*(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui)\s*\/\s*ngay\s*\]/i);
         if (matchMoiLanVaLanNgay) {
             slMoiLan = parseSo(matchMoiLanVaLanNgay[1]);
-            tanSuat = parseSo(matchMoiLanVaLanNgay[2]);
+            donViLieuDung = chuanHoaTokenDonViThuoc(matchMoiLanVaLanNgay[2]);
+            tanSuat = parseSo(matchMoiLanVaLanNgay[3]);
             slMoiNgay = slMoiLan * tanSuat;
+            donViTongNgay = donViLieuDung;
         } else if (matchTongNgayTrongNgoac) {
             slMoiNgay = parseSo(matchTongNgayTrongNgoac[1]);
+            donViTongNgay = chuanHoaTokenDonViThuoc(matchTongNgayTrongNgoac[2]);
             tanSuat = tanSuat || 1;
             slMoiLan = slMoiLan || slMoiNgay;
+            donViLieuDung = donViLieuDung || donViTongNgay;
         }
         const matchNgayLan = text.match(/ngay.*?(?:uong|dung|tiem|nho).*?(\d+(?:[.,]\d+)?).*?lan/i);
         const matchMoiLan = text.match(/moi\s+lan.*?(\d+(?:[.,]\d+)?)/i);
@@ -439,18 +489,38 @@ const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
         if (tanSuat > 0 && slMoiLan > 0) {
             slMoiNgay = tanSuat * slMoiLan;
         } else if (/\/ngay\b|\b1\s+ng(?:a|à)y\b/i.test(text)) {
-            const matchVienNgay = text.match(/(\d+(?:[.,]\d+)?).*?(?:vien|lo|ong|goi|chai|bom).*?ngay/i);
+            const matchVienNgay = text.match(/(\d+(?:[.,]\d+)?).*?(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui).*?ngay/i);
             if (matchVienNgay && slMoiNgay <= 0) {
                 slMoiNgay = parseSo(matchVienNgay[1]);
+                donViTongNgay = chuanHoaTokenDonViThuoc(matchVienNgay[2]);
                 tanSuat = 1;
                 slMoiLan = slMoiNgay;
+                donViLieuDung = donViLieuDung || donViTongNgay;
             }
         }
         const soNgayText = matchTongNgay ? parseSo(matchTongNgay[1]) : extractByPattern(/trong\s+(\d+(?:[.,]\d+)?)\s*ngay/i);
         if (soNgayText > 0) soNgay = soNgayText;
     }
     if (soNgay <= 0 && slMoiNgay > 0) soNgay = slTong / slMoiNgay;
-    return { TAN_SUAT: tanSuat, SL_MOI_LAN: slMoiLan, SL_MOI_NGAY: slMoiNgay, CALC_SL_MOI_NGAY: slMoiNgay, SO_NGAY: soNgay };
+    return {
+        TAN_SUAT: tanSuat,
+        SL_MOI_LAN: slMoiLan,
+        SL_MOI_NGAY: slMoiNgay,
+        CALC_SL_MOI_NGAY: slMoiNgay,
+        SO_NGAY: soNgay,
+        DON_VI_LIEU_DUNG: donViLieuDung,
+        DON_VI_TONG_NGAY: donViTongNgay || donViLieuDung,
+    };
+};
+
+const coLechDonViYLenhVaCapPhatThuoc = (row = {}) => {
+    const donViCapPhat = chuanHoaTokenDonViThuoc(row?.DON_VI_TINH || '');
+    const donViYLenh = chuanHoaTokenDonViThuoc(row?.DON_VI_TONG_NGAY || row?.DON_VI_LIEU_DUNG || '');
+    if (!donViCapPhat || !donViYLenh) return false;
+    if (donViCapPhat === donViYLenh) return coDauHieuDonViCapPhatDangKhaiTheoHamLuongDonVi(row);
+    if (laDonViDongGoiThuoc(donViCapPhat) && laDonViKhoiLuongTheTichThuoc(donViYLenh)) return true;
+    if (laDonViKhoiLuongTheTichThuoc(donViCapPhat) && laDonViDongGoiThuoc(donViYLenh)) return true;
+    return false;
 };
 
 const layGiaTriAnToan = (obj, tuKhoa) => {
@@ -1326,11 +1396,7 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         || IS_EMPTY(row?.NGAY_YL)
     ));
     const xml5CoMaVtyt = xml5.some((row) => !IS_EMPTY(row?.MA_VTYT));
-    const coPhauThuatHoacThuThuat = xml3.some((row) => (
-        !IS_EMPTY(row?.MA_PTTT)
-        || !IS_EMPTY(row?.MA_PTTT_QT)
-        || /PHAU THUAT|THU THUAT|LAY THAI/.test(normalizeTextNoAccent(row?.TEN_DICH_VU || '').toUpperCase())
-    ));
+    const coPhauThuatHoacThuThuat = xml3.some((row) => laDongPtttThucSu(row));
     const coPtttGoi = xml3.some((row) => laDongPtttThucSu(row) && /_GT$/i.test(String(row?.MA_DICH_VU || '').trim()));
     const coHc171 = dsLỗi.some((loi) => UPPER(loi?.ma_luat || '') === 'HC_171');
     const coThaiKyHoacSanKhoa = maBenhChinh.startsWith('O')
@@ -1378,6 +1444,7 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         if (ma === 'THUOC_400' && !coThuoc) return false;
         if (ma === 'THUOC_85' && coPhauThuatHoacThuThuat) return false;
         if (ma === 'THUOC_342' && coThaiKyHoacSanKhoa) return false;
+        if ((ma === 'THUOC_391' || ma === 'THUOC_416' || ma === 'THUOC_417') && coLechDonViYLenhVaCapPhatThuoc(dong)) return false;
         if (ma === 'XML2-TIME-THYL-BEFORE-YL' && laNoiTru) return false;
         if ((ma === 'CLN-PTTT-02' || ma === 'CLN-PTTT-05') && coPtttGoi) return false;
         if (ma === 'CLN-PTTT-12' && coHc171 && xml5.length === 0) return false;
