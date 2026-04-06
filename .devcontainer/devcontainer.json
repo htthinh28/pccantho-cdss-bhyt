@@ -1,0 +1,48 @@
+{
+  "name": "AI CDSS BHYT Development",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/node:18": {},
+    "ghcr.io/devcontainers/features/git:latest": {}
+  },
+  "forwardPorts": [8080, 8000, 3000],
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "ms-vscode.remote-explorer",
+        "GitHub.copilot"
+      ],
+      "settings": {
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "ms-python.python"
+        },
+        "[javascript]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/node_modules": true,
+          "**/.git": true
+        }
+      }
+    }
+  },
+  "remoteEnv": {
+    "NODE_ENV": "development",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+  ]
+}

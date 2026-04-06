@@ -1,0 +1,91 @@
+name: Auto Deploy to Network
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ma_nguon/**'
+      - 'python_service/**'
+      - 'server.js'
+      - 'tai_lieu/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Build notification
+      run: |
+        echo "🚀 Deployment triggered for:"
+        git log --oneline -1
+        echo "Branch: ${{ github.ref }}"
+
+    - name: Create deployment artifact
+      run: |
+        mkdir -p deployment
+        cp -r ma_nguon deployment/
+        cp -r python_service deployment/
+        cp -r tai_lieu deployment/
+        cp server.js deployment/
+        cp package.json deployment/
+        cp requirements.txt deployment/ || true
+        zip -r deployment-${{ github.run_number }}.zip deployment/
+        ls -lh deployment-*.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-package
+        path: deployment-${{ github.run_number }}.zip
+        retention-days: 30
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        body: |
+          ## Tự động triển khai từ GitHub
+
+          **Commit**: ${{ github.sha }}
+          **Branch**: ${{ github.ref }}
+          **Thời gian**: ${{ github.event.head_commit.timestamp }}
+
+          ### Các thay đổi:
+          - ✅ Frontend (ma_nguon/)
+          - ✅ Backend (python_service/)
+          - ✅ Tài liệu (tai_lieu/)
+
+          ### Hướng dẫn cài đặt:
+          1. Download `deployment-package-*.zip`
+          2. Giải nén trên máy chủ
+          3. Chạy: `npm install && npm start`
+        draft: false
+        prerelease: false
+      continue-on-error: true
+
+    - name: Comment on commit
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: '✅ Deployment workflow completed!\n\n📦 Artifact: deployment-${{ github.run_number }}.zip\n🔗 [View Workflow](' + context.payload.pull_request?.html_url + ')'
+          });
+      continue-on-error: true
