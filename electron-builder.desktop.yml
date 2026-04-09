@@ -1,0 +1,46 @@
+# Đóng gói desktop TỐI GIẢN — chỉ chạy từ thư mục staging (không có node_modules dự án).
+# Gọi qua: node scripts/stage_desktop_pack.mjs
+# Phiên bản Electron cố định (staging không có node_modules để suy ra).
+electronVersion: 35.7.5
+
+appId: com.phuongchau.cdss.bhyt
+productName: CDSS-BHYT-Phuong-Chau
+copyright: Copyright © Phuong Chau
+
+directories:
+  output: ../release-desktop
+
+files:
+  - dist/**/*
+  - electron-main.cjs
+  - package.json
+
+extraMetadata:
+  main: electron-main.cjs
+
+win:
+  signAndEditExecutable: false
+  target:
+    - portable
+    - nsis
+  artifactName: "${productName}-${version}-Windows-${arch}.${ext}"
+
+mac:
+  target:
+    - dmg
+    - zip
+  artifactName: "${productName}-${version}-macOS-${arch}.${ext}"
+  category: public.app-category.medical
+
+linux:
+  target:
+    - AppImage
+    - deb
+  artifactName: "${productName}-${version}-Linux-${arch}.${ext}"
+  category: Office
+
+compression: maximum
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

@@ -1,7 +1,7 @@
 # THẺ TRI THỨC: LUẬT BẢO HIỂM Y TẾ VÀ NGHỊ ĐỊNH TRIỂN KHAI (2008-2025)
 
-Phiên bản tài liệu: 1.0
-Ngày cập nhật: 06/04/2026
+Phiên bản tài liệu: 1.5
+Ngày cập nhật: 07/04/2026
 
 ## 1. Mục đích
 
@@ -11,6 +11,10 @@ Thẻ này chuẩn hóa **nền tảng pháp lý** của toàn bộ quy trình g
 - Biết **căn cứ pháp lý** của từng quy tắc kiểm tra
 - Phân biệt **lỗi chuyên môn** vs **lỗi pháp quy**
 - Giải thích quyết định giám định một cách **có xuyên chứng pháp lý**
+
+Thỏa thuận **hợp đồng KCB BHYT** giữa BHXH và từng CSKCB (thời hạn, tạm ứng, gửi hồ sơ, ký số XML, giá địa phương): xem thẻ mẫu `The_tri_thuc_hop_dong_KCB_BHYT_BV_Phuong_Chau_2026.md`.
+
+Bằng chứng **thực tiễn giám định / từ chối thanh toán** (cơ cấu chi phí, tỷ lệ xuất toán, nguyên nhân thường gặp — BV công Sóc Trăng 2018–2019, luận văn CKII 2021): `The_tri_thuc_luan_van_Ho_Tan_Thinh_BHYT_Soc_Trang_2018_2019.md` (kèm bản trích đầy đủ `tai_lieu/_extract_luan_van_BHYT_thinh/luan_van_full.txt`).
 
 ---
 
@@ -379,6 +383,20 @@ Xử lý: XUẤT TOÁN TOÀN BỘ 45.000đ"
 | **15/VBHN-BYT** | 2025 | **Danh mục bảo hiểm hiện nay** |
 | **Luật BHYT 07/2023/QH15** | 2023 (HL từ 2024) | **Sửa đổi toàn diện** |
 | **Nghị định 188/2025/NĐ-CP** | 2025 | **Quy trình giám định mới** |
+| [**Thông tư 01/2025/TT-BYT**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-01-2025-TT-BYT-huong-dan-Luat-Bao-hiem-y-te-623659.aspx) | 2025 (HL 01/01/2025) | **Đăng ký ban đầu, chuyển tuyến/chuyển cơ sở, quyền lợi KCB** — hướng dẫn Luật BHYT (thay TT 40/2015/TT-BYT và một phần TT 30/2020, TT 36/2021) |
+| [**Thông tư 12/2026/TT-BTC**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-12-2026-TT-BTC-thu-tuc-giam-dinh-chi-phi-kham-chua-benh-bao-hiem-y-te-694954.aspx) | 2026 (HL từ ngày ký; biểu mẫu/danh mục liên quan từ 01/04/2026) | **Thủ tục giám định chi phí KCB BHYT**, cổng dữ liệu, giám định tự động/chủ động, biên bản — thi hành NĐ 188/2025 |
+| [**Quyết định 3618/QĐ-BHXH**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Quyet-dinh-3618-QD-BHXH-2022-Quy-trinh-giam-dinh-bao-hiem-y-te-545650.aspx) | 2022 (HL 01/01/2023, thay 1456/QĐ-BHXH) | **Quy trình giám định BHYT** của BHXH VN: XML, Cổng tiếp nhận, phần mềm giám định, từng loại danh mục |
+| [**17/VBHN-BYT 2024**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Van-ban-hop-nhat-17-VBHN-BYT-2024-Thong-tu-dieu-kien-thanh-toan-dich-vu-ky-thuat-y-te-bao-hiem-638186.aspx) | 2024 (công bố hợp nhất) | **Văn bản hợp nhất** các Thông tư về **danh mục và điều kiện thanh toán DVKT** BHYT — đọc một chỗ để nắm quy định còn hiệu lực (vẫn phải đối chiếu bản sửa đổi sau ngày hợp nhất, ví dụ **TT 39/2024**). |
+| Thông tư **35/2016/TT-BYT** | 2016 | **Gốc**: Danh mục và **tỷ lệ, điều kiện** thanh toán DVKT BHYT; được sửa bổ sung qua **TT 50/2017**, **TT 13/2020**, **TT 39/2024** (và các văn bản khác — xem VBHN 17). |
+| [**Thông tư 13/2020/TT-BYT**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-13-2020-TT-BYT-sua-doi-Thong-tu-35-2016-TT-BYT-thanh-toan-dich-vu-ky-thuat-y-te-445839.aspx) | 2020 | Sửa đổi, bổ sung **TT 35/2016** về thanh toán DVKT. |
+| [**Thông tư 39/2024/TT-BYT**](https://luatvietnam.vn/y-te/thong-tu-39-2024-tt-byt-sua-tt-35-2016-tt-byt-dieu-kien-thanh-toan-dich-vu-ky-thuat-y-te-374555-d1.html) | 2024 (HL **01/01/2025**) | Sửa đổi, bổ sung **TT 35/2016** — bổ sung **khoản 7 Điều 4** (định nghĩa **một lượt KCB**); thêm **Điều 4a–4d**; thay cụm **“đợt điều trị”** bằng **“một lượt khám bệnh, chữa bệnh”** tại các chỗ đã chỉ định; **hợp đồng KCB BHYT phải thể hiện số giường** từ 01/01/2025; bãi bỏ một số mục Danh mục 1 và 2 kèm TT 35 (theo Điều 2 TT 39). |
+| [**Thông tư 04/2017/TT-BYT**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-04-2017-TT-BYT-Danh-muc-ty-le-dieu-kien-thanh-toan-vat-tu-y-te-nguoi-tham-gia-bao-hiem-y-te-290390.aspx) | 2017 | **Gốc** (BYT): **Danh mục**, **tỷ lệ** và **điều kiện** thanh toán **vật tư y tế** (VTYT) thuộc phạm vi BHYT; được sửa đổi, bổ sung qua nhiều thông tư — xem **VBHN 14/2025**. |
+| [**06/VBHN-BYT 2018**](https://thuvienphapluat.vn/van-ban/Bao-hiem/Van-ban-hop-nhat-06-VBHN-BYT-2018-danh-muc-va-ty-le-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-382481.aspx) | 2018 (công bố hợp nhất) | **Văn bản hợp nhất** (phiên bản **cũ hơn**) về danh mục và điều kiện thanh toán VTYT — dùng khi đối chiếu hồ sơ / văn bản theo thời điểm; **ưu tiên [14/VBHN-BYT 2025](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-14-VBHN-BYT-2025-Thong-tu-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-thuoc-bao-hiem-y-te-670262.aspx)** cho quy định hiện hành. |
+| [**14/VBHN-BYT 2025**](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-14-VBHN-BYT-2025-Thong-tu-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-thuoc-bao-hiem-y-te-670262.aspx) | 2025 (công bố hợp nhất) | **Văn bản hợp nhất** quy định **điều kiện thanh toán** đối với VTYT thuộc BHYT — đọc một chỗ để nắm quy định còn hiệu lực sau các lần sửa **TT 04/2017** (vẫn đối chiếu thông tư sửa đổi sau ngày hợp nhất nếu có). |
+| [**Luật Khám bệnh, chữa bệnh 15/2023/QH15**](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Luat-15-2023-QH15-kham-benh-chua-benh-372143.aspx) | 2023 | **Luật chuyên ngành KCB**: quyền/nghĩa vụ người bệnh; tổ chức hoạt động KCB; người hành nghề; **hồ sơ bệnh án**; chất lượng, an toàn — **căn cứ tính hợp lý chuyên môn** khi giám định chủ động / giải thích chỉ định so với chẩn đoán (bổ sung cho Luật BHYT). |
+| [**26/VBHN-VPQH 2026**](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-26-VBHN-VPQH-2026-Luat-Kham-benh-chua-benh-696163.aspx) | 2026 (công bố hợp nhất) | **Văn bản hợp nhất Luật Khám bệnh, chữa bệnh** — đọc một chỗ các quy định còn hiệu lực sau khi Luật **15/2023** được sửa đổi, bổ sung (đối chiếu thêm văn bản sửa sau ngày hợp nhất nếu có). |
+| [**Nghị định 96/2023/NĐ-CP**](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Nghi-dinh-96-2023-ND-CP-huong-dan-Luat-Kham-benh-chua-benh-583328.aspx) | 2023 | Hướng dẫn **Luật KCB**: điều kiện cơ sở KCB, **phạm vi hoạt động**, phân tuyến kỹ thuật, quản lý chất lượng — liên quan **điểm e** (phạm vi chuyên môn CS) khi giám định BHYT. |
+| [**Thông tư 32/2023/TT-BYT**](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Thong-tu-32-2023-TT-BYT-huong-dan-Luat-Kham-benh-chua-benh-593360.aspx) | 2023 | Hướng dẫn **Luật KCB** (BYT): quy trình KCB, **bệnh án**, biểu mẫu hồ sơ — đối chiếu với **QĐ 130/QĐ-BYT** (XML) và hồ sơ giám định chủ động. |
 
 ---
 
@@ -405,3 +423,138 @@ Xử lý: XUẤT TOÁN TOÀN BỘ 45.000đ"
 - Khi cần tranh luận chi tiết hoặc áp dụng trong thực tế, luôn phải **quay lại luật gốc**
 - Luật BHYT thường được **sửa đổi hàng năm**, nên luôn cập nhật với **phiên bản mới nhất**
 - Nghị định 188/2025 là **bước ngoặt** - từ giờ, giám định **phải có xuyên chứng pháp lý rõ ràng**
+- Các đường dẫn Thư viện pháp luật ở mục 8 và 11 là **tra cứu tiện**; căn cứ tố tụng vẫn là **Công báo / bản PDF cơ quan nhà nước** khi có tranh chấp.
+
+---
+
+## 11. Ba văn bản vận hành BHYT (BYT — quyền lợi & thủ tục KCB; BTC — thủ tục giám định chi phí; BHXH — quy trình nghiệp vụ)
+
+Mục này tóm tắt nội dung **liên quan trực tiếp tới giám định và dữ liệu XML** từ ba nguồn người dùng cung cấp. Chi tiết điều khoản cần đối chiếu bản đầy đủ trên Công báo hoặc trang tra cứu.
+
+### 11.1. Thông tư 01/2025/TT-BYT (Bộ Y tế, ban hành 01/01/2025)
+
+**Nguồn tra cứu:** [Thông tư 01/2025/TT-BYT](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-01-2025-TT-BYT-huong-dan-Luat-Bao-hiem-y-te-623659.aspx)
+
+**Vai trò:** Quy định chi tiết và hướng dẫn thi hành **một số điều Luật BHYT** về tổ chức KCB BHYT, **đăng ký khám chữa bệnh ban đầu**, **chuyển người bệnh** giữa các cơ sở, hồ sơ chuyển cơ sở, hẹn khám lại, phân bổ thẻ; có **phụ lục** (mã bệnh, mẫu phiếu).
+
+**Điểm giám định cần nhớ:**
+
+- **Phiếu chuyển cơ sở KCB** (mẫu **Phụ lục VI**): bản giấy hoặc điện tử; **thời hạn dùng thông thường 10 ngày làm việc** kể từ ngày ký.
+- **Nhóm bệnh/trường hợp tại Phụ lục III** kèm Thông tư: phiếu chuyển có giá trị **01 năm** kể từ ngày ký (trừ khi hết hạn nhưng người bệnh **vẫn trong cùng đợt điều trị** — phiếu dùng đến hết đợt).
+- **Bệnh khác phát sinh** ngoài bệnh ghi trên phiếu: CS tiếp nhận KCB theo chuyên môn và phạm vi hoạt động.
+- **Nhiều đợt điều trị** theo chuyên môn: sau đợt đầu, các đợt sau cần **phiếu hẹn khám lại** của cơ sở nơi chuyển đến.
+- Thông tư **có hiệu lực từ 01/01/2025**; **bãi bỏ** Thông tư **40/2015/TT-BYT**; sửa/bãi bỏ một phần quy định tại **TT 30/2020/TT-BYT** và **TT 36/2021/TT-BYT** như trong Điều 15 Thông tư.
+
+**Ý nghĩa cho CDSS / XML:** Lỗi **tuyến, chuyển tuyến, thời hạn phiếu, đăng ký ban đầu** thường cần căn cứ **TT 01/2025** cùng dữ liệu trên hồ sơ (không chỉ danh mục thuốc-DVKT).
+
+### 11.2. Thông tư 12/2026/TT-BTC (Bộ Tài chính, ban hành 10/02/2026)
+
+**Nguồn tra cứu:** [Thông tư 12/2026/TT-BTC](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-12-2026-TT-BTC-thu-tuc-giam-dinh-chi-phi-kham-chua-benh-bao-hiem-y-te-694954.aspx)
+
+**Vai trò:** Quy định **trình tự, thủ tục giám định** chi phí KCB BHYT; **biểu mẫu** tổng hợp thanh toán, quyết toán; biện pháp thi hành **Nghị định 188/2025/NĐ-CP** (điểm d khoản 2 Điều 71).
+
+**Hạ tầng dữ liệu:**
+
+- **Cổng tiếp nhận dữ liệu** thuộc Hệ thống thông tin giám định BHYT: `https://gdbhyt.baohiemxahoi.gov.vn` (theo Điều 2 Thông tư).
+
+**Giám định tự động (Điều 10):** Hệ thống của BHXH VN xử lý hồ sơ đề nghị thanh toán theo **khoản 1 Điều 10**, gồm các nhóm kiểm tra ví dụ: thông tin **thẻ BHYT**; **mức hưởng và quyền lợi**; **phạm vi thanh toán** thuốc, TBYT, DVKT theo **danh mục** tại CSKCB; **mức thanh toán** (giá, ngày giường, vận chuyển…); **tỷ lệ và điều kiện** thanh toán; **phạm vi chuyên môn và thời gian** KCB của CS; **phạm vi hành nghề và thời gian làm việc** của người hành nghề; dịch vụ **hợp lý** theo tiêu chuẩn BYT (khoản 3 Điều 6 Luật BHYT); **số lượng** thuốc/TBYT khớp đấu thầu/điều chuyển (Điều 43 NĐ 188/2025); đồng thời có **cảnh báo gia tăng chi KCB bình quân** (Điều 13).
+
+**Giám định chủ động (Điều 11):** Rà soát hồ sơ **ký hợp đồng**, bảng kê điều chỉnh, **bệnh án** và tài liệu chi phí tăng cao (liên hệ Điều 35 NĐ 188/2025).
+
+**Biên bản và phản hồi (Điều 12):** Trong **03 ngày làm việc** sau khi kết thúc giám định **trong quý**, BHXH lập **Biên bản giám định** gửi CSKCB qua Cổng; CSKCB **ký gửi lại trong 02 ngày làm việc**; nếu không thống nhất phần từ chối thanh toán thì **ghi rõ căn cứ pháp lý** hoặc đề nghị cấp có thẩm quyền (khoản 3 Điều 51 NĐ 188/2025).
+
+**Cảnh báo chi bình quân (Điều 13):** Trước **ngày 15 hằng tháng**, BHXH thông báo qua Cổng; CSKCB trong **10 ngày** phải rà soát, báo cáo nguyên nhân và giải pháp (liên hệ Điều 35 NĐ 188/2025).
+
+**Hiệu lực (Điều 17):** Thông tư có hiệu lực **kể từ ngày ký**; **biểu mẫu** tại một số điều và **danh mục** Điều 7, 8 **áp dụng từ 01/04/2026** — khi lập rule hoặc huấn luyện AI cần xác nhận lại ngày áp dụng trên bản Công báo nếu có chỉnh sửa.
+
+**Checklist map XML:** `tai_lieu/Checklist_TT12_2026_Dieu10_khoan1_map_XML130.md` (Điều 10 khoản 1 → XML1–6). **Chuỗi căn cứ đầy đủ** (Điều 10 khoản 1 đủ điểm a–m và Điều 13 khoản 1–3): `ma_nguon/tien_ich/co_so_phap_ly_tt12_2026.jsx`; dùng trong `dong_co_giam_dinh.jsx` và (qua `resolveLegalBasis`) trong `rule_engine_dvkt_no_code.jsx`.
+
+### 11.3. Quyết định 3618/QĐ-BHXH (BHXH Việt Nam, 12/12/2022)
+
+**Nguồn tra cứu:** [Quyết định 3618/QĐ-BHXH](https://thuvienphapluat.vn/van-ban/Bao-hiem/Quyet-dinh-3618-QD-BHXH-2022-Quy-trinh-giam-dinh-bao-hiem-y-te-545650.aspx)
+
+**Vai trò:** **Quy trình giám định BHYT** — hồ sơ, nội dung, trình tự, thời gian: thẩm định điều kiện ký HĐ KCB BHYT; giám định điều kiện thanh toán **thuốc, vật tư y tế, dịch vụ KCB**; giám định **chi phí** KCB BHYT; quản lý **Hệ thống thông tin giám định BHYT** và chi phí trên phần mềm nghiệp vụ BHXH.
+
+**Khái niệm kỹ thuật hữu ích cho CDSS:**
+
+- **Cổng tiếp nhận:** `https://gdbhyt.baohiemxahoi.gov.vn`
+- **Phần mềm Giám định:** `https://giamdinh.baohiemxahoi.gov.vn`
+- **Dữ liệu XML:** dữ liệu điện tử KCB theo quy định BYT, CS gửi BHXH qua Cổng để quản lý, giám định và thanh toán.
+- **Giám định tự động** vs **giám định chủ động** (đối chiếu hồ sơ/bệnh án trực tiếp).
+
+**Giám định thanh toán trực tiếp (tóm tắt phần mở đầu văn bản):** Xác định điều kiện thanh toán trực tiếp; kiểm tra chi phí được TT trực tiếp; hồ sơ gồm bản chụp (kèm đối chiếu bản gốc): thẻ BHYT, CMND/CCCD; trẻ **dưới 6 tuổi** chưa có thẻ: sao **khai sinh/chứng sinh**; giấy ra viện/chứng tử; phiếu khám/sổ khám; giấy chứng nhận **không cùng chi trả** trong năm (nếu có); hóa đơn và chứng từ. Tiếp nhận theo tinh thần **QĐ 2192/QĐ-BHXH** (một cửa BHXH).
+
+**Hiệu lực:** **01/01/2023**, **thay thế QĐ 1456/QĐ-BHXH** (01/12/2015).
+
+**Lưu ý hệ thống:** TT **12/2026/TT-BTC** và **NĐ 188/2025** có thể **điều chỉnh** thủ tục, thời hạn hoặc danh mục so với QĐ 3618; khi mâu thuẫn giữa văn bản, **ưu tiên văn mới hơn** và văn hướng dẫn chi tiết đang hiệu lực — cần đối chiếu mục “văn bản thay thế” trên Công báo.
+
+### 11.4. Liên kết với luồng giám định trong dự án
+
+| Tầng | Văn bản gợi ý |
+|------|----------------|
+| Quyền lợi, tuyến, chuyển tuyến, đăng ký ban đầu | **TT 01/2025/TT-BYT** + Luật BHYT / NĐ 188 |
+| Chuyên môn KCB, hồ sơ bệnh án, phạm vi CS/người hành nghề, tính **hợp lý** dịch vụ | **Luật KCB** (15/2023; **[VBHN 26/VPQH 2026](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-26-VBHN-VPQH-2026-Luat-Kham-benh-chua-benh-696163.aspx)**) + **[NĐ 96/2023](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Nghi-dinh-96-2023-ND-CP-huong-dan-Luat-Kham-benh-chua-benh-583328.aspx)** + **[TT 32/2023/TT-BYT](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Thong-tu-32-2023-TT-BYT-huong-dan-Luat-Kham-benh-chua-benh-593360.aspx)**; kết hợp **TT 12/2026** điểm **e, g, i** (Điều 10 khoản 1), **NĐ 188** (giám định chủ động, bệnh án) — mục **11.7** |
+| Trình tự giám định, cổng dữ liệu, tự động/chủ động, biên bản | **TT 12/2026/TT-BTC** + **QĐ 3618/QĐ-BHXH** |
+| Danh mục, giá, chỉ định thuốc–DVKT–VTYT (rule engine) | **Thuốc:** 15/VBHN-BYT, TT BYT dược; **DVKT (XML3 `MA_DICH_VU`):** **17/VBHN-BYT 2024** + **TT 35/2016** (sửa **TT 13/2020**, **TT 39/2024**); **VTYT (XML3 `MA_VAT_TU` / gói `GOI_VTYT`, XML4–5 tùy mẫu):** **14/VBHN-BYT 2025** + **TT 04/2017** (và các TT sửa); seed `ma_nguon` — căn cứ khớp **khoản 1 Điều 10 TT 12/2026** khi đối chiếu BHXH |
+
+### 11.5. Chuỗi văn bản thanh toán **dịch vụ kỹ thuật** (DVKT) BHYT
+
+**Mục đích:** Giám định DVKT (thường là **XML3**, mã **M05**) cần bám **điều kiện thanh toán**, **tỷ lệ**, **mức giá** và các quy tắc đặc thù (khám nhiều chuyên khoa, ngày giường, PTTT kết hợp, v.v.).
+
+**Thứ tự tra cứu gợi ý:**
+
+1. **[17/VBHN-BYT năm 2024](https://thuvienphapluat.vn/van-ban/Bao-hiem/Van-ban-hop-nhat-17-VBHN-BYT-2024-Thong-tu-dieu-kien-thanh-toan-dich-vu-ky-thuat-y-te-bao-hiem-638186.aspx)** — bản **hợp nhất** quy định về danh mục và điều kiện thanh toán DVKT.
+2. **Thông tư [39/2024/TT-BYT](https://luatvietnam.vn/y-te/thong-tu-39-2024-tt-byt-sua-tt-35-2016-tt-byt-dieu-kien-thanh-toan-dich-vu-ky-thuat-y-te-374555-d1.html)** (ban hành 17/11/2024, **HL 01/01/2025**) — sửa đổi **TT 35/2016**; nội dung then chốt cho giám định và hợp đồng:
+   - **Khoản 7 Điều 4** (bổ sung): *Một lượt khám bệnh, chữa bệnh* = một lần khám **ngoại trú** hoặc **một đợt điều trị** (ngoại trú / ban ngày / nội trú); **số ngày** một lượt do **người hành nghề** quyết định theo tình trạng bệnh.
+   - **Điều 4a:** Chi phí **chưa tính trong giá ngày giường** thanh toán theo thực tế (thuốc, máu/chế phẩm máu, dịch truyền; vật tư tiêm truyền; túi hậu môn nhân tạo…; dung dịch xịt loét tỳ đè — tối đa **3 lọ 20ml/đợt** với loét độ 1); nguyên tắc giá DVKT và **không thu** người bệnh phần đã kết cấu trong giá dịch vụ được quỹ TT.
+   - **Điều 4b:** Tiền **khám bệnh** trong trường hợp cụ thể (vào nội trú sau khám; khám chuyên khoa tại khoa lâm sàng; **lần khám thứ 2 cùng lần đến** tính **30%** giá 1 lần khám, tổng khám **tối đa 2 lần** giá 1 lần; khám lại trong ngày; **bàn khám >65 lượt/8 giờ** — BHXH chỉ TT **50%** từ lượt 66, sau **03 tháng** liên tiếp vẫn vượt thì **không TT** từ lượt 66…).
+   - **Điều 4c:** **Số ngày giường**, mức giá ngày giường (nội trú, chuyển khoa, ngoại khoa sau mổ, ICU, Phaco…).
+   - **Điều 4d:** DVKT đặc thù (PT kết hợp, thay băng, xét nghiệm, siêu âm tim, định nhóm máu, HbA1c, tải lượng HBV/HCV…).
+   - **Điều 2 khoản 5:** Từ **01/01/2025**, **hợp đồng KCB BHYT phải thể hiện số giường**; CSKCB **thông báo BHXH** khi điều chỉnh quy mô giường (phụ lục/điều chỉnh HĐ).
+   - **Điều 1 khoản 3:** Sửa cụm **“đợt điều trị”** → **“một lượt khám bệnh, chữa bệnh”** tại các vị trí đã nêu trong TT 35 sau các lần sửa **TT 50/2017**, **TT 13/2020**.
+3. **[Thông tư 13/2020/TT-BYT](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-13-2020-TT-BYT-sua-doi-Thong-tu-35-2016-TT-BYT-thanh-toan-dich-vu-ky-thuat-y-te-445839.aspx)** — một lớp sửa đổi **TT 35/2016** (đọc kết hợp với VBHN 17 và TT 39).
+4. **Thông tư 35/2016/TT-BYT** (gốc) — khung danh mục **Danh mục 1** (điều kiện + tỷ lệ + giá) và **Danh mục 2** (điều kiện); các **phụ lục** thay đổi theo từng lần sửa.
+
+**Ý nghĩa cho CDSS:** Rule DVKT trong `rule_engine_dvkt_no_code.jsx` và danh mục nội bộ **M05** cần **ăn khớp** điều kiện/ghi chú trong văn bản trên; khi giải thích `co_so_phap_ly`, nên dẫn **VBHN 17 + TT 39/2024** (với hồ sơ từ **01/01/2025** trở đi cho các điểm chỉ áp dụng sau ngày đó).
+
+**Mã nguồn:** `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17` trong `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` (chuỗi `CO_SO_PHAP_LY_DVKT`); `VBHN_17_META` trong `rule_engine_dvkt_no_code.jsx` — cùng nội dung tóm tắt chuỗi **17/VBHN + TT 35** (sửa **TT 13**, **TT 39**).
+
+### 11.6. Chuỗi văn bản thanh toán **vật tư y tế** (VTYT) BHYT
+
+**Mục đích:** Giám định VTYT cần bám **danh mục**, **tỷ lệ thanh toán**, **điều kiện** (chỉ định, phạm vi bệnh, số lượng/tần suất, ghi chú đặc thù…) và **giá** được phê duyệt tại CSKCB / trong hợp đồng BHYT.
+
+**Dữ liệu XML trong dự án:** Thường gặp trên **XML3** (`MA_VAT_TU`, `TEN_VAT_TU`, `GOI_VTYT`, `DON_GIA`, `TYLE_TT`…); một số trường hợp **XML4/XML5** tùy loại vật tư (ví dụ vật tư thay thế) — đối chiếu **QĐ 130/QĐ-BYT** và cấu trúc hồ sơ thực tế.
+
+**Thứ tự tra cứu gợi ý:**
+
+1. **[14/VBHN-BYT năm 2025](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-14-VBHN-BYT-2025-Thong-tu-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-thuoc-bao-hiem-y-te-670262.aspx)** — bản **hợp nhất** quy định **điều kiện thanh toán** VTYT thuộc BHYT (ưu tiên cho quy định **hiện hành** sau khi công bố).
+2. **[Thông tư 04/2017/TT-BYT](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-04-2017-TT-BYT-Danh-muc-ty-le-dieu-kien-thanh-toan-vat-tu-y-te-nguoi-tham-gia-bao-hiem-y-te-290390.aspx)** — **khung gốc**: danh mục, tỷ lệ và điều kiện thanh toán VTYT; các thông tư sửa đổi sau đó được **tổng hợp** trong VBHN 14 (và trước đó trong VBHN 06).
+3. **[06/VBHN-BYT năm 2018](https://thuvienphapluat.vn/van-ban/Bao-hiem/Van-ban-hop-nhat-06-VBHN-BYT-2018-danh-muc-va-ty-le-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-382481.aspx)** — bản hợp nhất **cũ**; dùng khi cần đối chiếu hồ sơ theo **thời điểm** hoặc giải thích lịch sử quy định.
+
+**Giao thoa với DVKT / ngày giường:** Một phần vật tư tiêu hao **đã kết cấu trong giá ngày giường** hoặc trong **giá DVKT** thì **không tách thanh toán trùng** — xem **Điều 4a Thông tư 39/2024/TT-BYT** (sửa **TT 35/2016**) và quy tắc nội bộ “DVKT đã bao gồm vật tư” trong `rule_engine_dvkt_no_code.jsx`.
+
+**Ý nghĩa cho CDSS:** Danh mục **PL8 / DM_VTYT** trong seed hệ thống phải **khớp** danh mục và điều kiện BYT; giải thích từ chối/thanh toán một phần nên dẫn **14/VBHN-BYT 2025** (và TT sửa đổi sau VBHN nếu có).
+
+**Mã nguồn:** `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_VTYT` và `CO_SO_PHAP_LY_VTYT` trong `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` (cùng logic nối **NĐ 188**, **QĐ 3618**, **TT 12/2026** như `CO_SO_PHAP_LY_DVKT`).
+
+### 11.7. **Luật Khám bệnh, chữa bệnh** và giám định BHYT
+
+**Vì sao cần trong CDSS:** Luật **BHYT** quy định **thanh toán** và điều kiện chi trả; **Luật Khám bệnh, chữa bệnh** quy định **cách tổ chức KCB**, **hồ sơ**, **hành nghề** và **chất lượng**. Giám định **tự động** trên XML chủ yếu bám danh mục/giá/thẻ; giám định **chủ động** và lập luận **“dịch vụ có hợp lý không”** (điểm **i** khoản 1 Điều 10 **TT 12/2026**) thường cần **đối chiếu hồ sơ bệnh án** và chuẩn KCB tại **Luật KCB** + văn bản hướng dẫn.
+
+**Nguồn tra cứu (đủ liên kết):**
+
+1. **[Luật 15/2023/QH15](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Luat-15-2023-QH15-kham-benh-chua-benh-372143.aspx)** — văn bản gốc Luật Khám bệnh, chữa bệnh.
+2. **[26/VBHN-VPQH 2026](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Van-ban-hop-nhat-26-VBHN-VPQH-2026-Luat-Kham-benh-chua-benh-696163.aspx)** — **văn bản hợp nhất** Luật KCB (ưu tiên khi tra cứu **bản tích hợp** các sửa đổi đến thời điểm hợp nhất).
+3. **[Nghị định 96/2023/NĐ-CP](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Nghi-dinh-96-2023-ND-CP-huong-dan-Luat-Kham-benh-chua-benh-583328.aspx)** — Chính phủ hướng dẫn Luật KCB: điều kiện hoạt động, **phạm vi chuyên môn** cơ sở, phân tuyến kỹ thuật, quản lý chất lượng…
+4. **[Thông tư 32/2023/TT-BYT](https://thuvienphapluat.vn/van-ban/The-thao-Y-te/Thong-tu-32-2023-TT-BYT-huong-dan-Luat-Kham-benh-chua-benh-593360.aspx)** — BYT hướng dẫn chi tiết (quy trình KCB, **bệnh án**, biểu mẫu…) — liên hệ trực tiếp với việc **đối soát nội dung bệnh án** khi BHXH giám định chủ động theo **NĐ 188/2025** và **QĐ 3618/QĐ-BHXH**.
+
+**Ánh xạ gợi ý sang giám định chi phí BHYT:**
+
+| Nhóm nội dung Luật KCB / NĐ 96 / TT 32 | Liên hệ giám định BHYT / XML |
+|----------------------------------------|-------------------------------|
+| Phạm vi hoạt động, phân tuyến kỹ thuật CSKCB | Điểm **e** TT 12/2026 Đ10k1; `MA_LOAI_KCB`, `MA_KHOA`, hợp đồng KCB; chỉ định **vượt phạm vi** cơ sở |
+| Người hành nghề, chứng chỉ hành nghề | Điểm **g** TT 12/2026 Đ10k1; `MA_BS_CHI_DINH`, người thực hiện trên XML2/XML3 |
+| Hồ sơ bệnh án, quy trình KCB | Giám định **chủ động** (bệnh án, chứng từ); nhất quán với dữ liệu **QĐ 130** (XML1–6) |
+| Chất lượng, an toàn, quyền người bệnh | Phần lớn **ngoài tự động hóa thuần XML**; hỗ trợ **giải thích** khi nghi ngờ chỉ định không phù hợp chẩn đoán / không đủ căn cứ trong hồ sơ (điểm **i**) |
+
+**Mã nguồn:** `VAN_BAN_HANH_CHINH_HIEN_HANH.LUAT_KCB`, `ND_96_KCB`, `TT_32_KCB` và `CO_SO_PHAP_LY_KCB.CHUYEN_MON` trong `dong_co_giam_dinh.jsx`; prefix mã luật **`CLN-KCB-`** → cùng chuỗi (dùng khi thêm rule chuyên môn KCB).

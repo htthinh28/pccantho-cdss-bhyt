@@ -1,9 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import {
+  chuanHoaKhoaMaLuatOnOff,
+  khopMaLuatTheoMau,
+  normalizeCodeOnOff,
+} from './quy_tac_on_off_khop';
+
+export { khopMaLuatTheoMau };
 
 export const KEY_ON_OFF_QUY_TAC_NOI_BO = 'CDSS_ON_OFF_QUY_TAC_NOI_BO_V1';
 
-const normalizeCode = (value) => String(value || '').trim().toUpperCase();
+const normalizeCode = normalizeCodeOnOff;
 const normalizeStatus = (value, fallback = 'ON') => {
   const token = normalizeCode(value);
   if (token === 'OFF' || token === '0' || token === 'FALSE') return 'OFF';
@@ -195,6 +202,12 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_PTTT', ma_luat: 'CLN-PTTT-*', ten_quy_tac: 'Lâm sàng PTTT (CLN-PTTT-*)' },
   { tab_id: 'LUAT_CHUYEN_TUYEN', ma_luat: 'CLN-CT-*', ten_quy_tac: 'Lâm sàng chuyển tuyến (CLN-CT-*)' },
   { tab_id: 'LUAT_HOP_DONG', ma_luat: 'CLN-CHI-*', ten_quy_tac: 'Đối chiếu tổng chi phí (CLN-CHI-*)' },
+
+  // Tổng hoá mã seed/engine — bật/tắt cả lớp. Ưu tiên: mã khớp chính xác trong map > mẫu * dài hơn > mẫu * ngắn (xem layTrangThaiTheoMau).
+  { tab_id: 'LUAT_THUOC', ma_luat: 'THUOC*', ten_quy_tac: 'Tất cả mã THUOC_* (luật thuốc seed / NoCode XML2)' },
+  { tab_id: 'LUAT_DU_LIEU', ma_luat: 'XML*', ten_quy_tac: 'Tất cả mã XML_* (kiểm tra số học / cấu trúc XML130)' },
+  { tab_id: 'LUAT_DU_LIEU', ma_luat: 'STRUCT*', ten_quy_tac: 'Tất cả mã STRUCT-*' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT*', ten_quy_tac: 'Tất cả mã DVKT_*' },
 ]);
 
 const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
@@ -297,6 +310,15 @@ const DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF = Object.freeze([
   'CHUYEN_DE_528', 'CHUYEN_DE_530', 'CHUYEN_DE_534', 'CHUYEN_DE_540', 'CHUYEN_DE_543',
   'CHUYEN_DE_546', 'CHUYEN_DE_551', 'CHUYEN_DE_554', 'CHUYEN_DE_561', 'CHUYEN_DE_563',
   'CHUYEN_DE_566', 'CHUYEN_DE_571', 'CHUYEN_DE_580', 'CHUYEN_DE_582', 'CHUYEN_DE_591',
+
+  // Phụ thuộc bản in / PACS / phiếu công khai tay / bảng kê — không có trong XML130 gửi BHXH; chỉ bật khi BV có map dữ liệu mở rộng.
+  'CHUYEN_DE_029',
+  'CHUYEN_DE_043',
+  'CHUYEN_DE_125',
+  'CHUYEN_DE_211',
+  'CHUYEN_DE_212',
+  'CHUYEN_DE_504',
+  'CHUYEN_DE_540',
 ]);
 
 // Các rule đã xác nhận dương tính giả: khóa OFF cứng để tránh bị bật lại bởi cache cũ.
@@ -307,16 +329,20 @@ const DANH_SACH_QUY_TAC_TAT_CUNG = Object.freeze([
   'XML_140',
 ]);
 
-const isQuyTacTatCung = (maLuat = '') => DANH_SACH_QUY_TAC_TAT_CUNG.includes(normalizeCode(maLuat));
+const isQuyTacTatCung = (maLuat = '') => {
+  const m = chuanHoaKhoaMaLuatOnOff(maLuat);
+  if (!m) return false;
+  return DANH_SACH_QUY_TAC_TAT_CUNG.some((x) => chuanHoaKhoaMaLuatOnOff(x) === m);
+};
 
 const isMauQuyTacMacDinhOff = (maLuat = '') => {
-  const ma = normalizeCode(maLuat);
+  const ma = chuanHoaKhoaMaLuatOnOff(maLuat);
   if (!ma) return false;
   return DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF.some((patternRaw) => {
     const pattern = normalizeCode(patternRaw);
     if (!pattern) return false;
-    if (pattern.endsWith('*')) return ma.startsWith(pattern.slice(0, -1));
-    return ma === pattern;
+    if (pattern.endsWith('*')) return ma.startsWith(chuanHoaKhoaMaLuatOnOff(pattern.slice(0, -1)));
+    return ma === chuanHoaKhoaMaLuatOnOff(pattern);
   });
 };
 
@@ -349,7 +375,7 @@ const toObjectFromItems = (items) => {
   (Array.isArray(items) ? items : []).forEach((item) => {
     const ma = normalizeCode(item?.MA_LUAT || item?.ma_luat);
     if (!ma) return;
-    statusMap[ma] = normalizeStatus(item?.TRANG_THAI || item?.trang_thai, 'ON');
+    statusMap[chuanHoaKhoaMaLuatOnOff(ma)] = normalizeStatus(item?.TRANG_THAI || item?.trang_thai, 'ON');
   });
   return statusMap;
 };
@@ -367,7 +393,7 @@ export const taiMapTrangThaiQuyTacNoiBo = async () => {
     Object.entries(parsed.status_map).forEach(([key, value]) => {
       const ma = normalizeCode(key);
       if (!ma) return;
-      normalized[ma] = normalizeStatus(value, 'ON');
+      normalized[chuanHoaKhoaMaLuatOnOff(ma)] = normalizeStatus(value, 'ON');
     });
     return normalized;
   }
@@ -377,7 +403,7 @@ export const taiMapTrangThaiQuyTacNoiBo = async () => {
     Object.entries(parsed).forEach(([key, value]) => {
       const ma = normalizeCode(key);
       if (!ma || ma === 'VERSION' || ma === 'UPDATED_AT') return;
-      normalized[ma] = normalizeStatus(value, 'ON');
+      normalized[chuanHoaKhoaMaLuatOnOff(ma)] = normalizeStatus(value, 'ON');
     });
     return normalized;
   }
@@ -390,7 +416,7 @@ export const luuMapTrangThaiQuyTacNoiBo = async (statusMap = {}) => {
   Object.entries(statusMap || {}).forEach(([key, value]) => {
     const ma = normalizeCode(key);
     if (!ma) return;
-    normalized[ma] = normalizeStatus(value, 'ON');
+    normalized[chuanHoaKhoaMaLuatOnOff(ma)] = normalizeStatus(value, 'ON');
   });
   const payload = {
     version: 1,
@@ -407,7 +433,7 @@ export const taoDanhSachQuyTacNoiBoTheoTab = (statusMap = {}) => {
   const byTab = {};
   DANH_MUC_MAU_NOI_BO.forEach((rule) => {
     const tabId = rule.TAB_ID;
-    const ma = normalizeCode(rule.MA_LUAT);
+    const ma = chuanHoaKhoaMaLuatOnOff(rule.MA_LUAT);
     const trangThaiThucTe = isQuyTacTatCung(ma)
       ? 'OFF'
       : normalizeStatus(statusMap[ma], rule.TRANG_THAI);
@@ -422,29 +448,31 @@ export const taoDanhSachQuyTacNoiBoTheoTab = (statusMap = {}) => {
   return byTab;
 };
 
-const laPattern = (pattern) => pattern.endsWith('*');
-
-export const khopMaLuatTheoMau = (pattern, maLuat) => {
-  const p = normalizeCode(pattern);
-  const m = normalizeCode(maLuat);
-  if (!p || !m) return false;
-  if (laPattern(p)) return m.startsWith(p.slice(0, -1));
-  return p === m;
+/** Mẫu có *: prefix càng dài = càng cụ thể (THUOC_4* thắng THUOC*). */
+const tinhDoUuTienMauCoSao = (patternRaw) => {
+  const p = normalizeCode(patternRaw);
+  if (!p.endsWith('*')) return p.length + 100000;
+  const prefix = p.slice(0, -1);
+  return prefix.length;
 };
 
 const layTrangThaiTheoMau = (maLuat, statusMap = {}) => {
   const ma = normalizeCode(maLuat);
   if (!ma) return null;
-  const exact = statusMap[ma];
+  const maKey = chuanHoaKhoaMaLuatOnOff(ma);
+  const exact = statusMap[maKey];
   if (exact) return normalizeStatus(exact, 'ON');
 
   let selectedPattern = '';
+  let selectedScore = -1;
   let selectedStatus = null;
   Object.entries(statusMap || {}).forEach(([pattern, status]) => {
     const p = normalizeCode(pattern);
-    if (!p || !laPattern(p)) return;
+    if (!p || !p.endsWith('*')) return;
     if (!khopMaLuatTheoMau(p, ma)) return;
-    if (p.length > selectedPattern.length) {
+    const score = tinhDoUuTienMauCoSao(p);
+    if (score > selectedScore) {
+      selectedScore = score;
       selectedPattern = p;
       selectedStatus = normalizeStatus(status, 'ON');
     }
@@ -463,35 +491,36 @@ export const isQuyTacNoiBoDangBat = (maLuat, statusMap = {}, fallbackOn = true) 
   return status === 'ON';
 };
 
-const laCanhBaoNoiBoMacDinh = (item = {}) => {
-  const dk = normalizeCode(item?.dieu_kien || '');
-  if (dk === 'BUILT-IN' || dk === 'BUILTIN' || dk === 'STATIC') return true;
-  return normalizeCode(item?.LOAI_QUY_TAC || item?.loai_quy_tac) === 'BUILTIN';
-};
-
 export const locCanhBaoTheoTrangThaiQuyTacNoiBo = (
   danhSachCanhBao = [],
   statusMap = {},
   { chiLocCanhBaoNoiBo = true } = {}
 ) => {
   return (Array.isArray(danhSachCanhBao) ? danhSachCanhBao : []).filter((item) => {
-    if (chiLocCanhBaoNoiBo && !laCanhBaoNoiBoMacDinh(item)) return true;
-    const maLuat = item?.ma_luat || item?.rule_code || item?.MA_LUAT || '';
+    if (!chiLocCanhBaoNoiBo) return true;
+    const maLuat = String(item?.ma_luat || item?.rule_code || item?.MA_LUAT || '').trim();
+    if (!maLuat) return true;
+    // Mọi mã luật (luật động, CHUYEN_DE_*, CDHA_*, THUOC_* seed…) đều áp dụng map ON/OFF + danh sách mặc định OFF.
     return isQuyTacNoiBoDangBat(maLuat, statusMap, true);
   });
 };
 
 export const capNhatMapTrangThaiTuRowsNoiBo = (rows = [], currentStatusMap = {}) => {
-  const next = { ...(currentStatusMap || {}) };
+  const next = {};
+  Object.entries(currentStatusMap || {}).forEach(([k, v]) => {
+    const nk = chuanHoaKhoaMaLuatOnOff(k);
+    if (nk) next[nk] = v;
+  });
   (Array.isArray(rows) ? rows : []).forEach((row) => {
     const ma = normalizeCode(row?.MA_LUAT || row?.ma_luat);
     if (!ma) return;
-    next[ma] = isQuyTacTatCung(ma)
+    const k = chuanHoaKhoaMaLuatOnOff(ma);
+    next[k] = isQuyTacTatCung(ma)
       ? 'OFF'
       : normalizeStatus(row?.TRANG_THAI || row?.trang_thai, 'ON');
   });
   DANH_SACH_QUY_TAC_TAT_CUNG.forEach((ma) => {
-    next[ma] = 'OFF';
+    next[chuanHoaKhoaMaLuatOnOff(ma)] = 'OFF';
   });
   return next;
 };

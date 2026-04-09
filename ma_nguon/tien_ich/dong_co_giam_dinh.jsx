@@ -15,6 +15,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CHUOI_DAY_DU_TT12_2026_D10_VA_D13 as TT_12_2026_BTC_DIEU10_K1 } from './co_so_phap_ly_tt12_2026';
 import { docDanhMucTuKho } from './kho_du_lieu';
 import { kiemTraDinhDangXML } from './kiem_tra_xml';
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
@@ -286,13 +287,6 @@ const laHoSoNoiTruTheoQd824 = (xml1 = {}) => {
 };
 const laHoSoNoiTruBanNgayTheoQd824 = (xml1 = {}) => MA_LOAI_KCB_NOI_TRU_BAN_NGAY.has(normalizeMaLoaiKcb(xml1?.MA_LOAI_KCB));
 
-const CO_SO_PHAP_LY_THUOC = Object.freeze({
-    DANH_MUC_BHYT: '15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.',
-    KE_DON_NGOAI_TRU: '26/2025/TT-BYT: Điều 4, Điều 5, Điều 6 (quy định về kê đơn thuốc ngoại trú).',
-    SO_NGAY_SU_DUNG: '26/2025/TT-BYT: Điều 6 khoản 8 (số ngày sử dụng mỗi thuốc).',
-    NOI_BO_GIA_THAU: '15/VBHN-BYT (2024) + danh mục, giá trúng thầu nội bộ đã phê duyệt tại cơ sở KCB.',
-});
-
 const VAN_BAN_HANH_CHINH_HIEN_HANH = Object.freeze({
     ND_188: 'Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính.',
     TT_01: 'Thông tư 01/2025/TT-BYT: quy định đăng ký KCB ban đầu, thẻ KCB BHYT điện tử và hồ sơ chuyển cơ sở KCB BHYT.',
@@ -300,35 +294,61 @@ const VAN_BAN_HANH_CHINH_HIEN_HANH = Object.freeze({
     QD_130: 'Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT.',
     QD_3176: 'Quyết định 3176/QĐ-BYT: quy trình tiếp nhận và kiểm tra dữ liệu XML liên thông BHYT.',
     LUAT_BHYT: 'Luật BHYT (đã sửa đổi, bổ sung): điều kiện hưởng và nguyên tắc thanh toán BHYT.',
-    VBHN_17: '17/VBHN-BYT (31/12/2024): danh mục và điều kiện thanh toán DVKT thuộc phạm vi BHYT.',
+    LUAT_KCB:
+        'Luật Khám bệnh, chữa bệnh (15/2023/QH15; VBHN 26/VBHN-VPQH 2026 — hợp nhất): quyền/nghĩa vụ người bệnh; tổ chức KCB; người hành nghề; hồ sơ bệnh án; chất lượng và an toàn KCB — căn cứ chuyên môn khi giám định chủ động / độ hợp lý dịch vụ (kết hợp TT 12/2026 Điều 10 khoản 1 điểm e, g, i).',
+    ND_96_KCB:
+        'Nghị định 96/2023/NĐ-CP: hướng dẫn Luật Khám bệnh, chữa bệnh (điều kiện hoạt động CSKCB, phạm vi hành nghề, phân tuyến kỹ thuật, quản lý chất lượng).',
+    TT_32_KCB:
+        'Thông tư 32/2023/TT-BYT: hướng dẫn Luật Khám bệnh, chữa bệnh (quy trình KCB, bệnh án, biểu mẫu hồ sơ — đối chiếu QĐ 130/QĐ-BYT và giám định chủ động).',
+    VBHN_17:
+        '17/VBHN-BYT (31/12/2024): văn bản hợp nhất quy định danh mục và điều kiện thanh toán DVKT BHYT; gốc Thông tư 35/2016/TT-BYT, sửa đổi bổ sung tại Thông tư 13/2020/TT-BYT và Thông tư 39/2024/TT-BYT (HL 01/01/2025: một lượt KCB — khoản 7 Điều 4; Điều 4a–4d; hợp đồng KCB BHYT thể hiện số giường).',
+    VBHN_VTYT:
+        '14/VBHN-BYT (2025): văn bản hợp nhất quy định điều kiện thanh toán vật tư y tế (VTYT) thuộc phạm vi BHYT; gốc Thông tư 04/2017/TT-BYT (danh mục, tỷ lệ, điều kiện) và các thông tư sửa đổi, bổ sung được hợp nhất (tham chiếu 06/VBHN-BYT 2018 khi đối chiếu phiên bản hợp nhất trước đó).',
+    TT_12_BTC_D10: TT_12_2026_BTC_DIEU10_K1,
+});
+
+const CO_SO_PHAP_LY_THUOC = Object.freeze({
+    DANH_MUC_BHYT: `15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT. ${TT_12_2026_BTC_DIEU10_K1}`,
+    KE_DON_NGOAI_TRU: `26/2025/TT-BYT: Điều 4, Điều 5, Điều 6 (quy định về kê đơn thuốc ngoại trú). ${TT_12_2026_BTC_DIEU10_K1}`,
+    SO_NGAY_SU_DUNG: `26/2025/TT-BYT: Điều 6 khoản 8 (số ngày sử dụng mỗi thuốc). ${TT_12_2026_BTC_DIEU10_K1}`,
+    NOI_BO_GIA_THAU: `15/VBHN-BYT (2024) + danh mục, giá trúng thầu nội bộ đã phê duyệt tại cơ sở KCB. ${TT_12_2026_BTC_DIEU10_K1}`,
 });
 
 const CO_SO_PHAP_LY_DVKT = Object.freeze({
-    DANH_MUC_NOI_BO: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    GIA_DVKT: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    CHAT_LUONG_DANH_MUC_BV: `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3176} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
+    DANH_MUC_NOI_BO: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    GIA_DVKT: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    CHAT_LUONG_DANH_MUC_BV: `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3176} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+});
+
+const CO_SO_PHAP_LY_VTYT = Object.freeze({
+    DANH_MUC_NOI_BO: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_VTYT} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    GIA_VTYT: `${VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_VTYT} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+});
+
+const CO_SO_PHAP_LY_KCB = Object.freeze({
+    CHUYEN_MON: `${VAN_BAN_HANH_CHINH_HIEN_HANH.LUAT_KCB} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_96_KCB} ${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_32_KCB} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
 });
 
 const CO_SO_PHAP_LY_HANH_CHINH = Object.freeze({
-    'HC-01': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130}`,
-    'HC-02': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HC-03': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HC-04': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HC-05': `${VAN_BAN_HANH_CHINH_HIEN_HANH.LUAT_BHYT} ${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01}`,
-    'HC-06': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130}`,
-    'HC-07': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130}`,
-    'HC-08': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HC-09': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HC-10': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    DEFAULT: `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
+    'HC-01': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-02': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-03': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-04': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-05': `${VAN_BAN_HANH_CHINH_HIEN_HANH.LUAT_BHYT} ${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-06': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-07': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-08': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-09': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HC-10': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    DEFAULT: `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
 });
 
 const CO_SO_PHAP_LY_THEO_PREFIX_MA_LUAT = Object.freeze({
-    'STRUCT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3176} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
+    'STRUCT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3176} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
     'HC-': CO_SO_PHAP_LY_HANH_CHINH.DEFAULT,
     'HC_': CO_SO_PHAP_LY_HANH_CHINH.DEFAULT,
-    'XML_': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
-    'HD_': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH}`,
+    'XML_': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'HD_': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_3618_BHXH} ${TT_12_2026_BTC_DIEU10_K1}`,
     'CK_': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'GB_': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'NS_': CO_SO_PHAP_LY_DVKT.CHAT_LUONG_DANH_MUC_BV,
@@ -340,12 +360,14 @@ const CO_SO_PHAP_LY_THEO_PREFIX_MA_LUAT = Object.freeze({
     'DM-KHOA-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'DM-THUOC-': CO_SO_PHAP_LY_THUOC.DANH_MUC_BHYT,
     'DM-DVKT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
+    'DM-VTYT-': CO_SO_PHAP_LY_VTYT.DANH_MUC_NOI_BO,
     'CLN-THUOC-': CO_SO_PHAP_LY_THUOC.KE_DON_NGOAI_TRU,
     'CLN-CDHA-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-GIUONG-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-PTTT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
-    'CLN-CT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188}`,
-    'CLN-CHI-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188}`,
+    'CLN-CT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'CLN-CHI-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
+    'CLN-KCB-': CO_SO_PHAP_LY_KCB.CHUYEN_MON,
 });
 
 const layCoSoPhapLyHanhChinh = (maLuat = '') => {
@@ -827,7 +849,10 @@ const laNguonKhôngPhaBHYT = (xml1) => {
 const layDanhSachXml = (hoSo, xmlKey) => {
     const upper = String(xmlKey || '').toUpperCase();
     const lower = upper.toLowerCase();
-    const data = hoSo?.[upper] ?? hoSo?.[lower] ?? hoSo?._raw?.[upper];
+    let data = hoSo?.[upper] ?? hoSo?.[lower];
+    if ((data === undefined || data === null) && hoSo?._raw) {
+        data = hoSo._raw[upper] ?? hoSo._raw[lower];
+    }
     if (upper === 'XML1') {
         if (Array.isArray(data)) return data.length > 0 ? data[0] : {};
         return data || {};
@@ -1165,6 +1190,67 @@ const extractIcdCodesFromClaim = (...values) => {
     return Array.from(seen);
 };
 
+/** Gom token ICD từ XML1 + các XML phụ (XML9–15, kể cả nằm trong _raw) để đối chiếu chỉ định thuốc. */
+const layMaIcdTuHoSoMoRongChoThuoc = (hoSo, xml1) => {
+    const chunks = [
+        xml1?.MA_BENH_CHINH,
+        xml1?.MA_BENH_KT,
+        xml1?.CHAN_DOAN_RV,
+        xml1?.MA_BENH,
+    ];
+    ['XML9', 'XML10', 'XML11', 'XML12', 'XML13', 'XML14', 'XML15'].forEach((key) => {
+        layDanhSachXml(hoSo, key).forEach((row) => {
+            if (!row || typeof row !== 'object') return;
+            Object.values(row).forEach((v) => {
+                if (v !== null && v !== undefined && String(v).trim() !== '') chunks.push(v);
+            });
+        });
+    });
+    return extractIcdCodesFromClaim(...chunks);
+};
+
+const coIcdChiDinhDiosminHesperidin = (hoSo, xml1) => {
+    const codes = layMaIcdTuHoSoMoRongChoThuoc(hoSo, xml1);
+    return codes.some((code) => {
+        const noDot = String(code || '').replace(/\./g, '').toUpperCase();
+        return noDot.startsWith('I83') || noDot.startsWith('I84') || noDot.startsWith('I87');
+    });
+};
+
+/** Khớp nội dung chẩn đoán mở rộng (XML1 + diễn biến XML5) với từ khóa nhóm Diosmin/Hesperidin trong luật THUOC_131. */
+const coVanBanChanDoanHoTroDiosmin = (hoSo, xml1) => {
+    const parts = [
+        xml1?.CHAN_DOAN_RV,
+        ...layDanhSachXml(hoSo, 'XML5').flatMap((r) => [r?.DIEN_BIEN, r?.DIEN_BIEN_LS, r?.GIAI_DOAN_BENH, r?.MO_TA]),
+    ].filter((v) => v !== null && v !== undefined && String(v).trim() !== '');
+    const blob = normalizeTextNoAccent(parts.join(' ')).toUpperCase();
+    return /(GIAN TINH MACH|SUY TINH MACH CHI DUOI|TRI\b|SUY TINH MACH\b|TINH MACH MAN)/.test(blob);
+};
+
+const coCoSoLamSangHoacIcdChoDiosminHesperidin = (hoSo, xml1) => (
+    coIcdChiDinhDiosminHesperidin(hoSo, xml1) || coVanBanChanDoanHoTroDiosmin(hoSo, xml1)
+);
+
+/** TT 26/2025 INN: tên dòng kê đã là hoạt chất trong DM nội bộ thì không ép có dấu ngoặc. */
+const coTenThuocTrungHoatChatDanhMuc = (dong, dm) => {
+    if (!dong || !dm?.MAP_THUOC_BV) return false;
+    const ma = UPPER(dong?.MA_THUOC || '');
+    if (!ma) return false;
+    const dmRow = dm.MAP_THUOC_BV.get(ma);
+    if (!dmRow || typeof dmRow !== 'object') return false;
+    const hoatChat = lamSachChuoiHienThi(
+        layGiaTriDanhMuc(dmRow, ['TEN_HOAT_CHAT', 'HOAT_CHAT', 'TEN_INN', 'INN', 'TEN_GENERIC'])
+    );
+    const tenDong = lamSachChuoiHienThi(dong?.TEN_THUOC || '');
+    if (!hoatChat || !tenDong) return false;
+    const a = normalizeTextNoAccent(hoatChat).replace(/\s+/g, ' ').trim().toUpperCase();
+    const b = normalizeTextNoAccent(tenDong).replace(/\s+/g, ' ').trim().toUpperCase();
+    if (!a || !b) return false;
+    if (a === b) return true;
+    if (b.startsWith(`${a} `) || b.startsWith(`${a}-`)) return true;
+    return false;
+};
+
 const isIcdInAllowed30DayCatalog = (code, ruleSet) => {
     const parsed = parseIcdComparable(code);
     if (!parsed) return false;
@@ -1438,13 +1524,33 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         if (ma === 'HC_224' && (xml8.length === 0 || !dong || IS_EMPTY(dong?.MA_PT_VIEN) || IS_EMPTY(dong?.MA_PHU_MO))) return false;
         if (ma === 'HC_242' && tongChiCanBang) return false;
         if (ma === 'DM-DVKT-03' && laDongDichVuGiuong(dong)) return false;
-        if (ma === 'HD_06' && !IS_EMPTY(xml1.MA_CSKCB) && /94027/.test(`${canhBao} ${dieuKien}`)) return false;
+        if (ma === 'HD_06' && !IS_EMPTY(xml1.MA_CSKCB) && /94170/.test(`${canhBao} ${dieuKien}`)) return false;
         if (ma === 'HD_09' && IS_EMPTY(xml1.MA_TTDV)) return false;
         if (ma === 'CK_03' && !['1', '01'].includes(maLoaiKcb)) return false;
         if (ma === 'THUOC_400' && !coThuoc) return false;
         if (ma === 'THUOC_85' && coPhauThuatHoacThuThuat) return false;
         if (ma === 'THUOC_342' && coThaiKyHoacSanKhoa) return false;
         if ((ma === 'THUOC_391' || ma === 'THUOC_416' || ma === 'THUOC_417') && coLechDonViYLenhVaCapPhatThuoc(dong)) return false;
+        if ((ma === 'THUOC_417' || ma === 'THUOC_416') && dong) {
+            const slMoiNgay = Math.max(TO_NUMBER(dong?.CALC_SL_MOI_NGAY), TO_NUMBER(dong?.SL_MOI_NGAY));
+            const soNgay = TO_NUMBER(dong?.SO_NGAY);
+            if (!(slMoiNgay > 0 && soNgay > 0)) return false;
+        }
+        if (ma === 'THUOC_131' && coCoSoLamSangHoacIcdChoDiosminHesperidin(hoSo, xml1)) return false;
+        if (ma === 'THUOC_436' && laHoSoNoiTruTheoQd824(xml1)) return false;
+        if (ma === 'THUOC_436' && dong && coTenThuocTrungHoatChatDanhMuc(dong, dm)) return false;
+        if (ma === 'XML_76') {
+            if (laHoSoNoiTruTheoQd824(xml1)) return false;
+            const rowsVuot100 = xml2.filter((r) => TO_NUMBER(r?.SO_LUONG) > 100 && !IS_EMPTY(r?.MA_THUOC));
+            if (
+                rowsVuot100.length > 0
+                && rowsVuot100.every((r) => {
+                    const dv = UPPER(r?.DON_VI_TINH || '');
+                    const sl = TO_NUMBER(r?.SO_LUONG);
+                    return /(VIEN|VIÊN)/.test(dv) && sl > 0 && sl <= 400;
+                })
+            ) return false;
+        }
         if (ma === 'XML2-TIME-THYL-BEFORE-YL' && laNoiTru) return false;
         if ((ma === 'CLN-PTTT-02' || ma === 'CLN-PTTT-05') && coPtttGoi) return false;
         if (ma === 'CLN-PTTT-12' && coHc171 && xml5.length === 0) return false;
@@ -2744,6 +2850,32 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
         };
     }
 
+    if (maLuat === 'THUOC_419') {
+        return (ruleMeta, contextRuleDong, danhMucHeThong) => {
+            const xml1 = contextRuleDong?.baseCtx?.XML1 || {};
+            const rows = contextRuleDong?.rowsByTable?.XML2 || [];
+            const preparedRows = contextRuleDong?.preparedRowsByTable?.XML2 || [];
+            const mapThuoc = danhMucHeThong?.MAP_THUOC_BV;
+            if (!(mapThuoc instanceof Map)) return [];
+            const hangCskcb = TO_NUMBER(String(xml1?.CSKCB_HANG_BV ?? xml1?.HANG_BV_CSKCB ?? '').trim());
+            const violations = [];
+            rows.forEach((row, index) => {
+                if (!row || laBHYTKhôngThanhToan(row)) return;
+                const cur = preparedRows[index] || enrichXML2Data(row);
+                const maT = UPPER(String(cur?.MA_THUOC || '').trim());
+                if (!maT) return;
+                const dmRow = mapThuoc.get(maT);
+                if (!dmRow) return;
+                const minHang = TO_NUMBER(String(dmRow?.HANG_BV_MIN ?? '').trim());
+                if (minHang <= 0 || hangCskcb <= 0) return;
+                if (minHang < hangCskcb) {
+                    violations.push(taoCanhBaoViPhamRuleDong(ruleMeta, { phan_he: 'XML2', index, truong_loi: 'MA_THUOC' }));
+                }
+            });
+            return violations;
+        };
+    }
+
     return null;
 };
 
@@ -3239,7 +3371,8 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
     // V3 duoc goi truc tiep o man hinh tong quan/doc_file_xml, can dong bo hau loc nhu V15
     // de tranh dương tính giả khi chi chay luat dong.
     danhSachCanhBao = locCanhBaoDuongTinhGiaTheoNguCanh(hoSo, danhSachCanhBao, danhMucHeThong || {});
-    return danhSachCanhBao;
+    // Thay the {TEN_THUOC}, {DU_QTY}, ... trong canh bao (giong V15 + xuat Excel DS_Loi).
+    return boSungChiTietCanhBaoGiaiTrinh(hoSo, danhSachCanhBao, danhMucHeThong || {});
 };
 
 export const chayBoMayGiamDinhNhieuHoSoV3 = async (danhSachHoSo = [], options = {}) => {
@@ -3310,7 +3443,7 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     // LAYER 5: Luật động NoCode
     allLỗi = allLỗi.concat(await chayBoMayGiamDinhV3(hoSo));
 
-    // Ap dung ON/OFF cho quy tac ma nguon (BUILT-IN/STATIC) trong tab Quan ly ON/OFF.
+    // Áp ON/OFF nội bộ cho mọi cảnh báo có ma_luat (gồm luật động + CHUYEN_DE_* / CDHA_* cứng, kể cả dieu_kien không phải BUILT-IN).
     const mapTrangThaiNoiBo = await taiMapTrangThaiQuyTacNoiBo();
     allLỗi = locCanhBaoTheoTrangThaiQuyTacNoiBo(allLỗi, mapTrangThaiNoiBo, { chiLocCanhBaoNoiBo: true });
 

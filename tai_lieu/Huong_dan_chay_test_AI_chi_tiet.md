@@ -1,7 +1,7 @@
 # HƯỚNG DẪN CHI TIẾT: CHẠY TEST AI GIÁM ĐỊNH BHYT
 
-Phiên bản tài liệu: 1.0
-Ngày cập nhật: 06/04/2026
+Phiên bản tài liệu: 1.1
+Ngày cập nhật: 07/04/2026
 
 ## 1. Mục Đích
 
@@ -30,6 +30,10 @@ Dữ liệu test **lấy từ folder `test_xml/`**:
 - Mỗi file là 1 **audit JSON** từ 1 hồ sơ thật
 - Audit JSON chứa: chẩn đoán, thuốc, dịch vụ, danh sách lỗi đã phát hiện
 - **Ví dụ:** `audit_000339_20260405_232511.json` = Hồ sơ 000339 được audit hôm 05/04
+
+**Danh sách 10 file chuẩn + snapshot:** `Danh_sach_10_ca_test_va_du_lieu_chi_tiet.md` (v1.1).  
+**Prompt CA 7–10 + bảng chấm:** `Bat_dau_test_10_ca_chi_tiet.md` (v2.0).  
+**Kiểm tra repo:** `npm run qa:audit-fixtures` (script `scripts/qa_audit_fixtures.js`).
 
 ---
 

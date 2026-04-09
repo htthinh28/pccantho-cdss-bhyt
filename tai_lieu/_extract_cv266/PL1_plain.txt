@@ -1,0 +1,805 @@
+
+
+
+PHỤ LỤC 01: DANH SÁCH DỊCH VỤ KỸ THUẬT - THUỐC THANH TOÁN KHÔNG ĐÚNG QUY ĐỊNH
+			(Kèm theo Công văn số	/TTKS-NV ngày	tháng	năm 2025 của Trung tâm Kiểm soát thanh toánBHXH, BHYT điện tử)
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+I
+Danh sách DVKT thanh toán không đúng quy định
+1
+Nhóm “Tách dịch vụ kỹ thuật, thanh toán chưa đúng quy định tại điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT”
+
+1.1
+
+KT01_1
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật mở sào bào khi đã thanh toán các phẫu thuật tạo hình tai giữa
+Quy trình phẫu thuật chỉnh hình tai giữa typ II tại Quyết định số 3978/QĐ-BYT ngày 18/10/2012 của Bộ Y tế ban hành Quy trình kỹ thuật khám, chữa bệnh chuyên ngành Tai Mũi Họng
+
+
+1.2
+
+
+KT01_10
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật cắt túi mật khi đã thanh toán các phẫu thuật cắt gan.
+Các quy trình phẫu thuật cắt gan, cắt khối tá tụy tại Quyết định số 4420/QĐ-BYT ngày 17/8/2016 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Ngoại khoa, chuyên khoa Phẫu thuật Gan Mật
+
+
+1.3
+
+
+KT01_11
+
+
+S.005.434
+Không thanh toán thêm phẫu thuật tạo van chống trào ngược dạ dày – thực quản qua nội soi khi đã thanh toán phẫu thuật tạo Heller kết hợp tạo van chống trào ngược qua nội soi bụng.
+Quy trình Phẫu thuật Heller tại Quyết định số 201/QĐ-BYT ngày 16/01/2014 của Bộ Y tế về ban hành tài liệu “Hướng dẫn quy trình kỹ thuật chuyên ngành ngoại khoa - chuyên khoa phẫu thuật tiêu hóa và phẫu thuật nội soi”
+9993376287642
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+
+
+
+
+
+1.4
+
+
+
+
+
+
+
+KT01_12
+
+
+
+
+
+
+
+S.005.434
+
+
+
+
+
+
+
+Không thanh toán thêm phẫu thuật ghép xương khi đã thanh toán các phẫu thuật cột sống,
+
+Các quy trình “Phẫu thuật cố định cột sống thắt lưng bằng vít qua cuống”, “Phẫu thuật nội soi chỉnh vẹo cột sống đường trước và hàn khớp”, “Vít khối bên c1 - vít qua cuống c2” tại Quyết định số 198/QĐ-BYT ngày 16/01/2014 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật chuyên ngành Ngoại khoa - chuyên khoa Phẫu thuật chấn thương chỉnh hình, Phẫu thuật cột sống; quy trình “Phẫu thuật chỉnh gù cột sống ngực qua đường sau” tại Quyết định số 4421/QĐ-BYT ngày 17/8/2016 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Ngoại khoa, chuyên khoa Phẫu thuật Cột sống; quy trình “Phẫu thuật kết hợp xương khớp giả xương cánh tay” tại Quyết định số 4484/QĐ-BYT ngày 18/8/2016 của Bô Y tế ban hành Hướng dẫn quy trình kỹ thuật Ngoại khoa chuyên khoa Chấn thương Chỉnh hình
+
+
+1.5
+
+
+KT01_13
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật lấy đĩa đệm khi đã thanh toán các phẫu thuật thay đĩa đệm nhân tạo.
+Các quy trình “phẫu thuật thay đĩa đệm nhân tạo cột sống thắt lưng-cùng”, “phẫu thuật thay đĩa đệm nhân tạo cột sống cổ” tại Quyết định số 5729/QĐ-BYT hướng dẫn quy trình kỹ thuật Ngoại khoa, chuyên khoa Phẫu thuật Cột sống
+
+
+1.6
+
+
+KT01_14
+
+
+S.005.434
+
+Không thanh toán thêm Phẫu thuật cắt bỏ dây chằng vàng khi đã thanh toán Phẫu thuật cố định cột sống.
+Quy trình "Phẫu thuật cố định cột sống" tại Quyết định số 198/QĐ-BYT Hướng dẫn quy trình kỹ thuật chuyên ngành Ngoại khoa - chuyên khoa Phẫu thuật chấn thương chỉnh hình, Phẫu thuật cột sống
+
+1.7
+
+KT01_16
+
+S.005.434
+Không thanh toán thêm dịch vụ kỹ thuật dẫn lưu Douglas khi đã thanh toán Phẫu thuật cắt ruột thừa
+Quy trình Phẫu thuật cắt ruột thừa nội soi ổ bụng tại Quyết định số 201/QĐ-BYT
+
+1.8
+
+KT01_18
+
+S.005.434
+Không thanh toán thêm nội soi thực quản - dạ dày - tá tràng khi đã thanh toán dịch vụ nội soi can thiệp dạ dày tá - tràng.
+Các quy trình 45, 46, 50, 54, 55 tại Quyết định số 3805/QĐ- BYT ngày 25/9/2014 của Bộ Y tế ban hành Hướng dẫn quy trình, kỹ thuật Nội khoa, chuyên ngành Tiêu hóa
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+1.9
+
+KT01_19
+
+S.005.434
+Không thanh toán thêm dịch vụ kỹ thuật nội soi đại trực tràng toàn bộ ống mềm khi đã thanh toán các dịch vụ kỹ thuật can thiệp ống tiêu hóa.
+Các các quy trình 45, 46, 50, 52, 53, 54, 55 tại Quyết định số 3805/QĐ-BYT ngày 25/9/2014 của Bộ Y tế ban hành Hướng dẫn quy trình, kỹ thuật Nội khoa, chuyên ngành Tiêu hóa
+
+
+
+1.10
+
+
+
+KT01_2
+
+
+
+S.005.434
+
+
+Không thanh toán thêm phẫu thuật mở khí quản khi đã thanh toán các phẫu thuật mở sụn giáp dây thanh,
+
+Các quy trình “Phẫu thuật mở sụn giáp cắt dây thanh”, “ Phẫu thuật chấn thương thanh khí quản”, “Phẫu thuật cắt bán phần họng - thanh quản trên nhẫn” tại Quyết định số 3978/QĐ-BYT ngày 10/12/20212 của Bộ Y tế ban hành Quy trình kỹ thuật khám, chữa bệnh chuyên ngành Tai Mũi Họng
+
+
+1.11
+
+
+KT01_20
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật cắt mống mắt chu biên khi đã thanh toán các phẫu thuật cắt bè củng giác mạc.
+Các quy trình “Phẫu thuật cắt móng mắt ngoại vi (chu biên)”, “Phẫu thuật cắt bè củng giác mạc” tại Quyết định số 3906/QĐ- BYT ngày 12/10/20212 của Bộ Y tế ban hành Quy trình kỹ thuật khám, chữa bệnh chuyên ngành Nhãn khoa
+
+
+1.12
+
+
+KT01_21
+
+
+S.005.434
+
+Không thanh toán thêm kỹ thuật Đặt ống thông niệu quản qua nội soi (sond JJ) khi đã thanh toán các dịch vụ kỹ thuật Nội soi tán sỏi niệu quản,
+Quy trình Nội soi tán sỏi niệu quản (búa khí nén, siêu âm, laser) tại Quyết định số 3592/QĐ-BYT ngày 11/9/2014 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Nội khoa, chuyên ngành Thận tiết niệu
+
+1.13
+
+KT01_4
+
+S.005.434
+Không thanh toán thêm xét nghiệm Vi khuẩn nhuộm soi khi đã thanh toán xét nghiệm Vi khuẩn nuôi cấy định danh,
+Quy trình Nuôi cấy vi khuẩn tại Quyết định số 26/QĐ-BYT ngày 03/01/20214 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật chuyên ngành Vi sinh Y học
+
+1.14
+
+KT01_6
+
+S.005.434
+
+Không thanh toán thêm Phẫu thuật Nạo vét hạch khi đã thanh toán các Phẫu thuật dạ dày,
+Quy trình Nạo vét hạch D1, D2, D3, D4 tại Quyết định số 4491/QĐ-BYT ngày 19/8/2016 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Chuyên khoa Phẫu thuật Tiêu hoá
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+1.15
+
+
+KT01_7
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật "Mở bụng thăm dò, lau rửa ổ bụng, đặt dẫn lưu" khi đã Thanh toán “Phẫu thuật khâu lỗ thủng dạ dày tá tràng”.
+Quy trình "Khâu lỗ thủng dạ dày hành tá tràng" tại Quyết định số 201/QĐ-BYT ngày 16/01/2014 của Bộ Y tế về ban hành tài liệu “Hướng dẫn quy trình kỹ thuật chuyên ngành ngoại khoa - chuyên khoa phẫu thuật tiêu hóa và phẫu thuật nội soi”
+
+
+1.16
+
+
+KT01_8
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật “Cắt thân đuôi tụy kèm cắt lách” khi đã thanh toán phẫu thuật “Nối tụy ruột”,
+Các quy trình "Phẫu thuật nối tụy ruột khác" và quy trình số 3, 29, 30, 49 tại Quyết định số 5730/QĐ-BYT ngày 21/12/2027 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Ngoại khoa chuyên khoa phẫu thuật Tiêu hóa
+
+
+1.17
+
+
+KT01_9
+
+
+S.005.434
+
+Không thanh toán thêm phẫu thuật “Mở thông hỗng tràng” khi đã thanh toán phẫu thuật “Cắt thực quản, tạo hình thực quản bằng dạ dày không mở ngực”
+Quy trình “Cắt thực quản, tạo hình thực quản bằng dạ dày không mở ngực” tại Quyết định số 4491/QĐ-BYT ngày 19/8/2016 của Bộ Y tế ban hành Hướng dẫn quy trình kỹ thuật Chuyên khoa Phẫu thuật Tiêu hoá
+
+
+
+1.18
+
+
+
+KT189_6
+
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ “đo khúc xạ giác mạc Javal” khi đã thanh toán dịch vụ “Đo công suất thể thuỷ tinh nhân tạo tự động bằng siêu âm” hoặc dịch vụ “Đo công suất thể thuỷ tinh nhân tạo bằng siêu âm”.
+Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT/ Quy trình “Đo công suất thể thuỷ tinh nhân tạo tự động bằng siêu âm” hoặc “Đo công suất thể thuỷ tinh nhân tạo bằng siêu âm” tại quy trình số 88 tại Quyết định số 3906/QĐ-BYT ngày 12/10/2012 về Quy trình kỹ thuật khám, chữa bệnh chuyên ngành Nhãn khoa
+
+
+1.19
+
+
+KT189_7
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ “Đặt catheter lọc máu cấp cứu” khi đã thanh toán dịch vụ “Thận nhân tạo cấp cứu”,
+
+Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT/Quy trình STT 26 “Quy trình lọc máu cấp cứu bằng kỹ thuật thận nhân tạo” Quyết định số 2482/QĐ-BYT ngày 13/4/2028 của Bộ Y tế về ban hành tài liệu hướng dẫn quy trình kỹ thuật Thận nhân tạo.
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+
+1.20
+
+
+
+KT189_8
+
+
+
+S.005.434
+Không thanh toán thêm dịch vụ “Tiêm khớp gối khi đã thanh toán dịch vụ “Hút dịch khớp gối”; Không thanh toán thêm dịch vụ “Tiêm khớp cổ tay” khi đã thanh toán dịch vụ “Hút dịch khớp cổ tay; Không thanh toán thêm dịch vụ “Tiêm khớp háng” khi đã thanh toán dịch vụ “Hút dịch khớp háng”, …
+Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+Các quy trình “Hút dịch khớp gối”,“Hút dịch khớp cổ tay", “Hút dịch khớp háng”, … quy trình từ số thứ tự 9 đến số thứ tự 23 tại Quyết định số 654/QĐ-BYT ngày 24/02/20214 Hướng dẫn quy trình kỹ thuật khám, chữa bệnh Nội khoa, chuyên ngành Cơ Xương Khớp
+
+
+
+1.21
+
+
+
+KT189_9
+
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ "Phẫu thuật mở bụng cắt u buồng trứng hoặc cắt phần phụ" khi đã thanh toán dịch vụ “Phẫu thuật mở bụng cắt tử cung hoàn toàn và hai phần phụ”
+
+	Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+	Quy trình “Phẫu thuật mở bụng cắt tử cung hoàn toàn và hai phần phụ” STT 30 tại Quyết định số 1377/QĐ-BYT ngày 24/04/2013 của Bộ Y tế ban hành Hướng dẫn Quy trình kỹ thuật khám bệnh, chữa bệnh chuyên ngành Phụ Sản
+
+
+1.22
+
+
+KT121
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ "Chụp Động mạch vành" khi đã thanh toán dịch vụ "Nong và đặt stent động mạch vành"
+
+	Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+	Quy trình "Nong và đặt stent động mạch vành" tại Quyết định số 3983/QĐ-BYT ngày 03/10/2014 của Bộ Y tế hướng dẫn quy trình kỹ thuật nội khoa chuyên ngành tim mạch
+
+
+1.23
+
+
+KT128
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ Hút huyết khi đã thanh toán dịch vụ Đặt stent động mạch vành, không thanh toán thêm dịch vụ Hút huyết
+
+	Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+	Quy trình "Nong và đặt stent động mạch vành" tại Quyết định số 3983/QĐ-BYT ngày 03/10/2014 của Bộ Y tế hướng dẫn quy trình kỹ thuật nội khoa chuyên ngành tim mạch
+
+
+1.24
+
+
+KT158
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ “Tiêm hậu nhãn cầu, Tiêm cạnh nhãn cầu” khi đã thanh toán Phẫu thuật nhãn khoa.
+
+Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+'- Các quy trình phẫu thuật thủ thuật tại Quyết định số 3906/QĐ- BYT ngày 12/10/2012 hướng dẫn quy trình kỹ thuật khám bệnh, chữa bệnh chuyên ngành nhãn khoa
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+1.25
+
+
+KT217
+
+
+S.005.434
+
+Không thanh toán siêu âm ổ bụng khi đã thanh toán siêu âm hệ tiết niệu hoặc siêu âm tử cung phần phụ.
+- Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT - Quy trình "siêu âm ổ bụng" số thứ tự 73 Quyết định số 3805/QĐ- BYT Hướng dẫn quy trình, kỹ thuật Nội khoa, chuyên ngành Tiêu hóa
+
+
+1.26
+
+
+KT226
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ xét nghiệm “Hồng cầu lưới” khi đã thanh toán dịch vụ xét nghiệm “Huyết đồ”
+
+- Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+'- STT 22 Quyết định số 4401/QĐ-BYT và STT 4 Quyết định số 3336/QĐ-BYT Hướng dẫn quy trình kỹ thuật Huyết học - Truyền máu - Miễn dịch - Di truyền - Sinh học phân tử
+
+
+
+1.27
+
+
+
+KT95
+
+
+
+S.005.434
+
+Không thanh toán thêm dịch vụ Siêu âm khi đã thanh toán dịch vụ Chọc sinh thiết u, hạch dưới hướng dẫn siêu âm hoặc dịch vụ Sinh thiết tuyến giáp dưới hướng dẫn siêu âm hoặc dịch vụ Tiêm khớp dưới hướng dẫn siêu âm…
+	Điểm a khoản 4 Điều 4 Thông tư số 35/2016/TT-BYT
+	Các quy trình STT 145, 146, 150, 163, 164, 165 tại Quyết định số 25/QĐ-BYT Hướng dẫn quy trình kỹ thuật Chẩn đoán hình ảnh và điện quang can thiệp; STT 73, 85 tại Quyết định số 654/QĐ-BYT Hướng dẫn quy trình kỹ thuật khám, chữa bệnh Nội khoa, chuyên ngành Cơ Xương Khớp
+
+
+
+
+
+
+1.28
+
+
+
+
+
+
+KT104
+
+
+
+
+
+
+S.001.646
+
+
+
+Không thanh toán dịch vụ “Nhuộm Gemsa trên mảnh cắt mô phát hiện HP” khi đã thanh toán dịch vụ “Nội soi thực quản - dạ dày - tá tràng ống mềm có sinh thiết” hoặc không thực hiện dịch vụ kỹ thuật “Nội soi thực quản - dạ dày - tá tràng ống mềm có sinh thiết” hoặc không thực hiện các phẫu thuật dạ dày.
+
+
+
+
+	Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền.
+	Quy trình “Nhuộm Giemsa trên mảnh cắt mô phát hiện HP” tại Quyết định số 5199/QĐ-BYT hướng dẫn quy trình kỹ thuật chuyên ngành Giải phẫu bệnh - Tế bào bệnh học
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+2
+
+Nhóm "Thanh toán dịch vụ kỹ thuật không đúng quy định tại Thông tư số 35/2016/TT-BYT, Thông tư số 39/2024/TT-BYT hoặc không đúng điều kiện quy định tại các phụ lục ban hành kèm theo Thông tư số 35/2016/TT-BYT, Thông tư số 39/2024/TT-BYT"
+
+2.1
+
+KT08
+
+T.008.667
+Thanh toán sai tỷ lệ đối với phẫu thuật thứ 2 trở đi trong cùng một lần phẫu thuật
+Khoản 2 Điều 4d Thông tư số 35/2016/TT-BYT, được sửa đổi bổ sung tại khoản 4 Điều 1 Thông tư số 39/2024/TT-BYT
+
+2.2
+
+KT105
+
+S.005.433
+Dịch vụ “thay băng vết mổ có chiều dài trên 15cm đến 30cm” lần thứ 4 trở đi không đúng quy định
+đối với các trường hợp phẫu thuật mổ lấy thai
+Điểm d khoản 4 Điều 4d Thông tư số 35/2016/TT-BYT, được sửa đổi bổ sung tại khoản 4 Điều 1 Thông tư số 39/2024/TT-
+BYT
+
+2.3
+
+KT221
+
+S.015.478
+Thanh toán số ngày giường điều trị nội trú không đúng quy định
+Điểm a, b khoản 1 Điều 4c Thông tư số 35/2016/TT-BYT, được sửa đổi bổ sung tại khoản 4 Điều 1 Thông tư số 39/2024/TT-
+BYT
+
+2.4
+
+KT223
+
+S.013.458
+Thanh toán tiền khám bệnh đối với người bệnh
+khám bệnh và vào điều trị nội trú tại khoa cấp cứu không đúng quy định
+Khoản 1 Điều 4b Thông tư số 35/2016/TT-BYT, được sửa đổi bổ sung tại khoản 4 Điều 1 Thông tư số 39/2024/TT-BYT
+
+
+2.5
+
+
+KT93
+
+
+S.005.429
+
+Thanh toán xét nghiệm “Định lượng Pro-calcitonin [Máu]” không đúng quy định
+Tỷ lệ, mức giá thanh toán tại STT 8 danh mục 1 Thông tư số 39/2024/TT-BYT: Thanh toán tối đa 01 lần/24h đối với người bệnh sốc nhiễm trùng; thanh toán tối đa 01 lần/48 giờ đối với người bệnh nhiễm trùng nặng
+
+2.6
+
+KT94
+
+S.015.480
+Thanh toán mức giá giường bệnh ngoại khoa sau
+thực hiện “Phẫu thuật đục thủy tinh thể bằng phương pháp Phaco” không đúng quy định
+Khoản 14 Điều 4c Thông tư số 35/2016/TT-BYT, được sửa đổi bổ sung tại khoản 4 Điều 1 Thông tư số 39/2024/TT-BYT
+
+
+2.7
+
+
+KT02P1
+
+
+S.005.651
+
+Thanh toán dịch vụ HbA1C không đúng điều kiện thanh toán quy định tại STT 38 danh mục 2 Thông tư số 39/2024/TT-BYT
+Điều kiện thanh toán tại STT 38 danh mục 2 Thông tư số 39/2024/TT-BYT ngày 17/11/2024 sửa đồi bổ sung một số điều của Thông tư số 35/2016/TT-BYT ban hành Danh mục và tỷ lệ, điều kiện thanh toán đối với DVKT y tế thuộc phạm vi hưởng của người tham gia BHYT
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+2.8
+
+
+KT37
+
+
+S.005.428
+Thanh toán dịch vụ “Định lượng BNP” đối với bệnh nhân chẩn đoán, theo dõi suy tim trên người bệnh suy thận; chẩn đoán, theo dõi suy tim trên người bệnh không có suy thận không đúng quy
+định
+
+Điều kiện thanh toán tại STT 9 danh mục 1 Thông tư số 35/2016/TT-BYT
+2.9
+KT189_1
+S.005.434
+Thanh toán dịch vụ Bơm rửa phế quản không thanh toán thêm dịch vụ nội soi phế quản
+Điều kiện thanh toán tại STT 103 danh mục 2 Thông tư số 35/2016/TT-BYT
+
+2.10
+
+KT189_2
+
+S.005.434
+Thanh toán dịch vụ "thực hiện lập trình máy tạo nhịp", không thanh toán thêm dịch vụ điện tâm đồ
+Điều kiện thanh toán tại STT 47 danh mục 2 Thông tư số 39/2024/TT-BYT
+
+2.11
+
+KT189_3
+
+S.005.434
+Thanh toán dịch vụ Rạch hoại tử bỏng giải thoát
+chèn ép không thanh toán thêm dịch vụ thay băng bỏng
+Điều kiện thanh toán tại STT 106 danh mục 2 Thông tư số 35/2016/TT-BYT
+
+2.12
+
+KT189_4
+
+S.005.434
+Thanh toán dịch vụ Khâu cầm máu, thắt mạch máu để cấp cứu chảy máu trong bỏng sâu, không thanh toán thêm dịch vụ thay băng bỏng
+Điều kiện thanh toán tại STT 107 danh mục 2 Thông tư số 35/2016/TT-BYT
+
+2.13
+
+KT189_5
+
+S.005.434
+Thanh toán dịch vụ Đẻ thường hoặc Đẻ khó, không thanh toán thêm dịch vụ Làm lại thành âm đạo,
+tầng sinh môn
+Điều kiện thanh toán tại STT 108 danh mục 2 Thông tư số 35/2016/TT-BYT
+
+2.14
+
+KT147
+
+S.005.416
+
+Dịch vụ kỹ thuật vật lý trị liệu vượt quá số lượng quy định trong ngày điều trị
+- Điều kiện thanh toán tại STT 10 danh mục 2 Thông tư số 39/2024/TT-BYT và Quyết định số 54/QĐ-BYT “Hướng dẫn quy trình kỹ thuật chuyên ngành Phục hồi chức năng”
+3
+Nhóm “Thanh toán dịch vụ kỹ thuật không đúng ghi chú tại các Phụ lục của các quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền"
+
+3.1
+
+KT144
+
+S.005.430
+Không thanh toán DVKT tiêm bắp, tiêm tĩnh mạch, truyền tĩnh mạch, tháo bột, cắt chỉ, thay băng trong
+điều trị nội trú.
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền, dịch vụ kỹ thuật này chỉ thanh toán trong ngoại
+trú.
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+3.2
+
+KT32
+
+S.005.655
+Không thanh toán dịch vụ xét nghiệm “Helicobacter pylori Ag test nhanh” do đã kết cấu chi phí trong dịch vụ Nội soi dạ dày hoặc tá tràng.
+
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền
+
+3.3
+
+KT49
+
+S.004.605
+Thanh toán thừa chi phí gây mê đối với “Phẫu thuật quặm [gây mê]”, Phẫu thuật mộng, lấy dị vật giác mạc …do đã kết cấu trong chi phí gây mê trong giá
+dịch vụ
+
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền
+
+
+3.4
+
+
+KT166
+
+
+S.005.658
+Thanh toán dịch vụ “Hút đờm qua ống nội khí quản/canuyn mở khí quản bằng ống thông kín (có thở máy)” khi người bệnh có thở máy, không thanh toán đối với người bệnh không sử dụng DVKT thở
+máy các loại.
+
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền
+
+
+3.5
+
+
+KT183
+
+
+S.005.442
+Thanh toán theo mức giá “Chụp cắt lớp vi tính có thuốc cản quang” khi không sử dụng thuốc cản quang để chụp, điều chỉnh về mức giá của dịch vụ “Chụp cắt lớp vi tính không thuốc cản quang”
+
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền
+
+3.6
+
+KT193
+
+S.005.657
+Không thanh toán dịch vụ "theo dõi nhịp tim thai và cơn co tử cung" trong cuộc đẻ trên 1 lần/ngày điều
+trị đối với trường hợp đẻ/mổ đẻ
+Quyết định phê duyệt giá dịch vụ khám bệnh, chữa bệnh của cấp có thẩm quyền
+4
+Nhóm “Chỉ định dịch vụ kỹ thuật không đúng hướng dẫn quy trình kỹ thuật của Bộ Y tế"
+
+4.1
+
+KT04
+
+S.005.658
+Không thanh toán dịch vụ Điều trị tủy răng khi không chụp Xquang xác định hệ thống ống tủy
+Quyết định số 3207/QĐ-BYT ngày 29/8/2013 của Bộ Y tế về việc ban hành hướng dẫn quy trình chuyên ngành Răng Hàm
+Mặt
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+
+
+
+4.2
+
+
+
+
+KT86
+
+
+
+
+S.005.657
+
+
+Không thanh toán dịch vụ "Xét nghiệm và chẩn đoán mô bệnh học tức thì bằng phương pháp cắt lạnh" trong trường hợp không thực hiện phẫu thuật hoặc không thực hiện các thủ thuật có hướng dẫn thực hiện sinh thiết tức thì trong quy trình kỹ thuật
+
+Quy trình số 97 tại Quyết định số 3338/QĐ-BYT ngày 09/09/2013 hướng dẫn quy trình kỹ thuật khám bệnh, chữa bệnh chuyên ngành Ung bướu và quy trình số 77 tại Quyết định số 5199/QĐ-BYT Hướng dẫn quy trình kỹ thuật chuyên ngành Giải phẫu bệnh - tế bào học
+
+4.3
+
+KT25
+
+S.005.649
+Thanh toán dịch vụ “Bơm thông lệ đạo” đối với người bệnh không có bệnh chít hẹp điểm lệ, tắc lệ quản ngang hoặc ống lệ mũi.
+Quy trình “Bơm thông lệ đạo” tại Quyết định số 3906/QĐ-BYT ngày 12/10/2012 của Bộ Y tế ban hành tài liệu Hướng dẫn Quy trình kỹ thuật khám bệnh, chữa bệnh ngành Nhãn khoa.
+
+4.4
+
+KT47
+
+S.005.649
+Thanh toán dịch vụ “Vận động trị liệu hô hấp” đối với người bệnh không mắc bệnh phổi tắc nghẽn mãn tính, bệnh lý phổi mãn tính khác giai đoạn ổn
+định
+Quy trình “Vận động trị liệu hô hấp” tại Quyết định 1981/QĐ- BYT ngày 05/06/2014 của Bộ Y tế ban hành tài liệu hướng dẫn quy trình kỹ thuật Nội khoa, chuyên ngành Hô hấp
+
+
+4.5
+
+
+KT64
+
+
+S.005.658
+Thanh toán DV Nội soi có sinh thiết (Nội soi thực quản dạ dày tá tràng, nội soi ổ bụng,...) nhưng không làm xét nghiệm giải phẫu mô bệnh học, điều chỉnh về mức giá của các DV nội soi không sinh thiết
+Quyết định số 3805/QĐ-BYT ngày 25/09/2014 của Bộ Y tế ban hành tài liệu hướng dẫn quy trình kỹ thuật nội khoa chuyên ngành tiêu hóa và Quyết định số 5199/QĐ-BYT ngày 25/12/2013 của Bộ Y tế ban hành tài liệu “Hướng dẫn quy trình kỹ thuật chuyên ngành Giải phẫu bệnh - Tế bào học”.
+
+
+
+4.6
+
+
+
+KT79
+
+
+
+S.005.653
+
+
+Thanh toán các DVKT phục hồi chức năng đối với các trường hợp chống chỉ định cho người bệnh có khối u ác tính (ung thư)
+
+Quyết định số 54/QĐ-BYT ngày 06/01/2014 và Quyết định số 5737/QĐ-BYT ngày 22/12/2017 của Bộ Y tế về việc ban hành tài liệu “Hướng dẫn quy trình kỹ thuật chuyên ngành phục hồi chức năng”, Quyết định số 26/QĐ-BYT ngày 22/07/2008 về việc ban hành quy trình kỹ thuật y học cổ truyền.
+
+4.7
+
+KT58
+
+S.005.429
+Thanh toán dịch vụ Đo mật độ xương không đúng khoảng cách quy định
+Quyết định số 361/QĐ-BYT ngày 25/01/2014 hướng dẫn chẩn đoán và điều trị các bệnh cơ xương khớp: “Bệnh loãng xương”
+
+
+TT
+Mã chuyên
+đề
+Mã lý do từ
+chối
+Nội dung
+Căn cứ pháp lý
+
+4.8
+
+KT84
+
+S.005.653
+
+Chỉ định dịch vụ Nội soi thực quản, dạ dày, tá tràng đối với bệnh nhân chẩn đoán suy tim
+Các quy trình số 14, 15, 63, 64 tại Quyết định số 3805/QĐ-BYT ngày 25/9/2014 của Bộ Y tế về việc Hướng dẫn quy trình kỹ thuật nội khoa chuyên ngành tiêu hóa
+
+
+4.9
+
+
+KT118
+
+
+S.005.443
+Thanh toán thuốc điều trị đích trong ung thư hoặc các dịch vụ tiêm/truyền hóa chất điều trị ung thư, không thanh toán thêm dịch vụ kỹ thuật “Điều trị đích trong ung thư” do không phát sinh thêm chi
+phí.
+
+
+Khoản 1 Điều 7 Thông tư số 50/2017/TT-BYT ngày 29/12/2017
+
+4.10
+
+KT184
+
+S.005.650
+Thanh toán xét nghiệm AFB hơn 2 lần/ngày không đúng quy định tại Quyết định số 3126/QĐ-BYT
+Quyết định số 3126/QĐ-BYT ngày 23/5/2018 “Hướng dẫn chẩn đoán, điều trị và dự phòng bệnh lao”.

@@ -7,6 +7,8 @@ node_modules/
 .expo/
 dist/
 web-build/
+release-desktop/
+.desktop-staging/
 expo-env.d.ts
 
 # Native
@@ -53,3 +55,12 @@ firebase-debug.log
 full_source_code.txt
 __pycache__/
 *.pyc
+
+# Local agent / IDE state (không đồng bộ)
+.openclaw/
+
+# Log cục bộ
+server.log
+
+# File tạm extract (không cần trong repo)
+temp_*_extract*.txt

@@ -1,7 +1,7 @@
 # BỘ NGUỒN TRI THỨC QUẢN LÝ SỬ DỤNG KHÁNG SINH
 
-Phiên bản tài liệu: 1.0  
-Ngày cập nhật: 05/04/2026
+Phiên bản tài liệu: 1.1  
+Ngày cập nhật: 08/04/2026
 
 ## 1. Mục đích
 
@@ -77,12 +77,12 @@ Nguyên tắc áp dụng:
 
 Khi xử lý một ca kháng sinh, AI nên đi theo thứ tự:
 
-1. đọc bộ nguồn chuyên môn và quản lý sử dụng kháng sinh đang ưu tiên
-2. nếu là ca trẻ em, đọc thêm nguồn tham khảo nhi khoa trước khi kết luận về liều
-3. nếu là ca thanh toán thuốc BHYT, đối chiếu thêm văn bản hợp nhất về phạm vi thanh toán thuốc
-2. đọc dữ liệu XML thật và audit thật
-3. đối chiếu seed rule hoặc hardcoded rule đang chạy trong repo
-4. xác định điểm nào là quy định nghiệp vụ, điểm nào là hành vi hiện tại của hệ thống
+1. đọc bộ nguồn chuyên môn và quản lý sử dụng kháng sinh đang ưu tiên (Mục 2 của tài liệu này)
+2. nếu là ca trẻ em, đọc thêm nguồn tham khảo nhi khoa (Mục 2.4) trước khi kết luận về liều
+3. nếu là ca thanh toán thuốc BHYT, đối chiếu thêm văn bản hợp nhất về phạm vi thanh toán thuốc (Mục 2.5)
+4. đọc dữ liệu XML thật và audit thật (ví dụ `test_xml/audit_*.json`)
+5. đối chiếu seed rule hoặc hardcoded rule đang chạy trong repo
+6. xác định điểm nào là quy định nghiệp vụ, điểm nào là hành vi hiện tại của hệ thống
 
 ## 5. Cách dùng bộ nguồn này trong huấn luyện
 
@@ -94,3 +94,15 @@ Khi xử lý một ca kháng sinh, AI nên đi theo thứ tự:
 
 - Nếu seed rule trong repo chưa phản ánh đủ tinh thần của tài liệu chuyên môn, AI phải ghi rõ đây là `khoảng cách giữa logic hệ thống và nguồn nghiệp vụ`.
 - Không kết luận ngay cần sửa rule diện rộng nếu chưa có ca thật, audit thật và kiểm chứng đường đi dữ liệu liên quan.
+
+## 7. Liên kết tài liệu trong repo
+
+| Tài liệu | Vai trò |
+|----------|---------|
+| `The_tri_thuc_phap_ly_quan_ly_su_dung_khang_sinh.md` | Thẻ PL-01 … PL-15 — mệnh đề cốt lõi và câu hỏi kiểm tra nhanh |
+| `The_tri_thuc_mau_nhom_thuoc_dot4_khang_sinh.md` | Nhóm thuốc / rule seed liên quan kháng sinh (nếu có trong repo) |
+| `The_tri_thuc_mau_luat_BHYT_2008_2025.md` | Nền luật BHYT, NĐ 188, lộ trình sửa đổi |
+| `Cong_van_266_TTKS_chuyen_de_loi_giam_dinh_BHXH.md` | Chuyên đề BHXH — mã từ chối thuốc/DVKT (TH\*, KT\*) |
+| `The_tri_thuc_luan_van_Ho_Tan_Thinh_BHYT_Soc_Trang_2018_2019.md` | Thực tiễn từ chối thanh toán thuốc trong cơ cấu xuất toán (địa phương, 2018–2019) |
+| `Bat_dau_test_10_ca_chi_tiet.md` | Prompt và bảng chấm ca có `THUOC_*` / đa lỗi |
+| `npm run qa:audit-fixtures` | Kiểm tra nhanh 10 file audit chuẩn trước khi chấm AI |

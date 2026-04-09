@@ -1,5 +1,7 @@
 {
   "name": "ung_dung_cdss_bhyt",
+  "description": "CDSS BHYT — hỗ trợ giám định hồ sơ BHYT (web + mobile + desktop đóng gói).",
+  "author": "BV Phương Châu",
   "main": "index.js",
   "version": "1.0.0",
   "scripts": {
@@ -22,7 +24,15 @@
     "firebase:set-claims": "node ./scripts/firebase-set-custom-claims.js",
     "qa:xml-real": "node ./scripts/test-xml-real-data.js",
     "qa:strict-flow": "node ./scripts/check-strict-manual-workflow.js",
-    "qa:claim-audit": "node ./scripts/run_claim_audit.js"
+    "qa:claim-audit": "node ./scripts/run_claim_audit.js",
+    "qa:audit-fixtures": "node ./scripts/qa_audit_fixtures.js",
+    "qa:on-off-match": "node ./scripts/qa_on_off_match.mjs",
+    "desktop:export": "expo export --platform web",
+    "desktop:electron": "electron ./electron-main.cjs",
+    "desktop:pack": "npm run desktop:export && node scripts/stage_desktop_pack.mjs --",
+    "desktop:build:win": "npm run desktop:export && node scripts/stage_desktop_pack.mjs -- --win",
+    "desktop:build:mac": "npm run desktop:export && node scripts/stage_desktop_pack.mjs -- --mac",
+    "desktop:build:linux": "npm run desktop:export && node scripts/stage_desktop_pack.mjs -- --linux"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -62,6 +72,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "electron": "^35.7.5",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "firebase-admin": "^13.0.0",

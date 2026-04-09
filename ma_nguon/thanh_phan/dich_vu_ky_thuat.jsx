@@ -30008,7 +30008,7 @@ export const DANH_MUC_DVKT_M05 = [
     "MA_CSKCB": "",
     "PHAN_LOAI_PTTT": "",
     "GHICHU": "",
-    "QUYET_DINH": "20241219_277/NQ-HĐND_94027"
+    "QUYET_DINH": "20241219_277/NQ-HĐND_94170"
   },
   {
     "STT": 1500,

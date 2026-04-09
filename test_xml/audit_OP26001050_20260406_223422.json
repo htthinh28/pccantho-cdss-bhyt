@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "generated_at": "2026-04-06T15:34:22.020Z",
+    "claim_path": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\op\\PC022209289_OP26001050.xml",
+    "ma_lk": "OP26001050",
+    "total_warnings": 7,
+    "by_severity": {
+      "Error": 1,
+      "Warning": 6
+    },
+    "by_namespace": {
+      "HANH_CHINH_BUILTIN": 1,
+      "N/A": 2,
+      "THUOC_DANH_MUC_BUILTIN": 1,
+      "THUOC_HARDCODED": 3
+    },
+    "by_source": {
+      "dong_co_giam_dinh": 2,
+      "luat_thuoc_hardcoded": 3,
+      "N/A": 2
+    },
+    "focus_summary": {}
+  },
+  "unique_rule_codes": [
+    "DM-THUOC-04",
+    "HC-06d",
+    "HD_10",
+    "THUOC_436",
+    "XML_53"
+  ],
+  "rule_summary": {
+    "DM-THUOC-04": 1,
+    "HC-06d": 1,
+    "HD_10": 1,
+    "THUOC_436": 3,
+    "XML_53": 1
+  },
+  "warnings": [
+    {
+      "phan_he": "XML2",
+      "index": 1,
+      "truong_loi": "DON_GIA",
+      "canh_bao": "Đơn giá thuốc [40.48] = 552đ vượt giá trúng thầu nội bộ 270đ đã phê duyệt tại cơ sở KCB. Chi tiết thuốc: [40.48] Partamol Tab..",
+      "muc_do": "Error",
+      "ma_luat": "DM-THUOC-04",
+      "ten_quy_tac": "Giá thuốc vượt trúng thầu",
+      "dieu_kien": "BUILT-IN",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) + danh mục, giá trúng thầu nội bộ đã phê duyệt tại cơ sở KCB.",
+      "namespace_quy_tac": "THUOC_DANH_MUC_BUILTIN",
+      "nguon_quy_tac": "dong_co_giam_dinh",
+      "luong_giai_trinh": "XML2 -> built-in thuốc/danh mục",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "phan_he": "XML1",
+      "index": -1,
+      "truong_loi": "MUC_HUONG",
+      "canh_bao": "Mã đối tượng KCB [1.12] thuộc nhóm hưởng theo phạm vi quyền lợi, mức hưởng; ký tự mức hưởng trên thẻ BHYT [4] tương ứng 80%, nhưng mức hưởng chi tiết thực tế đang quanh 100%.",
+      "muc_do": "Warning",
+      "ma_luat": "HC-06d",
+      "ten_quy_tac": "Quyền lợi BHYT theo mã thẻ",
+      "dieu_kien": "BUILT-IN",
+      "co_so_phap_ly": "Khoản 1 Điều 19 Nghị định số 188/2025/NĐCP",
+      "namespace_quy_tac": "HANH_CHINH_BUILTIN",
+      "nguon_quy_tac": "dong_co_giam_dinh",
+      "luong_giai_trinh": "XML1 -> built-in hành chính",
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+    },
+    {
+      "id": "HD_10",
+      "phan_he": "XML1",
+      "truong_loi": "UNKNOWN",
+      "canh_bao": "⚠️ JCI Audit: Kết quả cận lâm sàng thiếu dải chỉ số bình thường, vi phạm tiêu chuẩn chất lượng cam kết trong Hợp đồng.",
+      "muc_do": "Warning",
+      "index": -1,
+      "ma_luat": "HD_10",
+      "ten_quy_tac": "Thiếu căn cứ thanh toán xét nghiệm (JCI Audit)",
+      "dieu_kien": "COUNT_IF(XML4, IS_EMPTY(item.CHI_SO_XN_BT)) > 0",
+      "co_so_phap_ly": "Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT. Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử.",
+      "namespace_quy_tac": "",
+      "nguon_quy_tac": "",
+      "luong_giai_trinh": "",
+      "tab_quan_tri_goi_y": ""
+    },
+    {
+      "id": "THUOC_436",
+      "phan_he": "XML2",
+      "truong_loi": "MA_LOAI_KCB",
+      "canh_bao": "⛔ [TT 26/2025]: Kê đơn ngoại trú phải ghi tên chung quốc tế (INN). Trường hợp ghi tên thương mại phải ghi tên INN trong ngoặc đơn. Chi tiết thuốc: [40.227] Ciprofloxacin.",
+      "muc_do": "Warning",
+      "index": 0,
+      "ma_luat": "THUOC_436",
+      "ten_quy_tac": "Kiểm tra Tên thuốc (INN)",
+      "dieu_kien": "XML1.MA_LOAI_KCB == '1' AND XML2.TEN_THUOC NOT LIKE '%(%'",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_436",
+      "phan_he": "XML2",
+      "truong_loi": "MA_LOAI_KCB",
+      "canh_bao": "⛔ [TT 26/2025]: Kê đơn ngoại trú phải ghi tên chung quốc tế (INN). Trường hợp ghi tên thương mại phải ghi tên INN trong ngoặc đơn. Chi tiết thuốc: [40.48] Partamol Tab..",
+      "muc_do": "Warning",
+      "index": 1,
+      "ma_luat": "THUOC_436",
+      "ten_quy_tac": "Kiểm tra Tên thuốc (INN)",
+      "dieu_kien": "XML1.MA_LOAI_KCB == '1' AND XML2.TEN_THUOC NOT LIKE '%(%'",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "THUOC_436",
+      "phan_he": "XML2",
+      "truong_loi": "MA_LOAI_KCB",
+      "canh_bao": "⛔ [TT 26/2025]: Kê đơn ngoại trú phải ghi tên chung quốc tế (INN). Trường hợp ghi tên thương mại phải ghi tên INN trong ngoặc đơn. Chi tiết thuốc: [40.922] SPAS-AGI.",
+      "muc_do": "Warning",
+      "index": 2,
+      "ma_luat": "THUOC_436",
+      "ten_quy_tac": "Kiểm tra Tên thuốc (INN)",
+      "dieu_kien": "XML1.MA_LOAI_KCB == '1' AND XML2.TEN_THUOC NOT LIKE '%(%'",
+      "co_so_phap_ly": "15/VBHN-BYT (2024) hợp nhất TT 20/2022/TT-BYT và TT 37/2024/TT-BYT: Điều 1, Điều 2, Điều 20; Thông tư 37/2024/TT-BYT: Điều 8 về nguyên tắc thanh toán thuốc BHYT.",
+      "namespace_quy_tac": "THUOC_HARDCODED",
+      "nguon_quy_tac": "luat_thuoc_hardcoded",
+      "luong_giai_trinh": "XML2 -> hardcoded thuốc",
+      "tab_quan_tri_goi_y": "LUAT_THUOC"
+    },
+    {
+      "id": "XML_53",
+      "phan_he": "XML1",
+      "truong_loi": "T_THUOC",
+      "canh_bao": "⛔ [KẾ TOÁN]: Tổng tiền thuốc tại XML1 lệch với cộng dồn THANH_TIEN_BV của các dòng thuốc tại XML2.",
+      "muc_do": "Warning",
+      "index": -1,
+      "ma_luat": "XML_53",
+      "ten_quy_tac": "Lệch tiền Thuốc (T_THUOC)",
+      "dieu_kien": "ABS(TO_NUMBER(XML1.T_THUOC) - SUM_IF(XML2, item => item.MA_NHOM IN ('4','5'), item => TO_NUMBER(item.THANH_TIEN_BV))) > 1",
+      "co_so_phap_ly": "Quyết định 130/QĐ-BYT: quy định cấu trúc và danh mục chỉ tiêu dữ liệu XML KCB BHYT. Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử.",
+      "namespace_quy_tac": "",
+      "nguon_quy_tac": "",
+      "luong_giai_trinh": "",
+      "tab_quan_tri_goi_y": ""
+    }
+  ]
+}

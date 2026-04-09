@@ -1,7 +1,7 @@
 # LỘ TRÌNH HUẤN LUYỆN AI GIÁM ĐỊNH BHYT
 
-Phiên bản tài liệu: 1.0  
-Ngày cập nhật: 05/04/2026
+Phiên bản tài liệu: 1.3  
+Ngày cập nhật: 06/04/2026
 
 ## 1. Mục tiêu
 
@@ -167,7 +167,7 @@ Nên chia theo đợt:
 
 - Đợt 1: hiểu XML và luồng hệ thống.
 - Đợt 2: lỗi hành chính và dữ liệu cơ bản.
-- Đợt 3: thuốc.
+- Đợt 3: thuốc (khung “sai thuốc”: `The_tri_thuc_kiem_soat_sai_thuoc_AI.md`; **chỉ mục engine** `CLN-THUOC-*` / lọc `THUOC_391|417`: `The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.md`; **đa dạng danh mục BV**: `The_tri_thuc_da_dang_nhom_thuoc_dan_muc_BV_AI.md`; **DM nội bộ + đối chiếu tiền + DMBV-THUOC-***: `The_tri_thuc_giam_dinh_thuoc_DM_builtin_va_doi_chieu_tien_AI.md`; ca `Ca_huan_luyen_mau_*`, `Ca_huan_luyen_mau_000589_nhieu_nhom_thuoc_mot_ho_so.md`, `Ca_huan_luyen_mau_000589_DM_THUOC_03_danh_muc_noibo_snapshot.md`, `Ca_huan_luyen_mau_OP26000908_THUOC_267_Medlon_Methylprednisolon_ICD.md`, `Ca_huan_luyen_mau_ER26000392_THUOC_374_Magnesi_ICD_va_chong_lop.md`, `Ca_huan_luyen_mau_000573_THUOC_391_Dafodin_giuong_PT.md`, `Ca_huan_luyen_mau_IP26000139_DOMUVAR_THUOC_63_va_THUOC_417_noi_tru.md`).
 - Đợt 4: dịch vụ kỹ thuật.
 - Đợt 5: chỉ định cận lâm sàng.
 - Đợt 6: nội trú, ngày giường, thủ thuật, phẫu thuật.

@@ -13,6 +13,7 @@ import { COT_DANH_MUC_THUOC_MAU_M03, DANH_MUC_THUOC_MAU_M03 } from '../ma_nguon/
 import { COT_DANH_MUC_TRANG_THIET_BI_M06, DANH_MUC_TRANG_THIET_BI_M06 } from '../ma_nguon/thanh_phan/trang_thiet_bi.jsx';
 import { chayGiamDinhToanDienV15, xoaCacheBoMayGiamDinh } from '../ma_nguon/tien_ich/dong_co_giam_dinh.jsx';
 import { capNhatDanhMuc } from '../ma_nguon/tien_ich/kho_du_lieu.jsx';
+import { damBaoSeedLuatThuocMuc8 } from '../ma_nguon/tien_ich/seed_luat_thuoc_muc8.jsx';
 import { xuLyFileXML130 } from '../ma_nguon/tien_ich/xml_helper.jsx';
 
 const SEED_DATASETS = [
@@ -135,6 +136,7 @@ const seedDanhMuc = async () => {
     }
     return tasks;
   }));
+  await damBaoSeedLuatThuocMuc8();
 };
 
 const main = async () => {

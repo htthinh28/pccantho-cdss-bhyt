@@ -1,44 +1,47 @@
 # DANH SÁCH 10 CA TEST & DỮ LIỆU CHI TIẾT
 
-Phiên bản tài liệu: 1.0
+Phiên bản tài liệu: 1.6
 Ngày cập nhật: 06/04/2026
 
 ## 1. DANH SÁCH 10 CA TIMELINE ĐƯỢC PHÂN LOẠI
 
 Dưới đây là 10 ca được chọn từ `test_xml/` folder, **sắp xếp theo độ phức tạp** từ dễ → khó.
 
-| STT | MA_LK | File Audit Chính | Tổng Lỗi Kỳ Vọng | Loại Lỗi Chính | Cấp Độ | Lý Do Chọn | Ghi Chú |
+Cột **Tổng cảnh báo (snapshot)** lấy từ `meta.total_warnings` trong file JSON tại thời điểm cập nhật tài liệu; khi sửa luật, chạy `npm run qa:audit-fixtures` để đối chiếu lại.
+
+| STT | MA_LK | File Audit Chính | Tổng cảnh báo (snapshot) | Loại Lỗi Chính | Cấp Độ | Lý Do Chọn | Ghi Chú |
 |-----|-------|---|---|---|---|---|---|
-| **1** | **403521** | audit_403521_20260405_225230.json | **0 lỗi** | (Không) | ⭐ Đơn giản | Thanh toán đúng, không có lỗi | **CA TEST CẤP 1** |
-| **2** | **000339** | audit_000339_20260405_232511.json | **1 lỗi** | Thanh toán (Mekoferrat sai chẩn đoán) | ⭐ Đơn giản | 1 lỗi duy nhất, dễ nhận diện | Thanh toán N84.0 ≠ D50/O25 |
-| **3** | **403538** | audit_403538_20260405_225547.json | **1 lỗi** | Thanh toán (THUOC_345) | ⭐ Đơn giản | 1 lỗi, cấu trúc đơn | Mogastic không danh mục |
-| **4** | **000589** | audit_000589_20260405_232716.json | **2 lỗi** | Hành chính + Thanh toán | ⭐⭐ Trung bình | 2 lỗi khác loại, dễ phân biệt | **CA TEST CẤP 2** |
-| **5** | **OP26000908** | audit_OP26000908_20260405_232932.json | **2 lỗi** | An toàn + Chỉ định | ⭐⭐ Trung bình | 2 lỗi, liều cao Amoxiclav | Liều/hạn mức vi phạm |
-| **6** | **403244** | audit_403244_20260405_224614.json | **4 lỗi** | Hành ChíNH + PTTT + An toàn + Thanh toán | ⭐⭐⭐ Phức tạp | 4 lỗi chồng, bao quát tất cả loại | **CA TEST CẤP 3** |
-| **7** | **000308** | audit_000308_20260405_083942.json | **2-3 lỗi** | Hành chính (ngày/dữ liệu) | ⭐⭐ Trung bình | Lỗi cấu trúc dữ liệu | Để dùng sau nếu cần |
-| **8** | **000375** | audit_000375_20260405_065828.json | **1-2 lỗi** | An toàn / Thanh toán | ⭐ Đơn giản | Lỗi kháng sinh hoặc danh mục | Dự phòng, test thêm |
-| **9** | **000376** | audit_000376_20260404_174042.json | **1-2 lỗi** | Thanh toán / Chỉ định | ⭐⭐ Trung bình | Lỗi chẩn đoán/danh mục | Dự phòng, test thêm |
-| **10** | **000502** | audit_000502_20260404_192348.json | **1-2 lỗi** | An toàn / Hành chính | ⭐⭐ Trung bình | Lỗi dữ liệu hoặc liều | Dự phòng, test thêm |
+| **1** | **403521** | audit_403521_20260405_225230.json | **8** | PTTT + hành chính + HC/HD | ⭐ Đơn giản | Hồ sơ nội trú mẫu trong repo | **Không còn 0 cảnh báo** trong bản snapshot — xem mục 2.1 |
+| **2** | **000339** | audit_000339_20260405_232511.json | **14** | Ngoại trú, đa mã | ⭐ Đơn giản | Nhiều luật hành chính + thuốc | Đối chiếu `unique_rule_codes` trong file |
+| **3** | **403538** | audit_403538_20260405_145119.json | **47** | XML5 + thuốc + hành chính | ⭐⭐⭐ Phức tạp | **Đã sửa tên file** (bản 225547 không tồn tại cho 403538) | THUOC_345, hàng loạt XML5 |
+| **4** | **000589** | audit_000589_20260405_232716.json | **8** | Hành chính + Thuốc | ⭐⭐ Trung bình | Nhiều THUOC_* + HC_* | **CA TEST CẤP 2**; `Ca_huan_luyen_mau_000589_nhieu_nhom_thuoc_mot_ho_so.md`. Bản phụ `audit_000589_20260404_185800.json` có **DM-THUOC-03** — `Ca_huan_luyen_mau_000589_DM_THUOC_03_danh_muc_noibo_snapshot.md` |
+| **5** | **OP26000908** | audit_OP26000908_20260405_232932.json | **11** | Thuốc + hành chính | ⭐⭐ Trung bình | Ngoại trú, Amoxiclav / hạn mức | `Ca_huan_luyen_mau_OP26000908_Amoxiclav_dieu_tri_uong.md`; corticoid **THUOC_267**: `Ca_huan_luyen_mau_OP26000908_THUOC_267_Medlon_Methylprednisolon_ICD.md` |
+| **6** | **403244** | audit_403244_20260405_224614.json | **11** | PTTT + hành chính + HC/HD | ⭐⭐⭐ Phức tạp | Đủ nhóm lỗi | **CA TEST CẤP 3** |
+| **7** | **000308** | audit_000308_20260405_083942.json | **8** | PT sản + HC + thuốc | ⭐⭐ Trung bình | Một file chuẩn cho CA7 | `THUOC_391` x3 — ca huấn luyện: `Ca_huan_luyen_mau_000308_THUOC_391_sai_lech_so_luong_y_lenh.md`; khác bản `085142` (12 cảnh báo) |
+| **8** | **000375** | audit_000375_20260405_065828.json | **6** | DVKT-OP + HC + HD | ⭐ Đơn giản | Ổn định để test nhanh | |
+| **9** | **000376** | audit_000376_20260404_174042.json | **35** | Rất nhiều nhóm | ⭐⭐⭐ Phức tạp | Stress test | |
+| **10** | **000502** | audit_000502_20260404_192348.json | **6** | CDHA + giường + HC + HD | ⭐⭐ Trung bình | 6 mã cố định, dễ chấm | MRI, XML5, ngày ký |
+
+**Phần test tiếp theo (CA 7–10, prompt mẫu, bảng chấm):** `Bat_dau_test_10_ca_chi_tiet.md` phiên bản 2.0.  
+**Kiểm tra nhanh 10 file:** `npm run qa:audit-fixtures`.
+
+**Ca huấn luyện thuốc ngoài bảng 10 (có audit trong `test_xml/`):** `ER26000392` — `audit_ER26000392_20260404_193517.json`, ca `Ca_huan_luyen_mau_ER26000392_THUOC_374_Magnesi_ICD_va_chong_lop.md`; `000573` — `audit_000573_20260405_084557.json`, ca `Ca_huan_luyen_mau_000573_THUOC_391_Dafodin_giuong_PT.md`; **nội trú nặng** — `audit_PC022300479_IP26000139.json`, ca `Ca_huan_luyen_mau_IP26000139_DOMUVAR_THUOC_63_va_THUOC_417_noi_tru.md`. **Chỉ mục engine thuốc:** `The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.md`.
 
 ---
 
 ## 2. 3 CA CHÍNH ĐƯỢC CHỌN CHO TEST HÔMNAY (TỐI)
 
-### **CA TEST 1: CẤP 1 (Đơn Giản - 403521)**
+### **CA TEST 1: CẤP 1 (403521 — cập nhật snapshot)**
 
-**Mục tiêu:** AI hiểu hồ sơ **THANH TOÁN ĐÚNG** (không lỗi)
+**Mục tiêu:** AI đọc đúng audit JSON và **không mâu thuẫn** với số cảnh báo thực tế.
 
 | Thông Tin | Giá Trị |
 |-----------|--------|
 | **MA_LK** | 403521 |
 | **File Audit** | audit_403521_20260405_225230.json |
-| **Chẩn đoán chính (MA_BENH_CHINH)** | Z33 (Phẫu thuật sản khoa) hoặc tương tự |
-| **Loại KCB** | Nội trú (MA_LOAI_KCB = 3) |
-| **Ngày vào/ra** | 3 ngày (Hợp lệ) |
-| **Thuốc chính** | Cefazolin (40.xxx) - Dự phòng |
-| **Tổng lỗi kỳ vọng** | **0 lỗi** |
-| **Tình trạng mong muốn:** | THANH TOÁN ĐÚNG, không xuất toán |
-| **Ghi chú** | Kiểm tra xem AI có nhận ra "không lỗi" không? |
+| **Tổng cảnh báo (snapshot)** | **8** (xem `meta.total_warnings`) |
+| **Ví dụ mã trong file** | `CLN-PTTT-13`, `DVKT_2335`, `DVKT_2587`, `DVKT_2588`, `HC_130`, `HC_180`, `HD_09`, `HD_10` |
+| **Ghi chú** | Nếu cần bài test “0 cảnh báo”, phải dùng **hồ sơ/audit khác** hoặc tái xuất sau khi chỉnh rule — không dùng mục tiêu cũ “0 lỗi” với file này. |
 
 **Cách chuẩn bị:**
 1. Đọc file audit: `test_xml/audit_403521_20260405_225230.json`

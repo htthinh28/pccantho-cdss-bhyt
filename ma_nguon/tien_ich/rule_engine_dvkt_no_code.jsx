@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { CHUOI_DAY_DU_TT12_2026_D10_VA_D13 as TT_12_BTC_D10_META } from './co_so_phap_ly_tt12_2026';
 import { DANH_MUC_DVKT_M05 } from '../thanh_phan/dich_vu_ky_thuat';
 import { DANH_MUC_MAPPING_NGUOI_HANH_NGHE } from '../thanh_phan/mapping_nguoi_hanh_nghe';
 import { DANH_MUC_NHAN_SU } from '../thanh_phan/nhan_su';
@@ -127,7 +128,8 @@ const tronRuleKhongTrung = (...sources) => {
   return out;
 };
 
-const VBHN_17_META = 'VBHN 17/VBHN-BYT (31/12/2024)';
+const VBHN_17_META =
+  'VBHN 17/VBHN-BYT (31/12/2024) — hop nhat TT DVKT BHYT; goc TT 35/2016/TT-BYT, sua TT 13/2020 va TT 39/2024 (HL 01/01/2025: mot luot KCB, Dieu 4a-4d, so giuong trong HD KCB BHYT)';
 const ND_188_META = 'Nghị định 188/2025/NĐ-CP (quy định thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính)';
 const TT_01_META = 'Thông tư 01/2025/TT-BYT (quy định đăng ký KCB ban đầu, thẻ KCB BHYT điện tử và hồ sơ chuyển cơ sở KCB BHYT)';
 const QD_3618_BHXH_META = 'Quyết định 3618/QĐ-BHXH (quy trình kiểm tra BHYT và bộ chỉ tiêu dữ liệu kiểm tra điện tử)';
@@ -1223,8 +1225,14 @@ const fail = (status, message, field = 'MA_DICH_VU') => ({ status, message, fiel
 const pass = () => ({ status: 'PASS' });
 const resolveLegalBasis = (rule) => {
   const custom = String(pickValue(rule, ['LEGAL_BASIS', 'CAN_CU_PHAP_LY', 'CO_SO_PHAP_LY', 'VAN_BAN']) || '').trim();
-  if (custom) return custom;
-  return LEGAL_BASIS_BY_OPERATOR[rule?.OPERATOR] || `${VBHN_17_META}. ${QD_3618_BHXH_META}`;
+  if (custom) {
+    const normCustom = normalizeText(custom);
+    const normTt12 = normalizeText(TT_12_BTC_D10_META);
+    if (normCustom.includes(normTt12)) return custom;
+    return `${custom}. ${TT_12_BTC_D10_META}`;
+  }
+  const base = LEGAL_BASIS_BY_OPERATOR[rule?.OPERATOR] || `${VBHN_17_META}. ${QD_3618_BHXH_META}`;
+  return `${base}. ${TT_12_BTC_D10_META}`;
 };
 const appendLegalBasisIfMissing = (message, legalBasis) => {
   const text = String(message || '').trim();

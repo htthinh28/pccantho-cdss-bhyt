@@ -1,0 +1,43 @@
+================================================================================
+CDSS BHYT — ĐÓNG GÓI CHẠY TRÊN MÁY TÍNH (ÍT CÀI ĐẶT CHO NGƯỜI DÙNG CUỐI)
+================================================================================
+
+Có 2 hướng chính:
+
+(1) BẢN DESKTOP (KHUYẾN NGHỊ) — Một file .exe (Windows portable) hoặc AppImage / .dmg
+    Người dùng chỉ cần tải file và chạy, không cần Node.js hay Expo.
+
+    Trên máy BUILD (có Node.js + Git + mã nguồn):
+      npm install
+      npm run desktop:build:win
+
+    (Script tạo .desktop-staging/ chỉ gồm dist + electron-main để gói nhẹ ~12MB app.asar,
+     không đóng gói nhầm toàn bộ node_modules.)
+
+    Kết quả nằm trong thư mục: release-desktop/
+      - File portable Windows: CDSS-BHYT-Phuong-Chau-<version>-Windows-x64.exe
+        (chạy trực tiếp, không cần cài đặt)
+
+    Build macOS (.dmg): chỉ thực hiện được trên máy macOS:
+      npm run desktop:build:mac
+
+    Build Linux (AppImage):
+      npm run desktop:build:linux
+
+    Ghi chú: Engine giám định mặc định trong app là JS nội bộ. Python service (cổng 8000)
+    là tùy chọn — nếu cần, chạy riêng python_service trên cùng máy và cấu hình trong app.
+
+(2) BẢN WEB TĨNH — Thư mục dist/ sau lệnh:
+      npm run desktop:export
+
+    Cần đặt dist/ lên một web server (IIS, nginx, Apache, hoặc dịch vụ hosting tĩnh).
+    Không mở trực tiếp index.html bằng file:// vì bundle dùng đường dẫn gốc "/".
+
+    Thử nhanh trên máy có Node:
+      npx --yes serve dist -l 4173
+    Rồi mở trình duyệt: http://localhost:4173
+
+================================================================================
+Yêu cầu hệ thống người dùng cuối (bản Electron): Windows 10+, hoặc macOS / Linux bản 64-bit
+tương thích với Electron. Dung lượng gói khoảng vài trăm MB (gồm Chromium).
+================================================================================

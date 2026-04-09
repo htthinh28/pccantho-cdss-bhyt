@@ -1,112 +1,133 @@
-# 🧪 TEST AI GIÁM ĐỊNH BHYT - 10 CA (CA 4-13)
+# Test AI giám định BHYT — 10 ca (phần tiếp theo)
 
-## CA 4: MA_LK = 000502 (6 LỖI)
+Phiên bản: 2.1  
+Ngày cập nhật: 06/04/2026  
 
-**Bối cảnh:**
-- Loại KCB: Nội trú (Phụ - Sản)
-- Ngày vào: [Từ audit]
-- Ngày ra: [Từ audit]
-- Dịch vụ: Giường ngoại khoa + MRI
-
-**6 Lỗi cần phát hiện:**
-1. ⏳ Chụp MRI quá 3 ngày (CDHA_164)
-2. 📊 Số ngày giường không khớp: 4.5 ≠ 3 (CLN-GIUONG-01)
-3. 📋 SO_NGAY_DTRI ≠ DATEDIFF(VA, RA) (HC_130)
-4. ❌ Thiếu XML5 nội trú (HC_171)
-5. ⚠️ NGAY_TTOAN < NGAY_RA (HC_65)
-6. 🔬 Thiếu chỉ số XN bình thường (HD_10)
-
-**Kỳ vọng AI:**
-- Tuân thủ 5 bước
-- Phát hiện ≥ 5/6 lỗi
-- Phân loại: 4 lỗi hành chính + 1 lỗi thanh toán + 1 lỗi chất lượng
-- Kết luận XUẤT TOÁN/KIỂM TRA
+Tài liệu này **bổ sung** cho `Danh_sach_10_ca_test_va_du_lieu_chi_tiet.md`: bảng snapshot đồng bộ với JSON trong repo, chi tiết **CA 7–10**, prompt mẫu và cách chạy kiểm tra fixture tự động.
 
 ---
 
-## CA 5: MA_LK = 000308 (8 LỖI)
+## 1. Kiểm tra fixture nhanh (Node)
 
-**Bối cảnh:**
-- Loại KCB: Nội trú
-- Dịch vụ: Giường + Thuốc + Xét nghiệm
-- Chẩn đoán: [Từ audit]
+Trước khi chấm AI, xác nhận 10 file audit chuẩn còn đủ và `meta.ma_lk` khớp tên file:
 
-**Lỗi chính:** HC_130, HC_171, HD_10, THUOC_391 (x3)
+```bash
+npm run qa:audit-fixtures
+```
 
-**Kỳ vọng:** AI phát hiện lỗi thuốc lặp lại
-
----
-
-## CA 6: MA_LK = 000376 (35 LỖI - PHỨC TẠP!)
-
-**Bối cảnh:**
-- Loại KCB: Nội trú
-- Tổng lỗi: 35 (Rất nhiều!)
-- Lỗi loại: Data validation + Thanh toán + Chẩn đoán
-
-**Kỳ vọng:** AI xử lý case rất phức tạp, tập trung vào lỗi chính nhất
+Script: `scripts/qa_audit_fixtures.js` (danh sách đường dẫn cố định trong `test_xml/`).
 
 ---
 
-## CA 7-13: [Các CA còn lại]
+## 2. Snapshot cảnh báo theo file JSON (đối chiếu khi test)
 
-[Tương tự]
+Số liệu dưới đây lấy từ `meta.total_warnings` / `unique_rule_codes` trong từng file tại thời điểm cập nhật tài liệu. Khi chỉnh luật, chạy lại `qa:audit-fixtures` và cập nhật bảng nếu cần.
 
----
+| STT | MA_LK | File audit | Tổng cảnh báo | Số mã luật khác nhau |
+|-----|--------|------------|---------------|------------------------|
+| 1 | 403521 | audit_403521_20260405_225230.json | 8 | 8 |
+| 2 | 000339 | audit_000339_20260405_232511.json | 14 | 14 |
+| 3 | 403538 | audit_403538_20260405_145119.json | 47 | 19 |
+| 4 | 000589 | audit_000589_20260405_232716.json | 8 | 7 |
+| 5 | OP26000908 | audit_OP26000908_20260405_232932.json | 11 | 8 |
+| 6 | 403244 | audit_403244_20260405_224614.json | 11 | 11 |
+| 7 | 000308 | audit_000308_20260405_083942.json | 8 | 6 |
+| 8 | 000375 | audit_000375_20260405_065828.json | 6 | 5 |
+| 9 | 000376 | audit_000376_20260404_174042.json | 35 | 13 |
+| 10 | 000502 | audit_000502_20260404_192348.json | 6 | 6 |
 
-## 📊 BẢNG CHẤM ĐIỂM TÓMS TẮT (10 CA)
-
-| CA | MA_LK | Tổng Lỗi | AI Phát Hiện | % | Ghi Chú |
-|----|-------|----------|---|---|---|
-| 1 | 403521 | 2 | 2 | 100% | ✅ Test sơ bộ |
-| 2 | 000589 | 2 | 2 | 100% | ✅ Test sơ bộ |
-| 3 | 403244 | 5 | 5 | 100% | ✅ Test sơ bộ |
-| 4 | 000502 | 6 | ? | ? | 🔄 Chạy ngay |
-| 5 | 000308 | 8 | ? | ? | 🔄 Tiếp |
-| 6 | 000376 | 35 | ? | ? | 🔄 Tiếp |
-| 7 | 000375 | 6 | ? | ? | 🔄 Tiếp |
-| 8 | 000573 | 7 | ? | ? | 🔄 Tiếp |
-| 9 | 403563 | 9 | ? | ? | 🔄 Tiếp |
-| 10 | ER26000392 | 10 | ? | ? | 🔄 Tiếp |
+**Ghi chú CA 1 (403521):** Trong snapshot hiện tại, engine vẫn báo **8** cảnh báo (PTTT, hành chính, v.v.). Nếu mục tiêu bài test là “hồ sơ sạch”, cần **tách** khỏi file này hoặc tái sinh audit sau khi chỉnh rule — đừng dạy AI rằng 403521 luôn 0 lỗi nếu JSON thực tế khác.
 
 ---
 
-## 🎯 TEST SCRIPT (CHO MỖI CA):
+## 3. CA 7 — MA_LK `000308`
+
+- **File:** `test_xml/audit_000308_20260405_083942.json`
+- **Bối cảnh:** Nội trú; có PT lấy thai lần 2+ (`13.0002.0672_GT`), thuốc Biofazolin, lỗi hồ sơ/ngày.
+- **Mã luật (unique):** `DVKT_2587`, `DVKT_2588`, `HC_130`, `HC_171`, `HD_10`, `THUOC_391` (có thể thêm dòng XML chi tiết trong `warnings[]`).
+- **Prompt mẫu:**
 
 ```
-## TEST AI CA [X]: MA_LK = [000502]
+Giám định hồ sơ MA_LK=000308 theo 5 bước Nghị định 188/2025.
+Đọc audit: test_xml/audit_000308_20260405_083942.json.
+1) Nêu 5 bước và kết luận từng bước.
+2) Liệt kê các nhóm lỗi: chỉ định PT vs mã O82; gói PT thiếu thuốc tê/mê; HC_130, HC_171, HD_10; THUOC_391.
+3) Phân loại: hành chính / thanh toán / chỉ định lâm sàng.
+4) Căn cứ: QĐ 130, NĐ 188 (không bịa mã không có trong audit).
+```
 
-**PROMPT:**
-"Giám định hồ sơ 000502 theo 5 bước Nghị Định 188/2025.
-Audit phát hiện 6 lỗi: [CDHA_164, CLN-GIUONG-01, HC_130, HC_171, HC_65, HD_10].
-Hãy:
-1. Nêu 5 bước kiểm tra (kết quả mỗi bước)
-2. Liệt kê cả 6 lỗi (loại + giải thích)
-3. Kết luận: XUẤT TOÁN bao nhiêu tiền?
-4. Nêu căn cứ pháp lý (QĐ 130, Nghị Định 188)"
+**Chấm điểm gợi ý:** đủ 5 bước; nhận diện ≥5/6 nhóm mã; không nhầm với bản audit khác timestamp (`085142` có 12 cảnh báo — chỉ dùng một file làm chuẩn).
 
-**AI TRẢ LỜI:**
-[Giả lập AI trả lời đầy đủ]
+---
 
-**CHẤM ĐIỂM:**
-- Tuân thủ 5 bước: ✅/❌
-- Phát hiện ≥5/6 lỗi: ✅/❌
-- Phân loại lỗi: ✅/❌
-- Nêu căn cứ: ✅/❌
-- Tính tiền: ✅/❌
-- Giải thích: ✅/❌
-- Điểm: _/6
+## 4. CA 8 — MA_LK `000375`
+
+- **File:** `test_xml/audit_000375_20260405_065828.json`
+- **Mã luật (unique):** `DVKT-OP-09` (2 dòng), `HC_171`, `HC_46`, `HC_68`, `HD_10`
+- **Prompt mẫu:**
+
+```
+Với MA_LK=000375 và audit audit_000375_20260405_065828.json: giải thích vì sao có HC_171, HD_10 và các mã DVKT-OP-09, HC_46, HC_68; đề xuất thứ tự xử lý khi làm việc với BHXH.
 ```
 
 ---
 
-## 💡 CÁCH CHẠY NHANH:
+## 5. CA 9 — MA_LK `000376`
 
-**Thay vì test từng CA cậu lẻ, tôi sẽ:**
-1. ✅ Soạn 10 prompt test (1 cho mỗi CA)
-2. ✅ Cho AI làm hàng loạt (giả lập)
-3. ✅ Chấm điểm mỗi CA
-4. ✅ Báo cáo tóm tắt
+- **File:** `test_xml/audit_000376_20260404_174042.json`
+- **Độ phức tạp:** **35** cảnh báo (Critical/Error/Warning) — ca “stress test”.
+- **Prompt mẫu:**
 
-=> **Hoàn thành trong 1-2 giờ (thay vì 5 giờ)**
+```
+Case 000376: tổng hợp ý theo 5 bước giám định; không liệt kê hết 35 dòng. Nhóm theo: hành chính XML, danh mục DVKT/thuốc, PTTT/lâm sàng, hợp đồng JCI (HD_*). Nêu 5 lỗi có hệ quả thanh toán lớn nhất (suy luận từ nội dung cảnh báo).
+```
 
+---
+
+## 6. CA 10 — MA_LK `000502`
+
+- **File:** `test_xml/audit_000502_20260404_192348.json`
+- **Đúng 6 cảnh báo, 6 mã:** `CDHA_164`, `CLN-GIUONG-01`, `HC_130`, `HC_171`, `HC_65`, `HD_10`
+- **Bối cảnh ngắn:** Nội trú Phụ-Sản; MRI chờ >3 ngày; ngày giường XML3 vs `SO_NGAY_DTRI`; thiếu XML5; `NGAY_TTOAN` < `NGAY_RA`; XN thiếu chỉ số bình thường.
+- **Prompt mẫu:**
+
+```
+MA_LK=000502: audit phát hiện đúng 6 mã [CDHA_164, CLN-GIUONG-01, HC_130, HC_171, HC_65, HD_10].
+Yêu cầu AI giải thích từng mã, map sang XML1/3/4/5, và kết luận mức độ rủi ro xuất toán (không cần tính tiền nếu không có dữ liệu giá trong prompt).
+```
+
+**Kỳ vọng:** AI phát hiện ≥5/6 mã và phân loại đúng hướng (CDHA/quản trị vs hành chính vs JCI).
+
+---
+
+## 7. CA 1–6 (nhắc ngắn)
+
+Chi tiết ngữ cảnh và bảng chọn ca “tối nay” xem `Danh_sach_10_ca_test_va_du_lieu_chi_tiet.md` mục 2–3. Luôn mở đúng **tên file** trong cột snapshot ở mục 2 của tài liệu này.
+
+---
+
+## 7b. Huấn luyện thuốc mở rộng (ngoài 10 ca chuẩn)
+
+Dùng khi cần **tối đa độ phủ** rule `THUOC_*` / built-in `CLN-THUOC-*` / `DM-THUOC-*`:
+
+- **Bản đồ engine:** `The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.md`
+- **Ca nội trú:** `audit_PC022300479_IP26000139.json` + `Ca_huan_luyen_mau_IP26000139_DOMUVAR_THUOC_63_va_THUOC_417_noi_tru.md`
+- **Cập nhật danh sách ca phụ:** `Danh_sach_10_ca_test_va_du_lieu_chi_tiet.md` (mục sau bảng 10 ca)
+
+---
+
+## 8. Bảng chấm điểm tóm tắt (điền khi chạy test thủ công)
+
+| STT | MA_LK | Đủ 5 bước NĐ188 | Bám sát mã trong JSON | Phân loại lỗi | Căn cứ pháp lý | Ghi chú |
+|-----|--------|-----------------|------------------------|---------------|----------------|---------|
+| 7 | 000308 | ☐ | ☐ | ☐ | ☐ | |
+| 8 | 000375 | ☐ | ☐ | ☐ | ☐ | |
+| 9 | 000376 | ☐ | ☐ | ☐ | ☐ | |
+| 10 | 000502 | ☐ | ☐ | ☐ | ☐ | |
+
+---
+
+## 9. So với phiên bản 1.0 (đã thay thế)
+
+- Phiên bản cũ dùng nhánh “CA 4–13” không khớp danh sách 10 ca trong `Danh_sach_*`, và một số **số lỗi** (ví dụ 000308 = 8 hay 12) lệch theo **file audit** khác timestamp.
+- Từ 2.0 trở đi, **một file audit cố định** cho mỗi STT (trùng với `qa_audit_fixtures.js`).
