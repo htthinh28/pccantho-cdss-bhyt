@@ -1,0 +1,1666 @@
+{
+  "timestamp": "2026-04-11T13:50:07.766Z",
+  "tong_so": 4329,
+  "on": 4000,
+  "off": 329,
+  "unknown": 0,
+  "danh_sach_off": [
+    {
+      "ma_luat": "CDHA_01",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "XML 5: Phim và XML 3: Số lượng"
+    },
+    {
+      "ma_luat": "CDHA_07",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "XML 130: Chứng chỉ hành nghề BS"
+    },
+    {
+      "ma_luat": "CDHA_08",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "XML 130: Chữ ký số của BS đọc KQ"
+    },
+    {
+      "ma_luat": "CDHA_09",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "XML 130: Chữ ký số Bác sĩ đọc"
+    },
+    {
+      "ma_luat": "CDHA_10",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang xương và VTYT: Thùng chì"
+    },
+    {
+      "ma_luat": "CDHA_106",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Hiệu lực xét nghiệm Creatinine"
+    },
+    {
+      "ma_luat": "CDHA_111",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Đối soát số lượng phim X-quang"
+    },
+    {
+      "ma_luat": "CDHA_112",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Đối soát nội soi và kết quả hình ảnh"
+    },
+    {
+      "ma_luat": "CDHA_113",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Độ dài mô tả kết quả (XML4)"
+    },
+    {
+      "ma_luat": "CDHA_116",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Định dạng URL DICOM 130"
+    },
+    {
+      "ma_luat": "CDHA_117",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Dự phòng dị ứng thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_118",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT/MRI và Thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_125",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT-Scanner và Liều thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_126",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT-Scanner và Dị ứng tôm/cua"
+    },
+    {
+      "ma_luat": "CDHA_127",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT-Scanner và Chỉ số HA tâm thu"
+    },
+    {
+      "ma_luat": "CDHA_128",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT-Scanner và Chỉ số GFR"
+    },
+    {
+      "ma_luat": "CDHA_129",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT-Scanner và Chỉ số Creatinine"
+    },
+    {
+      "ma_luat": "CDHA_13",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang và VTYT: Tấm nhận ảnh"
+    },
+    {
+      "ma_luat": "CDHA_135",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT Mạch vành và Chỉ số Creatinine"
+    },
+    {
+      "ma_luat": "CDHA_137",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "CT Bụng và Chỉ định Nhịn ăn"
+    },
+    {
+      "ma_luat": "CDHA_14",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang và Chỉ số liều tia (DAP/DLP)"
+    },
+    {
+      "ma_luat": "CDHA_141",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang và In phim"
+    },
+    {
+      "ma_luat": "CDHA_142",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang và Đối soát Phim hỏng"
+    },
+    {
+      "ma_luat": "CDHA_143",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang và Đối soát Phim hỏng"
+    },
+    {
+      "ma_luat": "CDHA_144",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang và Chỉ số BMI"
+    },
+    {
+      "ma_luat": "CDHA_149",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang thực quản cản quang"
+    },
+    {
+      "ma_luat": "CDHA_151",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang số hóa và phim thường"
+    },
+    {
+      "ma_luat": "CDHA_159",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp X-quang chi và Bên tổn thương"
+    },
+    {
+      "ma_luat": "CDHA_161",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp tử cung vòi trứng (HSG) và Thai"
+    },
+    {
+      "ma_luat": "CDHA_167",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp DSA và Vật tư can thiệp"
+    },
+    {
+      "ma_luat": "CDHA_17",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang tại giường và Khoa thực hiện"
+    },
+    {
+      "ma_luat": "CDHA_173",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Chụp CT và Đối soát mã BS chỉ định"
+    },
+    {
+      "ma_luat": "CDHA_19",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang phổi và Thai sản"
+    },
+    {
+      "ma_luat": "CDHA_192",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "An toàn tia xạ cho Phụ nữ có thai"
+    },
+    {
+      "ma_luat": "CDHA_195",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[XML 130] Tên phim và Kích thước phim"
+    },
+    {
+      "ma_luat": "CDHA_197",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[XML 130] Mã hóa loại thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_198",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[XML 130] Đối soát mã máy theo Khoa"
+    },
+    {
+      "ma_luat": "CDHA_200",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[XML 130] Đối soát BS chỉ định"
+    },
+    {
+      "ma_luat": "CDHA_201",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[XML 130] Định dạng giá trị eGFR"
+    },
+    {
+      "ma_luat": "CDHA_203",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Vật tư] CT & Bơm tiêm điện"
+    },
+    {
+      "ma_luat": "CDHA_207",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] TAT trả KQ X-quang tại giường"
+    },
+    {
+      "ma_luat": "CDHA_208",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] TAT trả KQ X-quang tại giường"
+    },
+    {
+      "ma_luat": "CDHA_213",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Siêu âm kiểm tra sau mổ nội trú"
+    },
+    {
+      "ma_luat": "CDHA_216",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Hiệu lực X-quang phổi tiền phẫu nội trú"
+    },
+    {
+      "ma_luat": "CDHA_218",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Hiệu lực Creatinine điều trị nội trú"
+    },
+    {
+      "ma_luat": "CDHA_219",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Hiệu lực Creatinine (Ngoại trú)"
+    },
+    {
+      "ma_luat": "CDHA_22",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang ngực và Vật tư tấm cảm biến"
+    },
+    {
+      "ma_luat": "CDHA_220",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Chụp X-quang Sản phụ khoa"
+    },
+    {
+      "ma_luat": "CDHA_221",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Chụp MRI sau phẫu thuật"
+    },
+    {
+      "ma_luat": "CDHA_227",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[SOP] X-quang thực quản cản quang"
+    },
+    {
+      "ma_luat": "CDHA_228",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[SOP] Siêu âm ổ bụng & Nhịn ăn"
+    },
+    {
+      "ma_luat": "CDHA_234",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] KTV thực hiện X-quang"
+    },
+    {
+      "ma_luat": "CDHA_235",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] KTV thực hiện đo loãng xương"
+    },
+    {
+      "ma_luat": "CDHA_236",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] KTV ký XML 130 (XML3)"
+    },
+    {
+      "ma_luat": "CDHA_237",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] KTV ký thực hiện CT"
+    },
+    {
+      "ma_luat": "CDHA_239",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] Chứng chỉ an toàn bức xạ"
+    },
+    {
+      "ma_luat": "CDHA_241",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] CCHN BS can thiệp"
+    },
+    {
+      "ma_luat": "CDHA_247",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] BS Hội chẩn Kỹ thuật cao"
+    },
+    {
+      "ma_luat": "CDHA_248",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Người hành nghề] BS Hội chẩn ca khó"
+    },
+    {
+      "ma_luat": "CDHA_25",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "X-quang Kỹ thuật số (DR) và Phim ướt"
+    },
+    {
+      "ma_luat": "CDHA_257",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Kỹ thuật] MRI & Bảng kiểm kim loại"
+    },
+    {
+      "ma_luat": "CDHA_259",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[JCI] Vòng tay dị ứng & Chỉ định CQ"
+    },
+    {
+      "ma_luat": "CDHA_260",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[JCI] Báo động Tràn khí màng phổi"
+    },
+    {
+      "ma_luat": "CDHA_261",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Vật tư tấm nhận ảnh (Cassette)"
+    },
+    {
+      "ma_luat": "CDHA_262",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Vật tư nút mạch (Coil/Glue)"
+    },
+    {
+      "ma_luat": "CDHA_263",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Vật tư kim sinh thiết"
+    },
+    {
+      "ma_luat": "CDHA_264",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Vật tư Catheter trong DSA"
+    },
+    {
+      "ma_luat": "CDHA_265",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Tốc độ tiêm thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_267",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Thuốc tiền mê nhi khoa"
+    },
+    {
+      "ma_luat": "CDHA_270",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Thông báo kết quả giá trị báo động"
+    },
+    {
+      "ma_luat": "CDHA_271",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Thông báo kết quả báo động"
+    },
+    {
+      "ma_luat": "CDHA_272",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Thông báo giá trị cảnh báo"
+    },
+    {
+      "ma_luat": "CDHA_273",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Theo dõi sau tiêm cản quang"
+    },
+    {
+      "ma_luat": "CDHA_274",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Theo dõi sau tiêm cản quang"
+    },
+    {
+      "ma_luat": "CDHA_275",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Siêu âm thai và Tuổi mẹ"
+    },
+    {
+      "ma_luat": "CDHA_276",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Siêu âm doppler mạch rốn"
+    },
+    {
+      "ma_luat": "CDHA_279",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Kiểm tra vật tư che chắn chì"
+    },
+    {
+      "ma_luat": "CDHA_282",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Creatinine và CT Hệ tiết niệu"
+    },
+    {
+      "ma_luat": "CDHA_285",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Điều kiện] Chỉ số lọc cầu thận (eGFR) Nhi"
+    },
+    {
+      "ma_luat": "CDHA_287",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] X-quang và Có thai (Tam cá 1)"
+    },
+    {
+      "ma_luat": "CDHA_29",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "VTYT: Kim chọc dò dưới SA"
+    },
+    {
+      "ma_luat": "CDHA_291",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] SA đầu dò âm đạo (Nữ)"
+    },
+    {
+      "ma_luat": "CDHA_294",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] MRI và Mảnh đạn/Kim loại"
+    },
+    {
+      "ma_luat": "CDHA_298",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] MRI và Dị vật kim loại"
+    },
+    {
+      "ma_luat": "CDHA_299",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] MRI và Chứng sợ buồng kín"
+    },
+    {
+      "ma_luat": "CDHA_30",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "VTYT: Bộ dây bơm tiêm điện"
+    },
+    {
+      "ma_luat": "CDHA_302",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] CT và Phản vệ độ III"
+    },
+    {
+      "ma_luat": "CDHA_303",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] CT có cản quang và Suy thận"
+    },
+    {
+      "ma_luat": "CDHA_306",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] CT cản quang & Phản vệ"
+    },
+    {
+      "ma_luat": "CDHA_308",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Chống CĐ] Cần cản quang & Suy thận"
+    },
+    {
+      "ma_luat": "CDHA_33",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Tiền sử dị ứng thuốc cản quang"
+    },
+    {
+      "ma_luat": "CDHA_330",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "[Can thiệp] Sinh thiết & Đông máu"
+    },
+    {
+      "ma_luat": "CDHA_35",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Thiếu phiếu kết quả CĐHA"
+    },
+    {
+      "ma_luat": "CDHA_38",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Thể tích thuốc cản quang và Cân nặng"
+    },
+    {
+      "ma_luat": "CDHA_40",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Sinh thiết dưới hướng dẫn SA"
+    },
+    {
+      "ma_luat": "CDHA_42",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm và Bơm tiêm điện (Contrast)"
+    },
+    {
+      "ma_luat": "CDHA_46",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm tim và Chỉ số EF"
+    },
+    {
+      "ma_luat": "CDHA_52",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm thai và Tuổi thai"
+    },
+    {
+      "ma_luat": "CDHA_58",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm độ mờ da gáy (NT)"
+    },
+    {
+      "ma_luat": "CDHA_62",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm Doppler và Thai nhi"
+    },
+    {
+      "ma_luat": "CDHA_73",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "Siêu âm bụng và Nhịn ăn"
+    },
+    {
+      "ma_luat": "CDHA_80",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI và Thai kỳ (Tam cá nguyệt 1)"
+    },
+    {
+      "ma_luat": "CDHA_84",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI và Cam kết JCI (Sàng lọc)"
+    },
+    {
+      "ma_luat": "CDHA_85",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI và Cam kết JCI"
+    },
+    {
+      "ma_luat": "CDHA_86",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI và An toàn tiền sử kim loại"
+    },
+    {
+      "ma_luat": "CDHA_88",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI Tuyến yên và Prolactin máu"
+    },
+    {
+      "ma_luat": "CDHA_89",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI Tuyến yên và Kết quả nội tiết"
+    },
+    {
+      "ma_luat": "CDHA_91",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI Tim và Vật tư điện cực"
+    },
+    {
+      "ma_luat": "CDHA_96",
+      "file": "luat_cdha_hardcoded.jsx",
+      "ten_quy_tac": "MRI khớp có tiêm thuốc đối quang"
+    },
+    {
+      "ma_luat": "CDSS_CM_02",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "CDSS Chuyên môn — Có kho phác đồ nhưng không có khóa ICD nào trên XML1 trùng bảng (sau gộp)"
+    },
+    {
+      "ma_luat": "Chuyen_de_024",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "XN thường quy sai quy định trước mổ Phaco"
+    },
+    {
+      "ma_luat": "Chuyen_de_082",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Có thanh toán DVKT nhưng thiếu Y lệnh"
+    },
+    {
+      "ma_luat": "Chuyen_de_095",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Bảng kê chi phí KCB lập sai quy định"
+    },
+    {
+      "ma_luat": "Chuyen_de_272",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Trưởng khoa/Phụ trách ICU sai chứng chỉ"
+    },
+    {
+      "ma_luat": "Chuyen_de_288",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Dịch vụ ngoài danh mục tương đương"
+    },
+    {
+      "ma_luat": "Chuyen_de_310",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Thiếu chữ ký Phiếu công khai DVKT/Thuốc"
+    },
+    {
+      "ma_luat": "Chuyen_de_325",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Thanh toán DVKT chưa được phê duyệt giá"
+    },
+    {
+      "ma_luat": "Chuyen_de_393",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Thiếu chữ ký Phiếu công khai"
+    },
+    {
+      "ma_luat": "Chuyen_de_498",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Khám lại trái tuyến không giấy chuyển"
+    },
+    {
+      "ma_luat": "Chuyen_de_514",
+      "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
+      "ten_quy_tac": "Cấp cứu nhưng hồ sơ không ghi nhận"
+    },
+    {
+      "ma_luat": "CK_05",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Khám chuyên khoa tại khoa lâm sàng"
+    },
+    {
+      "ma_luat": "CK_23",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Công khám vượt định mức 2.000.000đ/năm"
+    },
+    {
+      "ma_luat": "CK_25",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "CCHN bác sĩ Nhi khoa khám người lớn"
+    },
+    {
+      "ma_luat": "CK_26",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Khám bệnh mạn tính quá 12 lần/năm"
+    },
+    {
+      "ma_luat": "CK_27",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Công khám bệnh án mạn tính"
+    },
+    {
+      "ma_luat": "CK_34",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Thiếu chữ ký số trên hồ sơ khám"
+    },
+    {
+      "ma_luat": "CK_36",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "CCHN bác sĩ không phù hợp khoa"
+    },
+    {
+      "ma_luat": "CK_38",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Khám chuyên khoa tại khoa không tương ứng"
+    },
+    {
+      "ma_luat": "CK_46",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Khám bệnh vượt tuyến kỹ thuật"
+    },
+    {
+      "ma_luat": "CK_51",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Bác sĩ khám vượt quá 02 cơ sở/ngày"
+    },
+    {
+      "ma_luat": "CK_52",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Trùng lặp công khám cùng giờ"
+    },
+    {
+      "ma_luat": "CK_55",
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "ten_quy_tac": "Điều trị nội trú (mã 03/09) không qua khoa khám"
+    },
+    {
+      "ma_luat": "DVKT_1634",
+      "file": "du_lieu_luat_pttt_muc11.jsx",
+      "ten_quy_tac": "Chỉ định - SA Doppler ĐM, TM chi dưới (18.0045.0004)"
+    },
+    {
+      "ma_luat": "GB_02",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường điều trị nội trú (mã 03/09) và mã bệnh nhẹ"
+    },
+    {
+      "ma_luat": "GB_04",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường và Ngày phẫu thuật"
+    },
+    {
+      "ma_luat": "GB_05",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Hậu phẫu] Giường và Ngày phẫu thuật"
+    },
+    {
+      "ma_luat": "GB_20",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[BHYT] Giường và thẻ sắp hết hạn"
+    },
+    {
+      "ma_luat": "GB_28",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Sản khoa] Giường con nằm cùng mẹ"
+    },
+    {
+      "ma_luat": "GB_34",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Hồi sức] Giường ICU và Máy thở"
+    },
+    {
+      "ma_luat": "GB_39",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường Nhi tại khoa người lớn"
+    },
+    {
+      "ma_luat": "GB_53",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Đơn giá] Giường nội trú ban ngày (mã 04)"
+    },
+    {
+      "ma_luat": "GB_54",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Đơn giá] Giường nằm ghép 3 người"
+    },
+    {
+      "ma_luat": "GB_55",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Đơn giá] Giường nằm ghép 2 người"
+    },
+    {
+      "ma_luat": "GB_56",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường và Đơn giá giường ghép 2"
+    },
+    {
+      "ma_luat": "GB_57",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường nội trú ban ngày (mã 04) và Mã giường BHYT"
+    },
+    {
+      "ma_luat": "GB_63",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Trùng lặp] Nhiều giường trong 1 ngày"
+    },
+    {
+      "ma_luat": "GB_67",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Logic] Ngày vào muộn hơn ngày mổ"
+    },
+    {
+      "ma_luat": "GB_68",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Giường và Thời gian phẫu thuật"
+    },
+    {
+      "ma_luat": "GB_71",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "Chuyển khoa và Tính ngày giường"
+    },
+    {
+      "ma_luat": "GB_76",
+      "file": "luat_giuong_hardcoded.jsx",
+      "ten_quy_tac": "[Thời gian] Nằm viện tối thiểu 4 giờ"
+    },
+    {
+      "ma_luat": "HC_04",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bắt buộc ghi chú lâm sàng"
+    },
+    {
+      "ma_luat": "HC_09",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Miễn cùng chi trả (5 năm LT)"
+    },
+    {
+      "ma_luat": "HC_10",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Cấp cứu (Bất kỳ cơ sở nào)"
+    },
+    {
+      "ma_luat": "HC_100",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tổng tiền thanh toán sai công thức"
+    },
+    {
+      "ma_luat": "HC_101",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tiền xét nghiệm XML1 và XML3 lệch"
+    },
+    {
+      "ma_luat": "HC_102",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tiền chẩn đoán hình ảnh lệch"
+    },
+    {
+      "ma_luat": "HC_103",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chi phí vận chuyển vượt định mức"
+    },
+    {
+      "ma_luat": "HC_108",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ ký hồ sơ không phải điều trị"
+    },
+    {
+      "ma_luat": "HC_109",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tên file XML sai quy định"
+    },
+    {
+      "ma_luat": "HC_110",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "File XML chứa ký tự BOM"
+    },
+    {
+      "ma_luat": "HC_112",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai mã bảng dữ liệu"
+    },
+    {
+      "ma_luat": "HC_113",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bệnh nhân không có cân nặng/chiều cao"
+    },
+    {
+      "ma_luat": "HC_114",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu ghi chú dị ứng tại XML1"
+    },
+    {
+      "ma_luat": "HC_115",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã định danh đơn thuốc điện tử sai"
+    },
+    {
+      "ma_luat": "HC_116",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chênh lệch tiền thuốc do làm tròn > 10đ"
+    },
+    {
+      "ma_luat": "HC_117",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu ngày kết thúc đợt điều trị"
+    },
+    {
+      "ma_luat": "HC_118",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Trẻ sơ sinh chưa có tên (Con bà...)"
+    },
+    {
+      "ma_luat": "HC_120",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bệnh nhân nội trú thiếu nhóm máu"
+    },
+    {
+      "ma_luat": "HC_122",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chữ ký số hết hạn tại ngày ký"
+    },
+    {
+      "ma_luat": "HC_123",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thẻ quân nhân (QN) thiếu đơn vị quản lý"
+    },
+    {
+      "ma_luat": "HC_124",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thẻ trẻ em (TE) không có ngày đủ 6 tuổi"
+    },
+    {
+      "ma_luat": "HC_126",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thời gian vào khoa sau y lệnh đầu tiên"
+    },
+    {
+      "ma_luat": "HC_128",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Điều trị nội trú thiếu mã bác sĩ cho bệnh kèm"
+    },
+    {
+      "ma_luat": "HC_129",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ra viện diện trốn viện (Lý do 4)"
+    },
+    {
+      "ma_luat": "HC_131",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thông tuyến huyện sai mức hưởng"
+    },
+    {
+      "ma_luat": "HC_133",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy hẹn khám lại thiếu chữ ký BS"
+    },
+    {
+      "ma_luat": "HC_134",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chuyển tuyến diện cấp cứu mâu thuẫn"
+    },
+    {
+      "ma_luat": "HC_135",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy chuyển tuyến quá hạn 1 năm"
+    },
+    {
+      "ma_luat": "HC_137",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Dịch vụ kỹ thuật thiếu mã theo TT22"
+    },
+    {
+      "ma_luat": "HC_138",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Đơn giá thuốc bệnh viện tự thầu"
+    },
+    {
+      "ma_luat": "HC_139",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy nghỉ dưỡng thai thiếu số tuần"
+    },
+    {
+      "ma_luat": "HC_140",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tóm tắt hồ sơ thiếu hướng điều trị tiếp"
+    },
+    {
+      "ma_luat": "HC_141",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Biên bản PTTT thiếu mã gây mê"
+    },
+    {
+      "ma_luat": "HC_142",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Kết quả CLS thiếu giá trị bình thường"
+    },
+    {
+      "ma_luat": "HC_143",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Hồ sơ tử vong thiếu thời điểm tử vong"
+    },
+    {
+      "ma_luat": "HC_144",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tiền xét nghiệm XML1 âm"
+    },
+    {
+      "ma_luat": "HC_145",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Lỗi tính tiền BHTT cho đối tượng nghèo"
+    },
+    {
+      "ma_luat": "HC_146",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chi phí chênh lệch giá (Nguồn khác)"
+    },
+    {
+      "ma_luat": "HC_148",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai lệch số tiền miễn giảm"
+    },
+    {
+      "ma_luat": "HC_149",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giám đốc chưa ký duyệt hồ sơ"
+    },
+    {
+      "ma_luat": "HC_150",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngày ký điện tử trước ngày lập bảng"
+    },
+    {
+      "ma_luat": "HC_152",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã khoa lập hồ sơ không tồn tại"
+    },
+    {
+      "ma_luat": "HC_153",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "BN nhi thiếu tên người giám hộ"
+    },
+    {
+      "ma_luat": "HC_155",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tiền khám lượt 3 trở đi tính BHYT"
+    },
+    {
+      "ma_luat": "HC_156",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai mã hình thức vào viện"
+    },
+    {
+      "ma_luat": "HC_158",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Khám bằng hình ảnh thẻ trên VssID"
+    },
+    {
+      "ma_luat": "HC_159",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "BN từ chối cung cấp CCCD"
+    },
+    {
+      "ma_luat": "HC_16",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngoại trú trái tuyến (Cấp tỉnh)"
+    },
+    {
+      "ma_luat": "HC_161",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai logic mã thẻ tạm và số định danh"
+    },
+    {
+      "ma_luat": "HC_163",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai định dạng Ngày giờ y lệnh (Phút lẻ)"
+    },
+    {
+      "ma_luat": "HC_164",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tổng tiền thanh toán bị làm tròn sai số"
+    },
+    {
+      "ma_luat": "HC_165",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bệnh nhân ra viện nhưng hồ sơ chưa đóng"
+    },
+    {
+      "ma_luat": "HC_166",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tệp XML thiếu mã ký số cơ quan"
+    },
+    {
+      "ma_luat": "HC_167",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Diễn biến lâm sàng sau giờ tử vong"
+    },
+    {
+      "ma_luat": "HC_168",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giờ kết thúc mổ sau giờ ra viện"
+    },
+    {
+      "ma_luat": "HC_17",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Nội trú trái tuyến (Cấp tỉnh)"
+    },
+    {
+      "ma_luat": "HC_170",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thời gian gây mê vượt quá 24h"
+    },
+    {
+      "ma_luat": "HC_172",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy ra viện thiếu mã bệnh chính"
+    },
+    {
+      "ma_luat": "HC_174",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tổng tiền giường lệch với chi tiết"
+    },
+    {
+      "ma_luat": "HC_175",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tổng chi phí bằng 0 (Nội trú)"
+    },
+    {
+      "ma_luat": "HC_177",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã PTTT quốc tế không chuẩn"
+    },
+    {
+      "ma_luat": "HC_178",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Đơn vị tính thuốc chứa số"
+    },
+    {
+      "ma_luat": "HC_18",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chuyển tuyến không hợp lệ"
+    },
+    {
+      "ma_luat": "HC_180",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ mổ và bác sĩ điều trị khác nhau"
+    },
+    {
+      "ma_luat": "HC_182",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Người lập bảng và bác sĩ điều trị trùng nhau"
+    },
+    {
+      "ma_luat": "HC_183",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chữ ký số bệnh viện bị thiếu"
+    },
+    {
+      "ma_luat": "HC_184",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngày ký hồ sơ sau ngày gửi cổng"
+    },
+    {
+      "ma_luat": "HC_187",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Có tạng hiến nhưng thiếu mã tạng"
+    },
+    {
+      "ma_luat": "HC_188",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu giấy chứng sinh (Bé sơ sinh)"
+    },
+    {
+      "ma_luat": "HC_189",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Nghỉ dưỡng thai quá 10 ngày/lần"
+    },
+    {
+      "ma_luat": "HC_191",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tên bảng dữ liệu viết thường"
+    },
+    {
+      "ma_luat": "HC_192",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "File XML chứa ký tự lạ (Non-UTF8)"
+    },
+    {
+      "ma_luat": "HC_195",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu thông tin cổng tiếp nhận (Portal)"
+    },
+    {
+      "ma_luat": "HC_196",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Dùng CCCD nhưng thiếu ngày cấp"
+    },
+    {
+      "ma_luat": "HC_197",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Địa chỉ thường trú và tạm trú trùng nhau"
+    },
+    {
+      "ma_luat": "HC_198",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai mã tỉnh cấp thẻ BHYT"
+    },
+    {
+      "ma_luat": "HC_201",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ điều trị nghỉ việc vẫn có tên"
+    },
+    {
+      "ma_luat": "HC_202",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Hồ sơ ra viện quá hạn đẩy cổng (> 15 ngày)"
+    },
+    {
+      "ma_luat": "HC_203",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tệp XML bị virus hoặc mã độc"
+    },
+    {
+      "ma_luat": "HC_209",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giờ vào khoa sau giờ ra viện"
+    },
+    {
+      "ma_luat": "HC_21",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Trẻ sơ sinh chưa có thẻ"
+    },
+    {
+      "ma_luat": "HC_211",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngày cấp GCT trùng ngày ra viện"
+    },
+    {
+      "ma_luat": "HC_219",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai lệch tiền DVKT (XML1 vs XML3)"
+    },
+    {
+      "ma_luat": "HC_222",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã bác sĩ chứa ký tự đặc biệt"
+    },
+    {
+      "ma_luat": "HC_224",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ mổ trùng bác sĩ phụ mổ"
+    },
+    {
+      "ma_luat": "HC_226",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Trẻ em dùng mã định danh sai cấu trúc"
+    },
+    {
+      "ma_luat": "HC_227",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu ảnh chân dung xác thực VNeID"
+    },
+    {
+      "ma_luat": "HC_228",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "BN trên 80 tuổi thiếu đối tượng ưu tiên"
+    },
+    {
+      "ma_luat": "HC_229",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu giấy chứng nhận phẫu thuật"
+    },
+    {
+      "ma_luat": "HC_231",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu thông tin người đỡ đẻ (Sản)"
+    },
+    {
+      "ma_luat": "HC_233",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Hồ sơ có thuốc gây nghiện thiếu số đơn"
+    },
+    {
+      "ma_luat": "HC_234",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "BN nội trú chưa đánh giá nguy cơ té ngã"
+    },
+    {
+      "ma_luat": "HC_235",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu mã vùng thẻ (K1, K2, K3)"
+    },
+    {
+      "ma_luat": "HC_236",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tiền khám lần 2 cùng chuyên khoa"
+    },
+    {
+      "ma_luat": "HC_239",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tên thẻ XML chứa ký tự tiếng Việt"
+    },
+    {
+      "ma_luat": "HC_240",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Hồ sơ gửi lại thiếu mã lý do"
+    },
+    {
+      "ma_luat": "HC_241",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "BN chết trước khi vào viện"
+    },
+    {
+      "ma_luat": "HC_243",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ điều trị bị khóa tài khoản"
+    },
+    {
+      "ma_luat": "HC_244",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Hồ sơ chưa qua bước kiểm soát nội bộ"
+    },
+    {
+      "ma_luat": "HC_26",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chuyển tuyến cấp cứu (NĐ 188)"
+    },
+    {
+      "ma_luat": "HC_27",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tỷ lệ thanh toán VTYT thay thế"
+    },
+    {
+      "ma_luat": "HC_28",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tỷ lệ thanh toán Thuốc 50%"
+    },
+    {
+      "ma_luat": "HC_29",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "VTYT Thủy tinh thể nhân tạo"
+    },
+    {
+      "ma_luat": "HC_30",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tỷ lệ VTYT Máy tạo nhịp tim"
+    },
+    {
+      "ma_luat": "HC_31",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Họ tên chứa ký tự đặc biệt"
+    },
+    {
+      "ma_luat": "HC_33",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai cấu trúc mã thẻ BHYT"
+    },
+    {
+      "ma_luat": "HC_34",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngày sinh lớn hơn ngày hiện tại"
+    },
+    {
+      "ma_luat": "HC_35",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Trẻ em TE nhưng tuổi > 6"
+    },
+    {
+      "ma_luat": "HC_36",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thẻ HS/SV nhưng tuổi > 28"
+    },
+    {
+      "ma_luat": "HC_38",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã tỉnh trong địa chỉ sai"
+    },
+    {
+      "ma_luat": "HC_44",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giờ vào khoa trước giờ tiếp đón"
+    },
+    {
+      "ma_luat": "HC_45",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Y lệnh sau khi bệnh nhân đã ra viện"
+    },
+    {
+      "ma_luat": "HC_48",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã khoa phòng không đúng chuẩn"
+    },
+    {
+      "ma_luat": "HC_50",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã tai nạn thương tích sai"
+    },
+    {
+      "ma_luat": "HC_51",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Đơn vị tính thuốc không chuẩn"
+    },
+    {
+      "ma_luat": "HC_53",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chuyển tuyến thiếu số hồ sơ chuyển"
+    },
+    {
+      "ma_luat": "HC_54",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Tuyến cơ sở KCB ban đầu sai"
+    },
+    {
+      "ma_luat": "HC_55",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Cấp cứu nhưng mã lý do vào viện sai"
+    },
+    {
+      "ma_luat": "HC_56",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Ngày cấp GCT sau ngày vào viện"
+    },
+    {
+      "ma_luat": "HC_57",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã cơ sở chuyển đi không tồn tại"
+    },
+    {
+      "ma_luat": "HC_61",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai lệch tổng tiền XML1 và XML3"
+    },
+    {
+      "ma_luat": "HC_64",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bác sĩ mổ trùng bác sĩ gây mê"
+    },
+    {
+      "ma_luat": "HC_66",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Sai phiên bản XML 130"
+    },
+    {
+      "ma_luat": "HC_67",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã cơ sở KCB trong file sai"
+    },
+    {
+      "ma_luat": "HC_70",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thừa tệp tin không quy định"
+    },
+    {
+      "ma_luat": "HC_72",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chẩn đoán ICD-10 tiếng Việt không dấu"
+    },
+    {
+      "ma_luat": "HC_73",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Bệnh nhân quốc tịch nước ngoài thiếu hộ chiếu"
+    },
+    {
+      "ma_luat": "HC_75",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Gửi hồ sơ chậm quá 7 ngày"
+    },
+    {
+      "ma_luat": "HC_77",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Trẻ em thiếu số định danh cá nhân"
+    },
+    {
+      "ma_luat": "HC_78",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu số định danh khi dùng VNeID"
+    },
+    {
+      "ma_luat": "HC_79",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã dân tộc sai chuẩn"
+    },
+    {
+      "ma_luat": "HC_81",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thẻ mã vùng K1/K2/K3 thiếu nơi sống"
+    },
+    {
+      "ma_luat": "HC_84",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thẻ BHYT hết hạn tại thời điểm y lệnh"
+    },
+    {
+      "ma_luat": "HC_85",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy chuyển tuyến thiếu mã nơi đi"
+    },
+    {
+      "ma_luat": "HC_87",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chuyển tuyến không đúng thẩm quyền"
+    },
+    {
+      "ma_luat": "HC_88",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thiếu mã số hồ sơ chuyển tuyến"
+    },
+    {
+      "ma_luat": "HC_89",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Chẩn đoán nơi đi mâu thuẫn nơi đến"
+    },
+    {
+      "ma_luat": "HC_90",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Mã thuốc không có trong danh mục thầu"
+    },
+    {
+      "ma_luat": "HC_91",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thuốc phóng xạ thiếu mã an toàn"
+    },
+    {
+      "ma_luat": "HC_93",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Thuốc tự bào chế thiếu bảng kê"
+    },
+    {
+      "ma_luat": "HC_97",
+      "file": "du_lieu_luat_hanh_chinh_muc2.jsx",
+      "ten_quy_tac": "Giấy ra viện thiếu chữ ký lãnh đạo"
+    },
+    {
+      "ma_luat": "HD_03",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Khám bệnh ngày Chủ nhật"
+    },
+    {
+      "ma_luat": "HD_07",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Gửi dữ liệu chậm (sau khi ra viện)"
+    },
+    {
+      "ma_luat": "HD_08",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Khám sức khỏe/Theo yêu cầu (Điều 23 Luật BHYT)"
+    },
+    {
+      "ma_luat": "HD_09",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Sai mã phương thức thanh toán"
+    },
+    {
+      "ma_luat": "HD_10",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Thiếu căn cứ thanh toán xét nghiệm (JCI Audit)"
+    },
+    {
+      "ma_luat": "HD_11",
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "ten_quy_tac": "Dịch vụ ngoài danh mục phê duyệt"
+    },
+    {
+      "ma_luat": "NS_01",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Kiểm tra trùng mã liên kết (MA_LK)"
+    },
+    {
+      "ma_luat": "NS_02",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Kiểm tra nhân sự có trong DM đăng ký hành nghề"
+    },
+    {
+      "ma_luat": "NS_03",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS Y khoa - Phạm vi hành nghề (PL V, TT 32)"
+    },
+    {
+      "ma_luat": "NS_04",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS YHCT - Phạm vi hành nghề (PL VI, TT 32)"
+    },
+    {
+      "ma_luat": "NS_05",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS RHM - Phạm vi hành nghề (PL VIII, TT 32)"
+    },
+    {
+      "ma_luat": "NS_06",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS Chuyên khoa - Phạm vi hành nghề (PL IX, TT 32)"
+    },
+    {
+      "ma_luat": "NS_07",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Điều dưỡng - Phạm vi hành nghề (PL XII, TT 32)"
+    },
+    {
+      "ma_luat": "NS_08",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Hộ sinh - Phạm vi hành nghề (PL XIII, TT 32)"
+    },
+    {
+      "ma_luat": "NS_09",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Kiểm tra phân cấp kỹ thuật theo vị trí chuyên môn"
+    },
+    {
+      "ma_luat": "NS_10",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS \"Phân thân\" - Trùng thời gian thực hiện DVKT"
+    },
+    {
+      "ma_luat": "NS_11",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Kê thuốc đặc trị - BS không có quyền kê"
+    },
+    {
+      "ma_luat": "NS_12",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "CCHN hết hạn hoặc bị thu hồi"
+    },
+    {
+      "ma_luat": "NS_13",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "DVKT ngoài DMDC BHYT hoặc ngoài phạm vi CSKCB"
+    },
+    {
+      "ma_luat": "NS_14",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "BS chỉ định ≠ BS thực hiện - Thiếu y lệnh"
+    },
+    {
+      "ma_luat": "NS_15",
+      "file": "luat_nhan_su_hardcoded.jsx",
+      "ten_quy_tac": "Nhân sự không đăng ký tại CSKCB hiện tại"
+    },
+    {
+      "ma_luat": "THUOC_387",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Amoxicilin/Clavulanic: Liều Nhi"
+    },
+    {
+      "ma_luat": "THUOC_400",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Đơn thuốc điện tử sai định dạng mã"
+    },
+    {
+      "ma_luat": "THUOC_442",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Methylprednisolon: Liều/24h"
+    },
+    {
+      "ma_luat": "THUOC_443",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Người mua hộ thuốc thiếu định danh"
+    },
+    {
+      "ma_luat": "THUOC_477",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc đắt tiền (>10 triệu/lọ)"
+    },
+    {
+      "ma_luat": "THUOC_486",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc gây nghiện BN nhi < 12 tuổi"
+    },
+    {
+      "ma_luat": "THUOC_511",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc thay thế dịch vụ (Cùng mã)"
+    },
+    {
+      "ma_luat": "THUOC_512",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc thay thế khác hoạt chất"
+    },
+    {
+      "ma_luat": "THUOC_513",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc thay thế thiếu mã DVKT"
+    },
+    {
+      "ma_luat": "THUOC_515",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc tự chế từ vị thuốc (Giá)"
+    },
+    {
+      "ma_luat": "THUOC_516",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Thuốc tự mua - Thiếu số hóa đơn"
+    },
+    {
+      "ma_luat": "THUOC_537",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "JCI Safety: Trường thông tin dị ứng không được để trống"
+    },
+    {
+      "ma_luat": "XML_105",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "Tóm tắt HSBA rỗng (XML7)"
+    },
+    {
+      "ma_luat": "XML_128",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "XML2 có thứ tự dòng không liên tục"
+    },
+    {
+      "ma_luat": "XML_136",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "XML3 có thứ tự dòng không liên tục"
+    },
+    {
+      "ma_luat": "XML_78",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "Sơ sinh vs Giấy chứng sinh"
+    },
+    {
+      "ma_luat": "XML_82",
+      "file": "du_lieu_luat_du_lieu_muc1.jsx",
+      "ten_quy_tac": "Thiếu hồ sơ sơ sinh (XML8)"
+    }
+  ],
+  "danh_sach_on_count_by_file": {
+    "luat_cdha_hardcoded.jsx": 223,
+    "luat_cong_kham_hardcoded.jsx": 46,
+    "luat_nhan_su_hardcoded.jsx": 0,
+    "luat_giuong_hardcoded.jsx": 60,
+    "luat_hop_dong_hardcoded.jsx": 17,
+    "luat_giam_dinh_chuyen_de_hardcoded.jsx": 593,
+    "du_lieu_luat_du_lieu_muc1.jsx": 108,
+    "du_lieu_luat_hanh_chinh_muc2.jsx": 107,
+    "du_lieu_luat_thuoc_muc8.jsx": 526,
+    "du_lieu_luat_pttt_muc11.jsx": 2320
+  }
+}

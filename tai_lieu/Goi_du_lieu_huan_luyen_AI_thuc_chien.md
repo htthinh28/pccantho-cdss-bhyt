@@ -44,6 +44,7 @@ Khi huấn luyện AI “thực chiến”, ưu tiên các bản **`XAC_NHAN_CAN
 3. **Hệ thống:** [Dac_ta_he_thong_CDSS_BHYT_20260405.md](./Dac_ta_he_thong_CDSS_BHYT_20260405.md).  
 4. **DVKT (VBHN 17):** [The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.md](./The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.md), [The_tri_thuc_Danh_muc_2_DVKT_dieu_kien_thanh_toan_VBHN17_AI.md](./The_tri_thuc_Danh_muc_2_DVKT_dieu_kien_thanh_toan_VBHN17_AI.md).  
 5. **Phác đồ CDSS ↔ ICD-10:** [The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.md](./The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.md).  
+5b. **Báo cáo vi phạm + hồ sơ `ip` + phác đồ (thực chiến):** [Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.md](./Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.md) — script `npm run huan-luyen:merge-audit-ip`.  
 6. **Ca mẫu:** toàn bộ `Ca_huan_luyen_mau_*.md` — mỗi file một kịch bản (thuốc, DVKT, CDHA, hành chính…).  
 7. **Neo phiên ↔ engine:** `Bang_neo_phien_huan_luyen_*_va_engine.md`.
 

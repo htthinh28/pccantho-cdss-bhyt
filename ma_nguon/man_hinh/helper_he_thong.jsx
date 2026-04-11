@@ -10,7 +10,7 @@ import {
   TRANG_THAI_SMOKE_TEST,
   chaySmokeTestPythonService,
   docCheDoGiamDinh,
-  kiemTraPythonServiceSanSang,
+  ketNoiPythonServiceLucKhoiDong,
   layNhanTrangThaiPython,
   luuCheDoGiamDinh,
   taiDanhMucRuntimeChoPython,
@@ -237,10 +237,11 @@ const ManHinhHelperHeThong = ({ navigation }) => {
 
   const capNhatTrangThaiPythonHelper = async () => {
     setTrangThaiPythonService(TRANG_THAI_PYTHON.DANG_KIEM_TRA);
-    setChiTietPythonService('Đang kiểm tra Python service...');
-    const ketQua = await kiemTraPythonServiceSanSang();
+    setChiTietPythonService('Đang kết nối Python (có thử lại tự động)...');
+    const ketQua = await ketNoiPythonServiceLucKhoiDong();
     setTrangThaiPythonService(ketQua.trangThai);
-    setChiTietPythonService(ketQua.chiTiet);
+    const goiYThu = ketQua.soLanThu > 1 ? ` · đã thử ${ketQua.soLanThu} lần` : '';
+    setChiTietPythonService(`${ketQua.chiTiet || ''}${goiYThu}`);
     setPythonServiceBaseUrl(ketQua.baseUrl || '');
     return ketQua;
   };

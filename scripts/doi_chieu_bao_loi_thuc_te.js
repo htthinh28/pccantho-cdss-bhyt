@@ -289,11 +289,6 @@ const evaluate = (maLuat) => {
     if (laNoiTruHoacBanNgay || laSanKhoa) return { verdict: 'NGHI_DUONG_TINH_GIA', reason: 'Tong phan tich te bao mau la can lam sang pho bien trong noi tru/san khoa' };
     return { verdict: 'CAN_XAC_MINH_THEM', reason: 'Can doi chieu boi canh lam sang va chi dinh nhap vien' };
   }
-  if (ma === 'DVKT_2335') {
-    if (!decodedByLoai.XML5) return { verdict: 'NGHI_DUONG_TINH_GIA', reason: 'Ho so thieu XML5 nen canh bao vat tu xet nghiem de trung lap voi loi cau truc' };
-    return { verdict: 'CAN_XAC_MINH_THEM', reason: 'Can doi chieu vat tu/hóa chat trong XML5' };
-  }
-
   return { verdict: 'CAN_XAC_MINH_THEM', reason: 'Can du lieu ngoai ho so hoac chi tiet engine de ket luan' };
 };
 

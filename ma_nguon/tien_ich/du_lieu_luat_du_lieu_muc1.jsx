@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_DU_LIEU (12).xlsx */
-export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-10_muc1_du_lieu_v9_cdss_icd_gop';
+export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-11_muc1_cdss_cm_chuan_hoa_vo';
 export const COT_SEED_LUAT_DU_LIEU_MUC1 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","DIEU_KIEN (Toán tử No-Code)","GHI_CHU_SUA","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
   {
@@ -1238,11 +1238,11 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "id": "SEED_DULIEU_CDSS_CM_01",
     "TRANG_THAI": "ON",
     "MA_LUAT": "CDSS_CM_01",
-    "TEN_QUY_TAC": "Tri thức phác đồ CDSS — ICD chính và kèm (khử trùng) khớp kho Chuyên môn",
+    "TEN_QUY_TAC": "CDSS Chuyên môn — Có mã ICD trên XML1 trùng kho phác đồ (chỉ kiểm tra tồn tại khóa ICD, không đối chiếu nội dung các cột phác đồ)",
     "DIEU_KIEN": "CO_KHO_TRI_THUC_PHAC_DO() AND CO_PHAC_DO_CDSS_CHO_BAT_CU_ICD_TREN_XML1(XML1)",
-    "CANH_BAO": "ℹ️ [CHUYÊN MÔN — CDSS]: Có phác đồ nội bộ cho ít nhất một mã ICD trên hồ sơ (chính hoặc kèm, trùng nhau chỉ tính một lần) — nên đối chiếu mục tiêu điều trị, dự phòng và theo dõi với thuốc/DVKT (Luật BHYT Điều 15).",
+    "CANH_BAO": "ℹ️ [CHUYÊN MÔN — CDSS]: Ít nhất một mã ICD trên hồ sơ (chính/kèm, đã khử trùng) **có dòng tương ứng** trong bảng phác đồ đã nạp — **chỉ là nhắc tra cứu thủ công** (mục tiêu điều trị, dự phòng, theo dõi…). Engine **không** tự động so khớp nội dung phác đồ với thuốc/DVKT trên XML2/XML3 hay với Điều 15 Luật BHYT.",
     "DIEU_KIEN (Toán tử No-Code)": "",
-    "GHI_CHU_SUA": "Đối soát MA_BENH_CHINH + MA_BENH_KT (+ MA_BENHKEM); trùng lặp gộp một mã. Hàm CO_PHAC_DO_CDSS_CHO_BAT_CU_ICD_TREN_XML1. Kho phác đồ: gộp FileMau_PhacDo_CDSS + seed; một mã ICD một dòng (SO_DONG = số mã duy nhất).",
+    "GHI_CHU_SUA": "Phạm vi kỹ thuật: MAP chỉ lưu khóa ICD đã chuẩn hóa (bỏ dấu chấm), không đọc văn bản cột Điều trị/Mục tiêu. ICD lấy từ MA_BENH_CHINH, MA_BENH_KT, MA_BENHKEM (regex token). Ô MÃ ICD-10 dạng dải/ghi chú (vd. A15 - A16) không tách thành nhiều khóa — có thể không khớp mã đơn trên XML. Không kết luận sai phác đồ lâm sàng.",
     "NGUON_DU_LIEU": "CDSS Phác đồ BV + engine dong_co_giam_dinh",
     "MUC_DO": "Info"
   },
@@ -1250,11 +1250,11 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "id": "SEED_DULIEU_CDSS_CM_02",
     "TRANG_THAI": "OFF",
     "MA_LUAT": "CDSS_CM_02",
-    "TEN_QUY_TAC": "Có kho phác đồ CDSS nhưng không mã ICD chính/kèm (sau gộp) khớp bảng",
+    "TEN_QUY_TAC": "CDSS Chuyên môn — Có kho phác đồ nhưng không có khóa ICD nào trên XML1 trùng bảng (sau gộp)",
     "DIEU_KIEN": "CO_KHO_TRI_THUC_PHAC_DO() AND KHONG_CO_PHAC_DO_CDSS_CHO_MA_ICD_GOP_TREN_XML1(XML1)",
-    "CANH_BAO": "📋 [CHUYÊN MÔN]: Đã nạp kho phác đồ CDSS nhưng không có dòng nào khớp các mã ICD trên hồ sơ (chính và kèm, đã khử trùng) — có thể bổ sung trong module Chuyên môn.",
+    "CANH_BAO": "📋 [CHUYÊN MÔN — CDSS]: Đã nạp kho phác đồ nhưng **không mã ICD nào** trên XML1 (chính/kèm, đã khử trùng) trùng khóa trong bảng — gợi ý bổ sung dòng phác đồ hoặc kiểm tra ghi ICD. **Không** suy ra thiếu sót điều trị; có thể do lệch định dạng mã hoặc mã chỉ có trong văn bản ngoài XML1.",
     "DIEU_KIEN (Toán tử No-Code)": "",
-    "GHI_CHU_SUA": "Mặc định OFF (dễ ồn); bật khi muốn nhắc bổ sung dữ liệu chuyên môn.",
+    "GHI_CHU_SUA": "Mặc định OFF (dễ ồn khi kho lớn). Bật khi muốn nhắc đồng bộ dữ liệu Chuyên môn. Điều kiện chỉ so khớp ICD trên XML1 với MAP — không đánh giá lâm sàng.",
     "NGUON_DU_LIEU": "CDSS Phác đồ BV + engine dong_co_giam_dinh",
     "MUC_DO": "Warning"
   }

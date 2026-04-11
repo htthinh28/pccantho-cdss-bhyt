@@ -27,7 +27,14 @@ import { layDanhSachLuatHanhChinhHardcoded } from './luat_hanh_chinh_hardcoded';
 import { layDanhSachLuatHopDongHardcoded } from './luat_hop_dong_hardcoded';
 import { layDanhSachLuatNhanSuHardcoded } from './luat_nhan_su_hardcoded';
 import { layDanhSachLuatThuocHardcoded } from './luat_thuoc_hardcoded';
-import { isQuyTacNoiBoDangBat, locCanhBaoTheoTrangThaiQuyTacNoiBo, taiMapTrangThaiQuyTacNoiBo } from './quy_tac_on_off_noi_bo';
+import { giamDinhCdssDmMatchingUpgrade } from './cdss_dm_matching_upgrade';
+import {
+  apGhiDeNoiDungLenDoiTuongCanhBao,
+  isQuyTacNoiBoDangBat,
+  locCanhBaoTheoTrangThaiQuyTacNoiBo,
+  taiMapGhiDeNoiDungQuyTacNoiBo,
+  taiMapTrangThaiQuyTacNoiBo,
+} from './quy_tac_on_off_noi_bo';
 import { chayGiamDinhDvktNoCode } from './rule_engine_dvkt_no_code';
 import { damBaoSeedLuatDuLieuMuc1 } from './seed_luat_du_lieu_muc1';
 import { damBaoSeedLuatHanhChinhMuc2 } from './seed_luat_hanh_chinh_muc2';
@@ -398,7 +405,7 @@ const boSungCoSoPhapLyMacDinh = (danhSach = []) => (Array.isArray(danhSach) ? da
     return { ...loi, co_so_phap_ly: coSoMacDinh };
 });
 
-const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
+export const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
     const maLuat = String(loi?.ma_luat || loi?._maLuat || '').trim().toUpperCase();
     const phanHe = String(loi?.phan_he || '').trim().toUpperCase();
     let namespaceQuyTac = String(loi?.namespace_quy_tac || '').trim();
@@ -412,6 +419,10 @@ const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
         if (!luongGiaiTrinh && luong) luongGiaiTrinh = luong;
         if (!tabQuanTriGoiY && tab) tabQuanTriGoiY = tab;
     };
+
+    if (String(loi?.nguon_giam_dinh || '').trim().toUpperCase() === 'PYTHON_SERVICE') {
+        ganMeta('PYTHON_SERVICE', 'python_service', 'Python risk engine → ket_qua_giam_dinh', 'LUAT_DU_LIEU');
+    }
 
     if (/^DVKT-OP-/.test(maLuat)) {
         ganMeta('DVKT_NO_CODE', 'rule_engine_dvkt_no_code', 'XML3 -> DVKT no-code -> operator', 'LUAT_CDHA');
@@ -445,6 +456,13 @@ const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
 
     if (!namespaceQuyTac && phanHe === 'XML3') {
         ganMeta('XML3_KHAC', 'dong_co_giam_dinh', 'XML3 -> rule chưa phân loại chi tiết');
+    }
+
+    if (!namespaceQuyTac) {
+        ganMeta('QUY_TAC_NOI_BO', 'dong_co_giam_dinh', 'Suy ra từ MA_LUAT / phân hệ XML');
+    }
+    if (!nguonQuyTac) {
+        nguonQuyTac = 'dong_co_giam_dinh';
     }
 
     return {
@@ -795,16 +813,30 @@ const layLỗiCauTrucTienXuLy = (hoSo) => {
     });
 };
 
-const taoKhoaLocTrungCanhBao = (loi = {}) => {
-    const phanHe = String(loi?.phan_he || '').toUpperCase();
-    const truong = String(loi?.truong_loi || '').toUpperCase();
-    const canhBao = String(loi?.canh_bao || '').replace(/\s+/g, ' ').trim();
-    const index = Number.isFinite(loi?.index) ? loi.index : -1;
-    const laParserError =
-        truong.toLowerCase() === 'parsererror' ||
-        canhBao.toLowerCase().includes('[parsererror]');
-    const indexKey = laParserError ? 'GLOBAL' : index;
-    return `${phanHe}|${indexKey}|${truong}|${canhBao}`;
+const chuanHoaChuoiGomCanhBao = (s) => String(s || '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/**
+ * Gộp các dòng cảnh báo trùng trên cùng một hồ sơ: cùng mã luật + cùng nội dung cảnh báo (sau chuẩn hóa),
+ * bất kể XML2/XML3 dòng index (tránh 10+ dòng giống hệt do lỗi mẫu tin nhắn / trùng engine).
+ * Gọi sau boSungChiTietCanhBaoGiaiTrinh.
+ */
+export const gomTrungLapCanhBaoTheoMaLuatVaNoiDung = (danhSach = []) => {
+    if (!Array.isArray(danhSach) || danhSach.length <= 1) return danhSach || [];
+    const seen = new Set();
+    const ketQua = [];
+    for (let i = 0; i < danhSach.length; i += 1) {
+        const loi = danhSach[i];
+        const ma = String(loi?.ma_luat || '').trim().toUpperCase() || 'KHONG_MA_LUAT';
+        const canh = chuanHoaChuoiGomCanhBao(loi?.canh_bao);
+        const key = `${ma}::${canh}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        ketQua.push(loi);
+    }
+    return ketQua;
 };
 
 // ============================================================
@@ -1608,6 +1640,8 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         if (ma === 'DM-THUOC-03') return false;
         if (/^DMBV-/.test(ma)) return false;
         if (ma === 'HC-06' && laDoiTuongKcbHopLeMoRong(xml1.MA_DOITUONG_KCB, dm)) return false;
+        /* HC_06 (seed): chi phí < 15% LCS — khám ngoại trú (1/01) thường khác cơ chế kê đơn/tổng chi so với nội trú; tránh dương tính giả */
+        if (ma === 'HC_06' && /351\.000|15%\s*LCS/i.test(canhBao) && MATCH_ANY_MA_LOAI_KCB(xml1?.MA_LOAI_KCB, '1', '01')) return false;
         if (ma === 'XML_19' && coHc171) return false;
         if (ma === 'XML_21' && !coSauNgayRa) return false;
         if (ma === 'XML_47' && (tatCaMucHuong100 || (Math.abs(cctKyVong - bncctKhaiBao) <= 10 && bncctKhaiBao <= 10))) return false;
@@ -1636,6 +1670,13 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
             const slMoiNgay = Math.max(TO_NUMBER(dong?.CALC_SL_MOI_NGAY), TO_NUMBER(dong?.SL_MOI_NGAY));
             const soNgay = TO_NUMBER(dong?.SO_NGAY);
             if (!(slMoiNgay > 0 && soNgay > 0)) return false;
+        }
+        if (ma === 'THUOC_482' && dong) {
+            const maThuoc = String(dong?.MA_THUOC || '').trim();
+            const tenT = String(dong?.TEN_THUOC || '');
+            const maHc = String(dong?.MA_HOAT_CHAT || '').trim();
+            if (maThuoc === '40.540' || maHc === '40.540') return false;
+            if (/clopidogrel|vixcar|plavix|dogrelsavi|dogrel/i.test(`${tenT} ${maThuoc}`)) return false;
         }
         if (ma === 'THUOC_131' && coCoSoLamSangHoacIcdChoDiosminHesperidin(hoSo, xml1)) return false;
         if (ma === 'XML_76') {
@@ -3660,13 +3701,19 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
     if (!hoSo) return [];
     let danhSachCanhBao = [];
     let danhMucHeThong = null;
+    let mapGhiDeNoiDung = null;
     const xml1 = _getXML1(hoSo);
     const laNoiTruDieuTri = laHoSoNoiTruTheoQd824(xml1);
     try {
         danhMucHeThong = await taiDanhMucHeThong();
         const danhSachTabIds = await taiDanhSachTabLuatDong();
         const contextRuleDong = taoNguCanhRuleDong(hoSo, options?.batchContext || null);
-        const mapTrangThaiNoiBo = await taiMapTrangThaiQuyTacNoiBo();
+        const mapsOnOff = await Promise.all([
+          taiMapTrangThaiQuyTacNoiBo(),
+          taiMapGhiDeNoiDungQuyTacNoiBo(),
+        ]);
+        const mapTrangThaiNoiBo = mapsOnOff[0];
+        mapGhiDeNoiDung = mapsOnOff[1];
 
         const tabsCanNap = danhSachTabIds.filter((tabId) => !Array.isArray(cache_LuatGiamDinh[tabId]));
         if (tabsCanNap.length > 0) {
@@ -3730,8 +3777,14 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
     // V3 duoc goi truc tiep o man hinh tong quan/doc_file_xml, can dong bo hau loc nhu V15
     // de tranh dương tính giả khi chi chay luat dong.
     danhSachCanhBao = locCanhBaoDuongTinhGiaTheoNguCanh(hoSo, danhSachCanhBao, danhMucHeThong || {});
+    try {
+      const mapDe = mapGhiDeNoiDung || (await taiMapGhiDeNoiDungQuyTacNoiBo());
+      danhSachCanhBao = danhSachCanhBao.map((x) => apGhiDeNoiDungLenDoiTuongCanhBao(x, mapDe));
+    } catch (_e) { /* ignore */ }
     // Thay the {TEN_THUOC}, {DU_QTY}, ... trong canh bao (giong V15 + xuat Excel DS_Loi).
-    return boSungChiTietCanhBaoGiaiTrinh(hoSo, danhSachCanhBao, danhMucHeThong || {});
+    return gomTrungLapCanhBaoTheoMaLuatVaNoiDung(
+        boSungChiTietCanhBaoGiaiTrinh(hoSo, danhSachCanhBao, danhMucHeThong || {}),
+    );
 };
 
 export const chayBoMayGiamDinhNhieuHoSoV3 = async (danhSachHoSo = [], options = {}) => {
@@ -3804,9 +3857,20 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     // LAYER 5: Luật động NoCode
     allLỗi = allLỗi.concat(await chayBoMayGiamDinhV3(hoSo));
 
+    // LAYER 5b (nâng cấp tách biệt): CDSS — mapping ICD ↔ DM thuốc / DVKT BV (mặc định OFF; không mapping → không cảnh báo).
+    try {
+        allLỗi = allLỗi.concat(await giamDinhCdssDmMatchingUpgrade(hoSo, danhMuc));
+    } catch (_upgradeErr) {
+        /* không làm gián đoạn giám định chính */
+    }
+
     // Áp ON/OFF nội bộ cho mọi cảnh báo có ma_luat (gồm luật động + CHUYEN_DE_* / CDHA_* cứng, kể cả dieu_kien không phải BUILT-IN).
-    const mapTrangThaiNoiBo = await taiMapTrangThaiQuyTacNoiBo();
+    const [mapTrangThaiNoiBo, mapGhiDeNoiDungV15] = await Promise.all([
+      taiMapTrangThaiQuyTacNoiBo(),
+      taiMapGhiDeNoiDungQuyTacNoiBo(),
+    ]);
     allLỗi = locCanhBaoTheoTrangThaiQuyTacNoiBo(allLỗi, mapTrangThaiNoiBo, { chiLocCanhBaoNoiBo: true });
+    allLỗi = allLỗi.map((loi) => apGhiDeNoiDungLenDoiTuongCanhBao(loi, mapGhiDeNoiDungV15));
 
     // Bo sung co so phap ly mac dinh cho cac quy tac chua khai bao can cu.
     allLỗi = boSungCoSoPhapLyMacDinh(allLỗi);
@@ -3815,16 +3879,9 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     // Hậu lọc: giảm dương tính giả theo ngữ cảnh hồ sơ thực tế.
     allLỗi = locCanhBaoDuongTinhGiaTheoNguCanh(hoSo, allLỗi, danhMuc);
 
-    // Lọc trùng
-    const seen = new Set();
-    const ketQua = allLỗi.filter(loi => {
-        const key = taoKhoaLocTrungCanhBao(loi);
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-    });
-
-    const ketQuaCoChiTiet = boSungChiTietCanhBaoGiaiTrinh(hoSo, ketQua, danhMuc);
+    const ketQuaCoChiTiet = gomTrungLapCanhBaoTheoMaLuatVaNoiDung(
+        boSungChiTietCanhBaoGiaiTrinh(hoSo, allLỗi, danhMuc),
+    );
 
     // Sắp xếp theo mức độ
     const ORDER = { Critical: 0, Error: 1, Warning: 2, Info: 3 };

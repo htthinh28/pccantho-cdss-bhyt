@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_THUOC (9).xlsx */
-export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-10_muc8_thuoc_v3_doi_chieu_177';
+export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-11_muc8_thuoc_329_e78_token';
 export const COT_SEED_LUAT_THUOC_MUC8 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","GHI_CHU","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
   {
@@ -3287,9 +3287,9 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "THUOC_329",
     "TEN_QUY_TAC": "[Rosuvastatin] Kiểm tra Chỉ định ICD-10",
-    "DIEU_KIEN": "XML2.MA_THUOC == '40.558' AND XML1.MA_BENH_CHINH NOT IN ('E78.0', 'E78.1', 'E78.2', 'E78.9') AND XML1.MA_BENH_KT NOT LIKE '%E78.0%' AND XML1.MA_BENH_KT NOT LIKE '%E78.1%' AND XML1.MA_BENH_KT NOT LIKE '%E78.2%' AND XML1.MA_BENH_KT NOT LIKE '%E78.9%' AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
+    "DIEU_KIEN": "XML2.MA_THUOC == '40.558' AND XML1.MA_BENH_CHINH NOT IN ('E78', 'E78.0', 'E78.1', 'E78.2', 'E78.3', 'E78.4', 'E78.5', 'E78.6', 'E78.8', 'E78.9') AND XML1.MA_BENH_KT NOT REGEXP '(^|;)E78(\\.[0-9]{1,2})?(;|$)' AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
     "CANH_BAO": "⛔ [XUẤT TOÁN]: Thuốc Rosuvastatin chỉ được thanh toán cho chẩn đoán Rối loạn Lipoprotein máu (E78).",
-    "GHI_CHU": "Đã gộp dòng trùng [Rosuvastatin] ICD-10",
+    "GHI_CHU": "Đối chiếu T3_chuagui OP26005115: MA_BENH_KT=E78;... phải khớp mã E78 không phụ (token), không chỉ E78.0–E78.9 trong chuỗi LIKE.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
   {
@@ -4807,9 +4807,9 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "THUOC_482",
     "TEN_QUY_TAC": "Thuốc điều trị rối loạn cương dương",
-    "DIEU_KIEN": "XML2.MA_HOAT_CHAT IN ('40.540','40.541')",
+    "DIEU_KIEN": "(XML2.MA_HOAT_CHAT == '40.541' OR XML2.TEN_THUOC REGEXP '(?i)(sildenafil|tadalafil|vardenafil|avanafil)') AND XML2.MA_THUOC != '40.540' AND XML2.MA_HOAT_CHAT != '40.540'",
     "CANH_BAO": "⛔ [LOẠI TRỪ]: Các thuốc ức chế Phosphodiesterase-5 (Sildenafil, Tadalafil...) không thuộc phạm vi thanh toán của quỹ BHYT.",
-    "GHI_CHU": "",
+    "GHI_CHU": "SỬA 04/2026: Không dùng 40.540 trong MA_HOAT_CHAT — theo DM QĐ130 mã 40.540 là nhóm thuốc chứa Clopidogrel (VD Vixcar), không phải PDE-5. Loại trừ rõ MA_THUOC/MA_HOAT_CHAT 40.540; bổ sung nhận diện theo tên hoạt chất PDE-5.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
   {

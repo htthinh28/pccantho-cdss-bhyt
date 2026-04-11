@@ -1,7 +1,7 @@
 # THẺ TRI THỨC: PHÁC ĐỒ CDSS CHUYÊN MÔN ↔ MÃ ICD-10 (HUẤN LUYỆN AI)
 
-Phiên bản dữ liệu: đồng bộ `du_lieu_phac_do_cdss_guidelines.seed.json` (nguồn gộp file mẫu phác đồ + kho cũ, **một mã ICD một dòng**).  
-Ngày cập nhật thẻ tri thức: 10/04/2026  
+Phiên bản dữ liệu: `version` **2026-04-11** trong `du_lieu_phac_do_cdss_guidelines.seed.json` — nguồn **`FileMau_PhacDo_CDSS 4.xlsx`** (sheet `Template`) **gộp** với kho seed trước đó (`npm run phac-do:rebuild-seed`); **348** mã ICD duy nhất (đã loại dòng mẫu placeholder `icd10` / `diseaseName`).  
+Ngày cập nhật thẻ tri thức: 11/04/2026  
 
 **Phạm vi:** hướng dẫn AI và giám định viên dùng **kho phác đồ nội bộ** (mục tiêu điều trị, điều trị đặc hiệu/triệu chứng, dự phòng, tái khám…) gắn với **mã ICD-10** trên hồ sơ. **Không** thay thế Phụ lục thanh toán DVKT (17/VBHN-BYT), danh mục thuốc BYT, hay hợp đồng KCB.
 
@@ -48,35 +48,55 @@ Cột hiển thị chuẩn (tiếng Việt) tương ứng khóa import tiếng A
 
 ## 4. Quy tắc giám định dữ liệu (LUẬT DỮ LIỆU — seed)
 
-| Mã luật | Mặc định | Ý nghĩa |
-|---------|----------|---------|
-| **CDSS_CM_01** | ON (Info) | Có kho phác đồ và **ít nhất một** mã ICD (chính/kèm, đã khử trùng) **khớp** bảng — nhắc đối chiếu chuyên môn với thuốc/DVKT. |
-| **CDSS_CM_02** | OFF (Warning) | Có kho nhưng **không mã ICD nào** trên XML1 khớp — gợi ý bổ sung dữ liệu phác đồ (dễ ồn nếu bật hàng loạt). |
+| Mã luật | Mặc định | Ý nghĩa (đã chuẩn hóa phạm vi) |
+|---------|----------|--------------------------------|
+| **CDSS_CM_01** | ON (Info) | Có kho phác đồ và **ít nhất một** mã ICD trên XML1 **trùng khóa** trong bảng — **chỉ nhắc tra cứu**; **không** kết luận điều trị đúng/sai theo phác đồ. |
+| **CDSS_CM_02** | OFF (Warning) | Có kho nhưng **không khóa ICD nào** trên XML1 trùng bảng — gợi ý bổ sung/kiểm tra dữ liệu; **không** suy ra sai phác đồ lâm sàng. |
 
 **Hàm trong engine (No-Code):** `CO_KHO_TRI_THUC_PHAC_DO()`, `CO_PHAC_DO_CDSS_CHO_ICD(mã)`, `CO_PHAC_DO_CDSS_CHO_BAT_CU_ICD_TREN_XML1(XML1)`, `KHONG_CO_PHAC_DO_CDSS_CHO_MA_ICD_GOP_TREN_XML1(XML1)`.
 
-**Meta:** `MAP_PHAC_DO_CDSS` chứa các **mã ICD đã chuẩn hóa** có trong kho; `SO_DONG_PHAC_DO_CDSS` = **số mã ICD duy nhất** (không tính trùng dòng).
+**Meta:** `MAP_PHAC_DO_CDSS` chỉ chứa **khóa ICD đã chuẩn hóa** (bỏ dấu chấm, `UPPER`) — **không** chứa nội dung văn bản các cột phác đồ để so với XML2/XML3.
+
+### 4.1. Những điểm **không thể** thực hiện đúng theo phác đồ CDSS chỉ bằng engine hiện tại
+
+| Kỳ vọng theo phác đồ (lâm sàng) | Thực tế trong CDSS BHYT | Lý do kỹ thuật |
+|--------------------------------|-------------------------|----------------|
+| So khớp **mục tiêu điều trị / điều trị đặc hiệu / dự phòng** với thuốc (XML2) và DVKT (XML3) | **Không** tự động được | `MAP_PHAC_DO_CDSS` chỉ lưu **có/không** theo mã ICD (`taoMetaPhacDoCdssTuBang`); rule động không đọc chuỗi từ các cột văn bản phác đồ để so semantic với mã thuốc/mã dịch vụ. |
+| Kết luận **vi phạm phác đồ** (sai thuốc, thiếu DVKT bắt buộc) | **Không** — ngoài phạm vi rule CDSS_CM | Cần ontology thuốc–chỉ định, tần suất, chống chỉ định; hiện chỉ có cảnh báo **Info** khi trùng mã ICD. |
+| Khớp mọi biến thể ICD (ví dụ hồ sơ **A04.9** vs bảng chỉ ghi **A04** hoặc **A49**) | **Có thể lệch** | Khóa map = chuỗi ô `MÃ ICD-10` sau chuẩn hóa **một dòng một khóa**; không suy diễn tương đương ICD con–cha. |
+| Ô `MÃ ICD-10` ghi **dải / nhiều mã** (vd. `A15 - A16`, `B20 - B24`) | **Không** tách thành nhiều khóa | Toàn bộ ô trở thành một khóa duy nhất; token ICD trên XML (từng mã đơn) thường **không** trùng chuỗi dải. |
+| Thu thập ICD từ **XML5/XML6** hoặc văn bản chẩn đoán tự do | **Không** — chỉ XML1 | `layMaIcdGopChinhVaKemKhongTrung` chỉ đọc `MA_BENH_CHINH`, `MA_BENH_KT`, `MA_BENHKEM`. |
+| Đối chiếu **tái khám / theo dõi** trong phác đồ với `NGAY_HEN_TAI_KHAM` | **Không** có rule CDSS_CM tích hợp | Có thể làm rule tùy chỉnh khác nếu cần; không nằm trong CDSS_CM_01/02. |
+
+**Tóm lại:** Quy tắc chuyên môn gắn phác đồ CDSS trong hệ thống hiện tại = **lớp nhắc “có/không có dòng phác đồ cho mã ICD trên XML1”**. Mọi đánh giá **tuân thủ nội dung** phác đồ vẫn do **giám định viên / AI tra cứu** trên module Chuyên môn, không thay bằng cảnh báo tự động từ engine.
 
 ---
 
 ## 5. Phân bổ mã ICD trong kho (theo chữ cái đầu — thống kê)
 
-| Nhóm (ký tự đầu sau chuẩn hóa) | Số dòng gần đúng |
-|--------------------------------|------------------|
-| R | 24 |
-| I | 23 |
-| F | 23 |
-| M | 19 |
-| J | 14 |
-| A | 13 |
-| B | 12 |
-| K | 9 |
-| E | 8 |
-| N | 8 |
-| G | 7 |
-| Các nhóm còn lại (H, Z, …) | từ 1–5 mỗi nhóm |
+| Nhóm (ký tự đầu sau chuẩn hóa) | Số dòng |
+|--------------------------------|---------|
+| M | 34 |
+| I | 33 |
+| R | 31 |
+| K | 29 |
+| N | 26 |
+| F | 25 |
+| J | 24 |
+| B | 23 |
+| E | 21 |
+| A | 19 |
+| S | 18 |
+| G | 14 |
+| D | 12 |
+| H | 11 |
+| L | 9 |
+| O | 7 |
+| Z | 5 |
+| Q | 3 |
+| C, T, P, U | 1 mỗi nhóm |
 
-(Số liệu theo seed tại thời điểm ghép bản; khi import Excel mới có thể thay đổi — chạy lại thống kê trên file seed nếu cần chính xác tuyệt đối.)
+(Số liệu theo seed **2026-04-11** sau gộp FileMau v4; import Excel: `npm run phac-do:rebuild-seed -- "<đường dẫn .xlsx>"`.)
 
 ---
 
@@ -89,6 +109,7 @@ Cột hiển thị chuẩn (tiếng Việt) tương ứng khóa import tiếng A
 
 ## 7. Liên kết
 
+- **Phương án triển khai chuỗi lâm sàng — CLS — chỉ định (rule có cấu trúc + AI):** [Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.md](./Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.md)
 - Tóm tắt HTML (đồng bộ ý): [The_tri_thuc_phac_do_CDSS_chuyen_mon_giam_dinh_BHYT.html](./The_tri_thuc_phac_do_CDSS_chuyen_mon_giam_dinh_BHYT.html) (sau `npm run tai_lieu:prepare` nằm trong `public/tai_lieu/`).
 - DVKT Danh mục 1 (tỷ lệ/giá): [The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.md](./The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.md).
 - Đặc tả hệ thống: [Dac_ta_he_thong_CDSS_BHYT_20260405.md](./Dac_ta_he_thong_CDSS_BHYT_20260405.md).
@@ -100,7 +121,7 @@ Cột hiển thị chuẩn (tiếng Việt) tương ứng khóa import tiếng A
 > Dùng để tra cứu từ khóa; nội dung lâm sàng đầy đủ nằm trong từng dòng JSON/ứng dụng. Một số mục là ký hiệu dải/ghi chú từ nguồn bảng — khi so với XML chỉ các **mã đơn** trùng token mới khớp engine tự động.
 
 ```
-A00, A01, A04, A05, A08, A09, A15 - A16, A36, A37, A39, A852, A90-A91, A91, B01, B05, B06, B08, B084, B16, B171 - B182, B18, B181, B20 - B24, B26, B88, D50, E039, E04, E05, E050, E101, E11, E271, E78, F063, F313, F320, F321, F322, F323, F332, F341, F432, F513, F514, F515, F520, F521, F522, F523, F524, F525, F526, F527, F528, F530, F65X, G2581 (G4761), G470 (F510), G471 (F511), G472, G473, G474, G4752, H60, H66, H81, I050, I099, I10, I209, I210, I25, I269, I309, I330, I340, I350, I409, I420, I421, I471, I472, I480, I50, I502, I503, I702, I802, I87, J00, J01, J02, J03, J04, J06, J18, J189, J20, J21, J30, J44, J449, J45, K21, K25, K279, K29, K30, K52, K59, K64, K74, L02, M100, M17, M329, M339, M340, M350, M353, M45, M47, M478, M512, M54, M653, M654, M722, M750, M797, M810, M86, N189, N30, N39, N64, N72, N76, N92, N93, O20, R002, R04, R040, R05, R060, R07, R074, R10, R109, R11, R13, R197, R252, R31, R32, R42, R470, R509, R51, R53, R55, R59, R609, R634, T78, U071, Z32, Z34, Z35, Z39, Z98
+A00, A01, A04, A05, A08, A09, A15, A15 - A16, A16, A36, A37, A39, A48, A49, A75, A852, A90-A91, A91, A97, B01, B02, B05, B06, B08, B084, B16, B171 - B182, B18, B181, B20 - B24, B26, B34, B35, B66, B67, B68, B77, B78, B81, B88, B90, B99, C34, D21, D23, D24, D25, D27, D34, D37, D38, D50, D56, D64, D69, E03, E039, E04, E05, E050, E06, E07, E10, E101, E11, E24, E27, E271, E56, E58, E60, E61, E78, E83, E87, E89, F063, F313, F320, F321, F322, F323, F332, F341, F41, F432, F513, F514, F515, F52, F520, F521, F522, F523, F524, F525, F526, F527, F528, F530, F65X, G24, G2581 (G4761), G43, G44, G47, G470 (F510), G471 (F511), G472, G473, G474, G4752, G55, G56, G58, H10, H60, H61, H65, H66, H68, H81, H82, H91, H92, H93, I050, I07, I099, I10, I11, I20, I209, I210, I25, I269, I309, I330, I340, I350, I409, I420, I421, I471, I472, I48, I480, I49, I50, I502, I503, I64, I69, I70, I702, I802, I83, I87, I88, J00, J01, J02, J03, J04, J06, J18, J189, J20, J21, J30, J31, J32, J34, J35, J37, J40, J41, J42, J44, J449, J45, J93, J96, K05, K07, K11, K12, K14, K21, K22, K25, K27, K279, K29, K30, K31, K40, K51, K52, K57, K58, K59, K60, K62, K63, K64, K74, K75, K76, K77, K80, K92, L02, L03, L04, L20, L23, L24, L29, L30, L50, M02, M06, M10, M100, M13, M16, M17, M19, M23, M329, M339, M340, M350, M353, M45, M47, M478, M48, M51, M512, M54, M65, M653, M654, M722, M75, M750, M76, M77, M79, M797, M81, M810, M86, N04, N18, N189, N20, N23, N30, N34, N39, N40, N45, N47, N48, N61, N64, N72, N75, N76, N80, N81, N84, N86, N91, N92, N93, N94, N95, O03, O20, O21, O30, O36, O60, O91, P54, Q18, Q21, Q50, R00, R002, R04, R040, R05, R06, R060, R07, R074, R10, R109, R11, R13, R17, R197, R252, R31, R32, R42, R470, R50, R509, R51, R53, R55, R59, R60, R609, R63, R634, R73, S00, S01, S20, S22, S30, S40, S42, S50, S52, S60, S61, S62, S70, S80, S82, S90, S91, S92, T78, U071, Z32, Z34, Z35, Z39, Z98
 ```
 
 *Tài liệu này cố định **tư duy tri thức chuyên môn phác đồ CDSS theo ICD-10** trong repo; mọi kết luận pháp lý thanh toán vẫn căn cứ văn bản BYT/BHXH và hợp đồng KCB.*

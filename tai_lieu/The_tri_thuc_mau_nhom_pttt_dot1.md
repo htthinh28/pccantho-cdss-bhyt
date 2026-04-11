@@ -125,7 +125,7 @@ Mục tiêu của đợt này là dạy AI cách nối:
 ### 1. Thông tin chung
 
 - Chủ đề: chứng cứ vật tư đi kèm xét nghiệm/dịch vụ
-- Rule tiêu biểu: `DVKT_2335`
+- Rule tiêu biểu (vẫn trong seed): `DVKT_0259` — **Lưu ý (04/2026):** toàn bộ nhóm quy tắc dạng **Thực hiện -** kết hợp `COUNT_IF(DS_XML5, …)` (trong đó có các mã như CBC laser, TSH…) đã **gỡ khỏi** `du_lieu_luat_pttt_muc11.jsx` để giảm dương tính giả; khi huấn luyện AI, không trích dẫn các mã đó như còn hiệu lực.
 - Nguồn: seed PTTT mức 11
 
 ### 2. Mệnh đề nghiệp vụ cốt lõi

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-10T17:03:38.164Z",
+  "generatedAt": "2026-04-11T12:59:56.219Z",
   "items": [
     {
       "id": "md:Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md",
@@ -206,6 +206,12 @@
       "nguon": "markdown"
     },
     {
+      "id": "md:CDSS_mapping_ICD_DM_thuoc_DVKT_nang_cap.md",
+      "relPath": "CDSS_mapping_ICD_DM_thuoc_DVKT_nang_cap.html",
+      "title": "CDSS — Mapping ICD ↔ danh mục thuốc / DVKT BV (nâng cấp, tách biệt)",
+      "nguon": "markdown"
+    },
+    {
       "id": "md:Checklist_TT12_2026_Dieu10_khoan1_map_XML130.md",
       "relPath": "Checklist_TT12_2026_Dieu10_khoan1_map_XML130.html",
       "title": "Checklist: TT 12/2026/TT-BTC — Điều 10 khoản 1 → trường dữ liệu XML 130 (tham chiếu)",
@@ -278,6 +284,12 @@
       "nguon": "markdown"
     },
     {
+      "id": "md:Huan_luyen_phien_CDSS_chuyen_mon_FileMau_v4.md",
+      "relPath": "Huan_luyen_phien_CDSS_chuyen_mon_FileMau_v4.html",
+      "title": "Phiên huấn luyện AI — CDSS phác đồ Chuyên môn (FileMau v4)",
+      "nguon": "markdown"
+    },
+    {
       "id": "md:Huan_luyen_phien_DVKT_VBHN17_Cursor.md",
       "relPath": "Huan_luyen_phien_DVKT_VBHN17_Cursor.html",
       "title": "Phiên huấn luyện — Giám định DVKT theo 17/VBHN-BYT (Cursor — đủ nội dung tri thức)",
@@ -332,6 +344,12 @@
       "nguon": "markdown"
     },
     {
+      "id": "md:Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.md",
+      "relPath": "Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.html",
+      "title": "HƯỚNG DẪN: HUẤN LUYỆN AI THỰC CHIẾN — BÁO CÁO VI PHẠM + HỒ SƠ `ip` + PHÁC ĐỒ CDSS",
+      "nguon": "markdown"
+    },
+    {
       "id": "md:HUONG_DAN_LAM_VIEC_ONLINE_GITHUB.md",
       "relPath": "HUONG_DAN_LAM_VIEC_ONLINE_GITHUB.html",
       "title": "🌐 Hướng Dẫn Làm Việc Nhóm Online với GitHub",
@@ -356,6 +374,18 @@
       "nguon": "markdown"
     },
     {
+      "id": "md:Khung_chat_luong_giam_dinh_DVKT_VBHN17.md",
+      "relPath": "Khung_chat_luong_giam_dinh_DVKT_VBHN17.html",
+      "title": "Khung chất lượng giám định DVKT, chuyên đề và VBHN 17",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:Kiem_soat_placeholder_CHUYEN_DE_XML130.md",
+      "relPath": "Kiem_soat_placeholder_CHUYEN_DE_XML130.html",
+      "title": "Kiểm soát quy tắc placeholder CHUYEN_DE (XML130)",
+      "nguon": "markdown"
+    },
+    {
       "id": "md:Ky_nang_cot_loi_giam_dinh_AI_BHYT.md",
       "relPath": "Ky_nang_cot_loi_giam_dinh_AI_BHYT.html",
       "title": "Kỹ năng cốt lõi giám định BHYT cho AI (đa nhóm rule)",
@@ -368,6 +398,12 @@
       "nguon": "markdown"
     },
     {
+      "id": "md:Lo_trinh_viet_lai_CHUYEN_DE_theo_XML130.md",
+      "relPath": "Lo_trinh_viet_lai_CHUYEN_DE_theo_XML130.html",
+      "title": "Lộ trình viết lại toàn bộ CHUYEN_DE theo XML1 / XML3 (QĐ 130)",
+      "nguon": "markdown"
+    },
+    {
       "id": "md:Mau_the_tri_thuc_giam_dinh_BHYT.md",
       "relPath": "Mau_the_tri_thuc_giam_dinh_BHYT.html",
       "title": "MẪU THẺ TRI THỨC GIÁM ĐỊNH BHYT",
@@ -377,6 +413,12 @@
       "id": "md:Phien_lam_viec_chung_Cursor_va_OpenClaw.md",
       "relPath": "Phien_lam_viec_chung_Cursor_va_OpenClaw.html",
       "title": "Phiên làm việc chung: Cursor AI + OpenClaw (cùng một nhiệm vụ)",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.md",
+      "relPath": "Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.html",
+      "title": "Phương án triển khai: Kiểm soát phác đồ chuyên môn theo chuỗi lâm sàng — cận lâm sàng — chỉ định",
       "nguon": "markdown"
     },
     {
@@ -605,6 +647,12 @@
       "id": "md:Thuc_chien_tong_hop_xml2_ip_AI.md",
       "relPath": "Thuc_chien_tong_hop_xml2_ip_AI.html",
       "title": "THỰC CHIẾN: TỔNG HỢP KỸ NĂNG VỚI `tai_nguyen/xml2_ip`",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:Tri_thuc_AI_CHUYEN_DE_XML130_thuc_chien.md",
+      "relPath": "Tri_thuc_AI_CHUYEN_DE_XML130_thuc_chien.html",
+      "title": "Tri thức AI & triển khai thực chiến — CHUYEN_DE theo XML130",
       "nguon": "markdown"
     }
   ]

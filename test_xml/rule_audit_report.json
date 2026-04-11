@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-04-01T06:34:38.898Z",
-  "totalRules": 1108,
+  "timestamp": "2026-04-11T13:35:33.580Z",
+  "totalRules": 573,
   "fileStats": {
     "luat_du_lieu_hardcoded.jsx": 0,
     "luat_hanh_chinh_hardcoded.jsx": 0,
@@ -10,14 +10,51 @@
     "luat_nhan_su_hardcoded.jsx": 15,
     "luat_giuong_hardcoded.jsx": 77,
     "luat_hop_dong_hardcoded.jsx": 23,
-    "luat_giam_dinh_chuyen_de_hardcoded.jsx": 603
+    "luat_giam_dinh_chuyen_de_hardcoded.jsx": 68
   },
   "duplicateMaCount": 0,
   "duplicateSignatureCount": 0,
   "trashRulesCount": 0,
-  "likelyFpRulesCount": 0,
+  "likelyFpRulesCount": 9,
   "duplicateMaDetails": [],
   "duplicateSignatureDetails": [],
   "trashRules": [],
-  "likelyFpRules": []
+  "likelyFpRules": [
+    {
+      "file": "luat_cdha_hardcoded.jsx",
+      "maLuat": "CDHA_204"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_15"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_16"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_17"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_18"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_43"
+    },
+    {
+      "file": "luat_cong_kham_hardcoded.jsx",
+      "maLuat": "CK_44"
+    },
+    {
+      "file": "luat_giuong_hardcoded.jsx",
+      "maLuat": "GB_18"
+    },
+    {
+      "file": "luat_hop_dong_hardcoded.jsx",
+      "maLuat": "HD_18"
+    }
+  ]
 }

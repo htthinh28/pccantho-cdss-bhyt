@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-09T09:55:45.194Z",
+  "timestamp": "2026-04-11T13:00:07.932Z",
   "schemaTables": {
     "XML1": [
       "CAN_NANG",
@@ -240,7 +240,7 @@
     "XML3": {}
   },
   "summary": {
-    "unknownFieldCount": 132,
+    "unknownFieldCount": 135,
     "unknownTableCount": 0
   },
   "details": [
@@ -1092,20 +1092,40 @@
     {
       "file": "ma_nguon\\tien_ich\\luat_giam_dinh_chuyen_de_hardcoded.jsx",
       "missing": false,
-      "blocks": 603,
+      "blocks": 68,
       "issues": []
     },
     {
       "file": "ma_nguon\\tien_ich\\du_lieu_luat_du_lieu_muc1.jsx",
       "missing": false,
-      "blocks": 112,
-      "issues": []
+      "blocks": 114,
+      "issues": [
+        {
+          "table": "XML1",
+          "field": "T_NGOAIDS",
+          "reason": "UNKNOWN_FIELD",
+          "blockIndex": 3
+        },
+        {
+          "table": "XML1",
+          "field": "T_NGOAIDS",
+          "reason": "UNKNOWN_FIELD",
+          "blockIndex": 89
+        }
+      ]
     },
     {
       "file": "ma_nguon\\tien_ich\\du_lieu_luat_thuoc_muc8.jsx",
       "missing": false,
-      "blocks": 539,
-      "issues": []
+      "blocks": 538,
+      "issues": [
+        {
+          "table": "XML1",
+          "field": "T_NGOAIDS",
+          "reason": "UNKNOWN_FIELD",
+          "blockIndex": 536
+        }
+      ]
     }
   ]
 }

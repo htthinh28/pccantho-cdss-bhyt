@@ -26,6 +26,7 @@ const PREFIXES = [
   { key: 'ky_nang_cot_loi', pattern: /^Ky_nang_cot_loi/i },
   { key: 'bai_tap', pattern: /^Bai_tap_phat_trien/i },
   { key: 'checklist_tt12', pattern: /^Checklist_TT12/i },
+  { key: 'huong_dan_huan_luyen', pattern: /^Huong_dan_huan_luyen/i },
 ];
 
 function walkMd(dir) {

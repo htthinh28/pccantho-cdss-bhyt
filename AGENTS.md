@@ -45,6 +45,11 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+## Tri thức → Thư viện (khi cập nhật tài liệu dự án)
+
+- Tri thức huấn luyện, thẻ tri thức, hướng dẫn nghiệp vụ: **ghi trong** `tai_lieu/` (Markdown hoặc HTML tĩnh).
+- **Sau mỗi lần thêm hoặc sửa** file trong `tai_lieu/` (đặc biệt `.md`): chạy **`npm run tai_lieu:prepare`** trước khi kết thúc tác vụ — đồng bộ `public/tai_lieu/`, cập nhật `ma_nguon/tien_ich/tai_lieu_manifest.json`, để màn **📚 Thư viện** và Trợ lý tri thức (RAG) phản ánh đủ nội dung mới. Không để chỉ sửa repo mà quên bước này.
+
 ## Red Lines
 
 - Don't exfiltrate private data. Ever.

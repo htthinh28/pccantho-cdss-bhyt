@@ -40,7 +40,7 @@ Cột **Tổng cảnh báo (snapshot)** lấy từ `meta.total_warnings` trong f
 | **MA_LK** | 403521 |
 | **File Audit** | audit_403521_20260405_225230.json |
 | **Tổng cảnh báo (snapshot)** | **8** (xem `meta.total_warnings`) |
-| **Ví dụ mã trong file** | `CLN-PTTT-13`, `DVKT_2335`, `DVKT_2587`, `DVKT_2588`, `HC_130`, `HC_180`, `HD_09`, `HD_10` |
+| **Ví dụ mã trong file** | `CLN-PTTT-13`, `DVKT_2587`, `DVKT_2588`, `HC_130`, `HC_180`, `HD_09`, `HD_10` (audit lịch sử có thể còn mã đã gỡ khỏi seed) |
 | **Ghi chú** | Nếu cần bài test “0 cảnh báo”, phải dùng **hồ sơ/audit khác** hoặc tái xuất sau khi chỉnh rule — không dùng mục tiêu cũ “0 lỗi” với file này. |
 
 **Cách chuẩn bị:**

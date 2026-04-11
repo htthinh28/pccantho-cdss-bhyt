@@ -58,7 +58,49 @@ const hopNhatCot = (existingCols = []) => {
   return merged;
 };
 
-const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
+/** Gỡ quy tắc đã xóa khỏi seed: Thực hiện + COUNT_IF(DS_XML5 (đối chiếu XML5 theo từ khóa không tin cậy). */
+const laDongLuatDaGoKhoiSeed = (row = {}) => {
+  const ten = String(row?.TEN_QUY_TAC || '');
+  const dk = String(row?.DIEU_KIEN || '');
+  return ten.startsWith('Thực hiện -') && dk.includes('COUNT_IF(DS_XML5');
+};
+
+/**
+ * Hợp nhất seed với dữ liệu đã lưu cục bộ.
+ * @param {{ thayTheToanBoSeed?: boolean }} options — khi true: toàn bộ dòng trùng MA_LUAT với seed được thay bằng bản bundle;
+ *   chỉ giữ thêm các dòng cục bộ có MA_LUAT không có trong seed (tùy biến BV).
+ */
+const hopNhatDongLuat = (existingRows = [], seedRows = [], options = {}) => {
+  const thayTheToanBoSeed = options?.thayTheToanBoSeed === true;
+  const seedNormalized = (Array.isArray(seedRows) ? seedRows : []).map((row, index) => chuanHoaDongLuat(row, index));
+  const maTrongSeed = new Set(
+    seedNormalized.map((r) => String(r?.MA_LUAT || '').trim().toUpperCase()).filter(Boolean),
+  );
+
+  if (thayTheToanBoSeed) {
+    const customLocal = (Array.isArray(existingRows) ? existingRows : [])
+      .map((row, index) => chuanHoaDongLuat(row, index))
+      .filter((r) => {
+        const ma = String(r?.MA_LUAT || '').trim().toUpperCase();
+        return Boolean(ma) && !maTrongSeed.has(ma);
+      });
+    const seen = new Set();
+    const merged = [];
+    seedNormalized.forEach((row) => {
+      const key = taoKhoaDongLuat(row);
+      if (seen.has(key)) return;
+      seen.add(key);
+      merged.push(row);
+    });
+    customLocal.forEach((row) => {
+      const key = taoKhoaDongLuat(row);
+      if (seen.has(key)) return;
+      seen.add(key);
+      merged.push(row);
+    });
+    return { mergedRows: merged, addedCount: seedNormalized.length };
+  }
+
   const merged = [];
   const seen = new Set();
 
@@ -71,8 +113,8 @@ const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
   });
 
   let addedCount = 0;
-  (Array.isArray(seedRows) ? seedRows : []).forEach((row, index) => {
-    const normalized = chuanHoaDongLuat(row, index);
+  seedNormalized.forEach((row, index) => {
+    const normalized = row;
     const key = taoKhoaDongLuat(normalized);
     if (seen.has(key)) return;
     seen.add(key);
@@ -122,10 +164,16 @@ export const damBaoSeedLuatPtttMuc11 = async () => {
       docRaw(KHOA_MIGRATION_SEED).then((raw) => parseJSONAnToan(raw, {})),
     ]);
 
-    const { mergedRows, addedCount } = hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_PTTT_MUC11);
-    const mergedCols = hopNhatCot(colsHienTai);
     const daApDungDungPhienBan = String(migrationMap?.[KHOA_PHIEN_BAN_SEED] || '') === PHIEN_BAN_SEED_LUAT_PTTT_MUC11;
+    let { mergedRows, addedCount } = hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_PTTT_MUC11, {
+      thayTheToanBoSeed: !daApDungDungPhienBan,
+    });
+    const soDongTruocLoc = mergedRows.length;
+    mergedRows = mergedRows.filter((r) => !laDongLuatDaGoKhoiSeed(r));
+    const soDongGoTuCache = soDongTruocLoc - mergedRows.length;
+    const mergedCols = hopNhatCot(colsHienTai);
     const canGhiLai = addedCount > 0
+      || soDongGoTuCache > 0
       || !daApDungDungPhienBan
       || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0);
 

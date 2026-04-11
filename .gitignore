@@ -54,9 +54,16 @@ tai_nguyen/**/*.xml
 tai_nguyen/*.pdf
 tai_nguyen/**/*.pdf
 
+# XML hồ sơ thật đặt trực tiếp trong test_xml/ (fixture huấn luyện đặt trong test_xml/huan_luyen/)
+test_xml/*.xml
+!test_xml/claim_audit_smoke.xml
+
 # Chỉ mục sinh từ hồ sơ thật (MA_LK, đường dẫn file — chỉ giữ cục bộ)
 tai_lieu/_index_tai_nguyen*.json
 tai_lieu/_index_kho_huan_luyen*.json
+# Gộp báo cáo vi phạm + MA_LK + đường dẫn XML (chỉ giữ cục bộ)
+tai_lieu/_huan_luyen_merge_audit_neo_ip.json
+tai_lieu/_huan_luyen_merge_*.json
 
 # File tạm / quét rule cục bộ
 tmp_*
@@ -72,6 +79,7 @@ __pycache__/
 
 # Local agent / IDE state (không đồng bộ)
 .openclaw/
+memory/
 
 # Log cục bộ
 server.log

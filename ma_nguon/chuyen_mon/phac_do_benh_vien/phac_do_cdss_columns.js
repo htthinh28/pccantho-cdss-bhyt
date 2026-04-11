@@ -116,6 +116,15 @@ export function gopPhacDoImportVoiDuLieuHienTai(existingRows, incomingRows, opts
   return out;
 }
 
+/** Dòng mẫu trong file Excel (placeholder tiếng Anh — không phải mã ICD thật). */
+export function laDongMauTemplatePhacDo(row) {
+  const icd = String(row?.['MÃ ICD-10'] ?? '').trim().toLowerCase();
+  const ten = String(row?.['TÊN BỆNH (CHẨN ĐOÁN)'] ?? '').trim().toLowerCase();
+  if (icd === 'icd10' && (ten === 'diseasename' || ten === '')) return true;
+  if (ten === 'diseasename') return true;
+  return false;
+}
+
 /** Chuẩn hóa một dòng import: map khóa EN → VN, giữ id. */
 export function chuanHoaDongImportPhacDo(row) {
   const out = { ...row };

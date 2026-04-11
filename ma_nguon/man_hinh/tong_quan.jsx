@@ -7,16 +7,32 @@
  * 4. LOGIC: Tích hợp công cụ xuất thẳng XML ra Excel.
  */
 
-import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Image, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  Easing,
+  Image,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { auditClaimsBangPythonService } from '../dich_vu/python_service_api';
+import KhungTroLyTriThucChat from '../thanh_phan/khung_tro_ly_tri_thuc_chat';
 import { BoChonChuDe, CD } from '../tien_ich/chu_de_giao_dien';
 import {
   CHE_DO_GIAM_DINH,
   docCheDoGiamDinh,
-  kiemTraPythonServiceSanSang,
+  ketNoiPythonServiceLucKhoiDong,
   taiDanhMucRuntimeChoPython,
 } from '../tien_ich/hybrid_python_helper';
 import { docPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap';
@@ -25,11 +41,15 @@ import { locModuleTheoRBAC, taiRBAC } from '../tien_ich/rbac_engine';
 import {
   locDanhSachLoiChiTiet,
   phangHoaDanhSachLoiChiTiet,
+  layNgayYLenhNgayKqVaBacSiTuLoiHoSo,
+  taoDeXuatKhacPhucTuLoi,
+  taoMoTaBanChatViPhamTuLoi,
+  taoViTriXmlBaoCaoDayDuTuLoi,
   tongHopQuyTacTuDanhSachChiTiet,
 } from '../tien_ich/thong_ke_loi_dung_chung';
 
 // [CẬP NHẬT LÕI]: Thống nhất dùng kho_du_lieu để đồng bộ với man_hinh_kho_luu_tru
-import { chayBoMayGiamDinhNhieuHoSoV3 } from '../tien_ich/dong_co_giam_dinh';
+import { chayBoMayGiamDinhNhieuHoSoV3, gomTrungLapCanhBaoTheoMaLuatVaNoiDung, suyRaNamespaceVaNguonQuyTac } from '../tien_ich/dong_co_giam_dinh';
 import {
   layDanhSachMaLKTuKho,
   layTatCaHoSoTuKho,
@@ -55,7 +75,13 @@ const MAU_COT_BAO_CAO_VI_PHAM = [
   'Tên quy tắc',
   'Namespace quy tắc',
   'Nguồn quy tắc',
-  'Chi tiết XML vi phạm',
+  'Ngày y lệnh (XML)',
+  'Ngày kết quả (XML)',
+  'Bác sĩ chỉ định (mã)',
+  'Bác sĩ thực hiện (mã)',
+  'Vị trí trong XML (sai ở đâu)',
+  'Mô tả vi phạm (sai cái gì)',
+  'Đề xuất khắc phục',
   'Cảnh báo',
   'Luồng giải trình',
   'Cơ sở pháp lý',
@@ -71,7 +97,13 @@ const DO_RONG_COT_BAO_CAO_VI_PHAM = [
   { wch: 36 },
   { wch: 24 },
   { wch: 24 },
-  { wch: 34 },
+  { wch: 22 },
+  { wch: 22 },
+  { wch: 28 },
+  { wch: 28 },
+  { wch: 88 },
+  { wch: 48 },
+  { wch: 52 },
   { wch: 48 },
   { wch: 42 },
   { wch: 42 },
@@ -252,7 +284,7 @@ const hopNhatKetQuaGiamDinh = (danhSachJs = [], danhSachPython = []) => {
   [...(Array.isArray(danhSachJs) ? danhSachJs : []), ...(Array.isArray(danhSachPython) ? danhSachPython : [])].forEach((item) => {
     mapCanhBao.set(taoKhoaCanhBao(item), item);
   });
-  return Array.from(mapCanhBao.values());
+  return gomTrungLapCanhBaoTheoMaLuatVaNoiDung(Array.from(mapCanhBao.values()));
 };
 
 const layKetQuaGiamDinhCoSan = (hoSo = {}) => {
@@ -376,8 +408,23 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [vaiTroHienTai, setVaiTroHienTai] = useState('Đang tải...');
   const [tenTaiKhoan, setTenTaiKhoan] = useState('');
   const [cheDoGiamDinh, setCheDoGiamDinh] = useState(CHE_DO_GIAM_DINH.LOCAL);
+  /** Warm-up Python khi mở dashboard: thử lại tự động, không phụ thuộc online/offline toàn cục (localhost vẫn thử). */
+  const [trangThaiPythonKhoiDong, setTrangThaiPythonKhoiDong] = useState({
+    daKiemTra: false,
+    ok: false,
+    chiTiet: '',
+    baseUrl: '',
+    lanThu: 0,
+  });
   /** Chỉ Web: nhật ký từng file khi chạy giám định tự động cả thư mục (không dùng alert). */
   const [logGiamDinhTuDongThuMuc, setLogGiamDinhTuDongThuMuc] = useState([]);
+  const [popupTriThucVisible, setPopupTriThucVisible] = useState(false);
+  /** menu: chọn Trợ lý / Tri thức GD · chat: cửa sổ chat RAG */
+  const [triThucModalPhan, setTriThucModalPhan] = useState('menu');
+  const animTriThucBackdrop = useRef(new Animated.Value(0)).current;
+  const animTriThucPanel = useRef(new Animated.Value(0)).current;
+
+  const IDS_TRI_THUC_POPUP = ['MOD_TRO_LY_TRI_THUC', 'MOD_TRI_THUC_GD'];
 
   const tatCaModules = [
     { id: 'MOD_HELPER', route: 'Helper', ten: '🧰 HELPER + FIREBASE' },
@@ -386,6 +433,7 @@ const ManHinhTongQuan = ({ navigation }) => {
     { id: 'MOD_CONG_HIS', route: 'CongHIS', ten: '🔌 CỔNG HIS' },
     { id: 'MOD_CHUYEN_MON', route: 'QuanLyChuyenMon', ten: '🧠 CHUYÊN MÔN' },
     { id: 'MOD_THU_VIEN', route: 'ThuVien', ten: '📚 THƯ VIỆN' },
+    { id: 'MOD_TRO_LY_TRI_THUC', route: 'TroLyTriThuc', ten: '🤖 TRỢ LÝ TRI THỨC (RAG)' },
     { id: 'MOD_TRI_THUC_GD', route: 'TriThucTuGiamDinh', ten: '🧠 TRI THỨC TỪ GIÁM ĐỊNH' },
     { id: 'MOD_DANH_MUC', route: 'QuanLyDanhMuc', ten: '📋 DM NỘI BỘ' },
     { id: 'MOD_DANH_MUC_BYT', route: 'DanhMucBYTMain', ten: '🏥 DM BỘ Y TẾ' },
@@ -431,6 +479,22 @@ const ManHinhTongQuan = ({ navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => fetchThongTinHeThong());
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    let huy = false;
+    (async () => {
+      const kq = await ketNoiPythonServiceLucKhoiDong();
+      if (huy) return;
+      setTrangThaiPythonKhoiDong({
+        daKiemTra: true,
+        ok: kq.ok,
+        chiTiet: kq.chiTiet || '',
+        baseUrl: kq.baseUrl || '',
+        lanThu: kq.soLanThu || 0,
+      });
+    })();
+    return () => { huy = true; };
+  }, []);
 
   const locDanhMucQuyTac = (danhMuc = []) => {
     const tuKhoaQuyTacChuan = chuanHoaToken(tuKhoaLocQuyTac);
@@ -638,10 +702,12 @@ const ManHinhTongQuan = ({ navigation }) => {
         setThongBaoDangTai('Đang kết nối Python service...');
         await choUICapNhat();
 
-        const ketQuaKiemTraPython = await kiemTraPythonServiceSanSang();
+        const ketQuaKiemTraPython = await ketNoiPythonServiceLucKhoiDong();
         if (!ketQuaKiemTraPython.ok) {
           daFallbackTuPythonSangJs = true;
-          setThongBaoDangTai('Python service chưa sẵn sàng, đang tự fallback sang engine JS...');
+          setThongBaoDangTai(
+            `Python chưa sẵn sàng (đã thử ${ketQuaKiemTraPython.soLanThu || '?'} lần), đang fallback JS...`,
+          );
           await choUICapNhat();
           danhSachLuuKho = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaCoKetQua, {
             onProgress: async ({ completed, total }) => {
@@ -773,7 +839,8 @@ const ManHinhTongQuan = ({ navigation }) => {
 
     } catch (err) {
       if (!thongTinThem?.boQuaThongBaoCuoi) {
-        alert("Lỗi xử lý giám định.");
+        const msg = err && typeof err.message === 'string' && err.message.trim() ? err.message.trim() : '';
+        alert(msg ? `Lỗi xử lý giám định: ${msg}` : 'Lỗi xử lý giám định.');
       }
       console.error(err);
     } finally {
@@ -867,14 +934,21 @@ const ManHinhTongQuan = ({ navigation }) => {
       dsLoi.forEach(loi => {
         const canhBao = String(layGiaTriAnToan(loi, 'canhbao') || 'N/A');
         const noiDungLoi = String(layGiaTriAnToan(loi, 'noi_dung') || layGiaTriAnToan(loi, 'mota') || 'N/A');
-        const phanHe = String(layGiaTriAnToan(loi, 'phan_he') || '');
-        const truongLoi = String(layGiaTriAnToan(loi, 'truong_loi') || '');
-        const namespaceQuyTac = String(layGiaTriAnToan(loi, 'namespacequytac') || 'N/A');
-        const nguonQuyTac = String(layGiaTriAnToan(loi, 'nguonquytac') || 'N/A');
+        const metaQuyTac = suyRaNamespaceVaNguonQuyTac(loi);
+        const nsRaw = layGiaTriAnToan(loi, 'namespacequytac');
+        const nguonRaw = layGiaTriAnToan(loi, 'nguonquytac');
+        const namespaceQuyTac = String(
+          (nsRaw !== 'N/A' && String(nsRaw).trim() !== '' ? nsRaw : metaQuyTac.namespace_quy_tac) || ''
+        ).trim() || 'QUY_TAC_NOI_BO';
+        const nguonQuyTac = String(
+          (nguonRaw !== 'N/A' && String(nguonRaw).trim() !== '' ? nguonRaw : metaQuyTac.nguon_quy_tac) || ''
+        ).trim() || 'dong_co_giam_dinh';
         const luongGiaiTrinh = String(layGiaTriAnToan(loi, 'luonggiaitrinh') || 'N/A');
         const coSoPhapLy = String(layGiaTriAnToan(loi, 'cosophaply') || 'N/A');
-        const chiSoDong = Number.isFinite(Number(loi?.index)) ? `Dòng ${Number(loi.index) + 1}` : '';
-        const chiTietXMLViPham = [phanHe, truongLoi, chiSoDong].filter(Boolean).join(' | ') || 'N/A';
+        const viTriTrongXml = taoViTriXmlBaoCaoDayDuTuLoi(loi, hs);
+        const lamSangXml = layNgayYLenhNgayKqVaBacSiTuLoiHoSo(loi, hs);
+        const moTaViPham = taoMoTaBanChatViPhamTuLoi(loi);
+        const deXuatKhacPhuc = taoDeXuatKhacPhucTuLoi(loi);
         const doiChieuChiTietCanhBao = [
           noiDungLoi !== 'N/A' ? `Lỗi chi tiết: ${noiDungLoi}` : '',
           canhBao !== 'N/A' ? `Cảnh báo: ${canhBao}` : '',
@@ -895,7 +969,13 @@ const ManHinhTongQuan = ({ navigation }) => {
           String(layGiaTriAnToan(loi, 'tenquytac') || 'N/A'),
           namespaceQuyTac,
           nguonQuyTac,
-          chiTietXMLViPham,
+          lamSangXml.ngayYLenh || 'N/A',
+          lamSangXml.ngayKetQua || 'N/A',
+          lamSangXml.bacSiChiDinh || 'N/A',
+          lamSangXml.bacSiThucHien || 'N/A',
+          viTriTrongXml,
+          moTaViPham,
+          deXuatKhacPhuc,
           canhBao,
           luongGiaiTrinh,
           coSoPhapLy,
@@ -913,7 +993,7 @@ const ManHinhTongQuan = ({ navigation }) => {
     ws['!cols'] = DO_RONG_COT_BAO_CAO_VI_PHAM;
 
     const soDong = excelData.length + 1;
-    ws['!autofilter'] = { ref: `A1:N${soDong}` };
+    ws['!autofilter'] = { ref: `A1:T${soDong}` };
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, TEN_SHEET_BAO_CAO_VI_PHAM);
@@ -935,12 +1015,70 @@ const ManHinhTongQuan = ({ navigation }) => {
     MOD_CONG_HIS: { icon: '🔌', mau: '#006064', mauNhat: '#E0F7FA' },
     MOD_CHUYEN_MON: { icon: '🧠', mau: '#E65100', mauNhat: '#FFF3E0' },
     MOD_THU_VIEN: { icon: '📚', mau: '#5D4037', mauNhat: '#EFEBE9' },
+    MOD_TRO_LY_TRI_THUC: { icon: '🤖', mau: '#00695C', mauNhat: '#E0F2F1' },
+    MOD_TRI_THUC_GD: { icon: '🧩', mau: '#4527A0', mauNhat: '#EDE7F6' },
     MOD_DANH_MUC: { icon: '📋', mau: '#558B2F', mauNhat: '#F1F8E9' },
     MOD_DANH_MUC_BYT: { icon: '🏥', mau: '#0277BD', mauNhat: '#E1F5FE' },
     MOD_QUAN_LY_LUAT: { icon: '⚙️', mau: '#8E24AA', mauNhat: '#F3E5F5' },
     MOD_QUY_TAC_ON_OFF: { icon: '🎚️', mau: '#AD1457', mauNhat: '#FCE4EC' },
     MOD_BAO_CAO_THONG_KE: { icon: '📊', mau: '#00838F', mauNhat: '#E0F7FA' },
     MOD_ACL: { icon: '🔐', mau: '#4E342E', mauNhat: '#EFEBE9' },
+  };
+
+  const menuTriThucPopup = IDS_TRI_THUC_POPUP.map((id) => menuHienThi.find((m) => m.id === id)).filter(Boolean);
+  const menuSidebar = menuHienThi.filter((m) => !IDS_TRI_THUC_POPUP.includes(m.id));
+
+  const moPopupTriThuc = () => {
+    if (menuTriThucPopup.length === 0) return;
+    const coTroLy = menuTriThucPopup.some((m) => m.id === 'MOD_TRO_LY_TRI_THUC');
+    const coGd = menuTriThucPopup.some((m) => m.id === 'MOD_TRI_THUC_GD');
+    setTriThucModalPhan(coTroLy && !coGd ? 'chat' : 'menu');
+    animTriThucBackdrop.setValue(0);
+    animTriThucPanel.setValue(0);
+    setPopupTriThucVisible(true);
+    requestAnimationFrame(() => {
+      Animated.parallel([
+        Animated.timing(animTriThucBackdrop, {
+          toValue: 1,
+          duration: 240,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(animTriThucPanel, {
+          toValue: 1,
+          friction: 8,
+          tension: 68,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
+
+  const dongPopupTriThuc = (sauKhiDong) => {
+    Animated.parallel([
+      Animated.timing(animTriThucBackdrop, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(animTriThucPanel, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (finished) {
+        setPopupTriThucVisible(false);
+        setTriThucModalPhan('menu');
+        sauKhiDong?.();
+      }
+    });
+  };
+
+  const diChuyenTriThuc = (route) => {
+    dongPopupTriThuc(() => navigation.navigate(route));
   };
 
   const phanTramLoi = thongKe.tong > 0 ? Math.round((thongKe.loi / thongKe.tong) * 100) : 0;
@@ -956,40 +1094,42 @@ const ManHinhTongQuan = ({ navigation }) => {
 
       {/* ── 1. HEADER GRADIENT ── */}
       <View style={styles.header}>
-        <View style={styles.header_left}>
-          <Image source={{ uri: LOGO_PC }} style={styles.logo} resizeMode="contain" />
-          <View>
-            <Text style={styles.header_ten_bv}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU</Text>
-            <Text style={styles.header_sub}>Hệ thống hỗ trợ kiểm tra hồ sơ BHYT · QĐ 130</Text>
-          </View>
-        </View>
-        <View style={styles.header_right}>
-          <View style={styles.header_account_row}>
-            <View style={styles.user_badge}>
-              <Text style={styles.user_badge_icon}>👤</Text>
-              <View>
-                <Text style={styles.user_badge_name}>{tenTaiKhoan || 'Chưa đăng nhập'}</Text>
-                <Text style={[styles.user_badge_role, vaiTroHienTai === 'ADMIN' && { color: '#FFD54F' }]}>
-                  {vaiTroHienTai}
-                </Text>
-              </View>
+        <View style={styles.header_main_row}>
+          <View style={styles.header_left}>
+            <Image source={{ uri: LOGO_PC }} style={styles.logo} resizeMode="contain" />
+            <View>
+              <Text style={styles.header_ten_bv}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU</Text>
+              <Text style={styles.header_sub}>Hệ thống hỗ trợ kiểm tra hồ sơ BHYT · QĐ 130</Text>
             </View>
-            <TouchableOpacity style={styles.btn_logout} onPress={xuLyDangXuat}>
-              <Text style={styles.btn_logout_txt}>⏻ Đăng xuất</Text>
-            </TouchableOpacity>
           </View>
-          <View style={styles.kpi_row}>
-            {danhSachKpi.map((kpi, i) => (
-              <View key={i} style={[styles.kpi_card, { borderTopColor: kpi.mau }]}>
-                <View style={[styles.kpi_icon_wrap, { backgroundColor: kpi.mauNhat }]}>
-                  <Text style={styles.kpi_icon}>{kpi.icon}</Text>
-                </View>
-                <View style={styles.kpi_text_block}>
-                  <Text style={[styles.kpi_value, { color: kpi.mau }]}>{kpi.value}</Text>
-                  <Text style={styles.kpi_label}>{kpi.label}</Text>
+          <View style={styles.header_right}>
+            <View style={styles.header_account_row}>
+              <View style={styles.user_badge}>
+                <Text style={styles.user_badge_icon}>👤</Text>
+                <View>
+                  <Text style={styles.user_badge_name}>{tenTaiKhoan || 'Chưa đăng nhập'}</Text>
+                  <Text style={[styles.user_badge_role, vaiTroHienTai === 'ADMIN' && { color: '#FFD54F' }]}>
+                    {vaiTroHienTai}
+                  </Text>
                 </View>
               </View>
-            ))}
+              <TouchableOpacity style={styles.btn_logout} onPress={xuLyDangXuat}>
+                <Text style={styles.btn_logout_txt}>⏻ Đăng xuất</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.kpi_row}>
+              {danhSachKpi.map((kpi, i) => (
+                <View key={i} style={[styles.kpi_card, { borderTopColor: kpi.mau }]}>
+                  <View style={[styles.kpi_icon_wrap, { backgroundColor: kpi.mauNhat }]}>
+                    <Text style={styles.kpi_icon}>{kpi.icon}</Text>
+                  </View>
+                  <View style={styles.kpi_text_block}>
+                    <Text style={[styles.kpi_value, { color: kpi.mau }]}>{kpi.value}</Text>
+                    <Text style={styles.kpi_label}>{kpi.label}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </View>
@@ -999,7 +1139,7 @@ const ManHinhTongQuan = ({ navigation }) => {
           <Text style={styles.sidebar_title}>ĐIỀU HƯỚNG</Text>
           <ScrollView style={styles.sidebar_scroll} showsVerticalScrollIndicator={false}>
             <View style={styles.module_grid}>
-              {menuHienThi.map((item) => {
+              {menuSidebar.map((item) => {
                 const cfg = MODULE_ICONS[item.id] || { icon: '📦', mau: '#607D8B', mauNhat: '#ECEFF1' };
                 return (
                   <TouchableOpacity
@@ -1049,6 +1189,13 @@ const ManHinhTongQuan = ({ navigation }) => {
                     <Text style={styles.audit_engine_title}>Nạp hồ sơ XML</Text>
                     <Text style={[styles.import_upload_subtitle, styles.import_upload_subtitle_center]}>
                       Giám định nhiều hồ sơ trong cùng một luồng. Chế độ hiện hành: {cheDoGiamDinh === CHE_DO_GIAM_DINH.PYTHON ? 'Python service' : 'JS nội bộ'}.
+                    </Text>
+                    <Text style={styles.python_warmup_hint}>
+                      {trangThaiPythonKhoiDong.daKiemTra
+                        ? (trangThaiPythonKhoiDong.ok
+                          ? `🐍 Python warm-up: OK · ${trangThaiPythonKhoiDong.baseUrl || '—'}${trangThaiPythonKhoiDong.lanThu > 1 ? ` · thử ${trangThaiPythonKhoiDong.lanThu} lần` : ''}`
+                          : `🐍 Python warm-up: chưa kết nối · ${trangThaiPythonKhoiDong.chiTiet || '—'} · ${trangThaiPythonKhoiDong.baseUrl || '—'}${trangThaiPythonKhoiDong.lanThu ? ` · đã thử ${trangThaiPythonKhoiDong.lanThu} lần` : ''}`)
+                        : '🐍 Python warm-up: đang kiểm tra kết nối (tự thử lại)...'}
                     </Text>
                     <View style={styles.import_upload_highlights_compact}>
                       <View style={styles.import_upload_highlight_chip}>
@@ -1371,6 +1518,119 @@ const ManHinhTongQuan = ({ navigation }) => {
 
         </ScrollView>
       </View>
+
+      {menuTriThucPopup.length > 0 ? (
+        <TouchableOpacity
+          style={styles.tri_thuc_fab}
+          onPress={moPopupTriThuc}
+          activeOpacity={0.85}
+          accessibilityLabel="Mở tri thức CDSS"
+        >
+          <Text style={styles.tri_thuc_fab_icon}>🤖</Text>
+        </TouchableOpacity>
+      ) : null}
+
+      <Modal
+        visible={popupTriThucVisible}
+        transparent
+        animationType="none"
+        onRequestClose={dongPopupTriThuc}
+      >
+        <View style={styles.tri_thuc_modal_root}>
+          <Pressable style={styles.tri_thuc_modal_hit} onPress={dongPopupTriThuc}>
+            <Animated.View
+              style={[
+                styles.tri_thuc_modal_backdrop,
+                {
+                  opacity: animTriThucBackdrop.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 0.52],
+                  }),
+                },
+              ]}
+            />
+          </Pressable>
+          <Animated.View
+            style={[
+              styles.tri_thuc_modal_sheet,
+              triThucModalPhan === 'chat' && styles.tri_thuc_modal_sheet_chat,
+              {
+                opacity: animTriThucPanel,
+                transform: [
+                  {
+                    translateY: animTriThucPanel.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [36, 0],
+                    }),
+                  },
+                  {
+                    scale: animTriThucPanel.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.94, 1],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {triThucModalPhan === 'chat' ? (
+              <KhungTroLyTriThucChat
+                cheDoHienThi="cua_so"
+                navigation={navigation}
+                onQuayLaiMenu={() => setTriThucModalPhan('menu')}
+                onDong={() => dongPopupTriThuc()}
+              />
+            ) : (
+              <>
+                <View style={styles.tri_thuc_modal_grab} />
+                <View style={styles.tri_thuc_modal_header}>
+                  <Text style={styles.tri_thuc_modal_title}>Tri thức CDSS</Text>
+                  <TouchableOpacity onPress={() => dongPopupTriThuc()} style={styles.tri_thuc_modal_close}>
+                    <Text style={styles.tri_thuc_modal_close_txt}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.tri_thuc_modal_sub}>Chọn chức năng — trích dẫn nội bộ, không tra web.</Text>
+                {menuTriThucPopup.map((item) => {
+                  const cfg = MODULE_ICONS[item.id] || { icon: '📦', mau: '#607D8B', mauNhat: '#ECEFF1' };
+                  const label =
+                    item.id === 'MOD_TRO_LY_TRI_THUC'
+                      ? 'Trợ lý tri thức (RAG)'
+                      : item.id === 'MOD_TRI_THUC_GD'
+                        ? 'Tri thức từ giám định'
+                        : item.ten;
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[styles.tri_thuc_modal_row, { borderLeftColor: cfg.mau }]}
+                      onPress={() => {
+                        if (item.id === 'MOD_TRO_LY_TRI_THUC') {
+                          setTriThucModalPhan('chat');
+                        } else {
+                          diChuyenTriThuc(item.route);
+                        }
+                      }}
+                      activeOpacity={0.82}
+                    >
+                      <View style={[styles.tri_thuc_modal_row_icon, { backgroundColor: cfg.mauNhat }]}>
+                        <Text style={styles.tri_thuc_modal_row_emoji}>{cfg.icon}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.tri_thuc_modal_row_title}>{label}</Text>
+                        <Text style={styles.tri_thuc_modal_row_hint} numberOfLines={2}>
+                          {item.id === 'MOD_TRO_LY_TRI_THUC'
+                            ? 'Cửa sổ chat — thư viện, phác đồ chuyên môn, tri thức đã lưu'
+                            : 'Bài học và xác nhận cảnh báo từ ca giám định (màn hình riêng)'}
+                        </Text>
+                      </View>
+                      <Text style={styles.tri_thuc_modal_row_chev}>→</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </>
+            )}
+          </Animated.View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -1378,6 +1638,7 @@ const ManHinhTongQuan = ({ navigation }) => {
 const styles = StyleSheet.create({
   vung_an_toan: {
     flex: 1,
+    position: 'relative',
     ...Platform.select({ web: { backgroundImage: CD.web.gradient_bg } }),
     backgroundColor: CD.bg.gradient_mobile,
   },
@@ -1395,10 +1656,16 @@ const styles = StyleSheet.create({
     backgroundColor: CD.brand.mauDam,
     borderBottomWidth: 1, borderBottomColor: CD.border.header,
     paddingHorizontal: 24, paddingVertical: 16,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: 12,
+  },
+  header_main_row: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     alignItems: Platform.OS === 'web' ? 'center' : 'flex-start',
     justifyContent: 'space-between',
     gap: 12,
+    width: '100%',
   },
   header_left: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   logo: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#FFF', borderWidth: 2, borderColor: 'rgba(255,255,255,0.5)' },
@@ -1486,6 +1753,149 @@ const styles = StyleSheet.create({
   kpi_text_block: { flex: 1, alignItems: 'flex-start' },
   kpi_value: { fontSize: 15, fontWeight: '900', fontFamily: CD.font.family, lineHeight: 16 },
   kpi_label: { fontSize: 9, color: 'rgba(255,255,255,0.72)', marginTop: 1, fontFamily: CD.font.family, textAlign: 'left' },
+
+  tri_thuc_fab: {
+    position: 'absolute',
+    right: 18,
+    bottom: 20,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: CD.brand.mauChinh,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+    elevation: 14,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.35)',
+    ...Platform.select({
+      web: {
+        boxShadow: '0 10px 28px rgba(194, 24, 91, 0.45)',
+        cursor: 'pointer',
+      },
+    }),
+  },
+  tri_thuc_fab_icon: { fontSize: 28 },
+
+  tri_thuc_modal_root: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  tri_thuc_modal_hit: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  tri_thuc_modal_backdrop: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
+  tri_thuc_modal_sheet: {
+    marginHorizontal: 12,
+    marginBottom: Platform.OS === 'ios' ? 28 : 16,
+    paddingBottom: 18,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    maxHeight: '78%',
+    ...Platform.select({
+      web: {
+        maxWidth: 440,
+        alignSelf: 'center',
+        width: '100%',
+        boxShadow: '0 -12px 40px rgba(15, 23, 42, 0.18)',
+      },
+    }),
+  },
+  tri_thuc_modal_sheet_chat: {
+    paddingHorizontal: 0,
+    paddingTop: 0,
+    paddingBottom: Platform.OS === 'ios' ? 22 : 12,
+    overflow: 'hidden',
+    ...Platform.select({
+      web: {
+        maxWidth: 480,
+        width: '96%',
+        minHeight: 440,
+        maxHeight: '88vh',
+        boxShadow: '0 -16px 48px rgba(15, 23, 42, 0.22)',
+      },
+      default: {
+        height: Math.min(Dimensions.get('window').height * 0.82, 600),
+        maxHeight: Math.min(Dimensions.get('window').height * 0.9, 640),
+      },
+    }),
+  },
+  tri_thuc_modal_grab: {
+    alignSelf: 'center',
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#CBD5E1',
+    marginBottom: 12,
+  },
+  tri_thuc_modal_header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  tri_thuc_modal_title: {
+    fontSize: 19,
+    fontWeight: '900',
+    color: '#0f172a',
+    fontFamily: CD.font.family,
+  },
+  tri_thuc_modal_close: {
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: '#F1F5F9',
+  },
+  tri_thuc_modal_close_txt: { fontSize: 16, color: '#64748B', fontWeight: '700' },
+  tri_thuc_modal_sub: {
+    fontSize: 13,
+    color: '#64748B',
+    marginBottom: 14,
+    lineHeight: 20,
+    fontFamily: CD.font.family,
+  },
+  tri_thuc_modal_row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderLeftWidth: 4,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 10,
+  },
+  tri_thuc_modal_row_icon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tri_thuc_modal_row_emoji: { fontSize: 22 },
+  tri_thuc_modal_row_title: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0f172a',
+    fontFamily: CD.font.family,
+  },
+  tri_thuc_modal_row_hint: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 4,
+    fontFamily: CD.font.family,
+    lineHeight: 17,
+  },
+  tri_thuc_modal_row_chev: { fontSize: 18, color: '#94A3B8', fontWeight: '700' },
 
   // ── SECTIONS ──
   section_block: { marginHorizontal: 8, marginTop: 14 },
@@ -1660,6 +2070,16 @@ const styles = StyleSheet.create({
   import_upload_subtitle_center: {
     textAlign: 'center',
     maxWidth: 460,
+  },
+  python_warmup_hint: {
+    fontSize: 11,
+    lineHeight: 14,
+    color: '#5C6B7A',
+    fontFamily: CD.font.family,
+    textAlign: 'center',
+    maxWidth: 520,
+    alignSelf: 'center',
+    marginBottom: 6,
   },
   import_upload_highlights_compact: {
     flexDirection: 'row',

@@ -15,7 +15,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 
 const mod = await import(pathToFileURL(path.join(root, 'ma_nguon/chuyen_mon/phac_do_benh_vien/phac_do_cdss_columns.js')).href);
-const { loaiTrungMaIcdUuTienNoiDung, gopPhacDoImportVoiDuLieuHienTai, COT_MAC_DINH_PHAC_DO_CDSS } = mod;
+const {
+  loaiTrungMaIcdUuTienNoiDung,
+  gopPhacDoImportVoiDuLieuHienTai,
+  COT_MAC_DINH_PHAC_DO_CDSS,
+  laDongMauTemplatePhacDo,
+} = mod;
 
 const excelPath = process.argv[2];
 if (!excelPath || !fs.existsSync(excelPath)) {
@@ -31,13 +36,18 @@ const sheetName = wb.SheetNames.includes('Template') ? 'Template' : wb.SheetName
 const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
 
 const { chuanHoaDongImportPhacDo } = mod;
-const excelRows = rawRows.map((row, i) => {
-  const clean = chuanHoaDongImportPhacDo(row);
-  return { ...clean, id: clean.id || `pd-import-${i + 1}` };
-});
+
+const excelRows = rawRows
+  .map((row, i) => {
+    const clean = chuanHoaDongImportPhacDo(row);
+    return { ...clean, id: clean.id || `pd-import-${i + 1}` };
+  })
+  .filter((r) => !laDongMauTemplatePhacDo(r));
 const excelDedup = loaiTrungMaIcdUuTienNoiDung(excelRows);
 
-const seedDedup = loaiTrungMaIcdUuTienNoiDung(Array.isArray(seed.data) ? seed.data : []);
+const seedDedup = loaiTrungMaIcdUuTienNoiDung(Array.isArray(seed.data) ? seed.data : []).filter(
+  (r) => !laDongMauTemplatePhacDo(r),
+);
 
 const merged = gopPhacDoImportVoiDuLieuHienTai(seedDedup, excelDedup, {
   uuTienFileMoi: true,

@@ -1,0 +1,6 @@
+{
+  "version": "2026-04-11",
+  "source": "cdss_icd_dm_goi_y_upgrade.seed.json",
+  "columns": ["MA_ICD", "MA_THUOC_GOI_Y", "MA_DVKT_GOI_Y", "GHI_CHU"],
+  "data": []
+}

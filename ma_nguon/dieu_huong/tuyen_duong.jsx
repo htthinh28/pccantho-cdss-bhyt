@@ -48,6 +48,7 @@ import QuanLyChuyenMon from '../man_hinh/quan_ly_chuyen_mon';
 import BaoCaoVaThongKe from '../man_hinh/baocao_va_thongke';
 import ManHinhThuVien from '../man_hinh/thu_vien';
 import ManHinhTriThucTuGiamDinh from '../man_hinh/tri_thuc_tu_giam_dinh';
+import ManHinhTroLyTriThucChat from '../man_hinh/tro_ly_tri_thuc_chat';
 import CongTiepNhanHIS from '../man_hinh/cong_tiep_nhan_his';
 
 const Stack = createNativeStackNavigator();
@@ -80,6 +81,7 @@ const cauHinhLienKet = {
       QuanLyChuyenMon: 'clinical-guidelines',
       ThuVien: 'thu-vien',
       TriThucTuGiamDinh: 'tri-thuc-giam-dinh',
+      TroLyTriThuc: 'tro-ly-tri-thuc',
       CongHIS: 'his-gateway',
       BaoCaoVaThongKe: 'reports', // Path cho báo cáo
       SuaFileXML: 'auditing/edit/:maLK',
@@ -224,6 +226,7 @@ const DieuHuongChinh = () => {
         <Stack.Screen name="QuanLyChuyenMon" component={QuanLyChuyenMon} />
         <Stack.Screen name="ThuVien" component={ManHinhThuVien} />
         <Stack.Screen name="TriThucTuGiamDinh" component={ManHinhTriThucTuGiamDinh} />
+        <Stack.Screen name="TroLyTriThuc" component={ManHinhTroLyTriThucChat} />
         <Stack.Screen name="CongHIS" component={CongTiepNhanHIS} />
         
         {/* --- PHÂN HỆ BÁO CÁO VÀ THỐNG KÊ --- */}

@@ -97,6 +97,9 @@ const ManHinhThuVien = ({ navigation }) => {
         ) : null}
 
         <View style={styles.shortcut_row}>
+          <TouchableOpacity style={styles.shortcut_btn} onPress={() => navigation.navigate('TroLyTriThuc')}>
+            <Text style={styles.shortcut_txt}>🤖 Trợ lý tri thức</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.shortcut_btn}
             onPress={() => navigation.navigate('QuanLyChuyenMon')}

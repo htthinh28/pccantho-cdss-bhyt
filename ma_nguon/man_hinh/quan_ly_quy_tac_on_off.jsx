@@ -994,7 +994,7 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
           </View>
 
           <View style={styles.khung_quan_ly_noi_dung}>
-            <Text style={styles.tieu_de_noi_dung}>QUẢN LÝ NỘI DUNG QUY TẮC (không sửa code nguồn)</Text>
+            <Text style={styles.tieu_de_noi_dung}>SỬA NỘI DUNG QUY TẮC — mã nguồn và kho nhập tay</Text>
             <ScrollView
               horizontal
               nestedScrollEnabled
@@ -1074,8 +1074,8 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
               </View>
               <Text style={styles.txt_luu_y}>
                 {dangSuaRule?.laNoiBo
-                  ? 'Quy tắc MA NGUON: có thể sửa tên/cảnh báo/điều kiện hiển thị (ghi đè cục bộ, không đổi mã trong phần mềm). Nút Ẩn chỉ ẩn khỏi danh sách quản trị — trạng thái ON/OFF vẫn lưu.'
-                  : 'Quy tắc nhập tay: thêm/sửa/xóa toàn bộ dòng trong kho dữ liệu. Quy tắc MA NGUON dùng Sửa để ghi đè hiển thị hoặc Ẩn để thu gọn danh sách.'}
+                  ? 'Quy tắc gắn MA NGUỒN (luật cứng/seed/mẫu): sửa tên, điều kiện hiển thị, nội dung cảnh báo và chi tiết/ghi chú — lưu vào thiết bị và áp dụng khi giám định (không cần sửa file mã). Mã luật khóa để tránh lệch khóa. Nút Ẩn chỉ ẩn khỏi danh sách quản trị; ON/OFF vẫn lưu.'
+                  : 'Quy tắc nhập tay (kho CDSS_DATA): sửa toàn bộ trường gồm mã luật, điều kiện và cảnh báo — lưu trực tiếp vào kho. Quy tắc MA NGUỒN dùng Sửa ở trên để ghi đè hiển thị khi trùng mã.'}
               </Text>
             </View>
           </View>

@@ -1,0 +1,64 @@
+{
+  "version": "2026-04-11",
+  "source_file": "ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx",
+  "total_rules": 603,
+  "conversion_note": "Mỗi lô hoàn tất: đặt status=done và ghi commit hoặc ngày merge.",
+  "batches": [
+    {
+      "batch": 1,
+      "id_range": "CHUYEN_DE-001 — CHUYEN_DE-075",
+      "focus": "DVKT đơn: MA_DV/TEN_DICH_VU + XML1 giới tính/ICD",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 2,
+      "id_range": "CHUYEN_DE-076 — CHUYEN_DE-150",
+      "focus": "Nhiều DVKT / COUNT_IF DS_XML3",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 3,
+      "id_range": "CHUYEN_DE-151 — CHUYEN_DE-225",
+      "focus": "Giường, nội trú, MA_LOAI_KCB",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 4,
+      "id_range": "CHUYEN_DE-226 — CHUYEN_DE-300",
+      "focus": "PTTT, ánh xạ M05",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 5,
+      "id_range": "CHUYEN_DE-301 — CHUYEN_DE-375",
+      "focus": "CDHA/CLS, MA_MAY",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 6,
+      "id_range": "CHUYEN_DE-376 — CHUYEN_DE-450",
+      "focus": "XN và ICD (token MA_BENH_KT)",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 7,
+      "id_range": "CHUYEN_DE-451 — CHUYEN_DE-525",
+      "focus": "Thuốc / XML2 hoặc tách LUAT_THUOC",
+      "status": "done",
+      "done_at": "2026-04-11"
+    },
+    {
+      "batch": 8,
+      "id_range": "CHUYEN_DE-526 — CHUYEN_DE-603",
+      "focus": "Hành chính, đa BN, API — blocked nếu thiếu dữ liệu",
+      "status": "done",
+      "done_at": "2026-04-11"
+    }
+  ]
+}

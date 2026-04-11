@@ -12,7 +12,12 @@ import { COT_DANH_MUC_NHAN_SU, DANH_MUC_NHAN_SU } from '../ma_nguon/thanh_phan/n
 import { COT_DANH_MUC_THUOC_MAU_M03, DANH_MUC_THUOC_MAU_M03 } from '../ma_nguon/thanh_phan/thuoc_mau_cp.jsx';
 import { COT_DANH_MUC_TRANG_THIET_BI_M06, DANH_MUC_TRANG_THIET_BI_M06 } from '../ma_nguon/thanh_phan/trang_thiet_bi.jsx';
 import { chayGiamDinhToanDienV15, xoaCacheBoMayGiamDinh } from '../ma_nguon/tien_ich/dong_co_giam_dinh.jsx';
+import {
+  COT_SEED_LUAT_DU_LIEU_MUC1,
+  DU_LIEU_SEED_LUAT_DU_LIEU_MUC1,
+} from '../ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx';
 import { capNhatDanhMuc } from '../ma_nguon/tien_ich/kho_du_lieu.jsx';
+import { damBaoSeedLuatPtttMuc11 } from '../ma_nguon/tien_ich/seed_luat_pttt_muc11.jsx';
 import { damBaoSeedLuatThuocMuc8 } from '../ma_nguon/tien_ich/seed_luat_thuoc_muc8.jsx';
 import { xuLyFileXML130 } from '../ma_nguon/tien_ich/xml_helper.jsx';
 
@@ -137,6 +142,21 @@ const seedDanhMuc = async () => {
     return tasks;
   }));
   await damBaoSeedLuatThuocMuc8();
+  await damBaoSeedLuatPtttMuc11();
+  await capNhatDanhMuc('CDSS_COLS_LUAT_DU_LIEU', COT_SEED_LUAT_DU_LIEU_MUC1);
+  await capNhatDanhMuc('CDSS_DATA_LUAT_DU_LIEU', DU_LIEU_SEED_LUAT_DU_LIEU_MUC1);
+  const phacDoSeedPath = path.join(process.cwd(), 'ma_nguon/chuyen_mon/phac_do_benh_vien/du_lieu_phac_do_cdss_guidelines.seed.json');
+  if (fs.existsSync(phacDoSeedPath)) {
+    const phacDoSeed = JSON.parse(fs.readFileSync(phacDoSeedPath, 'utf8'));
+    if (Array.isArray(phacDoSeed.data)) await capNhatDanhMuc('CDSS_DATA_PHAC_DO_V3', phacDoSeed.data);
+    if (Array.isArray(phacDoSeed.columns)) await capNhatDanhMuc('CDSS_COLS_PHAC_DO_V3', phacDoSeed.columns);
+  }
+  const cdssDmUpgradePath = path.join(process.cwd(), 'ma_nguon/chuyen_mon/phac_do_benh_vien/cdss_icd_dm_goi_y_upgrade.seed.json');
+  if (fs.existsSync(cdssDmUpgradePath)) {
+    const cdssDm = JSON.parse(fs.readFileSync(cdssDmUpgradePath, 'utf8'));
+    if (Array.isArray(cdssDm.data)) await capNhatDanhMuc('CDSS_DATA_ICD_DM_GOI_Y_V1', cdssDm.data);
+    if (Array.isArray(cdssDm.columns)) await capNhatDanhMuc('CDSS_COLS_ICD_DM_GOI_Y_V1', cdssDm.columns);
+  }
 };
 
 const main = async () => {

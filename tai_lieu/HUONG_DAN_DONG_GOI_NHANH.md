@@ -4,6 +4,34 @@
 
 ---
 
+## 🖥️ Thành phẩm demo nội bộ — Windows, offline, không cài đặt (Portable)
+
+Dùng **Electron + bản web export** (`dist/`): một file chạy được, không cần `npm install` trên máy demo.
+
+### Trên máy build (có Node.js + npm)
+
+1. Mở terminal tại thư mục gốc repo.
+2. Chạy **chỉ bản Portable** (nhanh hơn bản đầy `desktop:build:win` vì không tạo NSIS):
+
+   ```bash
+   npm run desktop:build:win-portable
+   ```
+
+3. **File thành phẩm** nằm trong thư mục tạm (tránh lỗi khi repo trên Google Drive):
+
+   - Mặc định: `%TEMP%\cdss-bhyt-release-desktop\`
+   - Hoặc đặt trước khi build: `set CDSS_RELEASE_OUT=D:\PhatHanh\CDSS_BHYT_demo` rồi chạy lại lệnh trên.
+
+4. Tìm file dạng `CDSS-BHYT-Phuong-Chau-<version>-Windows-x64.exe` (Portable) — copy sang USB hoặc máy demo, **chạy trực tiếp**, không cần cài đặt.
+
+### Ghi chú
+
+- **Offline (không cài đặt):** đúng với máy demo — không cần Node/Python.
+- **Mạng:** giao diện và tài liệu `public/tai_lieu` đi kèm bản đóng gói; nếu tính năng trong app gọi Firebase/API/HIS thì vẫn cần mạng nội bộ hoặc cấu hình tương ứng (không thuộc phạm vi file `.exe`).
+- Build đầy đủ (Portable + NSIS): `npm run desktop:build:win`.
+
+---
+
 ## ⚡ CÁCH NHANH NHẤT (3 bước)
 
 ### **Bước 1:** Mở File Explorer

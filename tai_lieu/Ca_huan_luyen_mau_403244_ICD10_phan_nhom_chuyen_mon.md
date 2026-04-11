@@ -19,7 +19,7 @@ Trọng tâm không phải "đếm lỗi", mà là chọn đúng trục chuyên 
 - Audit: `test_xml/audit_403244_20260405_224614.json`
 - Rule nổi bật:
   - `CLN-PTTT-02`, `CLN-PTTT-05`, `CLN-PTTT-13`
-  - `DVKT_0259`, `DVKT_2335`
+  - `DVKT_0259`, `DVKT_2587` (snapshot audit; một số mã seed cũ đã gỡ — xem `Khung_chat_luong_giam_dinh_DVKT_VBHN17.md`)
 
 ## 3. Dữ liệu ICD10 đã xác nhận
 

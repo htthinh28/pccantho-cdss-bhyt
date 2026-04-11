@@ -497,11 +497,71 @@ export const luuTapMaLuatAnKhoiQuanLyNoiBo = async (tap) => {
   return new Set(items);
 };
 
+/** Mẫu có *: prefix càng dài = càng cụ thể (THUOC_4* thắng THUOC*). */
+const tinhDoUuTienMauCoSao = (patternRaw) => {
+  const p = normalizeCode(patternRaw);
+  if (!p.endsWith('*')) return p.length + 100000;
+  const prefix = p.slice(0, -1);
+  return prefix.length;
+};
+
+/**
+ * Lấy object ghi đè nội dung cho MA_LUAT: khớp chính xác, sau đó mẫu * (ưu tiên prefix dài).
+ * Dùng chung màn ON/OFF và áp vào kết quả giám định.
+ */
+export const layGhiDeNoiDungTheoMaLuat = (maLuatRaw, mapGhiDe = {}) => {
+  const ma = chuanHoaKhoaMaLuatOnOff(maLuatRaw);
+  if (!ma || !mapGhiDe || typeof mapGhiDe !== 'object') return null;
+  const exact = mapGhiDe[ma];
+  if (exact && typeof exact === 'object') return exact;
+
+  let selected = null;
+  let selectedScore = -1;
+  Object.entries(mapGhiDe).forEach(([pattern, payload]) => {
+    const p = normalizeCode(pattern);
+    if (!p || !p.endsWith('*') || !payload || typeof payload !== 'object') return;
+    if (!khopMaLuatTheoMau(p, maLuatRaw)) return;
+    const score = tinhDoUuTienMauCoSao(p);
+    if (score > selectedScore) {
+      selectedScore = score;
+      selected = payload;
+    }
+  });
+  return selected;
+};
+
 /** Áp ghi đè đã lưu lên một dòng quy tắc (mẫu hoặc hardcoded nội bộ) */
 export const apGhiDeChoDongNoiBo = (row, mapGhiDe = {}) => {
-  const ma = chuanHoaKhoaMaLuatOnOff(row?.MA_LUAT || row?.ma_luat || '');
-  if (!ma || !mapGhiDe[ma]) return row;
-  return { ...(row || {}), ...(mapGhiDe[ma] || {}) };
+  const o = layGhiDeNoiDungTheoMaLuat(row?.MA_LUAT || row?.ma_luat || '', mapGhiDe);
+  if (!o) return row;
+  return { ...(row || {}), ...o };
+};
+
+/**
+ * Áp ghi đè nội dung (tên/cảnh báo/điều kiện hiển thị/ghi chú) lên một phần tử cảnh báo từ engine.
+ * Không đổi logic trong mã nguồn — chỉ đổi text hiển thị khi đã lưu trong CDSS_GHI_DE_NOI_DUNG_*.
+ */
+export const apGhiDeNoiDungLenDoiTuongCanhBao = (loi, mapGhiDe = {}) => {
+  if (!loi) return loi;
+  const maRaw = String(loi?.ma_luat || loi?.MA_LUAT || '').trim();
+  const o = layGhiDeNoiDungTheoMaLuat(maRaw, mapGhiDe);
+  if (!o || typeof o !== 'object') return loi;
+  const out = { ...loi };
+  const t = String(o.TEN_QUY_TAC ?? '').trim();
+  const c = String(o.CANH_BAO ?? '').trim();
+  const d = String(o.DIEU_KIEN ?? '').trim();
+  const ct = String(o.CHI_TIET_CANH_BAO ?? '').trim();
+  const nhom = String(o.NHOM_CANH_BAO ?? '').trim();
+  if (t) out.ten_quy_tac = t;
+  if (c) out.canh_bao = c;
+  if (d) out.dieu_kien = d;
+  if (ct) out.chi_tiet_canh_bao = ct;
+  if (nhom) out.nhom_canh_bao = nhom;
+  const tag = String(o.TAG_CANH_BAO ?? '').trim();
+  const tagNguon = String(o.TAG_NGUON_CANH_BAO ?? '').trim();
+  if (tag) out.tag_canh_bao = tag;
+  if (tagNguon) out.tag_nguon_canh_bao = tagNguon;
+  return out;
 };
 
 export const taoDanhSachQuyTacNoiBoTheoTab = (statusMap = {}) => {
@@ -521,14 +581,6 @@ export const taoDanhSachQuyTacNoiBoTheoTab = (statusMap = {}) => {
     });
   });
   return byTab;
-};
-
-/** Mẫu có *: prefix càng dài = càng cụ thể (THUOC_4* thắng THUOC*). */
-const tinhDoUuTienMauCoSao = (patternRaw) => {
-  const p = normalizeCode(patternRaw);
-  if (!p.endsWith('*')) return p.length + 100000;
-  const prefix = p.slice(0, -1);
-  return prefix.length;
 };
 
 const layTrangThaiTheoMau = (maLuat, statusMap = {}) => {

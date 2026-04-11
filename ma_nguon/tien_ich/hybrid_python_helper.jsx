@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import { auditClaimsBangPythonService, healthCheckPythonService, pythonServiceConfig } from '../dich_vu/python_service_api';
+import {
+  auditClaimsBangPythonService,
+  healthCheckPythonService,
+  pythonServiceConfig,
+} from '../dich_vu/python_service_api';
 import { docMangDanhMucTuStorage } from './luu_tru_danh_muc';
 
 const KHOA_CHE_DO_GIAM_DINH = 'CDSS_AUDIT_ENGINE_MODE';
@@ -148,24 +152,65 @@ export const taiDanhMucRuntimeChoPython = async () => {
   }
 };
 
-export const kiemTraPythonServiceSanSang = async () => {
+/** Kết quả kiểm tra / warm-up gần nhất (để UI đọc nhanh). */
+let trangThaiPythonGanNhat = null;
+
+export const layTrangThaiPythonGanNhat = () => trangThaiPythonGanNhat;
+
+const hoan = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Thử kết nối Python nhiều lần (lần 1 ngay; các lần sau chờ thêm để service cold-start / mạng ổn định).
+ * Không phụ thuộc navigator.onLine — máy offline vẫn có thể tới 127.0.0.1 / 10.0.2.2.
+ */
+export const ketNoiPythonServiceLucKhoiDong = async (options = {}) => {
+  const cfg = pythonServiceConfig();
+  const maxAttempts = Number(options.maxAttempts) > 0 ? Number(options.maxAttempts) : 4;
+  const delaysMs = Array.isArray(options.delaysMs) ? options.delaysMs : [0, 400, 1200, 2800];
+  const healthTimeoutMs = Number.isFinite(options.healthTimeoutMs) && options.healthTimeoutMs > 0
+    ? options.healthTimeoutMs
+    : cfg.healthTimeoutMs;
+
+  let last = null;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    if (attempt > 0) {
+      await hoan(delaysMs[attempt] ?? 1500 * attempt);
+    }
+    last = await kiemTraPythonServiceSanSang({ healthTimeoutMs });
+    if (last.ok) {
+      trangThaiPythonGanNhat = { ...last, soLanThu: attempt + 1 };
+      return { ...last, soLanThu: attempt + 1 };
+    }
+  }
+  trangThaiPythonGanNhat = { ...last, soLanThu: maxAttempts };
+  return { ...last, soLanThu: maxAttempts };
+};
+
+export const kiemTraPythonServiceSanSang = async (options = {}) => {
   try {
-    const response = await healthCheckPythonService();
-    return {
+    const healthTimeoutMs = Number.isFinite(options.healthTimeoutMs) && options.healthTimeoutMs > 0
+      ? options.healthTimeoutMs
+      : pythonServiceConfig().healthTimeoutMs;
+    const response = await healthCheckPythonService({ timeoutMs: healthTimeoutMs });
+    const ketQua = {
       ok: true,
       trangThai: TRANG_THAI_PYTHON.SAN_SANG,
       chiTiet: `Kết nối thành công${response?.timestamp ? ` · ${response.timestamp}` : ''}`,
       baseUrl: pythonServiceConfig().baseUrl || '',
       response,
     };
+    trangThaiPythonGanNhat = ketQua;
+    return ketQua;
   } catch (error) {
-    return {
+    const ketQua = {
       ok: false,
       trangThai: TRANG_THAI_PYTHON.KHONG_KHA_DUNG,
       chiTiet: error?.message || 'Không thể kết nối Python service.',
       baseUrl: pythonServiceConfig().baseUrl || '',
       response: null,
     };
+    trangThaiPythonGanNhat = ketQua;
+    return ketQua;
   }
 };
 
@@ -244,9 +289,11 @@ export const thongKeHybridDashboard = (danhSachHoSo = []) => {
 };
 
 export const chaySmokeTestPythonService = async () => {
-  const ketQuaKiemTra = await kiemTraPythonServiceSanSang();
+  const ketQuaKiemTra = await ketNoiPythonServiceLucKhoiDong();
   if (!ketQuaKiemTra.ok) {
-    throw new Error(`Không thể kết nối Python service tại ${ketQuaKiemTra.baseUrl || 'N/A'}`);
+    throw new Error(
+      `Không thể kết nối Python (${ketQuaKiemTra.baseUrl || 'N/A'}) sau ${ketQuaKiemTra.soLanThu || '?'} lần thử: ${ketQuaKiemTra.chiTiet || ''}`,
+    );
   }
 
   const runtime = await taiDanhMucRuntimeChoPython();

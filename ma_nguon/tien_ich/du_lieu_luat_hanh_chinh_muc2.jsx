@@ -53,8 +53,9 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "HC_06",
     "TEN_QUY_TAC": "Chi phí thấp (Dưới 15% LCS)",
-    "DIEU_KIEN": "XML1.T_TONGCHI_BH < (0.15 * 2340000) AND XML1.T_BNCCT > 0",
+    "DIEU_KIEN": "XML1.T_TONGCHI_BH < (0.15 * 2340000) AND XML1.T_BNCCT > 0 AND XML1.MA_LOAI_KCB NOT IN ('1', '01')",
     "CANH_BAO": "⛔ [THU SAI]: Chi phí đợt điều trị dưới 351.000đ (15% LCS), BN phải được hưởng 100%. Cơ sở không được thu tiền cùng chi trả.",
+    "GHI_CHU": "2026-04: Không áp MA_LOAI_KCB 1/01 (khám/ngoại trú) — kê đơn và tổng chi khác nội trú; giảm dương tính giả.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {

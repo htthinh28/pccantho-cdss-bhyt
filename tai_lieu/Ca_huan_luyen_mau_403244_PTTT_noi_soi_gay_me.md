@@ -20,7 +20,7 @@ Ca này tập trung vào nhóm `PTTT` và dịch vụ:
   - `CLN-PTTT-05`
   - `CLN-PTTT-13`
   - `DVKT_0259`
-  - `DVKT_2335`
+  - `DVKT_2587` (thay thế ví dụ mã đã gỡ khỏi seed; xem `Khung_chat_luong_giam_dinh_DVKT_VBHN17.md`)
 
 ## 3. Tóm tắt hồ sơ
 

@@ -8,6 +8,7 @@ import {
   chuanHoaDongImportPhacDo,
   COT_MAC_DINH_PHAC_DO_CDSS,
   gopPhacDoImportVoiDuLieuHienTai,
+  laDongMauTemplatePhacDo,
   loaiTrungMaIcdUuTienNoiDung,
 } from './phac_do_cdss_columns';
 import InfographicPhacDo from './infographic';
@@ -145,10 +146,12 @@ const PhacDoBenhVien = () => {
       const importedData = XLSX.utils.sheet_to_json(ws, { defval: '' });
 
       if (importedData.length > 0) {
-        const formattedData = importedData.map((row, i) => {
-          const clean = chuanHoaDongImportPhacDo(row);
-          return { ...clean, id: clean.id || `imp-${Date.now()}-${i}` };
-        });
+        const formattedData = importedData
+          .map((row, i) => {
+            const clean = chuanHoaDongImportPhacDo(row);
+            return { ...clean, id: clean.id || `imp-${Date.now()}-${i}` };
+          })
+          .filter((r) => !laDongMauTemplatePhacDo(r));
         const importKhongTrungIcd = loaiTrungMaIcdUuTienNoiDung(formattedData);
         const mergedRows = gopPhacDoImportVoiDuLieuHienTai(data, importKhongTrungIcd, {
           uuTienFileMoi: true,
