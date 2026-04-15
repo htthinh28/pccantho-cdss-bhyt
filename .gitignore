@@ -88,3 +88,11 @@ server.log
 
 # File tạm extract (không cần trong repo)
 temp_*_extract*.txt
+
+# Binary đóng gói / phân phối (không đồng bộ git: exe, zip, gói cài đặt)
+*.exe
+*.msi
+*.zip
+*.7z
+*.dmg
+*.AppImage
