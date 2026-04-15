@@ -82,6 +82,21 @@ const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
   return { mergedRows: merged, addedCount };
 };
 
+/** Khi tăng PHIEN_BAN: ưu tiên toàn bộ dòng trong bundle (cùng MA_LUAT → lấy từ seed), giữ quy tắc tùy biến BV (MA không có trong seed). */
+const hopNhatDongLuatUuTienSeed = (existingRows = [], seedRows = []) => {
+  const seedNormalized = (Array.isArray(seedRows) ? seedRows : []).map((row, index) => chuanHoaDongLuat(row, index));
+  const maTrongSeed = new Set(
+    seedNormalized.map((r) => String(r?.MA_LUAT || '').trim().toUpperCase()).filter(Boolean),
+  );
+  const customLocal = (Array.isArray(existingRows) ? existingRows : [])
+    .map((row, index) => chuanHoaDongLuat(row, index))
+    .filter((r) => {
+      const ma = String(r?.MA_LUAT || '').trim().toUpperCase();
+      return Boolean(ma) && !maTrongSeed.has(ma);
+    });
+  return { mergedRows: [...seedNormalized, ...customLocal], addedCount: seedNormalized.length };
+};
+
 const docRaw = async (key) => {
   if (laMoiTruongWeb()) {
     const rawWeb = window.localStorage.getItem(key);
@@ -121,9 +136,11 @@ export const damBaoSeedLuatHanhChinhMuc2 = async () => {
       docRaw(KHOA_MIGRATION_SEED).then((raw) => parseJSONAnToan(raw, {})),
     ]);
 
-    const { mergedRows, addedCount } = hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2);
-    const mergedCols = hopNhatCot(colsHienTai);
     const daApDungDungPhienBan = String(migrationMap?.[KHOA_PHIEN_BAN_SEED] || '') === PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2;
+    const { mergedRows, addedCount } = daApDungDungPhienBan
+      ? hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2)
+      : hopNhatDongLuatUuTienSeed(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2);
+    const mergedCols = hopNhatCot(colsHienTai);
     const canGhiLai = addedCount > 0
       || !daApDungDungPhienBan
       || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0);

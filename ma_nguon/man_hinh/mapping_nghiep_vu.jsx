@@ -26,7 +26,12 @@ import {
   timTenNhieuMa,
   timTenTheoMa,
 } from '../tien_ich/catalog_mapping_catalog_loaders';
-import { layCauHinhLoaiMapping, LAY_MAPPING_TYPE_OPTIONS, MAPPING_TYPE_CONFIG } from '../tien_ich/catalog_mapping_types';
+import {
+  laMappingNhieuMaDich,
+  layCauHinhLoaiMapping,
+  LAY_MAPPING_TYPE_OPTIONS,
+  MAPPING_TYPE_CONFIG,
+} from '../tien_ich/catalog_mapping_types';
 import {
   luuTatCaBanGhiMapping,
   mappingCoHieuLucTaiNgay,
@@ -99,6 +104,18 @@ const MappingNghiepVu = ({ navigation }) => {
     return { chi: [], thuc: tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc] };
   };
 
+  /** ICD↔thuốc/DVKT/VTYT…: danh sách mã đích (một dòng có thể nhiều mã). */
+  const layMaDichMultiNghiepVu = (r) => {
+    if (!laMappingNhieuMaDich(r.mapping_type)) return [];
+    const md = r.metadata && typeof r.metadata === 'object' ? r.metadata : {};
+    if (Array.isArray(md.target_codes) && md.target_codes.length) {
+      return md.target_codes.map((c) => String(c || '').trim()).filter(Boolean);
+    }
+    const tc = String(r.target_code || '').trim();
+    if (!tc) return [];
+    return tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
+  };
+
   const bangMergedChoModal = useMemo(
     () => ({ ...bangTheoRef, ...bangModalTheoLoai }),
     [bangTheoRef, bangModalTheoLoai],
@@ -115,7 +132,12 @@ const MappingNghiepVu = ({ navigation }) => {
       }
       if (!tk) return true;
       const { chi, thuc } = r.mapping_type === 'STAFF_DVKT' ? layNhomDvktStaff(r) : { chi: [], thuc: [] };
-      const extra = r.mapping_type === 'STAFF_DVKT' ? [...chi, ...thuc].join(' ') : '';
+      const extra =
+        r.mapping_type === 'STAFF_DVKT'
+          ? [...chi, ...thuc].join(' ')
+          : laMappingNhieuMaDich(r.mapping_type)
+            ? layMaDichMultiNghiepVu(r).join(' ')
+            : '';
       const s = `${r.source_code} ${r.target_code} ${r.mapping_type} ${extra}`.toLowerCase();
       return s.includes(tk);
     });
@@ -136,6 +158,9 @@ const MappingNghiepVu = ({ navigation }) => {
       const b = timTenNhieuMa(ds, thuc);
       return [a && `CD: ${a}`, b && `TH: ${b}`].filter(Boolean).join(' · ');
     }
+    if (laMappingNhieuMaDich(r.mapping_type)) {
+      return timTenNhieuMa(ds, layMaDichMultiNghiepVu(r));
+    }
     return timTenTheoMa(ds, r.target_code);
   };
   const maDichChiDinh = (r) => (r.mapping_type === 'STAFF_DVKT' ? layNhomDvktStaff(r).chi.join(', ') : '');
@@ -147,6 +172,7 @@ const MappingNghiepVu = ({ navigation }) => {
   };
   const maDichThucHien = (r) => {
     if (r.mapping_type === 'STAFF_DVKT') return layNhomDvktStaff(r).thuc.join(', ');
+    if (laMappingNhieuMaDich(r.mapping_type)) return layMaDichMultiNghiepVu(r).join(', ');
     return r.target_code || '';
   };
   const tenDichThucHien = (r) => {
@@ -154,6 +180,7 @@ const MappingNghiepVu = ({ navigation }) => {
     if (!c) return '';
     const ds = bangTheoRef[c.target_catalog] || [];
     if (r.mapping_type === 'STAFF_DVKT') return timTenNhieuMa(ds, layNhomDvktStaff(r).thuc);
+    if (laMappingNhieuMaDich(r.mapping_type)) return timTenNhieuMa(ds, layMaDichMultiNghiepVu(r));
     return timTenTheoMa(ds, r.target_code);
   };
 

@@ -229,6 +229,19 @@ const VI_PHAM_TYLE_T_BHTT_TONGCHI_BH = (xml1) => {
     return Math.abs(tb - expected) > tol;
 };
 
+/**
+ * HC_83 (thẻ TS): coi là hợp lệ nếu tỷ lệ T_BHTT / T_TONGCHI_BH ≥ 95%.
+ * true = vi phạm (tỷ lệ thực tế dưới 95%). Không áp khớp từng đồng theo ký hiệu số thứ 3 như VI_PHAM_TYLE_T_BHTT_TONGCHI_BH.
+ */
+const VI_PHAM_TS_TYLE_BHTT_DUOI_95 = (xml1) => {
+    const ma = UPPER(String(xml1?.MA_THE_BHYT || '').trim());
+    if (!ma.startsWith('TS')) return false;
+    const tt = TO_NUMBER(xml1?.T_TONGCHI_BH);
+    if (tt <= 0) return false;
+    const tb = TO_NUMBER(xml1?.T_BHTT);
+    return tb * 100 < tt * 95;
+};
+
 /** Cảnh báo khai báo thẻ: 2 ký tự đầu không khớp nhóm theo ký hiệu số thứ 3 (dùng làm rule riêng). */
 const VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX = (xml1) => THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU(xml1);
 
@@ -714,6 +727,20 @@ const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
 const layMgHamLuongTuHamLuong = (hamLuong) => {
     const m = String(hamLuong || '').match(/(\d+(?:[.,]\d+)?)\s*mg\b/i);
     return m ? parseFloat(String(m[1]).replace(',', '.')) : 0;
+};
+
+/**
+ * Toa xuất viện (nội trú): thường kê cùng ngày ra viện; SO_LUONG mang về có thể > SL_MOI_NGAY×SO_NGAY
+ * nếu SO_NGAY chỉ phản ánh ngày điều trị nội trú — không áp dụng THUOC_417 (chỉ khi trùng ngày YL và NGAY_RA).
+ */
+const laDongThuocToaXuatVienNoiTru = (xml1 = {}, row = {}) => {
+    if (!row || !laHoSoNoiTruTheoQd824(xml1)) return false;
+    if (IS_EMPTY(xml1?.NGAY_RA)) return false;
+    const dRa = layNgayYYYYMMDDtuDongXML2Thuoc({ NGAY_YL: xml1.NGAY_RA, NGAY_TH_YL: xml1.NGAY_RA });
+    if (dRa.length !== 8) return false;
+    const dYl = layNgayYYYYMMDDtuDongXML2Thuoc(row);
+    if (dYl.length !== 8) return false;
+    return dRa === dYl;
 };
 
 const coLechDonViYLenhVaCapPhatThuoc = (row = {}) => {
@@ -2525,6 +2552,7 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
             const soNgay = TO_NUMBER(dong?.SO_NGAY);
             if (!(slMoiNgay > 0 && soNgay > 0)) return false;
         }
+        if (ma === 'THUOC_417' && laDongThuocToaXuatVienNoiTru(xml1, dong)) return false;
         if (ma === 'THUOC_482' && dong) {
             const maThuoc = String(dong?.MA_THUOC || '').trim();
             const tenT = String(dong?.TEN_THUOC || '');
@@ -3754,6 +3782,7 @@ const SYS_KEYWORDS_RULE_DONG = Object.freeze([
     'THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU',
     'VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX',
     'VI_PHAM_TYLE_T_BHTT_TONGCHI_BH',
+    'VI_PHAM_TS_TYLE_BHTT_DUOI_95',
     'NGOAI_TRU_HC39_HC40_TRE_SO_SINH',
     'HC_65_CO_MOC_DV_NGOAI_KHOANG_VAO_RA',
     'THUOC_95_VI_PHAM_CHI_DINH',
@@ -4697,6 +4726,7 @@ const taoHamDieuKienLuatDong = (jsQuery = '') => {
         THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU,
         VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX,
         VI_PHAM_TYLE_T_BHTT_TONGCHI_BH,
+        VI_PHAM_TS_TYLE_BHTT_DUOI_95,
         NGOAI_TRU_HC39_HC40_TRE_SO_SINH,
         HC_65_CO_MOC_DV_NGOAI_KHOANG_VAO_RA,
         THUOC_95_VI_PHAM_CHI_DINH,
@@ -4853,6 +4883,7 @@ const taoNguCanhRuleDong = (hoSo, batchContext = null) => {
         THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU,
         VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX,
         VI_PHAM_TYLE_T_BHTT_TONGCHI_BH,
+        VI_PHAM_TS_TYLE_BHTT_DUOI_95,
         NGOAI_TRU_HC39_HC40_TRE_SO_SINH,
         HC_65_CO_MOC_DV_NGOAI_KHOANG_VAO_RA,
         THUOC_95_VI_PHAM_CHI_DINH,

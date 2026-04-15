@@ -4169,7 +4169,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "TEN_QUY_TAC": "Giám định thuốc cấp dư (Dựa trên y lệnh)",
     "DIEU_KIEN": "XML2.SO_LUONG > (XML2.SL_MOI_NGAY * XML2.SO_NGAY)",
     "CANH_BAO": "⛔ [XUẤT TOÁN]: Thuốc {TEN_THUOC} cấp dư {DU_QTY} đơn vị. (Kê đơn: {SO_LUONG}, Y lệnh thực tế: {SL_MOI_NGAY} {UNIT}/ngày x {SO_NGAY} ngày).",
-    "GHI_CHU": "",
+    "GHI_CHU": "Ngoại trừ nội trú xuất viện: toa mang về khi NGAY_YL/NGAY_TH_YL trùng ngày NGAY_RA — bỏ qua THUOC_417 (locDuongTinhGia: laDongThuocToaXuatVienNoiTru).",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
   {

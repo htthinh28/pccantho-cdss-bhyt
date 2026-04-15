@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) */
-export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-14_muc2_qd1018_ty_le_the_hc250';
+export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-15_HC83_ts_ty_le_95';
 export const COT_SEED_LUAT_HANH_CHINH_MUC2 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
   {
@@ -768,8 +768,8 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "HC_83",
     "TEN_QUY_TAC": "Thẻ mã 'TS' (Thân nhân liệt sĩ)",
-    "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'TS' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)",
-    "CANH_BAO": "⛔ [Mức 2 / TS]: Theo QĐ 1018/QĐ-BHXH — ký hiệu số thứ 3 = 2 → 100% phạm vi chi trả (có giới hạn thuốc/VKT/DVKT), không còn quy đổi 95% theo cách cũ. T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
+    "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'TS' AND VI_PHAM_TS_TYLE_BHTT_DUOI_95(XML1)",
+    "CANH_BAO": "⛔ [Mức 2 / TS]: Tỷ lệ T_BHTT so với T_TONGCHI_BH dưới 95%. Coi là đúng nếu tỷ lệ ≥ 95% (không bắt khớp 100% từng đồng theo ký hiệu số thứ 3 thẻ).",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {

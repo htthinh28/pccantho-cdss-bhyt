@@ -11,12 +11,15 @@ import {
   View,
 } from 'react-native';
 import { CD } from '../tien_ich/chu_de_giao_dien';
-import { layCauHinhLoaiMapping, MAPPING_TYPE_CONFIG } from '../tien_ich/catalog_mapping_types';
+import { layCauHinhLoaiMapping, laMappingNhieuMaDich, MAPPING_TYPE_CONFIG } from '../tien_ich/catalog_mapping_types';
 
 /** Nhãn danh mục nội bộ theo catalog_ref (đồng bộ Quản lý danh mục) */
 const TEN_DM_HIEN_THI = {
   employees: 'Nhân sự — Mẫu 02 (MA_BHXH / CCHN)',
   dvkt_items: 'DVKT — Mẫu 05 (MA_DICH_VU)',
+  icd10: 'ICD-10 (MÃ BỆNH / tên bệnh)',
+  drug_items: 'Thuốc — Mẫu 03 (MA_THUOC)',
+  vtyt_items: 'VTYT — Mẫu 04 (MA_VAT_TU)',
   surgery_types: 'Phân loại PT — từ PHAN_LOAI_PTTT trên DVKT M05',
   bed_types: 'Giường / bàn khám BV',
   equipments: 'Trang thiết bị — Mẫu 06 (MA_MAY)',
@@ -129,6 +132,35 @@ function sapXepDvktTheoMaTuongDuong(ds) {
   return arr;
 }
 
+/** Sắp xếp danh mục đích: thuốc theo mã + hoạt chất + tên (ABC); VTYT/DVKT theo mã. */
+function sapXepDanhMucDichTheoCatalog(ds, catalogRef) {
+  const arr = [...(ds || [])];
+  if (catalogRef === 'drug_items') {
+    arr.sort((a, b) => {
+      const ka = `${a.code}\t${a.tenHoatChat || ''}\t${a.name || ''}`;
+      const kb = `${b.code}\t${b.tenHoatChat || ''}\t${b.name || ''}`;
+      return ka.localeCompare(kb, 'vi', { numeric: true, sensitivity: 'base' });
+    });
+    return arr;
+  }
+  if (catalogRef === 'vtyt_items') {
+    arr.sort((a, b) => String(a.code || '').localeCompare(String(b.code || ''), 'vi', { numeric: true, sensitivity: 'base' }));
+    return arr;
+  }
+  if (catalogRef === 'dvkt_items') {
+    return sapXepDvktTheoMaTuongDuong(arr);
+  }
+  return arr;
+}
+
+function sapXepDanhMucNguonTheoCatalog(ds, catalogRef) {
+  const arr = [...(ds || [])];
+  if (catalogRef === 'icd10') {
+    arr.sort((a, b) => String(a.code || '').localeCompare(String(b.code || ''), 'vi', { numeric: true, sensitivity: 'base' }));
+  }
+  return arr;
+}
+
 /** Lọc toàn bộ danh sách (dùng cho STAFF_DVKT — list / listbox đầy đủ) */
 function locToanBo(ds, tuKhoa) {
   const t = String(tuKhoa || '').trim().toLowerCase();
@@ -147,6 +179,8 @@ function locHetDanhMucDon(ds, tuKhoa) {
       x.code,
       x.name,
       x.maTuongDuong,
+      x.tenHoatChat,
+      x.nhomVtyt,
       x.chucDanh,
       x.chungChi,
       kyHieu,
@@ -175,6 +209,8 @@ export default function ModalCatalogMapping({
   /** STAFF_DVKT: DV theo vai trò chỉ định / thực hiện */
   const [targetCodesChiDinh, setTargetCodesChiDinh] = useState([]);
   const [targetCodesThucHien, setTargetCodesThucHien] = useState([]);
+  /** ICD↔thuốc, ICD↔DVKT, DVKT↔thuốc, DVKT↔VTYT, ICD↔VTYT: nhiều mã đích / một bản ghi */
+  const [targetCodesNhieu, setTargetCodesNhieu] = useState([]);
   const [effectiveFrom, setEffectiveFrom] = useState('');
   const [effectiveTo, setEffectiveTo] = useState('');
   const [priority, setPriority] = useState('0');
@@ -190,15 +226,20 @@ export default function ModalCatalogMapping({
 
   const dsNguon = useMemo(() => {
     if (!cfg) return [];
-    return bangTheoRef[cfg.source_catalog] || [];
+    const raw = bangTheoRef[cfg.source_catalog] || [];
+    return sapXepDanhMucNguonTheoCatalog(raw, cfg.source_catalog);
   }, [bangTheoRef, cfg]);
 
   const dsDich = useMemo(() => {
     if (!cfg) return [];
-    return bangTheoRef[cfg.target_catalog] || [];
+    const raw = bangTheoRef[cfg.target_catalog] || [];
+    return sapXepDanhMucDichTheoCatalog(raw, cfg.target_catalog);
   }, [bangTheoRef, cfg]);
 
   const laStaffDvkt = mappingType === 'STAFF_DVKT';
+  const laMultiTarget = laMappingNhieuMaDich(mappingType);
+  /** Rộng khung ngay khi mở từ thẻ (mappingType state có thể chưa kịp sync). */
+  const laMultiTargetLayout = laMappingNhieuMaDich(mappingTypeCoDinh || mappingType);
   const dsDvktSapXep = useMemo(() => (laStaffDvkt ? sapXepDvktTheoMaTuongDuong(dsDich) : dsDich), [dsDich, laStaffDvkt]);
   const dsNhanSuDayDu = useMemo(() => {
     const t = String(tuKhoaNguon || '').trim().toLowerCase();
@@ -239,11 +280,25 @@ export default function ModalCatalogMapping({
         setTargetCodesThucHien(hai.thuc);
         setLichGioTuan(hopNhatLichGio(md.lich_hanh_nghe_tuan));
         setTrucGio(hopNhatTrucGio(md));
+        setTargetCodesNhieu([]);
       } else {
         setTargetCodesChiDinh([]);
         setTargetCodesThucHien([]);
         setLichGioTuan(taoLichGioRong());
         setTrucGio([]);
+        if (laMappingNhieuMaDich(banGhiChinhSua.mapping_type)) {
+          const md = banGhiChinhSua.metadata && typeof banGhiChinhSua.metadata === 'object' ? banGhiChinhSua.metadata : {};
+          let arr = [];
+          if (Array.isArray(md.target_codes) && md.target_codes.length) {
+            arr = md.target_codes.map((c) => String(c || '').trim()).filter(Boolean);
+          } else {
+            const tc = String(banGhiChinhSua.target_code || '').trim();
+            arr = tc ? (tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc]) : [];
+          }
+          setTargetCodesNhieu(arr);
+        } else {
+          setTargetCodesNhieu([]);
+        }
       }
     } else {
       setMappingType(mappingTypeCoDinh || 'STAFF_DVKT');
@@ -260,6 +315,7 @@ export default function ModalCatalogMapping({
       setTuKhoaDich('');
       setLichGioTuan(taoLichGioRong());
       setTrucGio([]);
+      setTargetCodesNhieu([]);
     }
   }, [visible, banGhiChinhSua, mappingTypeCoDinh]);
 
@@ -268,7 +324,9 @@ export default function ModalCatalogMapping({
   const tenDichThuc = laStaffDvkt ? timTenNhieuMa(dsDich, targetCodesThucHien) : '';
   const tenDich = laStaffDvkt
     ? [tenDichChi && `Chỉ định: ${tenDichChi}`, tenDichThuc && `Thực hiện: ${tenDichThuc}`].filter(Boolean).join(' · ')
-    : timTenTheoMa(dsDich, targetCode);
+    : laMultiTarget
+      ? timTenNhieuMa(dsDich, targetCodesNhieu)
+      : timTenTheoMa(dsDich, targetCode);
 
   const handleLuu = () => {
     setLoi('');
@@ -308,6 +366,18 @@ export default function ModalCatalogMapping({
       metadata.tham_gia_truc = { gio: [...trucGio] };
     }
 
+    if (laMappingNhieuMaDich(mappingType) && mappingType !== 'STAFF_DVKT') {
+      const codes = [...new Set((targetCodesNhieu || []).map((c) => String(c || '').trim()).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }),
+      );
+      if (codes.length === 0) {
+        setLoi('Chọn ít nhất một mã đích (có thể chọn nhiều mã trong một bản ghi).');
+        return;
+      }
+      maDichLuu = codes.join('|');
+      metadata.target_codes = codes;
+    }
+
     const c = layCauHinhLoaiMapping(mappingType);
     const duyetMacDinh = banGhiChinhSua
       ? (banGhiChinhSua.approval_status || 'APPROVED')
@@ -340,6 +410,12 @@ export default function ModalCatalogMapping({
   const laSua = Boolean(banGhiChinhSua);
   const tenLoaiHienThi = cfg?.display_name || mappingType;
   const tieuDeChinh = laSua ? `Sửa — ${tenLoaiHienThi}` : `Thêm — ${tenLoaiHienThi}`;
+
+  const toggleTargetMulti = (code) => {
+    const c = String(code || '').trim();
+    if (!c) return;
+    setTargetCodesNhieu((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  };
 
   const toggleDvkt = (code, nhom) => {
     const c = String(code || '').trim();
@@ -391,7 +467,13 @@ export default function ModalCatalogMapping({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.nen}>
-        <View style={[styles.khung, laStaffDvkt && styles.khungRongStaffDvkt, !laStaffDvkt && mappingTypeCoDinh && styles.khungRongDon]}>
+        <View
+          style={[
+            styles.khung,
+            (laStaffDvkt || laMultiTargetLayout) && styles.khungRongStaffDvkt,
+            !laStaffDvkt && !laMultiTargetLayout && mappingTypeCoDinh && styles.khungRongDon,
+          ]}
+        >
         <ScrollView
           style={styles.khungScroll}
           contentContainerStyle={styles.khungScrollContent}
@@ -684,15 +766,22 @@ export default function ModalCatalogMapping({
 
               <View style={styles.cotBangDon}>
                 <Text style={styles.nhan}>Đích — {TEN_DM_HIEN_THI[cfg?.target_catalog] || cfg?.target_catalog}</Text>
-                <Text style={styles.nhanNho}>Chọn một dòng đích</Text>
+                <Text style={styles.nhanNho}>
+                  {laMultiTarget
+                    ? 'Chọn một hoặc nhiều mã đích (tap để bật/tắt). Một ICD có thể gắn nhiều thuốc/DVKT/VTYT; nhiều ICD khác nhau có thể cùng một mã đích — lưu thành nhiều dòng mapping.'
+                    : 'Chọn một dòng đích'}
+                </Text>
                 <TextInput
                   style={styles.oLoc}
                   value={tuKhoaDich}
                   onChangeText={setTuKhoaDich}
-                  placeholder="Lọc theo mã, tên, ký hiệu…"
+                  placeholder="Lọc theo mã, tên, hoạt chất…"
                   placeholderTextColor={CD.text.placeholder}
                 />
-                <Text style={styles.demBangDon}>{dsDichHet.length} mã</Text>
+                <Text style={styles.demBangDon}>
+                  {dsDichHet.length} mã
+                  {laMultiTarget && cfg?.target_catalog === 'drug_items' ? ' · sắp A→Z (mã / hoạt chất / tên)' : ''}
+                </Text>
                 <FlatList
                   data={dsDichHet}
                   keyExtractor={(item, index) => `tgt_${item.code}_${index}`}
@@ -705,19 +794,33 @@ export default function ModalCatalogMapping({
                   removeClippedSubviews={Platform.OS === 'android'}
                   ListEmptyComponent={<Text style={styles.chuTrongList}>Không có dữ liệu hoặc chưa khớp bộ lọc.</Text>}
                   renderItem={({ item: x }) => {
-                    const chon = targetCode === x.code;
+                    const chon = laMultiTarget ? targetCodesNhieu.includes(x.code) : targetCode === x.code;
                     return (
                       <TouchableOpacity
                         style={[styles.dongListDon, chon && styles.dongListChon]}
                         onPress={() => {
-                          setTargetCode(x.code);
-                          setTuKhoaDich('');
+                          if (laMultiTarget) {
+                            toggleTargetMulti(x.code);
+                          } else {
+                            setTargetCode(x.code);
+                            setTuKhoaDich('');
+                          }
                         }}
                         activeOpacity={0.75}
                       >
                         <Text style={styles.maListDon} numberOfLines={1}>{x.code}</Text>
+                        {cfg?.target_catalog === 'drug_items' && x.tenHoatChat ? (
+                          <Text style={styles.phuListDon} numberOfLines={2}>
+                            HC: {x.tenHoatChat}
+                          </Text>
+                        ) : null}
                         <Text style={styles.tenListDon} numberOfLines={3}>{x.name}</Text>
                         {x.maTuongDuong ? <Text style={styles.phuListDon}>TTĐ: {x.maTuongDuong}</Text> : null}
+                        {cfg?.target_catalog === 'vtyt_items' && x.nhomVtyt ? (
+                          <Text style={styles.phuListDon} numberOfLines={1}>
+                            Nhóm: {x.nhomVtyt}
+                          </Text>
+                        ) : null}
                       </TouchableOpacity>
                     );
                   }}
@@ -726,9 +829,14 @@ export default function ModalCatalogMapping({
             </View>
           )}
 
-          {!laStaffDvkt && (sourceCode || targetCode) ? (
+          {!laStaffDvkt && (sourceCode || targetCode || (laMultiTarget && targetCodesNhieu.length > 0)) ? (
             <Text style={styles.tomTatChonDon}>
-              {tenNguon ? `${tenNguon} (${sourceCode})` : sourceCode || '…'} → {tenDich ? `${tenDich} (${targetCode})` : targetCode || '…'}
+              {tenNguon ? `${tenNguon} (${sourceCode})` : sourceCode || '…'} →{' '}
+              {laMultiTarget
+                ? (tenDich ? `${tenDich} (${targetCodesNhieu.join(', ')})` : targetCodesNhieu.join(', ') || '…')
+                : tenDich
+                  ? `${tenDich} (${targetCode})`
+                  : targetCode || '…'}
             </Text>
           ) : null}
 

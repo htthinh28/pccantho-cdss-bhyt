@@ -64,6 +64,12 @@ const taiBangTheoCatalogRefNoCache = async (catalogRef) => {
     if (catalogRef === 'dvkt_items') {
       item.maTuongDuong = layGiaTri(row, ['MA_TUONG_DUONG', 'MA_TUONG_DUONG_GIA']);
     }
+    if (catalogRef === 'drug_items') {
+      item.tenHoatChat = layGiaTri(row, ['TEN_HOAT_CHAT']);
+    }
+    if (catalogRef === 'vtyt_items') {
+      item.nhomVtyt = layGiaTri(row, ['NHOM_VAT_TU']);
+    }
     return item;
   }).filter((x) => x.code);
 };
@@ -92,7 +98,16 @@ export const taiBangTheoCatalogRef = async (catalogRef) => {
 };
 
 export const taiTatCaBangChoMapping = async () => {
-  const keys = ['employees', 'dvkt_items', 'surgery_types', 'bed_types', 'equipments'];
+  const keys = [
+    'employees',
+    'dvkt_items',
+    'icd10',
+    'drug_items',
+    'vtyt_items',
+    'surgery_types',
+    'bed_types',
+    'equipments',
+  ];
   const out = {};
   await Promise.all(
     keys.map(async (k) => {

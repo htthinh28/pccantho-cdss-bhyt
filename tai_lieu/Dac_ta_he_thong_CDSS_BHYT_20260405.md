@@ -1,7 +1,8 @@
 # ĐẶC TẢ HỆ THỐNG CDSS BHYT
 
-Phiên bản tài liệu: 2.0  
-Ngày cập nhật: 05/04/2026  
+Phiên bản tài liệu: 3.0  
+Ngày cập nhật: 15/04/2026  
+Phiên bản ứng dụng tham chiếu: **1.1.0** (`package.json`)  
 Phạm vi áp dụng: mã nguồn hiện có trong dự án `ung_dung_cdss_bhyt`
 
 ## 1. Mục đích tài liệu
@@ -29,6 +30,11 @@ Phạm vi nghiệp vụ chính gồm:
 - Theo dõi báo cáo, thống kê chất lượng dữ liệu và xuất Excel.
 - Sao lưu, phục hồi và đồng bộ cấu hình/dataset với Firebase khi cần.
 - Kết nối HIS và Python service trong mô hình lai.
+- **Thư viện tài liệu** nội bộ (đồng bộ từ `tai_lieu/` ra giao diện web/app) và **Trợ lý tri thức (RAG)** khi bật cấu hình.
+- **Mapping danh mục nghiệp vụ** (catalog mapping) phục vụ đối chiếu mã giữa hệ thống nội bộ và chuẩn dùng chung.
+- **Đóng gói desktop** (Electron): bản cài NSIS hoặc bản **portable** Windows (`.exe` không cài đặt), xuất từ `dist` web đã `expo export`.
+- **Cập nhật offline** (tùy triển khai): gói vá hoặc công cụ cập nhật phần giao diện tĩnh — xem `tai_lieu/HUONG_DAN_NANG_CAP_OFFLINE.txt` và script `desktop:*` trong `package.json`.
+- **Chuyên môn:** phân hệ phác đồ / chuyên môn; module **tương tác thuốc** (`ma_nguon/chuyen_mon/tuong_tac_thuoc/`) phục vụ rà soát tương tác và quy tắc liên quan khi được cấu hình.
 
 Ngoài phạm vi tài liệu này:
 
@@ -87,7 +93,13 @@ Hệ thống được xây dựng để giải quyết các nhu cầu sau:
 - HIS qua REST/WebSocket theo cấu hình trong `app.json`.
 - Python FastAPI cho audit batch hoặc xử lý mở rộng.
 
-### 6.4. Thông tin cấu hình nền tảng
+### 6.4. Đóng gói desktop (Electron)
+
+- **Electron** (phiên bản cố định trong quy trình đóng gói, ví dụ 35.7.x) + **electron-builder**, cấu hình `electron-builder.desktop.yml`.
+- Luồng chuẩn: `npm run tai_lieu:prepare` → `expo export --platform web` → tạo thư mục staging `.desktop-staging` (chỉ `dist`, `electron-main.cjs`, `package.json` tối giản) → `electron-builder` ghi artifact (mặc định có thể dùng `%TEMP%\cdss-bhyt-release-desktop` hoặc `CDSS_RELEASE_OUT`).
+- Target Windows: **portable** (một file `.exe` chạy trực tiếp) và/hoặc **NSIS** (bản cài). Chi tiết vận hành: `packaging/HUONG_DAN_BAN_PORTABLE_DAY_DU.txt`.
+
+### 6.5. Thông tin cấu hình nền tảng
 
 - Tên ứng dụng: `CDSS BHYT Phuong Chau`.
 - Gói Android: `com.phuongchau.cdss.bhyt`.
@@ -112,6 +124,8 @@ Hệ thống được xây dựng để giải quyết các nhu cầu sau:
 - `ma_nguon/quy_tac`: dữ liệu chuẩn tham chiếu cấu trúc XML và tập luật chuyên biệt.
 - `python_service`: dịch vụ FastAPI dùng cho mô hình lai.
 - `scripts`: script kiểm tra, audit, generate dữ liệu, smoke test và hỗ trợ vận hành.
+- `tai_lieu`: tài liệu Markdown/HTML phục vụ Thư viện; sau chỉnh sửa chạy `npm run tai_lieu:prepare` để đồng bộ `public/tai_lieu/` và `tai_lieu_manifest.json`.
+- `ma_nguon/chuyen_mon`: module chuyên môn (ví dụ tương tác thuốc).
 - `tai_nguyen`: ảnh, biểu tượng và tài nguyên dùng cho app.
 - `test_xml`: dữ liệu kết quả audit và mẫu chạy kiểm thử thực tế.
 
@@ -199,38 +213,42 @@ Trách nhiệm:
 
 ## 9. Điều hướng và bản đồ màn hình
 
-Theo `tuyen_duong.jsx`, hệ thống đang khai báo các route nghiệp vụ sau:
+Theo `tuyen_duong.jsx`, hệ thống đang khai báo các route nghiệp vụ sau (thứ tự nhóm):
 
-1. `DangNhap`.
-2. `TongQuan`.
-3. `Helper`.
-4. `PhanQuyenTruyCap`.
-5. `DocXML`.
-6. `ChiTiet`.
-7. `SuaFileXML`.
-8. `KhoLuuTru`.
-9. `QuanLyLuat`.
-10. `QuanLyQuyTacOnOff`.
-11. `QuanLyDanhMuc`.
-12. `DanhMucBYTMain`.
-13. `QuanLyChuyenMon`.
-14. `BaoCaoVaThongKe`.
-15. `XML1`.
-16. `XML2`.
-17. `XML3`.
-18. `XML4`.
-19. `XML5`.
-20. `XML6`.
+**Truy cập & hệ thống:** `DangNhap`, `TongQuan`, `Helper`, `PhanQuyenTruyCap`.
 
-Deep link đang được cấu hình cho web/mobile với các path như:
+**Kiểm tra hồ sơ:** `DocXML`, `ChiTiet`, `SuaFileXML`, `KhoLuuTru`.
 
-- `login` cho đăng nhập.
-- `dashboard` cho tổng quan.
-- `auditing` cho nhập và giám định hồ sơ.
-- `archive` cho kho lưu trữ.
-- `rules` cho quản lý luật.
-- `reports` cho báo cáo.
-- `xml/xml1` đến `xml/xml6` cho quản lý các bảng XML chi tiết.
+**Quản trị dữ liệu & danh mục:** `QuanLyLuat`, `QuanLyQuyTacOnOff`, `QuanLyDanhMuc`, `MappingNghiepVu`, `DanhMucBYTMain`, `QuanLyChuyenMon`, `ThuVien`, `TriThucTuGiamDinh`, `TroLyTriThuc`, `CongHIS`.
+
+**Báo cáo:** `BaoCaoVaThongKe`.
+
+**XML chi tiết (QĐ 130):** `XML1` … `XML6`.
+
+Deep link (web) — tham chiếu `cauHinhLienKet` trong `tuyen_duong.jsx`:
+
+| Route | Path web |
+|-------|----------|
+| `DangNhap` | `/login` |
+| `TongQuan` | `/dashboard` |
+| `Helper` | `/helper` |
+| `DocXML` | `/auditing` |
+| `ChiTiet` | `/case-detail/:maLK` |
+| `SuaFileXML` | `/auditing/edit/:maLK` |
+| `KhoLuuTru` | `/archive` |
+| `QuanLyLuat` | `/rules` |
+| `QuanLyQuyTacOnOff` | `/rules/on-off` |
+| `QuanLyDanhMuc` | `/master-data` |
+| `MappingNghiepVu` | `/mapping-nghiep-vu` |
+| `DanhMucBYTMain` | `/danh-muc-byt` |
+| `QuanLyChuyenMon` | `/clinical-guidelines` |
+| `ThuVien` | `/thu-vien` |
+| `TriThucTuGiamDinh` | `/tri-thuc-giam-dinh` |
+| `TroLyTriThuc` | `/tro-ly-tri-thuc` |
+| `CongHIS` | `/his-gateway` |
+| `BaoCaoVaThongKe` | `/reports` |
+| `XML1` … `XML6` | `/xml/xml1` … `/xml/xml6` |
+| `PhanQuyenTruyCap` | `/permissions` |
 
 ## 10. Mô tả các phân hệ chức năng
 
@@ -353,6 +371,26 @@ Chức năng chính:
 - Cho phép rà soát chi tiết từng bảng.
 - Hỗ trợ đối chiếu cấu trúc và trường dữ liệu.
 
+### 10.13. Mapping nghiệp vụ (`MappingNghiepVu`)
+
+- Ánh xạ danh mục / mã nghiệp vụ giữa kho nội bộ và chuẩn dùng trong giám định (theo module triển khai).
+
+### 10.14. Thư viện (`ThuVien`)
+
+- Hiển thị tài liệu đã chuẩn bị trong `tai_lieu/` (sau `npm run tai_lieu:prepare`).
+
+### 10.15. Tri thức từ giám định (`TriThucTuGiamDinh`)
+
+- Khai thác tri thức / gợi ý gắn với kết quả giám định (theo thiết kế màn hình).
+
+### 10.16. Trợ lý tri thức (`TroLyTriThuc`)
+
+- Trợ lý hội thoại / RAG trên corpus tài liệu nội bộ khi được cấu hình.
+
+### 10.17. Cổng tiếp nhận HIS (`CongHIS`)
+
+- Kết nối hoặc kiểm tra luồng dữ liệu từ HIS theo cấu hình `app.json` (REST/WebSocket).
+
 ## 11. Luồng xử lý nghiệp vụ end-to-end
 
 ### 11.1. Luồng khởi động
@@ -453,7 +491,20 @@ Nguyên tắc:
 
 Seed luật dữ liệu không chỉ nằm ở file dữ liệu mà còn phụ thuộc vào cơ chế migration seed. Khi chỉnh sửa seed cần đảm bảo danh sách `MA_LUAT_CAN_CAP_NHAT` hoặc `MA_LUAT_CAN_XOA` được cập nhật để dữ liệu đã lưu cũ cũng nhận thay đổi.
 
-### 13.5. Chuẩn hóa đầu ra XML3 và rule legacy
+### 13.5. Một số quy tắc đối chiếu tiền tệ điển hình (LUAT_DU_LIEU — minh họa)
+
+Các mã sau minh họa **cách hệ thống kiểm tra đồng bộ số liệu** giữa XML1 và chi tiết; biểu thức cụ thể nằm trong seed `du_lieu_luat_du_lieu_muc1.jsx` và có thể được quản trị ON/OFF:
+
+| Mã | Ý nghĩa ngắn |
+|----|----------------|
+| **XML_49** | So `XML1.T_BHTT` với tổng `T_BHTT` trên các dòng XML2/XML3 (chỉ cộng dòng có `T_BHTT` không rỗng). Cảnh báo khi \|chênh\| > 1 (đồng). |
+| **XML_53** | So `XML1.T_THUOC` với tổng tiền thuốc trên XML2 (nhóm `MA_NHOM` 4, 5): cộng dồn theo thứ tự ưu tiên trên dòng — `THANH_TIEN_BH` → `THANH_TIEN` → `THANH_TIEN_BV` → `T_BHTT` (cùng logic ưu tiên với built-in đối chiếu tổng tiền thuốc). |
+| **XML_109** | Cảnh báo khi **tổng** `THANH_TIEN_BH` (XML2+XML3) > **tổng** `THANH_TIEN_BV` (tức tổng phần BHYT vượt tổng phần BV ở mức gộp). |
+| **XML_143** | Kiểm tra **từng dòng** XML2/XML3: nếu có đủ `THANH_TIEN_BH` và `THANH_TIEN_BV` mà `THANH_TIEN_BH` vượt `THANH_TIEN_BV` quá ngưỡng (chênh > 1đ) thì báo — thành tiền BHYT không được cao hơn thành tiền BV trên cùng dòng. |
+
+Ngoài ra, engine built-in (`dong_co_giam_dinh.jsx`) có thể sinh cảnh báo **CLN-CHI-01** (đối chiếu tổng tiền thuốc) với cách lấy tiền dòng tương thích — cần phân biệt nguồn rule khi truy vết.
+
+### 13.6. Chuẩn hóa đầu ra XML3 và rule legacy
 
 - Từ lớp hậu xử lý của engine, cảnh báo XML3 được phép gắn thêm metadata mô tả nguồn rule mà không làm đổi thứ tự chạy hoặc điều kiện đánh giá.
 - Các trường metadata chuẩn hóa đầu ra gồm:
@@ -570,7 +621,7 @@ RBAC gồm:
 
 ## 18. Vận hành và lệnh kỹ thuật
 
-Các lệnh chính hiện có trong `package.json`:
+Các lệnh chính hiện có trong `package.json` (trích — xem file đầy đủ):
 
 ```bash
 npm install
@@ -580,6 +631,7 @@ npm run android
 npm run ios
 npm run lint
 npm run text:check
+npm run tai_lieu:prepare
 npm run py:install
 npm run py:start
 npm run qa:python-service
@@ -587,7 +639,14 @@ npm run qa:xml-real
 npm run qa:strict-flow
 npm run firebase:deploy-rules
 npm run firebase:emulators
+# Đóng gói desktop (sau khi cài electron / devDependencies)
+npm run desktop:export
+npm run desktop:build:win
+npm run desktop:build:win-portable
+npm run desktop:electron
 ```
+
+**Ghi chú:** Ứng dụng có thể **warm-up** kết nối Python service ngay sau khi shell sẵn sàng (`tuyen_duong.jsx`) — không thay thế cấu hình URL service trong Helper/hybrid.
 
 ## 19. Yêu cầu phi chức năng
 

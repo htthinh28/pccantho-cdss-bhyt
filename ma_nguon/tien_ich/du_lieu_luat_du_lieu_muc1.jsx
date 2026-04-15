@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_DU_LIEU (12).xlsx */
-export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-11_muc1_cdss_cm_chuan_hoa_vo';
+export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-15_muc1_xml143_bh_le_bv';
 export const COT_SEED_LUAT_DU_LIEU_MUC1 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","DIEU_KIEN (Toán tử No-Code)","GHI_CHU_SUA","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
   {
@@ -468,11 +468,11 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "id": "SEED_DULIEU_53",
     "TRANG_THAI": "ON",
     "MA_LUAT": "XML_53",
-    "TEN_QUY_TAC": "Lệch tiền Thuốc (T_THUOC)",
-    "DIEU_KIEN": "ABS(TO_NUMBER(XML1.T_THUOC) - SUM_IF(XML2, item => item.MA_NHOM IN ('4','5'), item => TO_NUMBER(item.THANH_TIEN_BV))) > 1",
-    "CANH_BAO": "⛔ [KẾ TOÁN]: Tổng tiền thuốc tại XML1 lệch với cộng dồn THANH_TIEN_BV của các dòng thuốc tại XML2.",
+    "TEN_QUY_TAC": "Lệch T_THUOC (XML1) vs tổng tiền BHYT chi tiết thuốc XML2",
+    "DIEU_KIEN": "ABS(SUM_IF(XML2, item => item.MA_NHOM IN ('4','5'), item => !IS_EMPTY(item.THANH_TIEN_BH) ? TO_NUMBER(item.THANH_TIEN_BH) : (!IS_EMPTY(item.THANH_TIEN) ? TO_NUMBER(item.THANH_TIEN) : (!IS_EMPTY(item.THANH_TIEN_BV) ? TO_NUMBER(item.THANH_TIEN_BV) : TO_NUMBER(item.T_BHTT)))) - TO_NUMBER(XML1.T_THUOC)) > 1",
+    "CANH_BAO": "⛔ [KẾ TOÁN]: Tổng tiền thuốc do BHYT thanh toán cộng dồn tại XML2 (ưu tiên THANH_TIEN_BH → THANH_TIEN → THANH_TIEN_BV → T_BHTT trên dòng; nhóm MA_NHOM 4,5) lệch so với T_THUOC tại XML1 (|chênh| > 1đ).",
     "DIEU_KIEN (Toán tử No-Code)": "",
-    "GHI_CHU_SUA": "✏️ Giữ phạm vi thuốc ở nhóm 4,5 và chuyển .reduce() sang SUM_IF để giảm âm giả do engine không chạy reduce.",
+    "GHI_CHU_SUA": "✏️ Không đối chiếu THANH_TIEN_BV (BV) với T_THUOC khi nghiệp vụ là đồng bộ phần BHYT: cùng thứ tự lấy tiền dòng như CLN-CHI-01. ABS hai chiều, ngưỡng >1đ, nhóm 4–5.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"
   },
   {
@@ -1232,6 +1232,17 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "CANH_BAO": "⛔ [XUẤT TOÁN]: Y lệnh thuốc/dịch vụ phát sinh trước khi nhập viện.",
     "DIEU_KIEN (Toán tử No-Code)": "",
     "GHI_CHU_SUA": "",
+    "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"
+  },
+  {
+    "id": "SEED_DULIEU_143",
+    "TRANG_THAI": "ON",
+    "MA_LUAT": "XML_143",
+    "TEN_QUY_TAC": "Thành tiền BHYT không cao hơn thành tiền BV (chi tiết)",
+    "DIEU_KIEN": "COUNT_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0 OR COUNT_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0",
+    "CANH_BAO": "⛔ [KẾ TOÁN]: Có dòng chi tiết mà thành tiền BHYT (THANH_TIEN_BH) cao hơn thành tiền bệnh viện (THANH_TIEN_BV) — không hợp lệ (chênh > 1đ).",
+    "DIEU_KIEN (Toán tử No-Code)": "",
+    "GHI_CHU_SUA": "✏️ Bổ sung so dòng XML2/XML3; bổ sung cho XML_109 (chỉ so tổng). Chỉ kiểm khi cả BH và BV đều có giá trị.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"
   },
   {

@@ -4,7 +4,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Hướng dẫn sử dụng hệ thống (tiếng Việt)
 
-- **Đầy đủ theo chức năng:** [`tai_lieu/Huong_dan_su_dung_CDSS_BHYT_20260405.md`](tai_lieu/Huong_dan_su_dung_CDSS_BHYT_20260405.md) (phiên bản 3.0).
+- **Đầy đủ theo chức năng:** [`tai_lieu/Huong_dan_su_dung_CDSS_BHYT_20260405.md`](tai_lieu/Huong_dan_su_dung_CDSS_BHYT_20260405.md) (phiên bản 4.0). Đặc tả kỹ thuật: [`tai_lieu/Dac_ta_he_thong_CDSS_BHYT_20260405.md`](tai_lieu/Dac_ta_he_thong_CDSS_BHYT_20260405.md) (phiên bản 3.0).
 - **Người dùng không chuyên CNTT:** [`tai_lieu/Huong_dan_cho_nguoi_khong_chuyen_CNTT.md`](tai_lieu/Huong_dan_cho_nguoi_khong_chuyen_CNTT.md).
 - **Kỹ năng giám định AI (chung mọi nhóm rule):** [`tai_lieu/Ky_nang_cot_loi_giam_dinh_AI_BHYT.md`](tai_lieu/Ky_nang_cot_loi_giam_dinh_AI_BHYT.md) · [`tai_lieu/Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md`](tai_lieu/Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md) (bài tập có gợi ý).
 - **VTYT — chuẩn hóa suy luận AI:** [`tai_lieu/Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.md`](tai_lieu/Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.md) · bảng neo [`tai_lieu/Bang_neo_phien_huan_luyen_vtyt_va_engine.md`](tai_lieu/Bang_neo_phien_huan_luyen_vtyt_va_engine.md) · khung phiên [`tai_lieu/Huan_luyen_phien_VTYT_du_phong_Cursor.md`](tai_lieu/Huan_luyen_phien_VTYT_du_phong_Cursor.md) (chưa có audit fixture trong repo).

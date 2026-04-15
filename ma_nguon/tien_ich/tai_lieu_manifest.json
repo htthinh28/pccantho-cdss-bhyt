@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-15T03:01:13.279Z",
+  "generatedAt": "2026-04-15T10:03:56.778Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -24,6 +24,12 @@
       "relPath": "_extract_luan_van_BHYT_thinh/luan_van_full.txt",
       "title": "luan van full",
       "nguon": "text"
+    },
+    {
+      "id": "docx:~$c_ta_he_thong_CDSS_BHYT_20260405.docx",
+      "relPath": "~$c_ta_he_thong_CDSS_BHYT_20260405.docx",
+      "title": "~$c ta he thong CDSS BHYT 20260405",
+      "nguon": "docx"
     },
     {
       "id": "md:Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md",

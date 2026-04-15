@@ -39,17 +39,19 @@ const parseArgs = (argv) => {
   const args = argv.slice(2);
   const options = {
     claimPath: '',
+    dirPath: '',
     outPath: '',
     focusCodes: [],
+    tuongTacOnly: false,
   };
 
-  if (args.length > 0) {
-    options.claimPath = String(args[0] || '').trim();
-  }
-
-  for (let index = 1; index < args.length; index += 1) {
+  for (let index = 0; index < args.length; index += 1) {
     const arg = String(args[index] || '').trim();
     if (!arg) continue;
+    if (arg.startsWith('--dir=')) {
+      options.dirPath = arg.slice('--dir='.length).trim();
+      continue;
+    }
     if (arg.startsWith('--out=')) {
       options.outPath = arg.slice('--out='.length).trim();
       continue;
@@ -58,13 +60,38 @@ const parseArgs = (argv) => {
       options.focusCodes = arg.slice('--focus='.length).split(',').map((item) => item.trim().toUpperCase()).filter(Boolean);
       continue;
     }
-    if (!options.outPath && !arg.startsWith('--')) {
-      options.outPath = arg;
+    if (arg === '--tuong-tac-only') {
+      options.tuongTacOnly = true;
+      continue;
+    }
+    if (!arg.startsWith('--')) {
+      if (!options.claimPath && !options.dirPath) {
+        options.claimPath = arg;
+      } else if (!options.outPath) {
+        options.outPath = arg;
+      }
     }
   }
 
   return options;
 };
+
+/** Chỉ một cấp — tránh quét đệ quy chậm trên Google Drive */
+const listXmlFilesOneLevel = (dirAbs) => {
+  if (!fs.existsSync(dirAbs) || !fs.statSync(dirAbs).isDirectory()) return [];
+  return fs
+    .readdirSync(dirAbs, { withFileTypes: true })
+    .filter((d) => d.isFile() && String(d.name).toLowerCase().endsWith('.xml'))
+    .map((d) => path.join(dirAbs, d.name))
+    .sort((a, b) => path.basename(a).localeCompare(path.basename(b)));
+};
+
+const laMaLuatTuongTacThuoc = (maLuat) => {
+  const m = String(maLuat || '').trim().toUpperCase();
+  return m.startsWith('TUONGTAC_') || m === 'CLN-TT-001';
+};
+
+const locCanhBaoTuongTac = (warnings) => (Array.isArray(warnings) ? warnings : []).filter((w) => laMaLuatTuongTacThuoc(w?.ma_luat));
 
 const parseClaimXml130 = (claimPath) => {
   const raw = fs.readFileSync(claimPath, 'utf8');
@@ -161,9 +188,21 @@ const seedDanhMuc = async () => {
 
 const main = async () => {
   const options = parseArgs(process.argv);
-  if (!options.claimPath) {
-    console.error('Usage: node scripts/run_claim_audit.js <claim_xml130_path> [--out=output.json] [--focus=XML_55,XML_58,...]');
+  if (!options.claimPath && !options.dirPath) {
+    console.error('Usage:');
+    console.error('  node scripts/run_claim_audit.js <claim_xml130_path> [--out=output.json] [--focus=XML_55,...] [--tuong-tac-only]');
+    console.error('  node scripts/run_claim_audit.js --dir=tai_nguyen/xml [--out=audit_folder.json] [--tuong-tac-only]');
+    console.error('  (--dir chỉ đọc *.xml một cấp trong thư mục; không quét đệ quy)');
     process.exit(1);
+  }
+  if (options.claimPath && options.dirPath) {
+    console.error('Chỉ chọn một: file XML đơn hoặc --dir=...');
+    process.exit(1);
+  }
+
+  if (options.dirPath) {
+    await runAuditThuMuc(options);
+    return;
   }
 
   const claimPath = path.resolve(process.cwd(), options.claimPath);
@@ -177,12 +216,15 @@ const main = async () => {
 
   const hoSo = parseClaimXml130(claimPath);
   const xml1 = Array.isArray(hoSo.XML1) && hoSo.XML1.length > 0 ? hoSo.XML1[0] : {};
-  const warnings = await chayGiamDinhToanDienV15(hoSo);
+  let warnings = await chayGiamDinhToanDienV15(hoSo);
   warnings.sort((a, b) => {
     const orderDiff = (ORDER[a?.muc_do] ?? 9) - (ORDER[b?.muc_do] ?? 9);
     if (orderDiff !== 0) return orderDiff;
     return String(a?.ma_luat || '').localeCompare(String(b?.ma_luat || ''));
   });
+  if (options.tuongTacOnly) {
+    warnings = locCanhBaoTuongTac(warnings);
+  }
 
   const maLK = String(xml1?.MA_LK || 'unknown');
   const outputPath = path.resolve(
@@ -195,6 +237,7 @@ const main = async () => {
       claim_path: claimPath,
       ma_lk: maLK,
       total_warnings: warnings.length,
+      tuong_tac_only: options.tuongTacOnly,
       by_severity: buildSeveritySummary(warnings),
       by_namespace: buildFieldSummary(warnings, 'namespace_quy_tac'),
       by_source: buildFieldSummary(warnings, 'nguon_quy_tac'),
@@ -216,6 +259,100 @@ const main = async () => {
   if (options.focusCodes.length > 0) {
     console.log(`Focus: ${JSON.stringify(result.meta.focus_summary)}`);
   }
+  console.log(`Output: ${outputPath}`);
+};
+
+const runAuditThuMuc = async (options) => {
+  const dirAbs = path.resolve(process.cwd(), options.dirPath);
+  if (!fs.existsSync(dirAbs) || !fs.statSync(dirAbs).isDirectory()) {
+    console.error(`Thu muc khong ton tai hoac khong phai thu muc: ${dirAbs}`);
+    process.exit(2);
+  }
+
+  const xmlPaths = listXmlFilesOneLevel(dirAbs);
+  if (xmlPaths.length === 0) {
+    console.error(`Khong co file .xml (mot cap) trong: ${dirAbs}`);
+    process.exit(2);
+  }
+
+  await seedDanhMuc();
+  xoaCacheBoMayGiamDinh();
+
+  const files = [];
+  const aggregateTuongTac = {};
+
+  for (let i = 0; i < xmlPaths.length; i += 1) {
+    const claimPath = xmlPaths[i];
+    let hoSo;
+    try {
+      hoSo = parseClaimXml130(claimPath);
+    } catch (e) {
+      files.push({
+        claim_path: claimPath,
+        parse_ok: false,
+        error: String(e && e.message ? e.message : e),
+        total_warnings: 0,
+        tuong_tac_warnings: [],
+      });
+      continue;
+    }
+
+    const xml1 = Array.isArray(hoSo.XML1) && hoSo.XML1.length > 0 ? hoSo.XML1[0] : {};
+    const maLK = String(xml1?.MA_LK || path.basename(claimPath, '.xml'));
+
+    let warnings = await chayGiamDinhToanDienV15(hoSo);
+    warnings.sort((a, b) => {
+      const orderDiff = (ORDER[a?.muc_do] ?? 9) - (ORDER[b?.muc_do] ?? 9);
+      if (orderDiff !== 0) return orderDiff;
+      return String(a?.ma_luat || '').localeCompare(String(b?.ma_luat || ''));
+    });
+
+    const tuongTacWarnings = locCanhBaoTuongTac(warnings);
+    const rsTT = buildRuleSummary(tuongTacWarnings);
+    Object.keys(rsTT).forEach((k) => {
+      aggregateTuongTac[k] = (aggregateTuongTac[k] || 0) + rsTT[k];
+    });
+
+    const outWarnings = options.tuongTacOnly ? tuongTacWarnings : warnings;
+    files.push({
+      claim_path: claimPath,
+      ma_lk: maLK,
+      parse_ok: true,
+      total_warnings: warnings.length,
+      tuong_tac_count: tuongTacWarnings.length,
+      warnings: outWarnings,
+      rule_summary: buildRuleSummary(outWarnings),
+    });
+  }
+
+  const outputPath = path.resolve(
+    process.cwd(),
+    options.outPath || path.join('test_xml', `audit_tuong_tac_dir_${toTimestamp()}.json`)
+  );
+
+  const result = {
+    meta: {
+      mode: 'directory',
+      generated_at: new Date().toISOString(),
+      dir: dirAbs,
+      xml_file_count: xmlPaths.length,
+      tuong_tac_only: options.tuongTacOnly,
+      files_with_tuong_tac: files.filter((f) => f.parse_ok && (f.tuong_tac_count || 0) > 0).length,
+      aggregate_tuong_tac_rule_summary: Object.fromEntries(
+        Object.entries(aggregateTuongTac).sort((a, b) => a[0].localeCompare(b[0]))
+      ),
+      focus_summary: {},
+    },
+    files,
+  };
+
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), 'utf8');
+
+  console.log(`Thu muc: ${dirAbs}`);
+  console.log(`So file XML (mot cap): ${xmlPaths.length}`);
+  console.log(`Ho so co canh bao tuong tac thuoc: ${result.meta.files_with_tuong_tac}`);
+  console.log(`Tong hop ma luat (tuong tac): ${JSON.stringify(result.meta.aggregate_tuong_tac_rule_summary)}`);
   console.log(`Output: ${outputPath}`);
 };
 
