@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import TimKiemPhanTrangBang from '../../thanh_phan/tim_kiem_phan_trang_bang';
+import { locDongTheoTuKhoa, SO_DONG_TRANG_MAC_DINH, tinhChiSoPhanTrang } from '../../tien_ich/bo_loc_bang_du_lieu';
 import * as XLSX from 'xlsx';
 
 import InPhacDo from './in_phac_do';
@@ -41,6 +43,31 @@ const PhacDoBenhVien = () => {
   // Trạng thái điều hướng xem/in
   const [viewMode, setViewMode] = useState('table'); 
   const [currentICD, setCurrentICD] = useState('');
+  const [tuKhoaTim, setTuKhoaTim] = useState('');
+  const [soDongMotTrang, setSoDongMotTrang] = useState(SO_DONG_TRANG_MAC_DINH);
+  const [trangHienTai, setTrangHienTai] = useState(1);
+
+  const hangLocChiSo = useMemo(
+    () => locDongTheoTuKhoa(data, columns, tuKhoaTim),
+    [data, columns, tuKhoaTim],
+  );
+  const nSauLoc = hangLocChiSo.length;
+  const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
+    () => tinhChiSoPhanTrang(nSauLoc, soDongMotTrang, trangHienTai),
+    [nSauLoc, soDongMotTrang, trangHienTai],
+  );
+  const duLieuTrang = useMemo(
+    () => hangLocChiSo.slice(chiSoBatDau, chiSoKetThuc),
+    [hangLocChiSo, chiSoBatDau, chiSoKetThuc],
+  );
+
+  useEffect(() => {
+    if (trangHienTai > tongSoTrang) setTrangHienTai(tongSoTrang);
+  }, [tongSoTrang, trangHienTai]);
+
+  useEffect(() => {
+    setTrangHienTai(1);
+  }, [tuKhoaTim, soDongMotTrang]);
 
   const noiDungDongHienTai = useMemo(() => {
     const key = 'MÃ ICD-10';
@@ -225,6 +252,21 @@ const PhacDoBenhVien = () => {
         style={styles.phan_bang_du_lieu}
         onLayout={(e) => setChieuCaoVungBang(e.nativeEvent.layout.height)}
       >
+        <View style={styles.khung_tim_bang}>
+          <TimKiemPhanTrangBang
+            tuKhoa={tuKhoaTim}
+            onTuKhoa={setTuKhoaTim}
+            tongDongGoc={data.length}
+            tongDongSauLoc={nSauLoc}
+            soDongMotTrang={soDongMotTrang}
+            onSoDongMotTrang={setSoDongMotTrang}
+            trangHienTai={trangDangXem}
+            onTrangHienTai={setTrangHienTai}
+            tongSoTrang={tongSoTrang}
+            chiSoBatDau={chiSoBatDau}
+            chiSoKetThuc={chiSoKetThuc}
+          />
+        </View>
         <ScrollView horizontal nestedScrollEnabled style={styles.khung_bang} contentContainerStyle={styles.khung_bang_content}>
           <View style={[styles.khoi_cot_bang, chieuCaoVungBang > 0 && { height: chieuCaoVungBang }]}>
             <View style={styles.dong_tieu_de}>
@@ -238,7 +280,7 @@ const PhacDoBenhVien = () => {
             </View>
 
             <ScrollView nestedScrollEnabled style={styles.cuon_bang_doc} keyboardShouldPersistTaps="handled">
-              {data.map((row) => (
+              {duLieuTrang.map(({ row }) => (
                 <View key={row.id} style={styles.dong_du_lieu}>
                   <View style={[styles.o_du_lieu, { width: 80, justifyContent: 'center', alignItems: 'center' }]}>
                     <TouchableOpacity style={[styles.checkbox, selectedRows.includes(row.id) && styles.checkbox_active]} onPress={() => toggleSelectRow(row.id)}>
@@ -297,6 +339,7 @@ const styles = StyleSheet.create({
   cuon_phan_tren: { flex: 1 },
   cuon_phan_tren_content: { flexGrow: 1, paddingBottom: 8 },
   phan_bang_du_lieu: { flex: 3, flexBasis: 0, minHeight: 0, marginHorizontal: 20, marginBottom: 12 },
+  khung_tim_bang: { paddingHorizontal: 4, marginBottom: 4 },
   khung_bang_content: { flexGrow: 1 },
   khoi_cot_bang: { flexDirection: 'column', alignSelf: 'flex-start' },
   cuon_bang_doc: { flex: 1 },

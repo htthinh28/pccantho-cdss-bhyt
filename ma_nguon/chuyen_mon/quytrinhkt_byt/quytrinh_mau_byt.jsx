@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as XLSX from 'xlsx';
 
+import TimKiemPhanTrangBang from '../../thanh_phan/tim_kiem_phan_trang_bang';
+import { locDongTheoTuKhoa, SO_DONG_TRANG_MAC_DINH, tinhChiSoPhanTrang } from '../../tien_ich/bo_loc_bang_du_lieu';
 import InQuyTrinh from './in_quytrinh';
 
 // DANH SÁCH CỘT CHUẨN THEO CẤU TRÚC QUY TRÌNH KỸ THUẬT BỘ Y TẾ
@@ -53,6 +55,31 @@ const QuyTrinhMauBYT = () => {
   const [sortAsc, setSortAsc] = useState(true);
   const [viewMode, setViewMode] = useState('table'); 
   const [currentMaDV, setCurrentMaDV] = useState('');
+  const [tuKhoaTim, setTuKhoaTim] = useState('');
+  const [soDongMotTrang, setSoDongMotTrang] = useState(SO_DONG_TRANG_MAC_DINH);
+  const [trangHienTai, setTrangHienTai] = useState(1);
+
+  const hangLocChiSo = useMemo(
+    () => locDongTheoTuKhoa(data, columns, tuKhoaTim),
+    [data, columns, tuKhoaTim],
+  );
+  const nSauLoc = hangLocChiSo.length;
+  const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
+    () => tinhChiSoPhanTrang(nSauLoc, soDongMotTrang, trangHienTai),
+    [nSauLoc, soDongMotTrang, trangHienTai],
+  );
+  const duLieuTrang = useMemo(
+    () => hangLocChiSo.slice(chiSoBatDau, chiSoKetThuc),
+    [hangLocChiSo, chiSoBatDau, chiSoKetThuc],
+  );
+
+  useEffect(() => {
+    if (trangHienTai > tongSoTrang) setTrangHienTai(tongSoTrang);
+  }, [tongSoTrang, trangHienTai]);
+
+  useEffect(() => {
+    setTrangHienTai(1);
+  }, [tuKhoaTim, soDongMotTrang]);
 
   useEffect(() => {
     const taiDuLieu = async () => {
@@ -194,6 +221,22 @@ const QuyTrinhMauBYT = () => {
         </View>
       </View>
 
+      <View style={styles.khung_tim_bang}>
+        <TimKiemPhanTrangBang
+          tuKhoa={tuKhoaTim}
+          onTuKhoa={setTuKhoaTim}
+          tongDongGoc={data.length}
+          tongDongSauLoc={nSauLoc}
+          soDongMotTrang={soDongMotTrang}
+          onSoDongMotTrang={setSoDongMotTrang}
+          trangHienTai={trangDangXem}
+          onTrangHienTai={setTrangHienTai}
+          tongSoTrang={tongSoTrang}
+          chiSoBatDau={chiSoBatDau}
+          chiSoKetThuc={chiSoKetThuc}
+        />
+      </View>
+
       <ScrollView horizontal style={styles.khung_bang}>
         <View>
           <View style={styles.dong_tieu_de}>
@@ -207,7 +250,7 @@ const QuyTrinhMauBYT = () => {
           </View>
 
           <ScrollView style={{ maxHeight: 600 }}>
-            {data.map((row) => (
+            {duLieuTrang.map(({ row }) => (
               <View key={row.id} style={styles.dong_du_lieu}>
                 <View style={[styles.o_du_lieu, { width: 80, justifyContent: 'center', alignItems: 'center' }]}>
                   <TouchableOpacity style={[styles.checkbox, selectedRows.includes(row.id) && styles.checkbox_active]} onPress={() => toggleSelectRow(row.id)}>
@@ -256,6 +299,7 @@ const styles = StyleSheet.create({
   thanh_cong_cu_top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#FF66A3' },
   tieu_de_chinh: { fontSize: 26, color: '#FFF', fontWeight: 'bold', fontFamily: 'Arial' },
   thanh_cong_cu_excel: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#FCE4EC' },
+  khung_tim_bang: { paddingHorizontal: 24, marginBottom: 4 },
   khoi_them_cot: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   o_nhap_cot: { borderWidth: 2, borderColor: '#FFB3D1', borderRadius: 8, padding: 12, fontSize: 20, fontFamily: 'Arial', width: 280 },
   group_buttons: { flexDirection: 'row', gap: 10 },

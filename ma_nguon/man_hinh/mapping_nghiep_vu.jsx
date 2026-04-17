@@ -116,6 +116,20 @@ const MappingNghiepVu = ({ navigation }) => {
     return tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
   };
 
+  const laMultiMaNguonIcd = (mt) => ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mt);
+
+  /** Một bản ghi có thể gom nhiều ICD nguồn (source_code dạng A|B hoặc metadata.source_icd_codes). */
+  const layMaNguonMultiIcd = (r) => {
+    if (!laMultiMaNguonIcd(r.mapping_type)) return [];
+    const md = r.metadata && typeof r.metadata === 'object' ? r.metadata : {};
+    if (Array.isArray(md.source_icd_codes) && md.source_icd_codes.length) {
+      return md.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+    }
+    const sc = String(r.source_code || '').trim();
+    if (!sc) return [];
+    return sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc];
+  };
+
   const bangMergedChoModal = useMemo(
     () => ({ ...bangTheoRef, ...bangModalTheoLoai }),
     [bangTheoRef, bangModalTheoLoai],
@@ -132,12 +146,13 @@ const MappingNghiepVu = ({ navigation }) => {
       }
       if (!tk) return true;
       const { chi, thuc } = r.mapping_type === 'STAFF_DVKT' ? layNhomDvktStaff(r) : { chi: [], thuc: [] };
-      const extra =
-        r.mapping_type === 'STAFF_DVKT'
-          ? [...chi, ...thuc].join(' ')
-          : laMappingNhieuMaDich(r.mapping_type)
-            ? layMaDichMultiNghiepVu(r).join(' ')
-            : '';
+      const extraParts = [];
+      if (r.mapping_type === 'STAFF_DVKT') extraParts.push(...chi, ...thuc);
+      else {
+        if (laMappingNhieuMaDich(r.mapping_type)) extraParts.push(...layMaDichMultiNghiepVu(r));
+        if (laMultiMaNguonIcd(r.mapping_type)) extraParts.push(...layMaNguonMultiIcd(r));
+      }
+      const extra = extraParts.join(' ');
       const s = `${r.source_code} ${r.target_code} ${r.mapping_type} ${extra}`.toLowerCase();
       return s.includes(tk);
     });
@@ -146,7 +161,9 @@ const MappingNghiepVu = ({ navigation }) => {
   const tenNguon = (r) => {
     const c = layCauHinhLoaiMapping(r.mapping_type);
     if (!c) return '';
-    return timTenTheoMa(bangTheoRef[c.source_catalog] || [], r.source_code);
+    const ds = bangTheoRef[c.source_catalog] || [];
+    if (laMultiMaNguonIcd(r.mapping_type)) return timTenNhieuMa(ds, layMaNguonMultiIcd(r));
+    return timTenTheoMa(ds, r.source_code);
   };
   const tenDich = (r) => {
     const c = layCauHinhLoaiMapping(r.mapping_type);

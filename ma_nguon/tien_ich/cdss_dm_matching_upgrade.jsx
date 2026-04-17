@@ -38,6 +38,23 @@ const tachChuoiMa = (raw) =>
     .map((s) => s.trim())
     .filter(Boolean);
 
+/** Một hoặc nhiều mã ICD trên một dòng (phân tách ; , hoặc | — khớp mapping nghiệp vụ nguồn |). */
+const tachChuoiMaIcd = (raw) => {
+  const parts = String(raw || '')
+    .split(/[;,\|]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const out = [];
+  const seen = new Set();
+  parts.forEach((p) => {
+    const icd = chuanHoaMaIcdPhacDoCdss(p);
+    if (!icd || seen.has(icd)) return;
+    seen.add(icd);
+    out.push(icd);
+  });
+  return out;
+};
+
 const docDuLieuMapping = async () => {
   try {
     const chunksStr = await AsyncStorage.getItem(`${KEY_DATA}_CHUNKS`);
@@ -75,16 +92,19 @@ const docDuLieuMapping = async () => {
 const gopMappingTheoIcd = (rows) => {
   const byIcd = new Map();
   (Array.isArray(rows) ? rows : []).forEach((row) => {
-    const icd = chuanHoaMaIcdPhacDoCdss(row?.MA_ICD ?? row?.['MA_ICD']);
-    if (!icd) return;
+    const maIcdRaw = row?.MA_ICD ?? row?.['MA_ICD'];
+    const danhIcd = tachChuoiMaIcd(maIcdRaw);
+    if (danhIcd.length === 0) return;
     const thuoc = tachChuoiMa(row?.MA_THUOC_GOI_Y ?? row?.['MA_THUOC_GOI_Y']);
     const dvkt = tachChuoiMa(row?.MA_DVKT_GOI_Y ?? row?.['MA_DVKT_GOI_Y']);
-    if (!byIcd.has(icd)) byIcd.set(icd, { thuoc: new Set(), dvkt: new Set(), ghiChu: [] });
-    const agg = byIcd.get(icd);
-    thuoc.forEach((m) => agg.thuoc.add(m));
-    dvkt.forEach((m) => agg.dvkt.add(m));
     const gc = String(row?.GHI_CHU || row?.['GHI_CHU'] || '').trim();
-    if (gc) agg.ghiChu.push(gc);
+    danhIcd.forEach((icd) => {
+      if (!byIcd.has(icd)) byIcd.set(icd, { thuoc: new Set(), dvkt: new Set(), ghiChu: [] });
+      const agg = byIcd.get(icd);
+      thuoc.forEach((m) => agg.thuoc.add(m));
+      dvkt.forEach((m) => agg.dvkt.add(m));
+      if (gc) agg.ghiChu.push(gc);
+    });
   });
   return byIcd;
 };

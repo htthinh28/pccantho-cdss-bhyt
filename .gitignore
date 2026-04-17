@@ -94,5 +94,6 @@ temp_*_extract*.txt
 *.msi
 *.zip
 *.7z
+*.rar
 *.dmg
 *.AppImage

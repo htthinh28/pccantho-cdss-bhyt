@@ -40,6 +40,10 @@ import { docPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap'
 import { DANH_MUC_QUY_TAC_NOI_BO, khopMaLuatTheoMau, suyRaThongTinQuanTriQuyTac } from '../tien_ich/quy_tac_on_off_noi_bo';
 import { locModuleTheoRBAC, taiRBAC } from '../tien_ich/rbac_engine';
 import {
+  boSungHoTenChoMaBacSiBaoCao,
+  taiMapHoTenNhanSuBaoCao,
+} from '../tien_ich/dinh_dang_cchn_bao_cao';
+import {
   locDanhSachLoiChiTiet,
   phangHoaDanhSachLoiChiTiet,
   layNgayYLenhNgayKqVaBacSiTuLoiHoSo,
@@ -58,6 +62,7 @@ import {
   phanTichKhoangCachDieuTri,
   xoaToanBoKho,
 } from '../tien_ich/kho_du_lieu';
+import { xuatHoSoThanhXML130 } from '../tien_ich/xml_helper';
 import NhapFileXML, {
   chuyenKetQuaFileSangMangHoSoKho,
   taiNguonPhuThuocNhapXml,
@@ -404,7 +409,11 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [tuKhoaLocHoSo, setTuKhoaLocHoSo] = useState('');
   const [tuKhoaTraCuuChiTiet, setTuKhoaTraCuuChiTiet] = useState('');
   const [loaiTraCuuChiTiet, setLoaiTraCuuChiTiet] = useState('TAT_CA');
-  
+  /** Cửa sổ chi tiết ca lỗi theo quy tắc (chuột phải / nhấn giữ dòng bảng) — không thay luồng chạm thường */
+  const [modalChiTietHoSoLoiVisible, setModalChiTietHoSoLoiVisible] = useState(false);
+  const [quyTacChoModalChiTiet, setQuyTacChoModalChiTiet] = useState(null);
+  const [tuKhoaLocChiTietModal, setTuKhoaLocChiTietModal] = useState('');
+
   const [menuHienThi, setMenuHienThi] = useState([]);
   const [vaiTroHienTai, setVaiTroHienTai] = useState('Đang tải...');
   const [tenTaiKhoan, setTenTaiKhoan] = useState('');
@@ -558,6 +567,66 @@ const ManHinhTongQuan = ({ navigation }) => {
   };
 
   const quyTacDangChon = danhMucDaLoc.find((item) => item.khoa === khoaQuyTacDangChon) || danhMucDaLoc[0] || null;
+
+  const chiTietModalDaLoc = useMemo(() => {
+    const raw = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
+    const q = chuanHoaToken(tuKhoaLocChiTietModal).trim();
+    if (!q) return raw;
+    return raw.filter((c) => {
+      const s = chuanHoaToken([
+        c?.ma_lk,
+        c?.ten_bn,
+        c?.canh_bao,
+        c?.vi_tri_xml,
+        c?.ma_luat,
+      ].filter(Boolean).join(' | '));
+      return s.includes(q);
+    });
+  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal]);
+
+  const timHoSoTrongKhoTheoMaLK = (maLK) => {
+    const m = chuanHoaMaLK(maLK);
+    if (!m) return null;
+    return rawDanhSach.find((h) => chuanHoaMaLK(h?.ma_lk || h?.xml1?.MA_LK || h?.XML1?.MA_LK) === m) || null;
+  };
+
+  const moModalChiTietHoSoLoiTheoQuyTac = (item) => {
+    if (!item) return;
+    setTuKhoaLocChiTietModal('');
+    setKhoaQuyTacDangChon(item.khoa);
+    setQuyTacChoModalChiTiet(item);
+    setModalChiTietHoSoLoiVisible(true);
+  };
+
+  const dongModalChiTietHoSoLoi = () => {
+    setModalChiTietHoSoLoiVisible(false);
+  };
+
+  const xuatXmlChuanHisChoHoSo = (chiTiet) => {
+    const hs = timHoSoTrongKhoTheoMaLK(chiTiet?.ma_lk);
+    if (!hs) {
+      alert('Chưa tìm thấy hồ sơ trong kho để xuất XML. Hãy giám định lại hoặc mở hồ sơ từ Kho lưu trữ.');
+      return;
+    }
+    if (Platform.OS !== 'web' || typeof document === 'undefined') {
+      alert('Tải file XML chuẩn QĐ 130 hiện hỗ trợ trên web. Trên thiết bị cảm ứng, dùng «Sửa và lưu XML» để lưu rồi chia sẻ.');
+      return;
+    }
+    try {
+      const { xmlContent, tenFile } = xuatHoSoThanhXML130(hs, { tenFilePrefix: 'HOSO_QD130' });
+      const blob = new Blob([xmlContent], { type: 'text/xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = tenFile || `HOSO_QD130_${chuanHoaMaLK(chiTiet?.ma_lk)}.xml`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(`Không xuất được XML: ${e?.message || e}`);
+    }
+  };
 
   const moChiTietXmlTheoLoi = (loiPhatSinh) => {
     if (!loiPhatSinh?.ma_lk) return;
@@ -926,9 +995,16 @@ const ManHinhTongQuan = ({ navigation }) => {
     input.click();
   };
 
-  const handleExportLoiExcel = () => {
+  const handleExportLoiExcel = async () => {
     if (Platform.OS !== 'web') return;
     if (rawDanhSach.length === 0) return;
+
+    let mapHoTenNs;
+    try {
+      mapHoTenNs = await taiMapHoTenNhanSuBaoCao();
+    } catch (_e) {
+      mapHoTenNs = new Map();
+    }
 
     const excelData = [];
     rawDanhSach.forEach(hs => {
@@ -949,6 +1025,8 @@ const ManHinhTongQuan = ({ navigation }) => {
         const coSoPhapLy = String(layGiaTriAnToan(loi, 'cosophaply') || 'N/A');
         const viTriTrongXml = taoViTriXmlBaoCaoDayDuTuLoi(loi, hs);
         const lamSangXml = layNgayYLenhNgayKqVaBacSiTuLoiHoSo(loi, hs);
+        const bsChiDinh = boSungHoTenChoMaBacSiBaoCao(lamSangXml.bacSiChiDinh || 'N/A', mapHoTenNs);
+        const bsThucHien = boSungHoTenChoMaBacSiBaoCao(lamSangXml.bacSiThucHien || 'N/A', mapHoTenNs);
         const moTaViPham = taoMoTaBanChatViPhamTuLoi(loi);
         const deXuatKhacPhuc = taoDeXuatKhacPhucTuLoi(loi);
         const doiChieuChiTietCanhBao = [
@@ -973,8 +1051,8 @@ const ManHinhTongQuan = ({ navigation }) => {
           nguonQuyTac,
           lamSangXml.ngayYLenh || 'N/A',
           lamSangXml.ngayKetQua || 'N/A',
-          lamSangXml.bacSiChiDinh || 'N/A',
-          lamSangXml.bacSiThucHien || 'N/A',
+          bsChiDinh,
+          bsThucHien,
           viTriTrongXml,
           moTaViPham,
           deXuatKhacPhuc,
@@ -1346,52 +1424,69 @@ const ManHinhTongQuan = ({ navigation }) => {
             </View>
             {/* Rows */}
             {danhMucDaLoc.length > 0 ? danhMucDaLoc.map((item, idx) => (
-              <TouchableOpacity
+              <View
                 key={item.khoa || idx}
-                style={[
-                  styles.table_row,
-                  idx % 2 === 1 && styles.table_row_alt,
-                  quyTacDangChon?.khoa === item.khoa && styles.table_row_active,
-                ]}
-                onPress={() => setKhoaQuyTacDangChon(item.khoa)}
+                {...Platform.select({
+                  web: {
+                    onContextMenu: (e) => {
+                      e?.preventDefault?.();
+                      moModalChiTietHoSoLoiTheoQuyTac(item);
+                    },
+                  },
+                  default: {},
+                })}
               >
-                <View style={{ flex: 1, paddingRight: 12 }}>
-                  <View style={styles.rule_tag_row}>
-                    <View style={styles.rule_code_chip}>
-                      <Text style={styles.rule_code_txt}>{item.ma_luat || 'N/A'}</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.table_row,
+                    idx % 2 === 1 && styles.table_row_alt,
+                    quyTacDangChon?.khoa === item.khoa && styles.table_row_active,
+                  ]}
+                  onPress={() => setKhoaQuyTacDangChon(item.khoa)}
+                  onLongPress={() => moModalChiTietHoSoLoiTheoQuyTac(item)}
+                  delayLongPress={480}
+                >
+                  <View style={{ flex: 1, paddingRight: 12 }}>
+                    <View style={styles.rule_tag_row}>
+                      <View style={styles.rule_code_chip}>
+                        <Text style={styles.rule_code_txt}>{item.ma_luat || 'N/A'}</Text>
+                      </View>
+                      <Text style={styles.rule_name} numberOfLines={1}>{item.ten_quy_tac}</Text>
                     </View>
-                    <Text style={styles.rule_name} numberOfLines={1}>{item.ten_quy_tac}</Text>
-                  </View>
-                  <View style={styles.rule_meta_chip_row}>
-                    <View style={[
-                      styles.rule_priority_chip,
-                      item.loai_hien_thi === 'XUAT_TOAN' && styles.rule_priority_chip_xuat_toan,
-                      item.loai_hien_thi === 'CANH_BAO' && styles.rule_priority_chip_canh_bao,
-                      item.loai_hien_thi === 'NHAC_NHO' && styles.rule_priority_chip_nhac_nho,
-                    ]}>
-                      <Text style={styles.rule_priority_chip_txt}>{item.nhan_loai_hien_thi}</Text>
+                    <View style={styles.rule_meta_chip_row}>
+                      <View style={[
+                        styles.rule_priority_chip,
+                        item.loai_hien_thi === 'XUAT_TOAN' && styles.rule_priority_chip_xuat_toan,
+                        item.loai_hien_thi === 'CANH_BAO' && styles.rule_priority_chip_canh_bao,
+                        item.loai_hien_thi === 'NHAC_NHO' && styles.rule_priority_chip_nhac_nho,
+                      ]}>
+                        <Text style={styles.rule_priority_chip_txt}>{item.nhan_loai_hien_thi}</Text>
+                      </View>
+                      <Text style={styles.rule_occurrence_meta}>Hồ sơ ảnh hưởng: {item.so_ho_so}</Text>
                     </View>
-                    <Text style={styles.rule_occurrence_meta}>Hồ sơ ảnh hưởng: {item.so_ho_so}</Text>
+                    <Text style={styles.rule_desc} numberOfLines={2}>{item.canh_bao}</Text>
+                    {item.namespace_quy_tac && item.namespace_quy_tac !== 'N/A' ? (
+                      <Text style={styles.rule_meta} numberOfLines={1}>Namespace: {item.namespace_quy_tac}</Text>
+                    ) : null}
+                    {item.nguon_quy_tac && item.nguon_quy_tac !== 'N/A' ? (
+                      <Text style={styles.rule_meta_subtle} numberOfLines={1}>Nguồn: {item.nguon_quy_tac}</Text>
+                    ) : null}
+                    {item.luong_giai_trinh && item.luong_giai_trinh !== 'N/A' ? (
+                      <Text style={styles.rule_flow} numberOfLines={2}>Luồng: {item.luong_giai_trinh}</Text>
+                    ) : null}
+                    <Text style={styles.rule_hint_action}>
+                      Chạm để mở danh sách XML phát sinh, sửa lỗi và đi tới rule ON/OFF.
+                      {Platform.OS === 'web' ? ' · Chuột phải: xem cửa sổ chi tiết ca lỗi.' : ' · Nhấn giữ: xem cửa sổ chi tiết ca lỗi.'}
+                    </Text>
                   </View>
-                  <Text style={styles.rule_desc} numberOfLines={2}>{item.canh_bao}</Text>
-                  {item.namespace_quy_tac && item.namespace_quy_tac !== 'N/A' ? (
-                    <Text style={styles.rule_meta} numberOfLines={1}>Namespace: {item.namespace_quy_tac}</Text>
-                  ) : null}
-                  {item.nguon_quy_tac && item.nguon_quy_tac !== 'N/A' ? (
-                    <Text style={styles.rule_meta_subtle} numberOfLines={1}>Nguồn: {item.nguon_quy_tac}</Text>
-                  ) : null}
-                  {item.luong_giai_trinh && item.luong_giai_trinh !== 'N/A' ? (
-                    <Text style={styles.rule_flow} numberOfLines={2}>Luồng: {item.luong_giai_trinh}</Text>
-                  ) : null}
-                  <Text style={styles.rule_hint_action}>Chạm để mở danh sách XML phát sinh, sửa lỗi và đi tới rule ON/OFF.</Text>
-                </View>
-                <View style={{ width: 110, alignItems: 'center' }}>
-                  <View style={[styles.count_badge, item.sl >= 10 && styles.count_badge_hot]}>
-                    <Text style={styles.count_txt}>{item.sl}</Text>
-                    <Text style={styles.count_sub}>ca</Text>
+                  <View style={{ width: 110, alignItems: 'center' }}>
+                    <View style={[styles.count_badge, item.sl >= 10 && styles.count_badge_hot]}>
+                      <Text style={styles.count_txt}>{item.sl}</Text>
+                      <Text style={styles.count_sub}>ca</Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             )) : (
               <View style={styles.empty_state}>
                 <Text style={styles.empty_icon}>📂</Text>
@@ -1634,6 +1729,111 @@ const ManHinhTongQuan = ({ navigation }) => {
               </>
             )}
           </Animated.View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={modalChiTietHoSoLoiVisible && !!quyTacChoModalChiTiet}
+        transparent
+        animationType="fade"
+        onRequestClose={dongModalChiTietHoSoLoi}
+      >
+        <View style={styles.chiTietLoiModal_root} pointerEvents="box-none">
+          <Pressable style={styles.chiTietLoiModal_backdropHit} onPress={dongModalChiTietHoSoLoi}>
+            <View style={styles.chiTietLoiModal_backdrop} />
+          </Pressable>
+          <View style={styles.chiTietLoiModal_sheet}>
+            <View style={styles.chiTietLoiModal_header}>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.chiTietLoiModal_title}>Chi tiết hồ sơ lỗi</Text>
+                <Text style={styles.chiTietLoiModal_sub} numberOfLines={2}>
+                  {quyTacChoModalChiTiet?.ma_luat || 'N/A'} · {quyTacChoModalChiTiet?.ten_quy_tac || ''}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={dongModalChiTietHoSoLoi} style={styles.chiTietLoiModal_close} accessibilityLabel="Đóng cửa sổ chi tiết">
+                <Text style={styles.chiTietLoiModal_closeTxt}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.chiTietLoiModal_hint}>
+              Truy vấn và xử lý từng ca (cùng nguồn dữ liệu với bảng quy tắc). Web: chuột phải vào dòng quy tắc; cảm ứng: nhấn giữ dòng.
+            </Text>
+            <TextInput
+              style={styles.chiTietLoiModal_search}
+              value={tuKhoaLocChiTietModal}
+              onChangeText={setTuKhoaLocChiTietModal}
+              placeholder="Lọc MA_LK, BN, nội dung vi phạm, vị trí XML…"
+              placeholderTextColor={CD.text.placeholder}
+              {...Platform.select({ web: { outlineStyle: 'none' } })}
+            />
+            <Text style={styles.chiTietLoiModal_count}>
+              Hiển thị {chiTietModalDaLoc.length} / {(quyTacChoModalChiTiet?.chi_tiet_phat_sinh || []).length} ca
+            </Text>
+            <ScrollView style={styles.chiTietLoiModal_scroll} keyboardShouldPersistTaps="handled">
+              {chiTietModalDaLoc.length === 0 ? (
+                <Text style={styles.chiTietLoiModal_empty}>Không có ca khớp bộ lọc.</Text>
+              ) : (
+                chiTietModalDaLoc.map((chiTiet, idx) => (
+                  <View key={taoKhoaChiTietPhatSinh(chiTiet) || idx} style={[styles.rule_instance_card, styles.chiTietLoiModal_cardLift]}>
+                    <View style={styles.rule_instance_header}>
+                      <View style={{ flex: 1, paddingRight: 12 }}>
+                        <Text style={styles.rule_instance_title}>{chiTiet.ma_lk || 'N/A'} • {chiTiet.ten_bn || 'Không rõ bệnh nhân'}</Text>
+                        <Text style={styles.rule_instance_location}>{chiTiet.vi_tri_xml}</Text>
+                      </View>
+                      <Text style={styles.rule_instance_tab}>{chiTiet.tab_quan_tri_goi_y || 'LUAT_HANH_CHINH'}</Text>
+                    </View>
+                    <Text style={styles.rule_instance_desc}>{chiTiet.canh_bao}</Text>
+                    <View style={styles.rule_instance_actions}>
+                      <TouchableOpacity
+                        style={[styles.rule_action_btn, styles.rule_action_btn_xml]}
+                        onPress={() => {
+                          dongModalChiTietHoSoLoi();
+                          moChiTietXmlTheoLoi(chiTiet);
+                        }}
+                      >
+                        <Text style={styles.rule_action_btn_txt}>🗂 Mở XML lỗi</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.rule_action_btn, styles.rule_action_btn_edit]}
+                        onPress={() => {
+                          dongModalChiTietHoSoLoi();
+                          moSuaXmlTheoLoi(chiTiet);
+                        }}
+                      >
+                        <Text style={styles.rule_action_btn_txt}>📝 Sửa và lưu XML</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.rule_action_btn, styles.rule_action_btn_export_xml]}
+                        onPress={() => xuatXmlChuanHisChoHoSo(chiTiet)}
+                      >
+                        <Text style={styles.rule_action_btn_txt}>📥 Xuất XML QĐ130 (HIS)</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.rule_action_btn, styles.rule_action_btn_rule]}
+                        onPress={() => {
+                          dongModalChiTietHoSoLoi();
+                          moQuanTriQuyTacTheoLoi(chiTiet);
+                        }}
+                      >
+                        <Text style={styles.rule_action_btn_txt}>🎚 Đúng vị trí rule</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))
+              )}
+            </ScrollView>
+            <View style={styles.chiTietLoiModal_footerRow}>
+              <TouchableOpacity
+                style={styles.chiTietLoiModal_footerBtn}
+                onPress={() => {
+                  const qt = quyTacChoModalChiTiet;
+                  dongModalChiTietHoSoLoi();
+                  moQuanTriQuyTacTheoLoi(qt?.chi_tiet_phat_sinh?.[0] || qt);
+                }}
+              >
+                <Text style={styles.chiTietLoiModal_footerBtnTxt}>🎚 Mở Rule ON/OFF (quy tắc này)</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
@@ -2756,6 +2956,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(124,58,237,0.16)',
     borderColor: 'rgba(196,181,253,0.38)',
   },
+  rule_action_btn_export_xml: {
+    backgroundColor: 'rgba(16,185,129,0.14)',
+    borderColor: 'rgba(52,211,153,0.38)',
+  },
   rule_action_btn_txt: {
     fontSize: 13,
     fontWeight: '800',
@@ -2772,6 +2976,118 @@ const styles = StyleSheet.create({
   empty_icon: { fontSize: 56, marginBottom: 16 },
   empty_title: { fontSize: 22, fontWeight: '700', color: CD.text.secondary, fontFamily: CD.font.family, marginBottom: 8 },
   empty_sub: { fontSize: 18, color: CD.text.muted, fontFamily: CD.font.family, textAlign: 'center' },
+
+  chiTietLoiModal_root: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 24,
+  },
+  chiTietLoiModal_backdropHit: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  chiTietLoiModal_backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(2,6,23,0.58)',
+  },
+  chiTietLoiModal_sheet: {
+    width: '100%',
+    maxWidth: 900,
+    maxHeight: Dimensions.get('window').height * 0.88,
+    backgroundColor: CD.bg.glass_card,
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: CD.border.glass,
+    zIndex: 2,
+    elevation: 12,
+    ...Platform.select({ web: { boxShadow: '0 24px 48px rgba(2,6,23,0.35)' } }),
+  },
+  chiTietLoiModal_header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 8,
+  },
+  chiTietLoiModal_title: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: CD.text.primary,
+    fontFamily: CD.font.family,
+  },
+  chiTietLoiModal_sub: {
+    fontSize: 13,
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+    marginTop: 4,
+  },
+  chiTietLoiModal_close: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: 'rgba(148,163,184,0.2)',
+  },
+  chiTietLoiModal_closeTxt: { fontSize: 18, color: CD.text.primary, fontWeight: '700' },
+  chiTietLoiModal_hint: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: CD.text.muted,
+    fontFamily: CD.font.family,
+    marginBottom: 10,
+  },
+  chiTietLoiModal_search: {
+    borderWidth: 1,
+    borderColor: CD.border.input,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === 'web' ? 10 : 8,
+    fontSize: 15,
+    color: CD.text.primary,
+    fontFamily: CD.font.family,
+    backgroundColor: CD.bg.glass_input,
+    marginBottom: 6,
+  },
+  chiTietLoiModal_count: {
+    fontSize: 12,
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+    marginBottom: 8,
+  },
+  chiTietLoiModal_scroll: {
+    flexGrow: 0,
+    maxHeight: Dimensions.get('window').height * 0.48,
+    marginBottom: 10,
+  },
+  chiTietLoiModal_cardLift: {
+    marginBottom: 12,
+  },
+  chiTietLoiModal_empty: {
+    padding: 20,
+    textAlign: 'center',
+    color: CD.text.muted,
+    fontFamily: CD.font.family,
+  },
+  chiTietLoiModal_footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: CD.border.glass,
+    paddingTop: 12,
+  },
+  chiTietLoiModal_footerBtn: {
+    backgroundColor: '#7C3AED',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+  chiTietLoiModal_footerBtnTxt: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
+    fontFamily: CD.font.family,
+  },
 });
 
 export default ManHinhTongQuan;

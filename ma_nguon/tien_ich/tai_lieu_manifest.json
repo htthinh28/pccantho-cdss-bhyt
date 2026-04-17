@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-16T09:03:01.519Z",
+  "generatedAt": "2026-04-17T08:57:25.386Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -300,6 +300,18 @@
       "relPath": "Danh_sach_10_ca_test_va_du_lieu_chi_tiet.html",
       "title": "DANH SÁCH 10 CA TEST & DỮ LIỆU CHI TIẾT",
       "nguon": "markdown"
+    },
+    {
+      "id": "md:Danh_sach_326_ma_OFF_theo_nhom.md",
+      "relPath": "Danh_sach_326_ma_OFF_theo_nhom.html",
+      "title": "Danh sách 326 mã quy tắc seed OFF (theo nhóm file)",
+      "nguon": "markdown"
+    },
+    {
+      "id": "txt:Danh_sach_326_ma_OFF_theo_nhom.txt",
+      "relPath": "Danh_sach_326_ma_OFF_theo_nhom.txt",
+      "title": "Danh sach 326 ma OFF theo nhom",
+      "nguon": "text"
     },
     {
       "id": "txt:DANH_SACH_DUONG_DAN_TRUY_CAP.txt",

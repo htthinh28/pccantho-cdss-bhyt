@@ -8,8 +8,19 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Alert,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -22,6 +33,15 @@ import {
     taiBoDuLieuDanhMuc,
 } from '../tien_ich/luu_tru_danh_muc';
 import { phucHoiBanSaoGanNhat, taoBanSaoDuLieuHeThong } from '../tien_ich/sao_luu_du_lieu_he_thong';
+import {
+  demThongKeImportVsHienCo,
+  gopImportVoiBangHienCo,
+  gopTrungTrongBangGiuDongDau,
+  layCotKhoaChoTab,
+  timNhomTrungTrongBang,
+} from '../tien_ich/danh_muc_trung_lap';
+import { locDongTheoTuKhoa, tinhChiSoPhanTrang } from '../tien_ich/bo_loc_bang_du_lieu';
+import TimKiemPhanTrangBang from '../thanh_phan/tim_kiem_phan_trang_bang';
 
 // ============================================================================
 // HỆ THỐNG LƯU TRỮ CHỐNG TRÀN BỘ NHỚ WEB (CHUNKING STORAGE)
@@ -98,6 +118,9 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   const [newColumnName, setNewColumnName] = useState('');
   const [trangHienTai, setTrangHienTai] = useState(1);
   const [soDongMotTrang, setSoDongMotTrang] = useState(SO_DONG_MOI_TRANG_MAC_DINH);
+  /** Import Excel: có dòng trùng khóa — chọn ghi đè / bỏ qua */
+  const [modalImportTrung, setModalImportTrung] = useState(null);
+  const [tuKhoaTim, setTuKhoaTim] = useState('');
 
   const layDoRongCot = (tenCot) => {
     const cot = String(tenCot || '').toUpperCase();
@@ -117,17 +140,29 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { columnsRef.current = columns; }, [columns]);
   useEffect(() => { danhMucRef.current = danhMucHienTai; }, [danhMucHienTai]);
-  const kichThuocTrangHienThi =
-    soDongMotTrang < 0 ? Math.max(1, data.length || 1) : Math.max(1, soDongMotTrang);
+  const hangLocChiSo = useMemo(
+    () => locDongTheoTuKhoa(data, columns, tuKhoaTim),
+    [data, columns, tuKhoaTim],
+  );
+  const nSauLoc = hangLocChiSo.length;
+
+  const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
+    () => tinhChiSoPhanTrang(nSauLoc, soDongMotTrang, trangHienTai),
+    [nSauLoc, soDongMotTrang, trangHienTai],
+  );
 
   useEffect(() => {
-    const tongTrang = Math.max(1, Math.ceil(data.length / kichThuocTrangHienThi));
-    if (trangHienTai > tongTrang) {
-      setTrangHienTai(tongTrang);
-    }
-  }, [data.length, trangHienTai, kichThuocTrangHienThi]);
-  useEffect(() => { setTrangHienTai(1); }, [danhMucHienTai]);
-  useEffect(() => { setTrangHienTai(1); }, [soDongMotTrang]);
+    if (trangHienTai > tongSoTrang) setTrangHienTai(tongSoTrang);
+  }, [tongSoTrang, trangHienTai]);
+
+  useEffect(() => {
+    setTrangHienTai(1);
+    setTuKhoaTim('');
+  }, [danhMucHienTai]);
+
+  useEffect(() => {
+    setTrangHienTai(1);
+  }, [tuKhoaTim, soDongMotTrang]);
 
   const layKhoaCotDanhMuc = (key) => `COLS_${key}`;
   const dinhDangThoiGianMeta = (value) => {
@@ -552,65 +587,182 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
     }
   };
 
-  // 4. XỬ LÝ IMPORT EXCEL (KÈM LƯU VẬT LÝ BẰNG CHUNKING)
+  const thucHienLuuSauImport = async (mergedCols, newData, soDongTuFile) => {
+    setColumns(mergedCols);
+    setData(newData);
+    dataRef.current = newData;
+    columnsRef.current = mergedCols;
+    dirtyRef.current = false;
+    setTrangHienTai(1);
+    try {
+      await luuBoDuLieuDanhMuc({
+        dataKey: danhMucHienTai,
+        columnsKey: layKhoaCotDanhMuc(danhMucHienTai),
+        data: newData,
+        columns: mergedCols,
+        source: 'catalog_import_excel',
+        syncRemote: true,
+      });
+      try {
+        xoaCacheBoMayGiamDinh();
+      } catch {}
+      flushFirebaseDanhMucQueue().catch(() => {});
+      alert(
+        `✅ Đã nhập ${soDongTuFile} dòng từ file. Hệ thống đã lưu bền vững và xếp hàng đồng bộ Firebase.`,
+      );
+    } catch (err) {
+      alert(`❌ Lỗi lưu khi import: ${err.message}`);
+    }
+  };
+
+  const handleChotImportTrung = async (mode) => {
+    if (!modalImportTrung) return;
+    const { mergedCols, importedRaw } = modalImportTrung;
+    const cotKhoa = layCotKhoaChoTab(
+      danhMucHienTai,
+      MAU_EXCEL_CHUAN[danhMucHienTai],
+      mergedCols,
+    );
+    setModalImportTrung(null);
+    try {
+      const newData = gopImportVoiBangHienCo(
+        dataRef.current,
+        importedRaw,
+        mergedCols,
+        cotKhoa,
+        mode,
+      );
+      await thucHienLuuSauImport(mergedCols, newData, importedRaw.length);
+    } catch (err) {
+      alert(`❌ Lỗi khi áp dụng import: ${err.message || err}`);
+    }
+  };
+
+  const handleKiemTraTrungTrongBang = () => {
+    const tatCaCot =
+      columnsRef.current.length > 0
+        ? columnsRef.current
+        : MAU_EXCEL_CHUAN[danhMucHienTai] || [];
+    const cotKhoa = layCotKhoaChoTab(
+      danhMucHienTai,
+      MAU_EXCEL_CHUAN[danhMucHienTai],
+      columnsRef.current,
+    );
+    if (!cotKhoa.length) {
+      alert('Chưa xác định được khóa so trùng. Hãy có ít nhất một cột trong bảng hoặc nạp file mẫu.');
+      return;
+    }
+    const nhom = timNhomTrungTrongBang(dataRef.current, cotKhoa);
+    const tenKhoa = cotKhoa.join(' + ');
+    if (nhom.length === 0) {
+      const msg = `Không phát hiện trùng khóa (${tenKhoa}) trong bảng hiện tại.`;
+      if (Platform.OS === 'web') alert(`✅ ${msg}`);
+      else Alert.alert('Kiểm tra trùng', msg);
+      return;
+    }
+    const soDongThua = nhom.reduce((a, g) => a + g.indices.length - 1, 0);
+    const mau = nhom
+      .slice(0, 6)
+      .map((g) => `${g.k} → dòng ${g.indices.map((i) => i + 1).join(', ')}`)
+      .join('\n');
+    const msg = `${nhom.length} khóa trùng; ${soDongThua} dòng có thể gỡ (giữ đại diện).\nKhóa: ${tenKhoa}\n\n${mau}${nhom.length > 6 ? '\n…' : ''}`;
+
+    const hamHopNhat = () => {
+      const newData = gopTrungTrongBangGiuDongDau(dataRef.current, tatCaCot, cotKhoa);
+      danhDauDaSua();
+      dataRef.current = newData;
+      setData(newData);
+      setTrangHienTai(1);
+      luuNgayDanhMuc({ source: 'catalog_dedupe_merge' }).catch(() => {});
+      const done = `Đã hợp nhất: còn ${newData.length} dòng.`;
+      if (Platform.OS === 'web') alert(`✅ ${done}`);
+      else Alert.alert('Hoàn tất', done);
+    };
+
+    if (Platform.OS === 'web') {
+      if (
+        window.confirm(
+          `${msg}\n\nHợp nhất: giữ dòng đầu tiên theo mỗi khóa và xóa các dòng sau?`,
+        )
+      ) {
+        hamHopNhat();
+      }
+    } else {
+      Alert.alert('Phát hiện trùng khóa', msg, [
+        { text: 'Hủy', style: 'cancel' },
+        { text: 'Hợp nhất (giữ đầu)', onPress: hamHopNhat },
+      ]);
+    }
+  };
+
+  // 4. XỬ LÝ IMPORT EXCEL (chunking + phát hiện trùng khóa)
   const handleImportExcel = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (evt) => {
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const importedData = XLSX.utils.sheet_to_json(ws, { defval: "" });
+      try {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const importedData = XLSX.utils.sheet_to_json(ws, { defval: '' });
 
-      if (Platform.OS !== 'web') {
-        try {
-          await taoBanSaoDuLieuHeThong({
-            reason: `AUTO_BEFORE_IMPORT_${danhMucHienTai}`,
-            includeKeys: ['TAB_DANG_MO'],
-          });
-        } catch (errBackup) {
-          console.warn("Không tạo được auto-backup trước import:", errBackup);
+        if (importedData.length === 0) {
+          alert('File không có dòng dữ liệu.');
+          return;
         }
-      }
-      
-      if (importedData.length > 0) {
-        const mergedCols = [...new Set([...columns, ...Object.keys(importedData[0])])];
-        const newData = [...importedData, ...data];
-        
-        setColumns(mergedCols);
-        setData(newData);
-        dataRef.current = newData;
-        columnsRef.current = mergedCols;
-        dirtyRef.current = false;
-        setTrangHienTai(1);
 
-        try {
-          await luuBoDuLieuDanhMuc({
-            dataKey: danhMucHienTai,
-            columnsKey: layKhoaCotDanhMuc(danhMucHienTai),
-            data: newData,
-            columns: mergedCols,
-            source: 'catalog_import_excel',
-            syncRemote: true,
-          });
-          try { xoaCacheBoMayGiamDinh(); } catch {}
-          flushFirebaseDanhMucQueue().catch(() => {});
-          alert(`✅ Đã Import thành công ${importedData.length} dòng dữ liệu. Hệ thống đã lưu bền vững và xếp hàng đồng bộ Firebase.`);
-        } catch (err) {
-          alert("❌ Lỗi lưu khi import: " + err.message);
+        if (Platform.OS !== 'web') {
+          try {
+            await taoBanSaoDuLieuHeThong({
+              reason: `AUTO_BEFORE_IMPORT_${danhMucHienTai}`,
+              includeKeys: ['TAB_DANG_MO'],
+            });
+          } catch (errBackup) {
+            console.warn('Không tạo được auto-backup trước import:', errBackup);
+          }
         }
+
+        const mergedCols = [...new Set([...columnsRef.current, ...Object.keys(importedData[0])])];
+        const cotKhoa = layCotKhoaChoTab(
+          danhMucHienTai,
+          MAU_EXCEL_CHUAN[danhMucHienTai],
+          mergedCols,
+        );
+        const thongKe = demThongKeImportVsHienCo(
+          dataRef.current,
+          importedData,
+          mergedCols,
+          cotKhoa,
+        );
+
+        if (thongKe.soTrung > 0) {
+          setModalImportTrung({
+            mergedCols,
+            importedRaw: importedData,
+            thongKe,
+            cotKhoa,
+          });
+          return;
+        }
+
+        const newData = gopImportVoiBangHienCo(
+          dataRef.current,
+          importedData,
+          mergedCols,
+          cotKhoa,
+          'skip',
+        );
+        await thucHienLuuSauImport(mergedCols, newData, importedData.length);
+      } catch (err) {
+        alert(`❌ Lỗi import: ${err.message || err}`);
       }
     };
     reader.readAsBinaryString(file);
-    e.target.value = null; 
+    e.target.value = null;
   };
 
-  const tongSoTrang = Math.max(1, Math.ceil(data.length / kichThuocTrangHienThi));
-  const trangDangXem = Math.min(trangHienTai, tongSoTrang);
-  const chiSoBatDau = (trangDangXem - 1) * kichThuocTrangHienThi;
-  const chiSoKetThuc = Math.min(data.length, chiSoBatDau + kichThuocTrangHienThi);
-  const duLieuTrang = data.slice(chiSoBatDau, chiSoKetThuc);
+  const duLieuTrang = hangLocChiSo.slice(chiSoBatDau, chiSoKetThuc);
 
   return (
     <SafeAreaView style={styles.vung_an_toan}>
@@ -687,6 +839,10 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
               </React.Fragment>
             )}
 
+            <TouchableOpacity style={styles.nut_xanh_la} onPress={handleKiemTraTrungTrongBang}>
+              <Text style={styles.chu_nut}>🔎 KIỂM TRA TRÙNG</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.nut_xanh_duong} onPress={handleExportXLSX}>
               <Text style={styles.chu_nut}>📥 EXPORT BẢNG</Text>
             </TouchableOpacity>
@@ -727,48 +883,26 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
 
         {/* BẢNG DỮ LIỆU ĐỘNG FULLSCREEN */}
         <View style={styles.khung_bang_master}>
-          <View style={styles.khung_phan_trang}>
-            <View style={{ flex: 1, minWidth: 200 }}>
-              <Text style={styles.chu_phan_trang}>
-                {data.length > 0
-                  ? `Hiển thị ${chiSoBatDau + 1}-${chiSoKetThuc}/${data.length} dòng | Trang ${trangDangXem}/${tongSoTrang}`
-                  : 'Danh mục đang trống'}
-              </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hang_chon_so_dong}>
-                <Text style={styles.nhan_chon_so_dong}>Số dòng/trang:</Text>
-                {TUY_CHON_SO_DONG_MOT_TRANG.map((opt) => {
-                  const active = soDongMotTrang === opt.value;
-                  return (
-                    <TouchableOpacity
-                      key={String(opt.value)}
-                      style={[styles.nut_chon_so_dong, active && styles.nut_chon_so_dong_active]}
-                      onPress={() => setSoDongMotTrang(opt.value)}
-                    >
-                      <Text style={[styles.chu_chon_so_dong, active && styles.chu_chon_so_dong_active]}>{opt.label}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
-            </View>
-            {tongSoTrang > 1 && (
-              <View style={styles.nhom_phan_trang}>
-                <TouchableOpacity
-                  style={[styles.nut_phan_trang, trangDangXem <= 1 && styles.nut_phan_trang_tat]}
-                  onPress={() => setTrangHienTai((prev) => Math.max(1, prev - 1))}
-                  disabled={trangDangXem <= 1}
-                >
-                  <Text style={styles.chu_nut_phan_trang}>TRUOC</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.nut_phan_trang, trangDangXem >= tongSoTrang && styles.nut_phan_trang_tat]}
-                  onPress={() => setTrangHienTai((prev) => Math.min(tongSoTrang, prev + 1))}
-                  disabled={trangDangXem >= tongSoTrang}
-                >
-                  <Text style={styles.chu_nut_phan_trang}>SAU</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          <TimKiemPhanTrangBang
+            tuKhoa={tuKhoaTim}
+            onTuKhoa={setTuKhoaTim}
+            tongDongGoc={data.length}
+            tongDongSauLoc={nSauLoc}
+            soDongMotTrang={soDongMotTrang}
+            onSoDongMotTrang={setSoDongMotTrang}
+            trangHienTai={trangDangXem}
+            onTrangHienTai={setTrangHienTai}
+            tongSoTrang={tongSoTrang}
+            chiSoBatDau={chiSoBatDau}
+            chiSoKetThuc={chiSoKetThuc}
+          />
+          {danhMucHienTai === 'DANH_MUC_TUONG_TAC_THUOC' &&
+          soDongMotTrang > 0 &&
+          data.length > soDongMotTrang ? (
+            <Text style={styles.chu_goi_y_tuong_tac}>
+              Danh mục có {data.length} dòng — chọn &quot;Tất cả&quot; ở trên để xem và sửa toàn bộ cặp tương tác đã nhập.
+            </Text>
+          ) : null}
           <ScrollView horizontal style={styles.scroll_ngang}>
             <View style={styles.bang_chinh}>
               <View style={styles.dong_tieu_de}>
@@ -785,12 +919,13 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
               </View>
 
               <ScrollView showsVerticalScrollIndicator={true} style={styles.scroll_doc}>
-                {duLieuTrang.map((row, rowIndex) => {
-                  const globalIndex = chiSoBatDau + rowIndex;
+                {duLieuTrang.map(({ row, indexGoc }, rowIndex) => {
+                  const globalIndex = indexGoc;
+                  const sttHienThi = chiSoBatDau + rowIndex + 1;
                   return (
-                  <View key={globalIndex} style={[styles.dong_du_lieu, { backgroundColor: globalIndex % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.01)' }]}>
+                  <View key={`${indexGoc}-${rowIndex}`} style={[styles.dong_du_lieu, { backgroundColor: rowIndex % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.01)' }]}>
                     <View style={[styles.o_du_lieu_stt, { width: 90 }]}>
-                      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#F48FB1' }}>{globalIndex + 1}</Text>
+                      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#F48FB1' }}>{sttHienThi}</Text>
                     </View>
                     {columns.map((col, colIndex) => {
                       const rongCot = layDoRongCot(col);
@@ -826,6 +961,46 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
 
         </View>
       </View>
+
+      <Modal
+        visible={!!modalImportTrung}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalImportTrung(null)}
+      >
+        <View style={styles.modal_nen}>
+          <View style={styles.modal_hop}>
+            <Text style={styles.modal_tieu_de}>Trùng khóa khi import Excel</Text>
+            {modalImportTrung ? (
+              <>
+                <Text style={styles.modal_text}>Khóa so khớp: {modalImportTrung.cotKhoa.join(' + ')}</Text>
+                <Text style={styles.modal_text}>
+                  Dòng trong file: {modalImportTrung.importedRaw.length}; sau gộp trùng trong file:{' '}
+                  {modalImportTrung.thongKe.tongSauDedupe}; trùng với dữ liệu đang có:{' '}
+                  {modalImportTrung.thongKe.soTrung}; dòng mới (khóa lạ): {modalImportTrung.thongKe.soMoi}
+                  {modalImportTrung.thongKe.soKhongKhoa > 0
+                    ? `; dòng thiếu khóa (không so trùng): ${modalImportTrung.thongKe.soKhongKhoa}`
+                    : ''}
+                </Text>
+                <Text style={styles.modal_text_nho}>
+                  Ghi đè: cập nhật dòng cũ theo nội dung file. Bỏ qua trùng: giữ dòng cũ, chỉ thêm dòng có khóa mới.
+                </Text>
+                <View style={styles.modal_hang_nut}>
+                  <TouchableOpacity style={styles.nut_phuc_hoi} onPress={() => setModalImportTrung(null)}>
+                    <Text style={styles.chu_nut}>Hủy</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.nut_xanh_duong} onPress={() => handleChotImportTrung('skip')}>
+                    <Text style={styles.chu_nut}>Bỏ qua trùng</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.nut_cam} onPress={() => handleChotImportTrung('overwrite')}>
+                    <Text style={styles.chu_nut}>Ghi đè</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -1046,6 +1221,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontFamily: CD.font.family,
   },
+  chu_goi_y_tuong_tac: {
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    color: CD.brand.mauDam,
+    fontFamily: CD.font.family,
+    lineHeight: 20,
+  },
   nhom_phan_trang: {
     flexDirection: 'row',
     gap: 8,
@@ -1151,7 +1334,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   chu_nut_xoa: { color: CD.text.primary, fontWeight: 'bold', fontSize: 18, fontFamily: CD.font.family },
-  txt_trong: { padding: 40, fontSize: 22, fontStyle: 'italic', color: CD.text.muted, textAlign: 'center', fontFamily: CD.font.family }
+  txt_trong: { padding: 40, fontSize: 22, fontStyle: 'italic', color: CD.text.muted, textAlign: 'center', fontFamily: CD.font.family },
+
+  modal_nen: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modal_hop: {
+    maxWidth: 560,
+    width: '100%',
+    borderRadius: 16,
+    padding: 20,
+    backgroundColor: CD.bg.glass_card,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    ...Platform.select({ web: { boxShadow: '0 8px 32px rgba(0,0,0,0.35)' } }),
+  },
+  modal_tieu_de: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: CD.text.primary,
+    marginBottom: 12,
+    fontFamily: CD.font.family,
+  },
+  modal_text: {
+    fontSize: 17,
+    color: CD.text.secondary,
+    marginBottom: 10,
+    lineHeight: 26,
+    fontFamily: CD.font.family,
+  },
+  modal_text_nho: {
+    fontSize: 15,
+    color: CD.text.muted,
+    marginBottom: 18,
+    lineHeight: 22,
+    fontFamily: CD.font.family,
+  },
+  modal_hang_nut: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'flex-end',
+  },
 });
 
 export default ManHinhQuanLyDanhMuc;

@@ -686,7 +686,7 @@ export const luuHoSoVaoKho = async (danhSachHoSoMoi) => {
         const maLK = hoSo.ma_lk || hoSo.XML1?.MA_LK || hoSo.xml1?.MA_LK;
         if (!maLK) continue;
         const { _raw, ...hoSoLuu } = hoSo;
-        await luuChiTietHoSoMobile(maLK, chuanHoaBanGhiHoSo(hoSoLuu));
+        await luuChiTietHoSoMobile(maLK, chuanHoaBanGhiHoSo({ ...hoSoLuu, ma_lk: maLK }));
         if (!dsMaLK.includes(maLK)) dsMaLK.push(maLK);
       }
       await AsyncStorage.setItem(KHO_INDEX_KEY, JSON.stringify(chuanHoaDanhSachMaLK(dsMaLK)));

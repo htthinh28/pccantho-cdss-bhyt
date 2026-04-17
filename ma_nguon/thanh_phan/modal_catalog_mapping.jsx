@@ -161,37 +161,71 @@ function sapXepDanhMucNguonTheoCatalog(ds, catalogRef) {
   return arr;
 }
 
-/** Lọc toàn bộ danh sách (dùng cho STAFF_DVKT — list / listbox đầy đủ) */
-function locToanBo(ds, tuKhoa) {
-  const t = String(tuKhoa || '').trim().toLowerCase();
-  if (!t) return ds;
-  return ds.filter((x) => `${x.code} ${x.name} ${x.maTuongDuong || ''}`.toLowerCase().includes(t));
+/** Chuẩn hóa để tìm kiếm không phân biệt dấu tiếng Việt (mã / tên / hoạt chất). */
+function boDauVi(s) {
+  return String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
-/** Danh sách đầy đủ + lọc (mapping không phải STAFF_DVKT): gộp thêm chức danh/CCHN, mã tương đương, ký hiệu TB… */
-function locHetDanhMucDon(ds, tuKhoa) {
-  const t = String(tuKhoa || '').trim().toLowerCase();
-  if (!t) return ds;
-  return ds.filter((x) => {
-    const raw = x.raw && typeof x.raw === 'object' ? x.raw : {};
-    const kyHieu = String(raw.KY_HIEU || raw.ky_hieu || '').trim();
-    const s = [
+/** Chuỗi tìm kiếm gộp theo loại danh mục — đủ mã, tên, hoạt chất (thuốc), mã không dấu (ICD). */
+function haystackTimKiemTheoCatalog(x, catalogRef) {
+  const raw = x.raw && typeof x.raw === 'object' ? x.raw : {};
+  if (catalogRef === 'icd10') {
+    return [
       x.code,
       x.name,
-      x.maTuongDuong,
-      x.tenHoatChat,
-      x.nhomVtyt,
-      x.chucDanh,
-      x.chungChi,
-      kyHieu,
-      raw.TEN_TB,
-      raw.TEN_GIA,
+      raw['MÃ BỆNH'],
+      raw['MÃ BỆNH KHÔNG DẤU'],
+      raw['TÊN BỆNH'],
+      raw['DISEASE NAME'],
     ]
       .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-    return s.includes(t);
-  });
+      .join(' ');
+  }
+  if (catalogRef === 'drug_items') {
+    return [
+      x.code,
+      x.name,
+      x.tenHoatChat,
+      raw.MA_THUOC,
+      raw.TEN_THUOC,
+      raw.TEN_HOAT_CHAT,
+      raw.TEN_BIET_DUOC,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+  const kyHieu = String(raw.KY_HIEU || raw.ky_hieu || '').trim();
+  return [
+    x.code,
+    x.name,
+    x.maTuongDuong,
+    x.tenHoatChat,
+    x.nhomVtyt,
+    x.chucDanh,
+    x.chungChi,
+    kyHieu,
+    raw.TEN_TB,
+    raw.TEN_GIA,
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+/** Lọc toàn bộ danh sách (dùng cho STAFF_DVKT — list / listbox đầy đủ) */
+function locToanBo(ds, tuKhoa) {
+  const t = boDauVi(String(tuKhoa || '').trim());
+  if (!t) return ds;
+  return ds.filter((x) => boDauVi(`${x.code} ${x.name} ${x.maTuongDuong || ''}`).includes(t));
+}
+
+/** Danh sách đầy đủ + lọc — từ khóa: mã, tên, hoạt chất (thuốc); ICD: thêm mã không dấu / tên EN. */
+function locHetDanhMucDon(ds, tuKhoa, catalogRef) {
+  const t = boDauVi(String(tuKhoa || '').trim());
+  if (!t) return ds;
+  return ds.filter((x) => boDauVi(haystackTimKiemTheoCatalog(x, catalogRef)).includes(t));
 }
 
 export default function ModalCatalogMapping({
@@ -211,6 +245,8 @@ export default function ModalCatalogMapping({
   const [targetCodesThucHien, setTargetCodesThucHien] = useState([]);
   /** ICD↔thuốc, ICD↔DVKT, DVKT↔thuốc, DVKT↔VTYT, ICD↔VTYT: nhiều mã đích / một bản ghi */
   const [targetCodesNhieu, setTargetCodesNhieu] = useState([]);
+  /** ICD_DRUG / ICD_DVKT / ICD_VTYT: một dòng mapping = nhóm mã ICD nguồn → nhiều mã đích */
+  const [sourceCodesNhieu, setSourceCodesNhieu] = useState([]);
   const [effectiveFrom, setEffectiveFrom] = useState('');
   const [effectiveTo, setEffectiveTo] = useState('');
   const [priority, setPriority] = useState('0');
@@ -238,8 +274,10 @@ export default function ModalCatalogMapping({
 
   const laStaffDvkt = mappingType === 'STAFF_DVKT';
   const laMultiTarget = laMappingNhieuMaDich(mappingType);
+  const laMultiSourceIcd = ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mappingType);
   /** Rộng khung ngay khi mở từ thẻ (mappingType state có thể chưa kịp sync). */
   const laMultiTargetLayout = laMappingNhieuMaDich(mappingTypeCoDinh || mappingType);
+  const laMultiSourceLayout = ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mappingTypeCoDinh || mappingType);
   const dsDvktSapXep = useMemo(() => (laStaffDvkt ? sapXepDvktTheoMaTuongDuong(dsDich) : dsDich), [dsDich, laStaffDvkt]);
   const dsNhanSuDayDu = useMemo(() => {
     const t = String(tuKhoaNguon || '').trim().toLowerCase();
@@ -252,8 +290,14 @@ export default function ModalCatalogMapping({
   }, [dsNguon, tuKhoaNguon]);
   const dsDvktDayDu = useMemo(() => locToanBo(dsDvktSapXep, tuKhoaDich), [dsDvktSapXep, tuKhoaDich]);
 
-  const dsNguonHet = useMemo(() => locHetDanhMucDon(dsNguon, tuKhoaNguon), [dsNguon, tuKhoaNguon]);
-  const dsDichHet = useMemo(() => locHetDanhMucDon(dsDich, tuKhoaDich), [dsDich, tuKhoaDich]);
+  const dsNguonHet = useMemo(
+    () => locHetDanhMucDon(dsNguon, tuKhoaNguon, cfg?.source_catalog),
+    [dsNguon, tuKhoaNguon, cfg?.source_catalog],
+  );
+  const dsDichHet = useMemo(
+    () => locHetDanhMucDon(dsDich, tuKhoaDich, cfg?.target_catalog),
+    [dsDich, tuKhoaDich, cfg?.target_catalog],
+  );
 
   useEffect(() => {
     if (!visible) return;
@@ -299,6 +343,19 @@ export default function ModalCatalogMapping({
         } else {
           setTargetCodesNhieu([]);
         }
+        if (['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(banGhiChinhSua.mapping_type)) {
+          const mdSrc = banGhiChinhSua.metadata && typeof banGhiChinhSua.metadata === 'object' ? banGhiChinhSua.metadata : {};
+          let srcArr = [];
+          if (Array.isArray(mdSrc.source_icd_codes) && mdSrc.source_icd_codes.length) {
+            srcArr = mdSrc.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+          } else {
+            const sc = String(banGhiChinhSua.source_code || '').trim();
+            srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+          }
+          setSourceCodesNhieu(srcArr);
+        } else {
+          setSourceCodesNhieu([]);
+        }
       }
     } else {
       setMappingType(mappingTypeCoDinh || 'STAFF_DVKT');
@@ -316,10 +373,22 @@ export default function ModalCatalogMapping({
       setLichGioTuan(taoLichGioRong());
       setTrucGio([]);
       setTargetCodesNhieu([]);
+      setSourceCodesNhieu([]);
     }
   }, [visible, banGhiChinhSua, mappingTypeCoDinh]);
 
-  const tenNguon = timTenTheoMa(dsNguon, sourceCode);
+  useEffect(() => {
+    if (!visible || !laMultiSourceIcd) return;
+    const sorted = [...sourceCodesNhieu]
+      .map((c) => String(c || '').trim())
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }));
+    setSourceCode(sorted.join('|'));
+  }, [visible, laMultiSourceIcd, sourceCodesNhieu]);
+
+  const tenNguon = laMultiSourceIcd
+    ? timTenNhieuMa(dsNguon, sourceCodesNhieu)
+    : timTenTheoMa(dsNguon, sourceCode);
   const tenDichChi = laStaffDvkt ? timTenNhieuMa(dsDich, targetCodesChiDinh) : '';
   const tenDichThuc = laStaffDvkt ? timTenNhieuMa(dsDich, targetCodesThucHien) : '';
   const tenDich = laStaffDvkt
@@ -378,6 +447,19 @@ export default function ModalCatalogMapping({
       metadata.target_codes = codes;
     }
 
+    let maNguonLuu = String(sourceCode || '').trim();
+    if (laMultiSourceIcd && mappingType !== 'STAFF_DVKT') {
+      const srcCodes = [...new Set((sourceCodesNhieu || []).map((c) => String(c || '').trim()).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }),
+      );
+      if (srcCodes.length === 0) {
+        setLoi('Chọn ít nhất một mã ICD nguồn (có thể chọn nhiều mã ICD cho cùng nhóm gợi ý thuốc / DVKT / VTYT).');
+        return;
+      }
+      maNguonLuu = srcCodes.join('|');
+      metadata.source_icd_codes = srcCodes;
+    }
+
     const c = layCauHinhLoaiMapping(mappingType);
     const duyetMacDinh = banGhiChinhSua
       ? (banGhiChinhSua.approval_status || 'APPROVED')
@@ -390,7 +472,7 @@ export default function ModalCatalogMapping({
       target_catalog: c.target_catalog,
       source_id: 0,
       target_id: 0,
-      source_code: String(sourceCode || '').trim(),
+      source_code: maNguonLuu,
       target_code: maDichLuu,
       effective_from: effectiveFrom || null,
       effective_to: effectiveTo || null,
@@ -415,6 +497,12 @@ export default function ModalCatalogMapping({
     const c = String(code || '').trim();
     if (!c) return;
     setTargetCodesNhieu((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  };
+
+  const toggleSourceIcdMulti = (code) => {
+    const c = String(code || '').trim();
+    if (!c) return;
+    setSourceCodesNhieu((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   };
 
   const toggleDvkt = (code, nhom) => {
@@ -470,8 +558,8 @@ export default function ModalCatalogMapping({
         <View
           style={[
             styles.khung,
-            (laStaffDvkt || laMultiTargetLayout) && styles.khungRongStaffDvkt,
-            !laStaffDvkt && !laMultiTargetLayout && mappingTypeCoDinh && styles.khungRongDon,
+            (laStaffDvkt || laMultiTargetLayout || laMultiSourceLayout) && styles.khungRongStaffDvkt,
+            !laStaffDvkt && !laMultiTargetLayout && !laMultiSourceLayout && mappingTypeCoDinh && styles.khungRongDon,
           ]}
         >
         <ScrollView
@@ -720,16 +808,27 @@ export default function ModalCatalogMapping({
             <View style={styles.khoiHaiCotDon}>
               <View style={styles.cotBangDon}>
                 <Text style={styles.nhan}>Nguồn — {TEN_DM_HIEN_THI[cfg?.source_catalog] || cfg?.source_catalog}</Text>
-                <Text style={styles.nhanNho}>Chọn một dòng (danh mục nội bộ đã nạp đầy đủ)</Text>
+                <Text style={styles.nhanNho}>
+                  {laMultiSourceIcd
+                    ? 'Chọn một hoặc nhiều mã ICD (tap để bật/tắt). Cùng một nhóm ICD có thể gắn chung gợi ý thuốc / DVKT / VTYT ở cột đích.'
+                    : 'Chọn một dòng (danh mục nội bộ đã nạp đầy đủ)'}
+                </Text>
                 <TextInput
                   style={styles.oLoc}
                   value={tuKhoaNguon}
                   onChangeText={setTuKhoaNguon}
-                  placeholder="Lọc theo mã, tên, chức danh…"
+                  placeholder={
+                    cfg?.source_catalog === 'icd10'
+                      ? 'Tìm: mã ICD, tên bệnh, mã không dấu…'
+                      : 'Lọc theo mã, tên, chức danh…'
+                  }
                   placeholderTextColor={CD.text.placeholder}
                   editable={!laSua}
                 />
-                <Text style={styles.demBangDon}>{dsNguonHet.length} mã</Text>
+                <Text style={styles.demBangDon}>
+                  {dsNguonHet.length} mã
+                  {laMultiSourceIcd ? ` · đã chọn ICD: ${sourceCodesNhieu.length}` : ''}
+                </Text>
                 <FlatList
                   data={dsNguonHet}
                   keyExtractor={(item, index) => `src_${item.code}_${index}`}
@@ -742,7 +841,25 @@ export default function ModalCatalogMapping({
                   removeClippedSubviews={Platform.OS === 'android'}
                   ListEmptyComponent={<Text style={styles.chuTrongList}>Không có dữ liệu hoặc chưa khớp bộ lọc.</Text>}
                   renderItem={({ item: x }) => {
-                    const chon = sourceCode === x.code;
+                    const chon = laMultiSourceIcd ? sourceCodesNhieu.includes(x.code) : sourceCode === x.code;
+                    if (laMultiSourceIcd) {
+                      return (
+                        <TouchableOpacity
+                          style={[styles.dongListDon, styles.dongListDvktCoCheckbox, chon && styles.dongListChon]}
+                          onPress={() => !laSua && toggleSourceIcdMulti(x.code)}
+                          disabled={laSua}
+                          activeOpacity={0.75}
+                        >
+                          <View style={[styles.vuongCheckbox, chon && styles.vuongCheckboxChon]}>
+                            <Text style={styles.dauTick}>{chon ? '✓' : ' '}</Text>
+                          </View>
+                          <View style={styles.cotTextDvkt}>
+                            <Text style={styles.maListDon} numberOfLines={1}>{x.code}</Text>
+                            <Text style={styles.tenListDon} numberOfLines={3}>{x.name}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }
                     return (
                       <TouchableOpacity
                         style={[styles.dongListDon, chon && styles.dongListChon]}
@@ -775,11 +892,16 @@ export default function ModalCatalogMapping({
                   style={styles.oLoc}
                   value={tuKhoaDich}
                   onChangeText={setTuKhoaDich}
-                  placeholder="Lọc theo mã, tên, hoạt chất…"
+                  placeholder={
+                    cfg?.target_catalog === 'drug_items'
+                      ? 'Tìm: mã thuốc, tên biệt dược, hoạt chất…'
+                      : 'Lọc theo mã, tên, hoạt chất…'
+                  }
                   placeholderTextColor={CD.text.placeholder}
                 />
                 <Text style={styles.demBangDon}>
                   {dsDichHet.length} mã
+                  {laMultiTarget ? ` · đã chọn đích: ${targetCodesNhieu.length}` : ''}
                   {laMultiTarget && cfg?.target_catalog === 'drug_items' ? ' · sắp A→Z (mã / hoạt chất / tên)' : ''}
                 </Text>
                 <FlatList
@@ -795,16 +917,40 @@ export default function ModalCatalogMapping({
                   ListEmptyComponent={<Text style={styles.chuTrongList}>Không có dữ liệu hoặc chưa khớp bộ lọc.</Text>}
                   renderItem={({ item: x }) => {
                     const chon = laMultiTarget ? targetCodesNhieu.includes(x.code) : targetCode === x.code;
+                    if (laMultiTarget) {
+                      return (
+                        <TouchableOpacity
+                          style={[styles.dongListDon, styles.dongListDvktCoCheckbox, chon && styles.dongListChon]}
+                          onPress={() => toggleTargetMulti(x.code)}
+                          activeOpacity={0.75}
+                        >
+                          <View style={[styles.vuongCheckbox, chon && styles.vuongCheckboxChon]}>
+                            <Text style={styles.dauTick}>{chon ? '✓' : ' '}</Text>
+                          </View>
+                          <View style={styles.cotTextDvkt}>
+                            <Text style={styles.maListDon} numberOfLines={1}>{x.code}</Text>
+                            {cfg?.target_catalog === 'drug_items' && x.tenHoatChat ? (
+                              <Text style={styles.phuListDon} numberOfLines={2}>
+                                HC: {x.tenHoatChat}
+                              </Text>
+                            ) : null}
+                            <Text style={styles.tenListDon} numberOfLines={3}>{x.name}</Text>
+                            {x.maTuongDuong ? <Text style={styles.phuListDon}>TTĐ: {x.maTuongDuong}</Text> : null}
+                            {cfg?.target_catalog === 'vtyt_items' && x.nhomVtyt ? (
+                              <Text style={styles.phuListDon} numberOfLines={1}>
+                                Nhóm: {x.nhomVtyt}
+                              </Text>
+                            ) : null}
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }
                     return (
                       <TouchableOpacity
                         style={[styles.dongListDon, chon && styles.dongListChon]}
                         onPress={() => {
-                          if (laMultiTarget) {
-                            toggleTargetMulti(x.code);
-                          } else {
-                            setTargetCode(x.code);
-                            setTuKhoaDich('');
-                          }
+                          setTargetCode(x.code);
+                          setTuKhoaDich('');
                         }}
                         activeOpacity={0.75}
                       >
@@ -829,9 +975,21 @@ export default function ModalCatalogMapping({
             </View>
           )}
 
-          {!laStaffDvkt && (sourceCode || targetCode || (laMultiTarget && targetCodesNhieu.length > 0)) ? (
+          {!laStaffDvkt &&
+          (sourceCode ||
+            targetCode ||
+            (laMultiTarget && targetCodesNhieu.length > 0) ||
+            (laMultiSourceIcd && sourceCodesNhieu.length > 0)) ? (
             <Text style={styles.tomTatChonDon}>
-              {tenNguon ? `${tenNguon} (${sourceCode})` : sourceCode || '…'} →{' '}
+              {laMultiSourceIcd
+                ? tenNguon
+                  ? `${tenNguon} (${sourceCodesNhieu.join(', ')})`
+                  : sourceCodesNhieu.join(', ') || '…'
+                : tenNguon
+                  ? `${tenNguon} (${sourceCode})`
+                  : sourceCode || '…'}
+              {' '}
+              →{' '}
               {laMultiTarget
                 ? (tenDich ? `${tenDich} (${targetCodesNhieu.join(', ')})` : targetCodesNhieu.join(', ') || '…')
                 : tenDich

@@ -1,7 +1,7 @@
 /**
  * Thẻ chuyên môn: Danh mục tương tác thuốc — cột cố định, đồng bộ DANH_MUC_TUONG_TAC_THUOC.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Platform,
@@ -16,8 +16,10 @@ import {
 import * as XLSX from 'xlsx';
 
 import { CD } from '../../tien_ich/chu_de_giao_dien';
+import { locDongTheoTuKhoa, SO_DONG_TRANG_MAC_DINH, tinhChiSoPhanTrang } from '../../tien_ich/bo_loc_bang_du_lieu';
 import { ghiMangDanhMucVaoStorage, taiBoDuLieuDanhMuc } from '../../tien_ich/luu_tru_danh_muc';
 import { xoaCacheBoMayGiamDinh } from '../../tien_ich/dong_co_giam_dinh';
+import TimKiemPhanTrangBang from '../../thanh_phan/tim_kiem_phan_trang_bang';
 import seed from './du_lieu_tuong_tac_thuoc.seed.json';
 import { NOI_DUNG_QUY_TAC_HIEN_THI } from './quy_tac_giam_dinh_tuong_tac';
 
@@ -105,12 +107,41 @@ const escapeHtml = (s) => String(s ?? '')
 const TuongTacThuocChuyenMon = () => {
   const { width: winW } = useWindowDimensions();
   const [data, setData] = useState([]);
+  const dataRef = useRef([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [sortAsc, setSortAsc] = useState(true);
   const [caoVungBang, setCaoVungBang] = useState(0);
   const [moQuyTac, setMoQuyTac] = useState(false);
+  const [tuKhoaTim, setTuKhoaTim] = useState('');
+  const [soDongMotTrang, setSoDongMotTrang] = useState(SO_DONG_TRANG_MAC_DINH);
+  const [trangHienTai, setTrangHienTai] = useState(1);
 
   const bangRong = useMemo(() => Math.max((winW || Dimensions.get('window').width) - 24, 400), [winW]);
+
+  const hangLocChiSo = useMemo(
+    () => locDongTheoTuKhoa(data, COT_HIEN_BANG, tuKhoaTim),
+    [data, tuKhoaTim],
+  );
+  const nSauLoc = hangLocChiSo.length;
+  const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
+    () => tinhChiSoPhanTrang(nSauLoc, soDongMotTrang, trangHienTai),
+    [nSauLoc, soDongMotTrang, trangHienTai],
+  );
+  const duLieuTrang = useMemo(
+    () => hangLocChiSo.slice(chiSoBatDau, chiSoKetThuc),
+    [hangLocChiSo, chiSoBatDau, chiSoKetThuc],
+  );
+
+  const idsTrangHienThi = useMemo(() => duLieuTrang.map(({ row }) => row.id), [duLieuTrang]);
+  const tatCaDaChon = idsTrangHienThi.length > 0 && idsTrangHienThi.every((id) => selectedRows.includes(id));
+
+  useEffect(() => {
+    if (trangHienTai > tongSoTrang) setTrangHienTai(tongSoTrang);
+  }, [tongSoTrang, trangHienTai]);
+
+  useEffect(() => {
+    setTrangHienTai(1);
+  }, [tuKhoaTim, soDongMotTrang]);
 
   const napDuLieu = useCallback(async () => {
     try {
@@ -129,6 +160,10 @@ const TuongTacThuocChuyenMon = () => {
   useEffect(() => {
     napDuLieu();
   }, [napDuLieu]);
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const luuHeThong = async (newData) => {
     const next = newData.map(chuanHoaHang);
@@ -206,8 +241,14 @@ const TuongTacThuocChuyenMon = () => {
   const toggleSelectRow = (id) => setSelectedRows((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));
 
   const toggleSelectAll = () => {
-    if (selectedRows.length === data.length) setSelectedRows([]);
-    else setSelectedRows(data.map((r) => r.id));
+    const idsPage = duLieuTrang.map(({ row }) => row.id);
+    if (idsPage.length === 0) return;
+    const allPageSelected = idsPage.every((id) => selectedRows.includes(id));
+    if (allPageSelected) {
+      setSelectedRows((prev) => prev.filter((id) => !idsPage.includes(id)));
+    } else {
+      setSelectedRows((prev) => Array.from(new Set([...prev, ...idsPage])));
+    }
   };
 
   const handleDeleteBulk = () => {
@@ -250,8 +291,11 @@ const TuongTacThuocChuyenMon = () => {
       const imported = XLSX.utils.sheet_to_json(ws, { defval: '' });
       const formatted = imported.map(chuanHoaDongTuExcel).filter(Boolean);
       if (formatted.length > 0) {
-        luuHeThong(formatted);
-        alert(`Đã import ${formatted.length} dòng.`);
+        const merged = gopImportVoiBangHienTai(dataRef.current, formatted);
+        luuHeThong(merged);
+        alert(
+          `Đã nhập ${formatted.length} dòng từ file. Trùng mã quy tắc (MA_TUONG_TAC) với bảng đang có được cập nhật theo file. Tổng sau gộp: ${merged.length} dòng.`,
+        );
       } else {
         alert('Không đọc được dòng hợp lệ.');
       }
@@ -300,7 +344,37 @@ const TuongTacThuocChuyenMon = () => {
     }, 250);
   };
 
-  const tatCaDaChon = data.length > 0 && selectedRows.length === data.length;
+  const thongKeBang = useMemo(() => {
+    let duCap = 0;
+    let batOn = 0;
+    const pkSeen = new Set();
+    let capPhanBiet = 0;
+    data.forEach((row) => {
+      if (row.DU_LIEU_CAP_DOI_DAY_DU === '1') duCap += 1;
+      if (row.TRANG_THAI === 'ON') batOn += 1;
+      const a = UPPER(row.MA_THUOC_A);
+      const b = UPPER(row.MA_THUOC_B);
+      if (a && b) {
+        const pk = [a, b].sort().join('|');
+        if (!pkSeen.has(pk)) {
+          pkSeen.add(pk);
+          capPhanBiet += 1;
+        }
+      }
+    });
+    return { tong: data.length, duCap, batOn, capPhanBiet };
+  }, [data]);
+
+  const gopImportVoiBangHienTai = (current, importedRows) => {
+    const map = new Map();
+    const keyOf = (r) => {
+      const m = String(r.MA_TUONG_TAC || '').trim().toUpperCase();
+      return m || String(r.id || '');
+    };
+    current.forEach((r) => map.set(keyOf(r), chuanHoaHang(r)));
+    importedRows.forEach((r) => map.set(keyOf(chuanHoaHang(r)), chuanHoaHang(r)));
+    return Array.from(map.values());
+  };
 
   const renderOToCot = (key, row, isHeader) => {
     const meta = METADATA_COT[key];
@@ -430,6 +504,10 @@ const TuongTacThuocChuyenMon = () => {
         <Text style={styles.ghi_chu} numberOfLines={2}>
           ON mới giám định. ⧉ sao chép dòng · Tối thiểu {CAO_DONG_TOI_THIEU}px/dòng.
         </Text>
+        <Text style={styles.thong_ke_dong} selectable>
+          Tổng {thongKeBang.tong} dòng đã lưu · {thongKeBang.capPhanBiet} cặp mã khác nhau · Đủ A+B:{' '}
+          {thongKeBang.duCap} · Đang bật ON: {thongKeBang.batOn}. Dùng ô tìm kiếm và phân trang ngay trên bảng để lọc và chuyển trang.
+        </Text>
       </View>
 
       {moQuyTac ? (
@@ -454,6 +532,24 @@ const TuongTacThuocChuyenMon = () => {
           </ScrollView>
         </View>
       ) : null}
+
+      {/* Tách khỏi khung đo chiều cao bảng: gộp chung làm onLayout gồm cả thanh tìm rồi gán height cho bang → lỗi ScrollView dọc / phân trang */}
+      <View style={styles.khung_tim_bang}>
+        <TimKiemPhanTrangBang
+          tuKhoa={tuKhoaTim}
+          onTuKhoa={setTuKhoaTim}
+          placeholder="Tìm theo mã TT, mã thuốc, nội dung… (không phân biệt dấu)"
+          tongDongGoc={data.length}
+          tongDongSauLoc={nSauLoc}
+          soDongMotTrang={soDongMotTrang}
+          onSoDongMotTrang={setSoDongMotTrang}
+          trangHienTai={trangDangXem}
+          onTrangHienTai={setTrangHienTai}
+          tongSoTrang={tongSoTrang}
+          chiSoBatDau={chiSoBatDau}
+          chiSoKetThuc={chiSoKetThuc}
+        />
+      </View>
 
       <View
         style={styles.khung_bang_outer}
@@ -489,7 +585,7 @@ const TuongTacThuocChuyenMon = () => {
           </View>
 
           <ScrollView nestedScrollEnabled style={styles.cuon_doc} keyboardShouldPersistTaps="handled">
-            {data.map((row) => (
+            {duLieuTrang.map(({ row }) => (
               <View key={row.id} style={[styles.dong_row, styles.dong_dat]}>
                 <View style={[styles.o_co_dinh, styles.o_flex_center, { width: RONG_CHON }]}>
                   <TouchableOpacity
@@ -549,6 +645,20 @@ const styles = StyleSheet.create({
   txt_btn_dark: { color: CD.text.primary, fontSize: 13, fontWeight: 'bold', fontFamily: CD.font.family },
   txt_btn_small: { color: '#FFF', fontSize: 13, fontWeight: 'bold', fontFamily: CD.font.family },
   ghi_chu: { fontSize: 12, color: CD.text.secondary, fontFamily: CD.font.family, lineHeight: 16, marginTop: 2 },
+  thong_ke_dong: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: CD.brand.mauDam,
+    fontFamily: CD.font.family,
+    lineHeight: 20,
+    marginTop: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(216, 27, 96, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(216, 27, 96, 0.22)',
+  },
   btn_quy_tac: {
     backgroundColor: CD.bg.glass_input,
     paddingVertical: 8,
@@ -592,8 +702,16 @@ const styles = StyleSheet.create({
     minHeight: 0,
     width: '100%',
     paddingHorizontal: 8,
-    paddingTop: 8,
+    paddingTop: 4,
     paddingBottom: 8,
+  },
+  khung_tim_bang: {
+    flexShrink: 0,
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    marginBottom: 2,
+    zIndex: 2,
+    ...Platform.select({ web: { position: 'relative' } }),
   },
   khung_ngang: { flex: 1, minHeight: 0, width: '100%' },
   khung_ngang_content: { flexGrow: 1, paddingBottom: 4 },
