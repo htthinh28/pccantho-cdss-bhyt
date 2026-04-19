@@ -1,6 +1,7 @@
 /**
  * FILE ĐIỀU HƯỚNG CHUNG - DANH MỤC PHÁP LÝ BHYT (MASTER DATA INDEX)
  * Quản lý tập trung các danh mục theo chuẩn Thông tư 12/2026/TT-BTC
+ * (Trao đổi bảng nội bộ: màn Quản lý danh mục có thêm nhập/xuất XML QĐ326/TT12 — `tien_ich/danh_muc_xml_qd326_tt12.js`.)
  * Đảm bảo liên thông dữ liệu cho Động cơ Kiểm tra CDSS
  */
 

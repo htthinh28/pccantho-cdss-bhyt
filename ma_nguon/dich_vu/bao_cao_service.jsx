@@ -4,6 +4,10 @@
  */
 
 import { layTatCaHoSoTuKho } from '../tien_ich/kho_du_lieu';
+import { tongHopMoHinhMuc5 } from './bao_cao_mo_hinh_muc5';
+import { tongHopBaoCaoQuanTriMuc6 } from './bao_cao_quan_tri_muc6';
+import { tongHopBaoCaoChuyenMonMuc7 } from './bao_cao_chuyen_mon_muc7';
+import { tongHopBaoCaoDoanhThuMuc8 } from './bao_cao_doanh_thu_muc8';
 
 export const MA_DAC_TA_BAO_CAO = 'CDSS-BHYT-SPEC-BC-V1.0';
 
@@ -52,5 +56,30 @@ export const taiDuLieuNguonBaoCao = async () => {
     ma_dac_ta: MA_DAC_TA_BAO_CAO,
     so_ho_so_sau_gom: hoSo.length,
     danh_sach_ho_so: hoSo,
+  };
+};
+
+/** Tải kho + tổng hợp mô hình dữ liệu mục 5 (fact / dimension) cho module báo cáo. */
+export const taiNguonVaMoHinhMuc5 = async () => {
+  const nguon = await taiDuLieuNguonBaoCao();
+  const mo_hinh_muc5 = tongHopMoHinhMuc5(nguon.danh_sach_ho_so);
+  const muc6 = tongHopBaoCaoQuanTriMuc6({
+    moHinhMuc5: mo_hinh_muc5,
+    danhSachHoSo: nguon.danh_sach_ho_so,
+  });
+  const muc7 = tongHopBaoCaoChuyenMonMuc7({
+    moHinhMuc5: mo_hinh_muc5,
+    danhSachHoSo: nguon.danh_sach_ho_so,
+  });
+  const muc8 = tongHopBaoCaoDoanhThuMuc8({
+    moHinhMuc5: mo_hinh_muc5,
+    danhSachHoSo: nguon.danh_sach_ho_so,
+  });
+  return {
+    ...nguon,
+    mo_hinh_muc5,
+    bao_cao_quan_tri_muc6: muc6,
+    bao_cao_chuyen_mon_muc7: muc7,
+    bao_cao_doanh_thu_muc8: muc8,
   };
 };

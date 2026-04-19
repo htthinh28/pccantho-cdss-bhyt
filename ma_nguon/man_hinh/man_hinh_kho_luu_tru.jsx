@@ -1,28 +1,28 @@
 /**
  * MODULE: KHO LƯU TRỮ HỒ SƠ LÂM SÀNG & NHẬT KÝ TRUY VẾT (EMR & AUDIT TRAIL)
  * Chức năng:
- * 1. Truy xuất hồ sơ: Đọc chuẩn xác dữ liệu các ca bệnh đã kiểm tra từ kho lưu trữ.
+ * 1. Truy xuất hồ sơ: Đọc chuẩn xác dữ liệu các ca bệnh đã kiểm tra từ kho lưu trữ (gồm loại KCB / MA_LOAI_KCB từ XML1).
  * 2. Nhật ký truy vết: Hiển thị chi tiết lịch sử thay đổi hồ sơ (Audit Trail).
  * 3. Giao diện tối ưu: Bảng bung rộng đúng 1 màn hình (không kéo ngang), thu hẹp cột Chẩn đoán.
- * 4. Xuất dữ liệu: Xuất hàng loạt file XML và báo cáo Excel.
+ * 4. Xuất dữ liệu: Xuất hàng loạt file XML; Excel (đã chọn + báo cáo toàn danh sách đang lọc); In/PDF báo cáo danh sách.
  * 5. Tự động ghi nhớ: Sửa lỗi mất dữ liệu khi Refresh, tự động đồng bộ (Auto-Save).
  * Tiêu chuẩn JCI: MCI.3 (Bảo mật & Truy vết) và QPS (Cải thiện chất lượng).
  * Giao diện: Pink Theme Phương Châu, Font Arial > 20px.
  * [CẬP NHẬT LÕI]: Tích hợp cơ chế Index-Detail từ kho_du_lieu.jsx chống tràn RAM.
  */
 
-import React, { useEffect, useState } from 'react'; // BẮT BUỘC CÓ REACT ĐỂ KHÔNG BỊ LỖI WEB
+import React, { useEffect, useMemo, useState } from 'react'; // BẮT BUỘC CÓ REACT ĐỂ KHÔNG BỊ LỖI WEB
 import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
-import * as XLSX from 'xlsx';
 
 // --- IMPORT CÁC HÀM TỪ KHO DỮ LIỆU ĐỂ THAY THẾ LÕI CŨ ---
 import * as DocumentPicker from 'expo-document-picker';
+import { xuatExcelBaoCao } from '../dich_vu/bao_cao_xuat_file';
 import { layTatCaHoSoTuKho, luuHoSoVaoKho, xoaHoSoKhoiKho } from '../tien_ich/kho_du_lieu';
-import { xuLyFileXML130 } from '../tien_ich/xml_helper';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
+import { xuLyFileXML130 } from '../tien_ich/xml_helper';
 
 // --- HÀM HỖ TRỢ HIỂN THỊ HỘP THOẠI TRÊN CẢ WEB & MOBILE ---
 const safeConfirm = (title, message, onConfirm) => {
@@ -51,6 +51,50 @@ const TEN_HIEN_THI_XML = {
   XML5: 'Diễn biến điều trị',
   XML6: 'Thanh toán tổng hợp',
 };
+
+/** Chuẩn hóa MA_LOAI_KCB (XML1) — 1/01 → 01 */
+const chuanHoaMaLoaiKcb = (val) => {
+  const raw = String(val ?? '').trim();
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  return digits ? digits.padStart(2, '0') : raw;
+};
+
+/** Tên gợi nhớ theo mã phổ biến (QĐ 130 / TT 37) */
+const TEN_GOI_LOAI_KCB = {
+  '01': 'Khám bệnh',
+  '02': 'Ngoại trú',
+  '03': 'Nội trú',
+  '04': 'Nội trú ban ngày',
+  '05': 'Ngoại trú từ nội trú',
+  '06': 'Tái khám',
+  '07': 'Cấp cứu',
+  '08': 'Khác (ngoại trú…)',
+  '09': 'Nội trú (09)',
+};
+
+const layChuoiHienThiLoaiKhamChuaBenh = (x1 = {}) => {
+  const rawMa = x1?.MA_LOAI_KCB ?? x1?.ma_loai_kcb ?? '';
+  const maChuan = chuanHoaMaLoaiKcb(rawMa);
+  const ten = maChuan ? TEN_GOI_LOAI_KCB[maChuan] : '';
+  if (!String(rawMa || '').trim() && !maChuan) return '—';
+  const maHien = maChuan || String(rawMa || '').trim();
+  return ten ? `${maHien} — ${ten}` : maHien;
+};
+
+/** Cột dùng chung cho Excel báo cáo & in PDF danh sách kho */
+const COT_BAO_CAO_KHO = [
+  { key: 'stt', label: 'STT' },
+  { key: 'ma_lk', label: 'Mã LK' },
+  { key: 'ten_bn', label: 'Bệnh nhân' },
+  { key: 'loai_kcb', label: 'Loại khám chữa bệnh (MA_LOAI_KCB)' },
+  { key: 'chan_doan_rv', label: 'Chẩn đoán RV' },
+  { key: 't_bhtt', label: 'BHYT thanh toán (VNĐ)' },
+  { key: 't_bntt', label: 'BN thanh toán (VNĐ)' },
+  { key: 'thoi_gian', label: 'Thời gian cập nhật' },
+  { key: 'trang_thai', label: 'Trạng thái' },
+  { key: 'so_loi', label: 'Số lỗi giám định' },
+];
 
 const layDuLieuGocHoSo = (hs) => {
   if (!hs) return {};
@@ -213,6 +257,36 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
     return layDuLieuXmlChiTiet(hs);
   };
 
+  const chuyenDanhSachHoSoThanhHangBaoCao = (arr) =>
+    (Array.isArray(arr) ? arr : []).map((hs, index) => {
+      const { x1 } = getSafeXML(hs);
+      const nLoi = Array.isArray(hs.ket_qua_giam_dinh) ? hs.ket_qua_giam_dinh.length : 0;
+      return {
+        stt: index + 1,
+        ma_lk: String(hs.ma_lk || x1.MA_LK || ''),
+        ten_bn: String(hs.ten_benh_nhan || hs.ten_bn || x1.HO_TEN || '').toUpperCase(),
+        loai_kcb: layChuoiHienThiLoaiKhamChuaBenh(x1),
+        chan_doan_rv: String(x1.CHAN_DOAN_RV || hs.ten_benh || ''),
+        t_bhtt: Number(x1.T_BHTT || 0),
+        t_bntt: Number(x1.T_BNTT || 0),
+        thoi_gian: String(hs.thoi_gian || ''),
+        trang_thai: nLoi > 0 ? `Vi phạm (${nLoi} lỗi)` : 'Hợp lệ 100%',
+        so_loi: nLoi,
+      };
+    });
+
+  const danhSachLoc = useMemo(() => {
+    const searchStr = String(tuKhoa).toLowerCase().trim();
+    return danhSachKho.filter((hs) => {
+      const { x1 } = getSafeXML(hs);
+      const ten = String(hs.ten_benh_nhan || hs.ten_bn || x1.HO_TEN || '').toLowerCase();
+      const ma = String(hs.ma_lk || x1.MA_LK || '').toLowerCase();
+      const loai = layChuoiHienThiLoaiKhamChuaBenh(x1).toLowerCase();
+      const maLoaiRaw = String(x1.MA_LOAI_KCB || x1.ma_loai_kcb || '').toLowerCase();
+      return ma.includes(searchStr) || ten.includes(searchStr) || loai.includes(searchStr) || maLoaiRaw.includes(searchStr);
+    });
+  }, [danhSachKho, tuKhoa]);
+
   const handleMoSuaTheoXml = (maLK, xmlKey, dongIndex = 0, truongLoi = '') => {
     setHoSoDangXem(null);
     setTuKhoaChiTietXml('');
@@ -247,6 +321,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
       let valA, valB;
       if (key === 'ma_lk') { valA = a.ma_lk || x1A.MA_LK; valB = b.ma_lk || x1B.MA_LK; }
       else if (key === 'ten_bn') { valA = a.ten_benh_nhan || a.ten_bn || x1A.HO_TEN; valB = b.ten_benh_nhan || b.ten_bn || x1B.HO_TEN; }
+      else if (key === 'ma_loai_kcb') { valA = chuanHoaMaLoaiKcb(x1A.MA_LOAI_KCB || x1A.ma_loai_kcb); valB = chuanHoaMaLoaiKcb(x1B.MA_LOAI_KCB || x1B.ma_loai_kcb); }
       else if (key === 'CHAN_DOAN_RV') { valA = x1A.CHAN_DOAN_RV || a.ten_benh; valB = x1B.CHAN_DOAN_RV || b.ten_benh; }
       else if (key === 'T_BHTT') { valA = Number(x1A.T_BHTT) || 0; valB = Number(x1B.T_BHTT) || 0; }
       else if (key === 'T_BNTT') { valA = Number(x1A.T_BNTT) || 0; valB = Number(x1B.T_BNTT) || 0; }
@@ -337,29 +412,51 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
     });
   };
 
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     if (selectedIds.length === 0) return;
-    if (Platform.OS !== 'web') return safeAlert("Thông báo", "Tính năng xuất file chỉ hỗ trợ trên nền tảng Web.");
+    const chon = danhSachKho.filter((hs) => {
+      const { x1 } = getSafeXML(hs);
+      const id = hs.ma_lk || x1.MA_LK;
+      return id && selectedIds.includes(id);
+    });
+    const rows = chuyenDanhSachHoSoThanhHangBaoCao(chon);
+    if (rows.length === 0) {
+      safeAlert('Thông báo', 'Không có dòng đã chọn để xuất.');
+      return;
+    }
+    await xuatExcelBaoCao(
+      [{ sheetName: 'Ho_so_da_chon', columns: COT_BAO_CAO_KHO, rows }],
+      `Kho_luu_tru_chon_${rows.length}`,
+    );
+  };
 
-    const exportData = danhSachKho
-      .filter(hs => selectedIds.includes(hs.ma_lk))
-      .map(hs => {
-        const { x1 } = getSafeXML(hs);
-        return {
-          "Mã Lượt Khám": hs.ma_lk || x1.MA_LK,
-          "Tên Bệnh Nhân": String(hs.ten_benh_nhan || hs.ten_bn || x1.HO_TEN).toUpperCase(),
-          "Chẩn Đoán RV": x1.CHAN_DOAN_RV || '',
-          "BHYT Thanh Toán (VNĐ)": Number(x1.T_BHTT || 0),
-          "BN Thanh Toán (VNĐ)": Number(x1.T_BNTT || 0),
-          "Thời Gian Cập Nhật": hs.thoi_gian,
-          "Trạng Thái": hs.ket_qua_giam_dinh?.length > 0 ? `Vi phạm (${hs.ket_qua_giam_dinh.length} lỗi)` : 'Hợp lệ 100%'
-        };
-      });
+  /** Xuất Excel báo cáo: toàn bộ danh sách đang hiển thị (sau ô tìm kiếm), không cần tick chọn */
+  const handleXuatExcelBaoCao = async () => {
+    const rows = chuyenDanhSachHoSoThanhHangBaoCao(danhSachLoc);
+    if (rows.length === 0) {
+      safeAlert('Thông báo', 'Không có hồ sơ để xuất (kho trống hoặc không khớp bộ lọc).');
+      return;
+    }
+    await xuatExcelBaoCao(
+      [{ sheetName: 'Bao_cao_kho', columns: COT_BAO_CAO_KHO, rows }],
+      'Bao_cao_kho_luu_tru',
+    );
+  };
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Kho_Luu_Tru");
-    XLSX.writeFile(wb, `Danh_Sach_Ho_So_${Date.now()}.xlsx`);
+  /** In / PDF danh sách kho (cùng dữ liệu với báo cáo Excel) */
+  const handleInDanhSachKho = async () => {
+    const rows = chuyenDanhSachHoSoThanhHangBaoCao(danhSachLoc);
+    if (rows.length === 0) {
+      safeAlert('Thông báo', 'Không có hồ sơ để in.');
+      return;
+    }
+    const exportNote = tuKhoa.trim()
+      ? `Sau lọc: "${tuKhoa.trim()}". ${rows.length} hồ sơ.`
+      : `${rows.length} hồ sơ (theo danh sách hiện tại).`;
+    await inHoacChiaSePdfTuBang(
+      [{ sheetName: 'Kho_ho_so', columns: COT_BAO_CAO_KHO, rows, exportNote }],
+      'Kho lưu trữ — Báo cáo danh sách hồ sơ',
+    );
   };
 
   // --- CHỨC NĂNG SỬA & KIỂM TRA TRÙNG (TỰ ĐỘNG GHI NHỚ) ---
@@ -498,6 +595,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
           <View style={styles.thong_tin_hanh_chinh}>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Mã Lượt Khám:</Text> {maLK}</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Thời gian nạp:</Text> {hoSoDangXem.thoi_gian}</Text>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Loại khám chữa bệnh:</Text> {layChuoiHienThiLoaiKhamChuaBenh(x1)}</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Chẩn đoán RV:</Text> {x1.CHAN_DOAN_RV || hoSoDangXem.ten_benh || 'N/A'}</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>BHYT Thanh toán:</Text> {Number(x1.T_BHTT || 0).toLocaleString()} VNĐ</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>BN Thanh toán:</Text> {Number(x1.T_BNTT || 0).toLocaleString()} VNĐ</Text>
@@ -650,14 +748,6 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
     );
   };
 
-  const danhSachLoc = danhSachKho.filter(hs => {
-    const searchStr = String(tuKhoa).toLowerCase().trim();
-    const { x1 } = getSafeXML(hs);
-    const ten = String(hs.ten_benh_nhan || hs.ten_bn || x1.HO_TEN || '').toLowerCase();
-    const ma = String(hs.ma_lk || x1.MA_LK || '').toLowerCase();
-    return ma.includes(searchStr) || ten.includes(searchStr);
-  });
-
   return (
     <SafeAreaView style={styles.vung_an_toan}>
       <View style={styles.thanh_tieu_de}>
@@ -671,7 +761,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
               <TouchableOpacity onPress={handleExportXML} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(25,118,210,0.3)', borderColor: 'rgba(25,118,210,0.5)' }]}>
                 <Text style={styles.chu_nut_header}>📤 XML</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleExportExcel} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(56,142,60,0.3)', borderColor: 'rgba(56,142,60,0.5)' }]}>
+              <TouchableOpacity onPress={() => void handleExportExcel()} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(56,142,60,0.3)', borderColor: 'rgba(56,142,60,0.5)' }]}>
                 <Text style={styles.chu_nut_header}>📊 EXCEL</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleXoaHangLoat} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(198,40,40,0.3)', borderColor: 'rgba(198,40,40,0.5)' }]}>
@@ -688,7 +778,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
             <View style={styles.thanh_cong_cu}>
               <TextInput
                 style={styles.o_tim_kiem}
-                placeholder="🔍 Tìm Mã Lượt Khám hoặc Tên Bệnh Nhân..."
+                placeholder="🔍 Mã LK, tên BN, MA_LOAI_KCB hoặc loại KCB…"
                 placeholderTextColor="rgba(255,255,255,0.4)"
                 value={tuKhoa}
                 onChangeText={setTuKhoa}
@@ -697,7 +787,16 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
               <TouchableOpacity onPress={handleNhapXmlGoi130VaoKho} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(106,27,154,0.35)', borderColor: 'rgba(186,104,200,0.5)' }]}>
                 <Text style={styles.chu_nut_header}>📥 Import XML 130</Text>
               </TouchableOpacity>
-              <Text style={styles.thong_ke}>Tổng cộng: {danhSachKho.length} hồ sơ</Text>
+              <TouchableOpacity onPress={() => void handleXuatExcelBaoCao()} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(56,142,60,0.35)', borderColor: 'rgba(129,199,132,0.55)' }]}>
+                <Text style={styles.chu_nut_header}>📊 Excel báo cáo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => void handleInDanhSachKho()} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(25,118,210,0.35)', borderColor: 'rgba(100,181,246,0.55)' }]}>
+                <Text style={styles.chu_nut_header}>🖨 In / PDF</Text>
+              </TouchableOpacity>
+              <Text style={styles.thong_ke}>
+                Tổng: {danhSachKho.length} hồ sơ
+                {danhSachLoc.length !== danhSachKho.length ? ` · Hiển thị: ${danhSachLoc.length}` : ''}
+              </Text>
             </View>
 
             {/* BẢNG ĐÃ BỎ SCROLL NGANG (HIỂN THỊ ĐÚNG 1 MÀN HÌNH - KHÔNG KÉO) */}
@@ -705,7 +804,8 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
               <View style={styles.dong_tieu_de_bang}>
                 <Text style={[styles.o_header, { width: 60 }]}></Text>
                 <TouchableOpacity onPress={() => handleSort('ma_lk')}><Text style={[styles.o_header, { width: 140 }]}>MÃ LK {sortConfig.key === 'ma_lk' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => handleSort('ten_bn')}><Text style={[styles.o_header, { width: 250 }]}>BỆNH NHÂN {sortConfig.key === 'ten_bn' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => handleSort('ten_bn')}><Text style={[styles.o_header, { width: 220 }]}>BỆNH NHÂN {sortConfig.key === 'ten_bn' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => handleSort('ma_loai_kcb')}><Text style={[styles.o_header, { width: 200 }]}>LOẠI KCB {sortConfig.key === 'ma_loai_kcb' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
                 <TouchableOpacity style={{ flex: 1 }} onPress={() => handleSort('CHAN_DOAN_RV')}><Text style={styles.o_header}>CHẨN ĐOÁN RV {sortConfig.key === 'CHAN_DOAN_RV' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSort('T_BHTT')}><Text style={[styles.o_header, { width: 150 }]}>BHYT CHI {sortConfig.key === 'T_BHTT' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSort('T_BNTT')}><Text style={[styles.o_header, { width: 150 }]}>BN CHI {sortConfig.key === 'T_BNTT' && (sortConfig.direction === 'asc' ? '🔼' : '🔽')}</Text></TouchableOpacity>
@@ -720,6 +820,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
                   const { x1 } = getSafeXML(hs);
                   const maLK = hs.ma_lk || x1.MA_LK || `ERR_${idx}`;
                   const tenBN = hs.ten_benh_nhan || hs.ten_bn || x1.HO_TEN || "Chưa cập nhật";
+                  const loaiKcb = layChuoiHienThiLoaiKhamChuaBenh(x1);
 
                   return (
                     <View key={maLK} style={[styles.dong_du_lieu, idx % 2 === 0 ? styles.dong_chan : styles.dong_le, selectedIds.includes(maLK) && { backgroundColor: 'rgba(233,30,99,0.12)' }]}>
@@ -728,7 +829,8 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
                       </TouchableOpacity>
 
                       <Text style={[styles.o_cell, { width: 140, fontWeight: 'bold', color: '#F48FB1' }]} numberOfLines={1}>{maLK}</Text>
-                      <Text style={[styles.o_cell, { width: 250, color: '#90CAF9', fontWeight: 'bold' }]} numberOfLines={1}>{String(tenBN).toUpperCase()}</Text>
+                      <Text style={[styles.o_cell, { width: 220, color: '#90CAF9', fontWeight: 'bold' }]} numberOfLines={1}>{String(tenBN).toUpperCase()}</Text>
+                      <Text style={[styles.o_cell, { width: 200, color: '#CE93D8', fontWeight: '600' }]} numberOfLines={2}>{loaiKcb}</Text>
                       <Text style={[styles.o_cell, { flex: 1 }]} numberOfLines={2}>{x1.CHAN_DOAN_RV || 'N/A'}</Text>
                       <Text style={[styles.o_cell, { width: 150, color: '#81C784', fontWeight: 'bold' }]} numberOfLines={1}>{Number(x1.T_BHTT || 0).toLocaleString()}</Text>
                       <Text style={[styles.o_cell, { width: 150, color: '#FFB74D', fontWeight: 'bold' }]} numberOfLines={1}>{Number(x1.T_BNTT || 0).toLocaleString()}</Text>

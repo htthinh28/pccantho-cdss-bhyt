@@ -131,10 +131,28 @@ export const MAPPING_LOAI_NHIEU_MA_DICH = [
   'DVKT_DRUG',
   'DVKT_VTYT',
   'ICD_VTYT',
+  /** Nhân viên → nhiều máy / thiết bị; DVKT → nhiều máy (M:N qua nhiều mã đích trên một dòng). */
+  'STAFF_EQUIPMENT',
+  'DVKT_EQUIPMENT',
 ];
 
 export const laMappingNhieuMaDich = (mappingType) =>
   MAPPING_LOAI_NHIEU_MA_DICH.includes(String(mappingType || '').trim());
+
+/** Nhiều mã nguồn trên một bản ghi: ICD dùng metadata.source_icd_codes; nhân viên/DVKT↔máy dùng metadata.source_codes. */
+export const MAPPING_LOAI_NHIEU_MA_NGUON_ICD = ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'];
+
+export const MAPPING_LOAI_NHIEU_MA_NGUON = [
+  ...MAPPING_LOAI_NHIEU_MA_NGUON_ICD,
+  'STAFF_EQUIPMENT',
+  'DVKT_EQUIPMENT',
+];
+
+export const laMappingNhieuMaNguon = (mappingType) =>
+  MAPPING_LOAI_NHIEU_MA_NGUON.includes(String(mappingType || '').trim());
+
+export const laMappingNhieuMaNguonIcd = (mappingType) =>
+  MAPPING_LOAI_NHIEU_MA_NGUON_ICD.includes(String(mappingType || '').trim());
 
 export const layCauHinhLoaiMapping = (mappingType) =>
   MAPPING_TYPE_CONFIG.find((x) => x.mapping_type === mappingType) || null;

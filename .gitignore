@@ -6,6 +6,7 @@ node_modules/
 # Expo
 .expo/
 dist/
+packaging/out_portable/
 web-build/
 # Bản HTML sinh từ tai_lieu/ (npm run tai_lieu:prepare)
 public/tai_lieu/

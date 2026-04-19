@@ -1,5 +1,6 @@
 /**
  * MODULE: QUẢN LÝ DANH MỤC TỔNG THỂ (MASTER DATA — sidebar trái)
+ * Nhập/xuất XML theo khung QĐ 326/QĐ-BHXH (31/03/2026) + TT 12/2026/TT-BTC (định dạng nội bộ CDSS, bổ sung cho Excel).
  * Nâng cấp (Bản 2.0 - Fullscreen & Chunking Storage):
  * 1. FIX LỖI MẤT DỮ LIỆU: Vượt rào giới hạn 5MB của Web Browser bằng thuật toán Chunking (Băm nhỏ mảng).
  * 2. FIX AUTO-SAVE: Bổ sung cờ isReadyToSave để tránh ghi đè mảng rỗng khi F5.
@@ -41,7 +42,14 @@ import {
   timNhomTrungTrongBang,
 } from '../tien_ich/danh_muc_trung_lap';
 import { locDongTheoTuKhoa, tinhChiSoPhanTrang } from '../tien_ich/bo_loc_bang_du_lieu';
+import { chuanTenSheetInAn, inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import TimKiemPhanTrangBang from '../thanh_phan/tim_kiem_phan_trang_bang';
+import {
+  nhapXmlDanhMucNoiBo,
+  taiXuongFileXmlTrenWeb,
+  xuatXmlDanhMucNoiBo,
+} from '../tien_ich/danh_muc_xml_qd326_tt12';
+import { MAU_EXCEL_CHUAN } from '../tien_ich/mau_excel_chuan_danh_muc';
 
 // ============================================================================
 // HỆ THỐNG LƯU TRỮ CHỐNG TRÀN BỘ NHỚ WEB (CHUNKING STORAGE)
@@ -69,28 +77,6 @@ const DANH_SACH_TAB = [
 ];
 
 const IDS_TAB_ICD_DAC_BIET = ['DANH_MUC_ICD10', 'DANH_MUC_ICD10_CAP_CUU', 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY'];
-
-const MAU_EXCEL_CHUAN = {
-  DANH_MUC_ICD10: ['MÃ BỆNH', 'MÃ BỆNH KHÔNG DẤU', 'DISEASE NAME', 'TÊN BỆNH'],
-  DANH_MUC_ICD10_CAP_CUU: ['ID', 'Nhom_Benh', 'Tinh_Trang_Benh', 'ICD_Chinh', 'Ly_Do_Nhap_Vien', 'ICD_Kem_Theo', 'Ngoai_Le', 'Tu_Khoa'],
-  DANH_MUC_ICD10_KE_DON_TREN_30_NGAY: ['TT', 'Mã TT', 'Danh mục bệnh theo các chuyên khoa', 'Mã bệnh theo ICD 10'],
-  THONG_TIN_CO_SO: ['MA_CSKCB', 'TEN_CSKCB', 'DIA_CHI', 'TUYEN', 'HANG'],
-  DANH_MUC_KHOA_LS_M01: ['STT', 'MA_KHOA', 'TEN_KHOA', 'BAN_KHAM', 'GIUONG_PD', 'GIUONG_TK', 'GIUONG_HSTC', 'GIUONG_HSCC', 'TU_NGAY', 'DEN_NGAY', 'MA_CSKCB', 'ID', 'MA_LOAI_KCB', 'LDLK', 'LIEN_KHOA', 'GIUONG_2015'],
-  DANH_MUC_NHAN_SU: ['DEN_NGAY', 'STT', 'MA_LOAI_KCB', 'MA_KHOA', 'TEN_KHOA', 'MA_BHXH', 'HO_TEN', 'GIOI_TINH', 'NGAY_SINH', 'SO_CCCD', 'CHUCDANH_NN', 'VI_TRI', 'MACCHN', 'NGAYCAP_CCHN', 'NOICAP_CCHN', 'PHAMVI_CM', 'PHAMVI_CMBS', 'DVKT_KHAC', 'VB_PHANCONG', 'THOIGIAN_DK', 'THOIGIAN_NGAY', 'THOIGIAN_TUAN', 'CSKCB_KHAC', 'CSKCB_CGKT', 'QD_CGKT', 'TU_NGAY', 'MA_DANTOC', 'ID'],
-  DANH_MUC_MAPPING_NGUOI_HANH_NGHE: ['STT', 'MA_TUONG_DUONG', 'TEN_DVKT', 'MA_CHUYEN_KHOA', 'PHAMVI_CM_CAN', 'SO_NV_DU_DIEU_KIEN', 'DANH_SACH_NGUOI_THUC_HIEN', 'DANH_SACH_MACCHN', 'DANH_SACH_MA_BHXH', 'TRANG_THAI'],
-  DVKT_PHAMVI_MAPPING: ['PREFIX_DVKT', 'PHAMVI_CM_OK', 'CHUCDANH_NN_OK', 'NHOM_DVKT'],
-  DVKT_EQUIP_DVKT_MAP: ['PREFIX_DVKT', 'MA_MAY_PREFIX', 'GHI_CHU'],
-  DANH_MUC_THUOC_MAU_M03: ['STT', 'MA_THUOC', 'TEN_HOAT_CHAT', 'TEN_THUOC', 'DON_VI_TINH', 'HAM_LUONG', 'DUONG_DUNG', 'MA_DUONG_DUNG', 'DANG_BAO_CHE', 'SO_DANG_KY', 'QUY_CACH', 'DON_GIA', 'DON_GIA_TT', 'GIA_BH_TT', 'TT_THAU', 'TYLE_TT_BH', 'LOAI_THUOC', 'LOAI_THAU', 'NHA_SX', 'NUOC_SX', 'NHA_THAU', 'KIEU_THAU', 'GIA_KHOA_KHO', 'GIA_BB_CD', 'PP_CHEBIEN', 'VITRI_YHCT', 'MA_CSKCB_THUOC', 'TU_NGAY', 'DEN_NGAY', 'MA_CSKCB', 'SO_LUONG', 'ID'],
-  DANH_MUC_TUONG_TAC_THUOC: ['id', 'TRANG_THAI', 'MA_TUONG_TAC', 'MA_THUOC_A', 'MA_THUOC_B', 'NOI_DUNG_TUONG_TAC', 'CANH_BAO_HE_THONG', 'MUC_DO_CANH_BAO', 'DU_LIEU_CAP_DOI_DAY_DU'],
-  DANH_MUC_VAT_TU_M04: ['STT', 'MA_VAT_TU', 'NHOM_VAT_TU', 'TEN_VAT_TU', 'MA_HIEU', 'SO_LUU_HANH', 'TINHNANG_KT', 'QUY_CACH', 'DON_VI_TINH', 'DON_GIA', 'GIA_BH_TT', 'TT_THAU', 'TYLE_TT_BH', 'LOAI_THAU', 'NHA_SX', 'NUOC_SX', 'NHA_THAU', 'NHA_PP', 'TU_NGAY', 'DEN_NGAY', 'MA_CSKCB'],
-  DANH_MUC_DVKT_M05: ['STT', 'MA_DICH_VU', 'TEN_DICH_VU', 'TEN_DVKT_GIA', 'DON_GIA', 'QUY_TRINH', 'CS_THUCHIEN', 'TINHTRANG_DV', 'MA_GIA', 'TEN_GIA', 'GIA_TT_BHYT', 'MA_PTTT', 'TU_NGAY', 'DEN_NGAY', 'MA_CSKCB', 'PHAN_LOAI_PTTT', 'GHICHU', 'QUYET_DINH'],
-  DANH_MUC_GIUONG_BAN_KHAM_BV: [
-    'STT', 'MA_TUONG_DUONG', 'TEN_DVKT_PHEDUYET', 'TEN_DVKT_GIA', 'PHAN_LOAI_PTTT', 'DON_GIA',
-    'GHICHU', 'QUYET_DINH', 'TUNGAY', 'DENNGAY', 'CSKCB_CGKT', 'CSKCB_CLS', 'ID',
-  ],
-  DANH_MUC_TRANG_THIET_BI_M06: ['STT', 'TEN_TB', 'KY_HIEU', 'CONGTY_SX', 'NUOC_SX', 'NAM_SX', 'NAM_SD', 'MA_MAY', 'SO_LUU_HANH', 'HD_TU', 'HD_DEN', 'TU_NGAY', 'DEN_NGAY', 'MA_CSKCB', 'ID'],
-  DANH_MUC_HA_TANG: ['MA_TIEU_CHI', 'TEN_TIEU_CHI', 'TRANG_THAI', 'GHI_CHU']
-};
 
 /** Mặc định mỗi trang (tránh render cùng lúc quá nhiều ô TextInput). Có thể đổi trên UI. */
 const SO_DONG_MOI_TRANG_MAC_DINH = 160;
@@ -361,6 +347,149 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
     }
   };
 
+  const layTenBangHienTai = () => DANH_SACH_TAB.find((t) => t.id === danhMucHienTai)?.ten || danhMucHienTai;
+
+  const handleInPdfBang = async () => {
+    if (columns.length === 0) return alert('Chưa có cột để in.');
+    /** `locDongTheoTuKhoa` trả về `{ row, indexGoc }[]` — in cần mảng object dòng thuần */
+    const rows = hangLocChiSo.map(({ row }) => row);
+    if (rows.length === 0) return alert('Không có dữ liệu (sau lọc/tìm) để in.');
+    const cols = columns.map((c) => ({ key: c, label: c }));
+    const exportNote = tuKhoaTim.trim()
+      ? `Chỉ các dòng khớp từ khóa tìm: "${tuKhoaTim.trim()}".`
+      : undefined;
+    const tieuDe = `Danh mục nội bộ — ${layTenBangHienTai()}`;
+    await inHoacChiaSePdfTuBang(
+      [{ sheetName: chuanTenSheetInAn(danhMucHienTai), columns: cols, rows, exportNote }],
+      tieuDe,
+    );
+  };
+
+  /** Xuất XML theo đặt tả nội bộ QĐ 326 / TT 12-2026 (không thay thế Excel). */
+  const handleExportXmlQd326 = () => {
+    if (columns.length === 0) return alert('Chưa có cột để xuất.');
+    if (Platform.OS !== 'web') {
+      alert('Xuất XML (QĐ326/TT12) hiện chỉ hỗ trợ trên web.');
+      return;
+    }
+    try {
+      const xml = xuatXmlDanhMucNoiBo({
+        maBang: danhMucHienTai,
+        tenBang: layTenBangHienTai(),
+        columns,
+        rows: data,
+      });
+      taiXuongFileXmlTrenWeb(xml, `Du_Lieu_${danhMucHienTai}_QD326_TT12.xml`);
+    } catch (error) {
+      alert(`Lỗi xuất XML: ${error.message || error}`);
+    }
+  };
+
+  const handleTaiFileMauXml = () => {
+    if (Platform.OS !== 'web') {
+      alert('Tải file mẫu XML chỉ hỗ trợ trên web.');
+      return;
+    }
+    const cotMau = columns.length > 0 ? columns : (MAU_EXCEL_CHUAN[danhMucHienTai] || ['MA_DU_LIEU', 'TEN_DU_LIEU', 'GHI_CHU']);
+    const hangRong = cotMau.reduce((acc, c) => ({ ...acc, [c]: '' }), {});
+    try {
+      const xml = xuatXmlDanhMucNoiBo({
+        maBang: danhMucHienTai,
+        tenBang: layTenBangHienTai(),
+        columns: cotMau,
+        rows: [hangRong],
+      });
+      taiXuongFileXmlTrenWeb(xml, `FileMau_${danhMucHienTai}_QD326_TT12.xml`);
+    } catch (error) {
+      alert(`Lỗi tạo mẫu XML: ${error.message || error}`);
+    }
+  };
+
+  const xuLySauKhiNhapBang = async (importedData, mergedCols, source = 'catalog_import_excel') => {
+    if (importedData.length === 0) {
+      alert('Không có dòng dữ liệu.');
+      return;
+    }
+    if (Platform.OS !== 'web') {
+      try {
+        await taoBanSaoDuLieuHeThong({
+          reason: `AUTO_BEFORE_IMPORT_${danhMucHienTai}`,
+          includeKeys: ['TAB_DANG_MO'],
+        });
+      } catch (errBackup) {
+        console.warn('Không tạo được auto-backup trước import:', errBackup);
+      }
+    }
+    const cotKhoa = layCotKhoaChoTab(
+      danhMucHienTai,
+      MAU_EXCEL_CHUAN[danhMucHienTai],
+      mergedCols,
+    );
+    const thongKe = demThongKeImportVsHienCo(
+      dataRef.current,
+      importedData,
+      mergedCols,
+      cotKhoa,
+    );
+    if (thongKe.soTrung > 0) {
+      setModalImportTrung({
+        mergedCols,
+        importedRaw: importedData,
+        thongKe,
+        cotKhoa,
+      });
+      return;
+    }
+    const newData = gopImportVoiBangHienCo(
+      dataRef.current,
+      importedData,
+      mergedCols,
+      cotKhoa,
+      'skip',
+    );
+    await thucHienLuuSauImport(mergedCols, newData, importedData.length, source);
+  };
+
+  const handleImportXmlQd326 = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const text = String(evt.target.result || '');
+        const { columns: xmlCols, rows: xmlRows, meta, loi } = nhapXmlDanhMucNoiBo(text);
+        if (loi) {
+          alert(`❌ ${loi}`);
+          return;
+        }
+        if (!xmlRows.length) {
+          alert('File XML không có dòng <Hang> dữ liệu.');
+          return;
+        }
+        if (
+          Platform.OS === 'web'
+          && meta.maBang
+          && meta.maBang !== danhMucHienTai
+          && !window.confirm(
+            `File khai báo maBang="${meta.maBang}" khác tab đang mở "${danhMucHienTai}". Vẫn nhập dữ liệu vào tab hiện tại?`,
+          )
+        ) {
+          return;
+        }
+        const keysFromRows = new Set();
+        xmlRows.forEach((r) => Object.keys(r).forEach((k) => keysFromRows.add(k)));
+        const mergedCols = [
+          ...new Set([...columnsRef.current, ...xmlCols, ...keysFromRows]),
+        ];
+        await xuLySauKhiNhapBang(xmlRows, mergedCols, 'catalog_import_xml');
+      } catch (err) {
+        alert(`❌ Lỗi import XML: ${err.message || err}`);
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+    e.target.value = null;
+  };
+
   const handleTaiFileMau = () => {
     if (Platform.OS !== 'web') {
       alert("Tính năng tải file mẫu chỉ hỗ trợ trên nền tảng Web.");
@@ -587,7 +716,7 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
     }
   };
 
-  const thucHienLuuSauImport = async (mergedCols, newData, soDongTuFile) => {
+  const thucHienLuuSauImport = async (mergedCols, newData, soDongTuFile, source = 'catalog_import_excel') => {
     setColumns(mergedCols);
     setData(newData);
     dataRef.current = newData;
@@ -600,15 +729,16 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
         columnsKey: layKhoaCotDanhMuc(danhMucHienTai),
         data: newData,
         columns: mergedCols,
-        source: 'catalog_import_excel',
+        source,
         syncRemote: true,
       });
       try {
         xoaCacheBoMayGiamDinh();
       } catch {}
       flushFirebaseDanhMucQueue().catch(() => {});
+      const nguonNhap = source === 'catalog_import_xml' ? 'XML (QĐ326/TT12)' : 'file Excel/CSV';
       alert(
-        `✅ Đã nhập ${soDongTuFile} dòng từ file. Hệ thống đã lưu bền vững và xếp hàng đồng bộ Firebase.`,
+        `✅ Đã nhập ${soDongTuFile} dòng từ ${nguonNhap}. Hệ thống đã lưu bền vững và xếp hàng đồng bộ Firebase.`,
       );
     } catch (err) {
       alert(`❌ Lỗi lưu khi import: ${err.message}`);
@@ -706,54 +836,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
         const wb = XLSX.read(bstr, { type: 'binary' });
         const ws = wb.Sheets[wb.SheetNames[0]];
         const importedData = XLSX.utils.sheet_to_json(ws, { defval: '' });
-
-        if (importedData.length === 0) {
-          alert('File không có dòng dữ liệu.');
-          return;
-        }
-
-        if (Platform.OS !== 'web') {
-          try {
-            await taoBanSaoDuLieuHeThong({
-              reason: `AUTO_BEFORE_IMPORT_${danhMucHienTai}`,
-              includeKeys: ['TAB_DANG_MO'],
-            });
-          } catch (errBackup) {
-            console.warn('Không tạo được auto-backup trước import:', errBackup);
-          }
-        }
-
-        const mergedCols = [...new Set([...columnsRef.current, ...Object.keys(importedData[0])])];
-        const cotKhoa = layCotKhoaChoTab(
-          danhMucHienTai,
-          MAU_EXCEL_CHUAN[danhMucHienTai],
-          mergedCols,
-        );
-        const thongKe = demThongKeImportVsHienCo(
-          dataRef.current,
-          importedData,
-          mergedCols,
-          cotKhoa,
-        );
-
-        if (thongKe.soTrung > 0) {
-          setModalImportTrung({
-            mergedCols,
-            importedRaw: importedData,
-            thongKe,
-            cotKhoa,
-          });
-          return;
-        }
-
-        const newData = gopImportVoiBangHienCo(
-          dataRef.current,
-          importedData,
-          mergedCols,
-          cotKhoa,
-          'skip',
-        );
-        await thucHienLuuSauImport(mergedCols, newData, importedData.length);
+        const mergedCols = [...new Set([...columnsRef.current, ...Object.keys(importedData[0] || {})])];
+        await xuLySauKhiNhapBang(importedData, mergedCols);
       } catch (err) {
         alert(`❌ Lỗi import: ${err.message || err}`);
       }
@@ -846,6 +930,34 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
             <TouchableOpacity style={styles.nut_xanh_duong} onPress={handleExportXLSX}>
               <Text style={styles.chu_nut}>📥 EXPORT BẢNG</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.nut_xanh_duong} onPress={() => void handleInPdfBang()}>
+              <Text style={styles.chu_nut}>🖨 IN / PDF</Text>
+            </TouchableOpacity>
+
+            {Platform.OS === 'web' && (
+              <React.Fragment>
+                <input
+                  type="file"
+                  accept=".xml,application/xml,text/xml"
+                  onChange={handleImportXmlQd326}
+                  style={{ display: 'none' }}
+                  id="import-xml-danhmuc-qd326"
+                />
+                <TouchableOpacity
+                  style={styles.nut_xanh_duong}
+                  onPress={() => document.getElementById('import-xml-danhmuc-qd326').click()}
+                >
+                  <Text style={styles.chu_nut}>📤 NHẬP XML (TT12)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nut_xanh_duong} onPress={handleExportXmlQd326}>
+                  <Text style={styles.chu_nut}>📥 XUẤT XML (TT12)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nut_xanh_la} onPress={handleTaiFileMauXml}>
+                  <Text style={styles.chu_nut}>⬇ MẪU XML</Text>
+                </TouchableOpacity>
+              </React.Fragment>
+            )}
 
             <TouchableOpacity style={styles.nut_xanh_duong} onPress={handleDoiSoatFirebase}>
               <Text style={styles.chu_nut}>☁ ĐỐI SOÁT FIREBASE</Text>

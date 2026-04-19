@@ -4,12 +4,14 @@ import { DANH_MUC_QUY_TAC_NOI_BO, khopMaLuatTheoMau, suyRaThongTinQuanTriQuyTac 
 
 export const THU_TU_UU_TIEN_CANH_BAO = Object.freeze({
   XUAT_TOAN: 0,
-  CANH_BAO: 1,
-  NHAC_NHO: 2,
+  CAU_TRUC_XML: 1,
+  CANH_BAO: 2,
+  NHAC_NHO: 3,
 });
 
 export const NHAN_UU_TIEN_CANH_BAO = Object.freeze({
   XUAT_TOAN: 'Xuất toán',
+  CAU_TRUC_XML: 'Vi phạm cấu trúc XML',
   CANH_BAO: 'Cảnh báo',
   NHAC_NHO: 'Nhắc nhở',
 });
@@ -74,6 +76,23 @@ export const coMaLuatHopLe = (value) => {
   return ma !== '' && ma.toUpperCase() !== 'N/A' && ma.toUpperCase() !== 'KHONG_RO';
 };
 
+/** Lỗi kiểm tra cấu trúc / định dạng dữ liệu XML (QĐ 3176, tiền xử lý STRUCT, v.v.) — tách khỏi cảnh báo nghiệp vụ CDSS. */
+export const laLoiCauTrucDuLieuXml = (canhBao = {}) => {
+  const dk = chuanHoaTokenThongKeLoi(canhBao?.dieu_kien);
+  const maRaw = String(canhBao?.ma_luat || canhBao?.MA_LUAT || '').trim();
+  const ma = chuanHoaTokenThongKeLoi(maRaw);
+  const ten = chuanHoaTokenThongKeLoi([
+    canhBao?.ten_quy_tac,
+    canhBao?.TEN_QUY_TAC,
+  ].filter(Boolean).join(' '));
+
+  if (maRaw && /^STRUCT/i.test(maRaw)) return true;
+  if (dk === 'STATIC' && ten.includes('CAU TRUC XML')) return true;
+  if (dk === 'STATIC' && /^XML[0-9]+-/.test(ma)) return true;
+
+  return false;
+};
+
 export const suyRaLoaiCanhBaoThongKe = (canhBao = {}) => {
   const thongTinQuanTri = suyRaThongTinQuanTriQuyTac(canhBao);
   const noiDung = chuanHoaTokenThongKeLoi([
@@ -87,6 +106,14 @@ export const suyRaLoaiCanhBaoThongKe = (canhBao = {}) => {
     thongTinQuanTri.nhom_canh_bao,
     thongTinQuanTri.chi_tiet_canh_bao,
   ].filter(Boolean).join(' | '));
+
+  if (laLoiCauTrucDuLieuXml(canhBao)) {
+    return {
+      id: 'CAU_TRUC_XML',
+      label: NHAN_UU_TIEN_CANH_BAO.CAU_TRUC_XML,
+      priority: THU_TU_UU_TIEN_CANH_BAO.CAU_TRUC_XML,
+    };
+  }
 
   if (thongTinQuanTri.nhom_canh_bao === 'XUAT_TOAN' || noiDung.includes('XUAT TOAN') || noiDung.includes('KHONG THANH TOAN') || noiDung.includes('VI PHAM')) {
     return { id: 'XUAT_TOAN', label: NHAN_UU_TIEN_CANH_BAO.XUAT_TOAN, priority: THU_TU_UU_TIEN_CANH_BAO.XUAT_TOAN };
@@ -401,6 +428,7 @@ export const taoKhoaChiTietLoi = (item = {}) => [
 export const tinhChiPhiUocTinhTheoLoi = (loi = {}) => {
   const muc = chuanHoaTokenThongKeLoi(loi?.level || loi?.muc_do || loi?.loai_hien_thi);
   if (muc === 'CRITICAL' || muc === 'ERROR' || muc === 'XUAT_TOAN') return 10000000;
+  if (muc === 'CAU_TRUC_XML') return 8000000;
   if (muc === 'WARNING' || muc === 'CANH_BAO') return 2000000;
   return 500000;
 };

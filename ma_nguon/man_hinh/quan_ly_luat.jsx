@@ -7,12 +7,13 @@
  * 2. Nút ON/OFF: Bật/tắt nhanh trạng thái thực thi của từng quy tắc.
  * 3. Select All: Chọn hàng loạt quy tắc để thao tác nhanh.
  * 4. UI/UX: Các cột dữ liệu dài tự động giãn chiều cao (Auto-height) để đọc full text.
+ * 5. Điều hướng tệp luật: sidebar trái (thay cho hàng thẻ ngang).
  * 5. ANTI-DUPLICATE: Kiểm soát chặt chẽ trùng lặp trường DIEU_KIEN khi Nhập tay & Import Excel.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -139,6 +140,9 @@ const chuanHoaCotLuat = (raw) => {
 };
 
 const ManHinhQuanLyLuat = ({ navigation }) => {
+  const { width: winW } = useWindowDimensions();
+  const rongSidebar = winW < 420 ? 196 : winW < 768 ? 232 : 268;
+
   const [danhSachTab, setDanhSachTab] = useState(DANH_SACH_TAB_MAC_DINH);
   const [tabHienTai, setTabHienTai] = useState(DANH_SACH_TAB_MAC_DINH[0].id);
   const [columns, setColumns] = useState([]);
@@ -687,21 +691,37 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
       </View>
 
       <View style={styles.khung_chuc_nang}>
-        {/* THANH TAB 11 TỆP LUẬT */}
-        <View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.khung_tab}>
-            {danhSachTab.map(tab => (
-              <TouchableOpacity 
-                key={tab.id} 
-                onPress={() => setTabHienTai(tab.id)} 
-                style={[styles.nut_tab, tabHienTai === tab.id && styles.nut_tab_active]}
-              >
-                <Text style={[styles.chu_tab, tabHienTai === tab.id && styles.chu_tab_active]}>{tab.ten}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        <View style={styles.khung_chinh_luat}>
+          <View style={[styles.sidebar_luat, { width: rongSidebar }]}>
+            <Text style={styles.chu_sidebar_tieu_de_luat}>Chọn tệp luật</Text>
+            <ScrollView
+              style={styles.sidebar_scroll_luat}
+              contentContainerStyle={styles.sidebar_scroll_content_luat}
+              showsVerticalScrollIndicator
+              keyboardShouldPersistTaps="handled"
+            >
+              {danhSachTab.map((tab) => {
+                const dangChon = tabHienTai === tab.id;
+                return (
+                  <TouchableOpacity
+                    key={tab.id}
+                    onPress={() => setTabHienTai(tab.id)}
+                    style={[styles.muc_sidebar_luat, dangChon && styles.muc_sidebar_luat_active]}
+                    activeOpacity={0.85}
+                  >
+                    <Text
+                      style={[styles.chu_muc_sidebar_luat, dangChon && styles.chu_muc_sidebar_luat_active]}
+                      numberOfLines={5}
+                    >
+                      {tab.ten}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
 
+          <View style={styles.khoi_noi_dung_phai_luat}>
         <View style={styles.thanh_cong_cu}>
           <View style={styles.khoi_them_cot}>
             <TextInput 
@@ -863,7 +883,8 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
             </View>
           </ScrollView>
         </View>
-        
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -908,25 +929,71 @@ const styles = StyleSheet.create({
   chu_nut_header: { color: CD.text.primary, fontWeight: 'bold', fontSize: 20, fontFamily: CD.font.family },
   chu_nut_quy_tac_on_off: { color: CD.text.primary, fontWeight: '700', fontSize: 16, fontFamily: CD.font.family },
   chu_tieu_de: { fontSize: 26, color: CD.text.primary, fontWeight: 'bold', fontFamily: CD.font.family },
-  khung_chuc_nang: { padding: 15, flex: 1 },
-  khung_tab: { flexDirection: 'row', marginBottom: 20 },
-  nut_tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: CD.bg.glass_card,
-    marginRight: 10,
+  khung_chuc_nang: { flex: 1, minHeight: 0, minWidth: 0 },
+  khung_chinh_luat: {
+    flex: 1,
+    flexDirection: 'row',
+    minHeight: 0,
+    minWidth: 0,
+  },
+  sidebar_luat: {
+    alignSelf: 'stretch',
+    flexDirection: 'column',
+    paddingTop: 12,
+    paddingHorizontal: 10,
+    paddingBottom: 8,
+    borderRightWidth: 1,
+    borderRightColor: CD.border.glass_md,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  chu_sidebar_tieu_de_luat: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: CD.text.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    paddingHorizontal: 8,
+    paddingBottom: 10,
+    fontFamily: CD.font.family,
+  },
+  sidebar_scroll_luat: { flex: 1 },
+  sidebar_scroll_content_luat: { paddingBottom: 20 },
+  muc_sidebar_luat: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
     borderRadius: 10,
-    justifyContent: 'center',
     borderWidth: 1,
     borderColor: CD.border.glass,
+    backgroundColor: CD.bg.glass_card,
+    marginBottom: 6,
   },
-  nut_tab_active: {
+  muc_sidebar_luat_active: {
     backgroundColor: CD.brand.mauChinh,
-    borderWidth: 0,
-    ...Platform.select({ web: { backgroundImage: CD.web.gradient_primary, boxShadow: CD.web.shadow_btn } }),
+    borderColor: '#AD1457',
+    ...Platform.select({ web: { boxShadow: '0 2px 12px rgba(216,27,96,0.45)' } }),
   },
-  chu_tab: { fontSize: 20, color: CD.text.secondary, fontWeight: 'bold', fontFamily: CD.font.family },
-  chu_tab_active: { color: CD.text.primary },
+  chu_muc_sidebar_luat: {
+    fontSize: 15,
+    lineHeight: 21,
+    color: CD.text.secondary,
+    fontWeight: '700',
+    fontFamily: CD.font.family,
+  },
+  chu_muc_sidebar_luat_active: {
+    color: '#FFFFFF',
+  },
+  khoi_noi_dung_phai_luat: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 0,
+    flexDirection: 'column',
+    padding: 15,
+    paddingTop: 16,
+    ...Platform.select({
+      web: { paddingLeft: 18, paddingRight: 20 },
+    }),
+  },
   thanh_cong_cu: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' },
   khoi_them_cot: { flexDirection: 'row', alignItems: 'center' },
   o_nhap_cot: {

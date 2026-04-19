@@ -28,6 +28,8 @@ import {
 } from '../tien_ich/catalog_mapping_catalog_loaders';
 import {
   laMappingNhieuMaDich,
+  laMappingNhieuMaNguon,
+  laMappingNhieuMaNguonIcd,
   layCauHinhLoaiMapping,
   LAY_MAPPING_TYPE_OPTIONS,
   MAPPING_TYPE_CONFIG,
@@ -40,6 +42,7 @@ import {
 } from '../tien_ich/catalog_mapping_luu_tru';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
+import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 
 const BO_LOC_TRANG_THAI = [
   { value: 'all', label: 'Tất cả trạng thái' },
@@ -116,14 +119,19 @@ const MappingNghiepVu = ({ navigation }) => {
     return tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
   };
 
-  const laMultiMaNguonIcd = (mt) => ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mt);
-
-  /** Một bản ghi có thể gom nhiều ICD nguồn (source_code dạng A|B hoặc metadata.source_icd_codes). */
-  const layMaNguonMultiIcd = (r) => {
-    if (!laMultiMaNguonIcd(r.mapping_type)) return [];
+  /** ICD: metadata.source_icd_codes; STAFF_EQUIPMENT / DVKT_EQUIPMENT: metadata.source_codes. */
+  const layMaNguonMulti = (r) => {
+    if (!laMappingNhieuMaNguon(r.mapping_type)) return [];
     const md = r.metadata && typeof r.metadata === 'object' ? r.metadata : {};
-    if (Array.isArray(md.source_icd_codes) && md.source_icd_codes.length) {
-      return md.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+    const mt = r.mapping_type;
+    if (laMappingNhieuMaNguonIcd(mt)) {
+      if (Array.isArray(md.source_icd_codes) && md.source_icd_codes.length) {
+        return md.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+      }
+    } else if (['STAFF_EQUIPMENT', 'DVKT_EQUIPMENT'].includes(mt)) {
+      if (Array.isArray(md.source_codes) && md.source_codes.length) {
+        return md.source_codes.map((c) => String(c || '').trim()).filter(Boolean);
+      }
     }
     const sc = String(r.source_code || '').trim();
     if (!sc) return [];
@@ -150,7 +158,7 @@ const MappingNghiepVu = ({ navigation }) => {
       if (r.mapping_type === 'STAFF_DVKT') extraParts.push(...chi, ...thuc);
       else {
         if (laMappingNhieuMaDich(r.mapping_type)) extraParts.push(...layMaDichMultiNghiepVu(r));
-        if (laMultiMaNguonIcd(r.mapping_type)) extraParts.push(...layMaNguonMultiIcd(r));
+        if (laMappingNhieuMaNguon(r.mapping_type)) extraParts.push(...layMaNguonMulti(r));
       }
       const extra = extraParts.join(' ');
       const s = `${r.source_code} ${r.target_code} ${r.mapping_type} ${extra}`.toLowerCase();
@@ -162,7 +170,7 @@ const MappingNghiepVu = ({ navigation }) => {
     const c = layCauHinhLoaiMapping(r.mapping_type);
     if (!c) return '';
     const ds = bangTheoRef[c.source_catalog] || [];
-    if (laMultiMaNguonIcd(r.mapping_type)) return timTenNhieuMa(ds, layMaNguonMultiIcd(r));
+    if (laMappingNhieuMaNguon(r.mapping_type)) return timTenNhieuMa(ds, layMaNguonMulti(r));
     return timTenTheoMa(ds, r.source_code);
   };
   const tenDich = (r) => {
@@ -356,6 +364,44 @@ const MappingNghiepVu = ({ navigation }) => {
     }
   };
 
+  const inPdfDanhSachMapping = async () => {
+    if (hangLoc.length === 0) {
+      Alert.alert('Thông báo', 'Không có dòng để in.');
+      return;
+    }
+    const rows = hangLoc.map((r, i) => ({
+      STT: i + 1,
+      Loai: r.mapping_type,
+      Ma_nguon: r.source_code,
+      Ten_nguon: tenNguon(r),
+      Ma_chi_dinh: maDichChiDinh(r),
+      Ten_chi_dinh: tenDichChiDinh(r),
+      Ma_thuc_hien: maDichThucHien(r),
+      Ten_thuc_hien: tenDichThucHien(r),
+      Hieu_luc_tu: r.effective_from || '',
+      Hieu_luc_den: r.effective_to || '',
+      Trang_thai: r.is_active !== false ? 'ACTIVE' : 'INACTIVE',
+      Duyet: r.approval_status || '',
+      Uu_tien: r.priority ?? 0,
+    }));
+    const columns = [
+      { key: 'STT', label: 'STT' },
+      { key: 'Loai', label: 'Loại' },
+      { key: 'Ma_nguon', label: 'Mã nguồn' },
+      { key: 'Ten_nguon', label: 'Tên nguồn' },
+      { key: 'Ma_chi_dinh', label: 'Mã chỉ định' },
+      { key: 'Ten_chi_dinh', label: 'Tên chỉ định' },
+      { key: 'Ma_thuc_hien', label: 'Mã TH' },
+      { key: 'Ten_thuc_hien', label: 'Tên TH' },
+      { key: 'Hieu_luc_tu', label: 'Hiệu lực từ' },
+      { key: 'Hieu_luc_den', label: 'Hiệu lực đến' },
+      { key: 'Trang_thai', label: 'Trạng thái' },
+      { key: 'Duyet', label: 'Duyệt' },
+      { key: 'Uu_tien', label: 'Ưu tiên' },
+    ];
+    await inHoacChiaSePdfTuBang([{ sheetName: 'Mapping', columns, rows }], 'Mapping danh mục (đang lọc)');
+  };
+
   return (
     <SafeAreaView style={styles.vung_an_toan}>
       <View style={styles.khoi_header_gop}>
@@ -389,9 +435,9 @@ const MappingNghiepVu = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <Text style={styles.moTa} numberOfLines={2}>
-        Bảng <Text style={styles.inDam}>catalog_mapping</Text> — <Text style={styles.inDam}>mapping_type</Text>. Lưu cục bộ ·{' '}
-        {MAPPING_TYPE_CONFIG.length} loại.
+      <Text style={styles.moTa} numberOfLines={3}>
+        Bảng <Text style={styles.inDam}>catalog_mapping</Text> — <Text style={styles.inDam}>mapping_type</Text>. Mô hình M:N: một dòng có thể nhiều mã nguồn (ICD; nhân viên/DVKT khi map máy)
+        và/hoặc nhiều mã đích (thuốc, VTYT, máy…); nhiều dòng khác nhau có thể chia sẻ cùng mã. Lưu cục bộ · {MAPPING_TYPE_CONFIG.length} loại.
       </Text>
 
       <View style={styles.khoi_loc}>
@@ -453,6 +499,9 @@ const MappingNghiepVu = ({ navigation }) => {
       <View style={styles.hang_hanh_dong}>
         <TouchableOpacity style={styles.nut_phu2} onPress={xuatExcel}>
           <Text style={styles.chu_nut_phu}>📥 XUẤT EXCEL</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.nut_phu2} onPress={() => void inPdfDanhSachMapping()}>
+          <Text style={styles.chu_nut_phu}>🖨 IN / PDF</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.nut_phu2} onPress={nap}>
           <Text style={styles.chu_nut_phu}>↻ TẢI LẠI</Text>

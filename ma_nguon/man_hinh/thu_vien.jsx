@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
 import { layGocUrlTaiLieu, taoUrlMoTaiLieu } from '../tien_ich/tai_lieu_url';
 
@@ -70,6 +71,38 @@ const ManHinhThuVien = ({ navigation }) => {
     }
   }, []);
 
+  const inDanhSachTaiLieu = useCallback(async () => {
+    if (items.length === 0) {
+      Alert.alert('Thông báo', 'Chưa có mục tài liệu trong manifest.');
+      return;
+    }
+    const rows = items.map((it) => {
+      const parts = String(it.relPath || '').split('/');
+      const folder = parts.length > 1 ? parts.slice(0, -1).join('/') : '(gốc)';
+      return {
+        id: it.id,
+        tieu_de: it.title,
+        thu_muc: folder,
+        duong_dan: it.relPath,
+        nguon: it.nguon || '',
+      };
+    });
+    const columns = [
+      { key: 'id', label: 'Mã' },
+      { key: 'tieu_de', label: 'Tiêu đề' },
+      { key: 'thu_muc', label: 'Thư mục' },
+      { key: 'duong_dan', label: 'Đường dẫn (mở)' },
+      { key: 'nguon', label: 'Nguồn' },
+    ];
+    const exportNote = taiLieuManifest.generatedAt
+      ? `Manifest tạo lúc: ${taiLieuManifest.generatedAt}`
+      : undefined;
+    await inHoacChiaSePdfTuBang(
+      [{ sheetName: 'Tai_lieu', columns, rows, exportNote }],
+      'Thư viện tài liệu (danh mục manifest)',
+    );
+  }, [items]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -77,7 +110,9 @@ const ManHinhThuVien = ({ navigation }) => {
           <Text style={styles.txt_back}>⬅ QUAY LẠI TỔNG QUAN</Text>
         </TouchableOpacity>
         <Text style={styles.txt_title}>📚 THƯ VIỆN</Text>
-        <View style={{ width: 200 }} />
+        <TouchableOpacity style={styles.nut_in} onPress={() => void inDanhSachTaiLieu()} activeOpacity={0.85}>
+          <Text style={styles.txt_in}>🖨 In / PDF</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scroll_content} showsVerticalScrollIndicator={false}>
@@ -201,6 +236,22 @@ const styles = StyleSheet.create({
     color: CD.text.primary,
     fontWeight: '800',
     fontSize: 22,
+    fontFamily: CD.font.family,
+  },
+  nut_in: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    backgroundColor: CD.bg.glass_input,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    borderRadius: 14,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  txt_in: {
+    color: CD.text.primary,
+    fontWeight: '700',
+    fontSize: 13,
     fontFamily: CD.font.family,
   },
   scroll: {

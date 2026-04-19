@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-17T08:57:25.386Z",
+  "generatedAt": "2026-04-19T01:31:14.109Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -731,6 +731,12 @@
       "id": "md:The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.md",
       "relPath": "The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.html",
       "title": "THẺ TRI THỨC: PHÁC ĐỒ CDSS CHUYÊN MÔN ↔ MÃ ICD-10 (HUẤN LUYỆN AI)",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md",
+      "relPath": "The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.html",
+      "title": "Thẻ tri thức — Phân loại vi phạm cấu trúc dữ liệu XML (dashboard QPS)",
       "nguon": "markdown"
     },
     {

@@ -1,0 +1,53 @@
+================================================================================
+CDSS BHYT — BẢN PORTABLE ĐẦY ĐỦ (OFFLINE, KHÔNG CÀI ĐẶT) — THAY THẾ BẢN CŨ
+================================================================================
+Phiên bản gói theo package.json (ví dụ 1.2.0). Mỗi lần build mới: ghi đè thư mục
+output và tạo lại file .exe — coi như "bản nâng cấp thay thế bản đóng gói cũ".
+
+ĐÃ GÓI KÈM TRONG BẢN EXPORT (desktop:export)
+---------------------------------------------
+- tai_lieu:prepare     → public/tai_lieu + ma_nguon/tien_ich/tai_lieu_manifest.json
+- tai_lieu:index-huan-luyen → tai_lieu/_index_kho_huan_luyen_AI.json
+- tai_lieu:index-tai-nguyen → tai_lieu/_index_tai_nguyen_xml.json (quét tai_nguyen/)
+- expo export --platform web → dist/ (toàn bộ chức năng web đã bundle)
+
+Lưu ý: Dữ liệu người dùng (IndexedDB kho hồ sơ, localStorage luật/danh mục trên máy)
+là dữ liệu cục bộ từng máy — không nhúng sẵn trong .exe. Sao lưu/restore theo quy trình
+nội bộ BV nếu cần chuyển máy.
+
+CÁCH BUILD NHANH (Windows)
+--------------------------
+Cách 1 — một lệnh npm (output mặc định %TEMP%\cdss-bhyt-release-desktop\):
+
+  npm run desktop:build:win-portable
+
+Cách 2 — script + output cố định trong repo (thư mục release-desktop/ cạnh mã nguồn):
+
+  packaging\build_portable_full.bat
+
+  hoặc:
+
+  npm run desktop:build:win-portable:release-desktop
+
+  Trên máy admin đường dẫn tuyệt đối tương đương:
+  C:\Users\admin\Documents\Google Drive\ung_dung_cdss_bhyt\release-desktop
+
+Hoặc tự đặt thư mục output rồi build:
+
+  set CDSS_RELEASE_OUT=D:\PhatHanh\CDSS_BHYT_portable
+  npm run desktop:build:win-portable
+
+THÀNH PHẨM
+----------
+  CDSS-BHYT-Phuong-Chau-<phiên_bản>-Windows-x64.exe  (Portable)
+
+THAY THẾ BẢN CŨ
+----------------
+1) Đóng ứng dụng CDSS đang chạy (nếu có).
+2) Xóa hoặc đổi tên file .exe cũ.
+3) Copy file .exe mới từ thư mục output vào cùng vị trí (USB / máy trạm).
+4) Chạy lại — không cần gỡ cài đặt vì bản portable không dùng NSIS.
+
+Chi tiết thêm: HUONG_DAN_BAN_PORTABLE_DAY_DU.txt, tai_lieu/HUONG_DAN_DONG_GOI_NHANH.md
+
+================================================================================

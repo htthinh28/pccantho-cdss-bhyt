@@ -1,7 +1,7 @@
 # LỘ TRÌNH HUẤN LUYỆN AI GIÁM ĐỊNH BHYT
 
-Phiên bản tài liệu: 2.0  
-Ngày cập nhật: 09/04/2026
+Phiên bản tài liệu: 2.1  
+Ngày cập nhật: 17/04/2026
 
 ## 1. Mục tiêu
 
@@ -35,6 +35,7 @@ AI phải nắm các nội dung nền sau:
 - Màn hình nào là luồng thật đang chạy.
 - XML1 đến XML6 đang được quản lý như thế nào.
 - Rule engine, báo cáo, DocXML, Sua XML, kho lưu trữ kết nối với nhau ra sao.
+- **Phân tách** trên dashboard QPS giữa cảnh báo CDSS và **vi phạm cấu trúc dữ liệu XML** (chip “Vi phạm cấu trúc XML”, mã nội bộ `CAU_TRUC_XML`): [The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md](./The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md).
 
 Nguồn dùng để nạp:
 

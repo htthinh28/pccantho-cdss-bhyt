@@ -118,12 +118,14 @@ const DO_RONG_COT_BAO_CAO_VI_PHAM = [
 
 const THU_TU_UU_TIEN_CANH_BAO = Object.freeze({
   XUAT_TOAN: 0,
-  CANH_BAO: 1,
-  NHAC_NHO: 2,
+  CAU_TRUC_XML: 1,
+  CANH_BAO: 2,
+  NHAC_NHO: 3,
 });
 
 const NHAN_UU_TIEN_CANH_BAO = Object.freeze({
   XUAT_TOAN: 'Xuất toán',
+  CAU_TRUC_XML: 'Vi phạm cấu trúc XML',
   CANH_BAO: 'Cảnh báo',
   NHAC_NHO: 'Nhắc nhở',
 });
@@ -153,6 +155,17 @@ const coMaLuatHopLe = (value) => {
   return ma && ma !== 'N/A';
 };
 
+const laLoiCauTrucDuLieuXmlDashboard = (canhBao = {}) => {
+  const dk = chuanHoaToken(canhBao?.dieu_kien);
+  const maRaw = String(canhBao?.ma_luat || canhBao?.MA_LUAT || '').trim();
+  const ma = chuanHoaToken(maRaw);
+  const ten = chuanHoaToken([canhBao?.ten_quy_tac, canhBao?.TEN_QUY_TAC].filter(Boolean).join(' '));
+  if (maRaw && /^STRUCT/i.test(maRaw)) return true;
+  if (dk === 'STATIC' && ten.includes('CAU TRUC XML')) return true;
+  if (dk === 'STATIC' && /^XML[0-9]+-/.test(ma)) return true;
+  return false;
+};
+
 const suyRaLoaiCanhBaoDashboard = (canhBao = {}) => {
   const thongTinQuanTri = suyRaThongTinQuanTriQuyTac(canhBao);
   const noiDung = chuanHoaToken([
@@ -164,6 +177,14 @@ const suyRaLoaiCanhBaoDashboard = (canhBao = {}) => {
     thongTinQuanTri.nhom_canh_bao,
     thongTinQuanTri.chi_tiet_canh_bao,
   ].filter(Boolean).join(' | '));
+
+  if (laLoiCauTrucDuLieuXmlDashboard(canhBao)) {
+    return {
+      id: 'CAU_TRUC_XML',
+      label: NHAN_UU_TIEN_CANH_BAO.CAU_TRUC_XML,
+      priority: THU_TU_UU_TIEN_CANH_BAO.CAU_TRUC_XML,
+    };
+  }
 
   if (thongTinQuanTri.nhom_canh_bao === 'XUAT_TOAN' || noiDung.includes('XUAT TOAN') || noiDung.includes('VI PHAM') || noiDung.includes('KHONG THANH TOAN')) {
     return { id: 'XUAT_TOAN', label: NHAN_UU_TIEN_CANH_BAO.XUAT_TOAN, priority: THU_TU_UU_TIEN_CANH_BAO.XUAT_TOAN };
@@ -1365,6 +1386,7 @@ const ManHinhTongQuan = ({ navigation }) => {
               {[
                 { id: 'TAT_CA', label: 'Tất cả' },
                 { id: 'XUAT_TOAN', label: 'Xuất toán' },
+                { id: 'CAU_TRUC_XML', label: 'Vi phạm cấu trúc XML' },
                 { id: 'CANH_BAO', label: 'Cảnh báo' },
                 { id: 'NHAC_NHO', label: 'Nhắc nhở' },
               ].map((boLoc) => (
@@ -1457,6 +1479,7 @@ const ManHinhTongQuan = ({ navigation }) => {
                       <View style={[
                         styles.rule_priority_chip,
                         item.loai_hien_thi === 'XUAT_TOAN' && styles.rule_priority_chip_xuat_toan,
+                        item.loai_hien_thi === 'CAU_TRUC_XML' && styles.rule_priority_chip_cau_truc_xml,
                         item.loai_hien_thi === 'CANH_BAO' && styles.rule_priority_chip_canh_bao,
                         item.loai_hien_thi === 'NHAC_NHO' && styles.rule_priority_chip_nhac_nho,
                       ]}>
@@ -1548,6 +1571,7 @@ const ManHinhTongQuan = ({ navigation }) => {
               {[
                 { id: 'TAT_CA', label: 'Tất cả' },
                 { id: 'XUAT_TOAN', label: 'Xuất toán' },
+                { id: 'CAU_TRUC_XML', label: 'Vi phạm cấu trúc XML' },
                 { id: 'CANH_BAO', label: 'Cảnh báo' },
                 { id: 'NHAC_NHO', label: 'Nhắc nhở' },
               ].map((boLoc) => (
@@ -2797,6 +2821,10 @@ const styles = StyleSheet.create({
   rule_priority_chip_canh_bao: {
     backgroundColor: 'rgba(154, 52, 18, 0.10)',
     borderColor: 'rgba(234, 88, 12, 0.28)',
+  },
+  rule_priority_chip_cau_truc_xml: {
+    backgroundColor: 'rgba(67, 56, 202, 0.12)',
+    borderColor: 'rgba(99, 102, 241, 0.35)',
   },
   rule_priority_chip_nhac_nho: {
     backgroundColor: 'rgba(15, 118, 110, 0.10)',

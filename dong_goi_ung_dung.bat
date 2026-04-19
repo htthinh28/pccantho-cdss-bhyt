@@ -1,10 +1,11 @@
 @echo off
 REM ============================================
-REM Script đóng gói ứng dụng AI CDSS BHYT
+REM CDSS BHYT — đóng gói ZIP mã nguồn (máy dev). Bản chạy KHÔNG CÀI: dùng portable.
+REM Portable đầy đủ: packaging\build_portable_full.bat  hoặc  npm run desktop:build:win-portable
 REM ============================================
 
 echo.
-echo ========== ĐANG ĐÓNG GÓI ỨNG DỤNG ==========
+echo ========== ĐANG ĐÓNG GÓI ZIP MÃ NGUỒN (KHÔNG PHẢI BẢN .EXE) ==========
 echo.
 
 setlocal enabledelayedexpansion

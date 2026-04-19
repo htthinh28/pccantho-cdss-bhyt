@@ -6,6 +6,7 @@ import { ActivityIndicator, Alert, Platform, ScrollView, SectionList, StyleSheet
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { chuanTenSheetInAn, inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import { useScaleGiaoDien } from '../tien_ich/diem_anh_man_hinh';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
@@ -889,6 +890,38 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
     }
   };
 
+  const inDanhSachQuyTacSauLoc = async () => {
+    const cot = COT_FILE_RULE.map((k) => ({ key: k, label: k }));
+    const sheets = [];
+    for (const nhom of danhSachNhom) {
+      const rules = nhom.rules || [];
+      if (rules.length === 0) continue;
+      const rows = rules.map(({ row }, index) => ({
+        STT: index + 1,
+        MA_LUAT: layMaLuat(row),
+        TEN_QUY_TAC: layTenQuyTac(row),
+        DIEU_KIEN: String(row?.DIEU_KIEN || row?.dieu_kien || ''),
+        CANH_BAO: String(row?.CANH_BAO || row?.canh_bao || ''),
+        NHOM_CANH_BAO: layNhomCanhBao(row),
+        CHI_TIET_CANH_BAO: layChiTietCanhBao(row),
+        TRANG_THAI: laBat(row?.TRANG_THAI) ? 'ON' : 'OFF',
+      }));
+      sheets.push({
+        sheetName: chuanTenSheetInAn(nhom.tenNhom || nhom.tabId),
+        columns: cot,
+        rows,
+      });
+    }
+    if (sheets.length === 0) {
+      Alert.alert('Thông báo', 'Không có quy tắc hiển thị (sau lọc/tìm) để in.');
+      return;
+    }
+    const tenLoc = BO_LOC_LOAI_QUY_TAC.find((x) => x.id === boLocLoaiQuyTac)?.ten || boLocLoaiQuyTac;
+    const kTu = String(tuKhoaTimDebounced || '').trim();
+    const tieuDe = `Quy tắc ON/OFF — ${tenLoc}${kTu ? ` — tìm: ${kTu}` : ''}`;
+    await inHoacChiaSePdfTuBang(sheets, tieuDe);
+  };
+
   const importDuLieuTab = async () => {
     try {
       if (Platform.OS === 'web') {
@@ -1223,6 +1256,9 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.btn_hanh_dong, styles.btn_file]} onPress={exportDuLieuTab}>
                   <Text style={styles.txt_btn}>EXPORT</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.btn_hanh_dong, styles.btn_file]} onPress={() => void inDanhSachQuyTacSauLoc()}>
+                  <Text style={styles.txt_btn}>IN / PDF</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.btn_hanh_dong, styles.btn_file_mau]} onPress={taiFileMau}>
                   <Text style={styles.txt_btn}>TẢI FILE MẪU</Text>

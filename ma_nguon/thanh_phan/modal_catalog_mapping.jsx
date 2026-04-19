@@ -11,7 +11,13 @@ import {
   View,
 } from 'react-native';
 import { CD } from '../tien_ich/chu_de_giao_dien';
-import { layCauHinhLoaiMapping, laMappingNhieuMaDich, MAPPING_TYPE_CONFIG } from '../tien_ich/catalog_mapping_types';
+import {
+  laMappingNhieuMaDich,
+  laMappingNhieuMaNguon,
+  laMappingNhieuMaNguonIcd,
+  layCauHinhLoaiMapping,
+  MAPPING_TYPE_CONFIG,
+} from '../tien_ich/catalog_mapping_types';
 
 /** Nhãn danh mục nội bộ theo catalog_ref (đồng bộ Quản lý danh mục) */
 const TEN_DM_HIEN_THI = {
@@ -274,10 +280,10 @@ export default function ModalCatalogMapping({
 
   const laStaffDvkt = mappingType === 'STAFF_DVKT';
   const laMultiTarget = laMappingNhieuMaDich(mappingType);
-  const laMultiSourceIcd = ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mappingType);
+  const laMultiSource = laMappingNhieuMaNguon(mappingType);
   /** Rộng khung ngay khi mở từ thẻ (mappingType state có thể chưa kịp sync). */
   const laMultiTargetLayout = laMappingNhieuMaDich(mappingTypeCoDinh || mappingType);
-  const laMultiSourceLayout = ['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(mappingTypeCoDinh || mappingType);
+  const laMultiSourceLayout = laMappingNhieuMaNguon(mappingTypeCoDinh || mappingType);
   const dsDvktSapXep = useMemo(() => (laStaffDvkt ? sapXepDvktTheoMaTuongDuong(dsDich) : dsDich), [dsDich, laStaffDvkt]);
   const dsNhanSuDayDu = useMemo(() => {
     const t = String(tuKhoaNguon || '').trim().toLowerCase();
@@ -343,14 +349,24 @@ export default function ModalCatalogMapping({
         } else {
           setTargetCodesNhieu([]);
         }
-        if (['ICD_DRUG', 'ICD_DVKT', 'ICD_VTYT'].includes(banGhiChinhSua.mapping_type)) {
+        if (laMappingNhieuMaNguon(banGhiChinhSua.mapping_type)) {
           const mdSrc = banGhiChinhSua.metadata && typeof banGhiChinhSua.metadata === 'object' ? banGhiChinhSua.metadata : {};
+          const mt = banGhiChinhSua.mapping_type;
           let srcArr = [];
-          if (Array.isArray(mdSrc.source_icd_codes) && mdSrc.source_icd_codes.length) {
-            srcArr = mdSrc.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+          if (laMappingNhieuMaNguonIcd(mt)) {
+            if (Array.isArray(mdSrc.source_icd_codes) && mdSrc.source_icd_codes.length) {
+              srcArr = mdSrc.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
+            } else {
+              const sc = String(banGhiChinhSua.source_code || '').trim();
+              srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+            }
           } else {
-            const sc = String(banGhiChinhSua.source_code || '').trim();
-            srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+            if (Array.isArray(mdSrc.source_codes) && mdSrc.source_codes.length) {
+              srcArr = mdSrc.source_codes.map((c) => String(c || '').trim()).filter(Boolean);
+            } else {
+              const sc = String(banGhiChinhSua.source_code || '').trim();
+              srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+            }
           }
           setSourceCodesNhieu(srcArr);
         } else {
@@ -378,15 +394,15 @@ export default function ModalCatalogMapping({
   }, [visible, banGhiChinhSua, mappingTypeCoDinh]);
 
   useEffect(() => {
-    if (!visible || !laMultiSourceIcd) return;
+    if (!visible || !laMultiSource) return;
     const sorted = [...sourceCodesNhieu]
       .map((c) => String(c || '').trim())
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }));
     setSourceCode(sorted.join('|'));
-  }, [visible, laMultiSourceIcd, sourceCodesNhieu]);
+  }, [visible, laMultiSource, sourceCodesNhieu]);
 
-  const tenNguon = laMultiSourceIcd
+  const tenNguon = laMultiSource
     ? timTenNhieuMa(dsNguon, sourceCodesNhieu)
     : timTenTheoMa(dsNguon, sourceCode);
   const tenDichChi = laStaffDvkt ? timTenNhieuMa(dsDich, targetCodesChiDinh) : '';
@@ -448,16 +464,26 @@ export default function ModalCatalogMapping({
     }
 
     let maNguonLuu = String(sourceCode || '').trim();
-    if (laMultiSourceIcd && mappingType !== 'STAFF_DVKT') {
+    if (laMultiSource && mappingType !== 'STAFF_DVKT') {
       const srcCodes = [...new Set((sourceCodesNhieu || []).map((c) => String(c || '').trim()).filter(Boolean))].sort((a, b) =>
         a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }),
       );
       if (srcCodes.length === 0) {
-        setLoi('Chọn ít nhất một mã ICD nguồn (có thể chọn nhiều mã ICD cho cùng nhóm gợi ý thuốc / DVKT / VTYT).');
+        setLoi(
+          laMappingNhieuMaNguonIcd(mappingType)
+            ? 'Chọn ít nhất một mã ICD nguồn (có thể chọn nhiều mã ICD cho cùng nhóm gợi ý thuốc / DVKT / VTYT).'
+            : 'Chọn ít nhất một mã nguồn (một hoặc nhiều nhân viên, hoặc một hoặc nhiều DVKT).',
+        );
         return;
       }
       maNguonLuu = srcCodes.join('|');
-      metadata.source_icd_codes = srcCodes;
+      if (laMappingNhieuMaNguonIcd(mappingType)) {
+        metadata.source_icd_codes = srcCodes;
+        delete metadata.source_codes;
+      } else {
+        metadata.source_codes = srcCodes;
+        delete metadata.source_icd_codes;
+      }
     }
 
     const c = layCauHinhLoaiMapping(mappingType);
@@ -809,8 +835,14 @@ export default function ModalCatalogMapping({
               <View style={styles.cotBangDon}>
                 <Text style={styles.nhan}>Nguồn — {TEN_DM_HIEN_THI[cfg?.source_catalog] || cfg?.source_catalog}</Text>
                 <Text style={styles.nhanNho}>
-                  {laMultiSourceIcd
-                    ? 'Chọn một hoặc nhiều mã ICD (tap để bật/tắt). Cùng một nhóm ICD có thể gắn chung gợi ý thuốc / DVKT / VTYT ở cột đích.'
+                  {laMultiSource
+                    ? cfg?.source_catalog === 'icd10'
+                      ? 'Chọn một hoặc nhiều mã ICD (tap để bật/tắt). Cùng một nhóm ICD có thể gắn chung gợi ý thuốc / DVKT / VTYT ở cột đích.'
+                      : cfg?.source_catalog === 'employees'
+                        ? 'Chọn một hoặc nhiều nhân sự (MA_BHXH). Cùng một nhóm nhân viên có thể gắn chung nhiều máy ở cột đích.'
+                        : cfg?.source_catalog === 'dvkt_items'
+                          ? 'Chọn một hoặc nhiều DVKT (MA_DICH_VU). Cùng một nhóm dịch vụ có thể gắn chung nhiều máy ở cột đích.'
+                          : 'Chọn một hoặc nhiều mã nguồn (tap để bật/tắt).'
                     : 'Chọn một dòng (danh mục nội bộ đã nạp đầy đủ)'}
                 </Text>
                 <TextInput
@@ -820,14 +852,18 @@ export default function ModalCatalogMapping({
                   placeholder={
                     cfg?.source_catalog === 'icd10'
                       ? 'Tìm: mã ICD, tên bệnh, mã không dấu…'
-                      : 'Lọc theo mã, tên, chức danh…'
+                      : cfg?.source_catalog === 'dvkt_items'
+                        ? 'Lọc mã DVKT, tên DVKT, mã tương đương…'
+                        : 'Lọc theo mã, tên, chức danh…'
                   }
                   placeholderTextColor={CD.text.placeholder}
                   editable={!laSua}
                 />
                 <Text style={styles.demBangDon}>
                   {dsNguonHet.length} mã
-                  {laMultiSourceIcd ? ` · đã chọn ICD: ${sourceCodesNhieu.length}` : ''}
+                  {laMultiSource
+                    ? ` · đã chọn nguồn: ${sourceCodesNhieu.length}${cfg?.source_catalog === 'icd10' ? ' (ICD)' : ''}`
+                    : ''}
                 </Text>
                 <FlatList
                   data={dsNguonHet}
@@ -841,8 +877,8 @@ export default function ModalCatalogMapping({
                   removeClippedSubviews={Platform.OS === 'android'}
                   ListEmptyComponent={<Text style={styles.chuTrongList}>Không có dữ liệu hoặc chưa khớp bộ lọc.</Text>}
                   renderItem={({ item: x }) => {
-                    const chon = laMultiSourceIcd ? sourceCodesNhieu.includes(x.code) : sourceCode === x.code;
-                    if (laMultiSourceIcd) {
+                    const chon = laMultiSource ? sourceCodesNhieu.includes(x.code) : sourceCode === x.code;
+                    if (laMultiSource) {
                       return (
                         <TouchableOpacity
                           style={[styles.dongListDon, styles.dongListDvktCoCheckbox, chon && styles.dongListChon]}
@@ -885,7 +921,9 @@ export default function ModalCatalogMapping({
                 <Text style={styles.nhan}>Đích — {TEN_DM_HIEN_THI[cfg?.target_catalog] || cfg?.target_catalog}</Text>
                 <Text style={styles.nhanNho}>
                   {laMultiTarget
-                    ? 'Chọn một hoặc nhiều mã đích (tap để bật/tắt). Một ICD có thể gắn nhiều thuốc/DVKT/VTYT; nhiều ICD khác nhau có thể cùng một mã đích — lưu thành nhiều dòng mapping.'
+                    ? cfg?.target_catalog === 'equipments'
+                      ? 'Chọn một hoặc nhiều máy/thiết bị (Mẫu 06). Một dòng có thể gồm nhiều nhân viên hoặc nhiều DVKT (cột nguồn) và nhiều MA_MAY; một máy có thể lặp trên nhiều dòng với tổ hợp nguồn khác nhau.'
+                      : 'Chọn một hoặc nhiều mã đích (tap để bật/tắt). Một ICD có thể gắn nhiều thuốc/DVKT/VTYT; nhiều ICD khác nhau có thể cùng một mã đích — lưu thành nhiều dòng mapping. Thuốc ↔ DVKT: một dòng có thể nhiều thuốc; nhiều dòng khác nhau có thể trỏ cùng một thuốc hoặc cùng một DVKT.'
                     : 'Chọn một dòng đích'}
                 </Text>
                 <TextInput
@@ -895,7 +933,9 @@ export default function ModalCatalogMapping({
                   placeholder={
                     cfg?.target_catalog === 'drug_items'
                       ? 'Tìm: mã thuốc, tên biệt dược, hoạt chất…'
-                      : 'Lọc theo mã, tên, hoạt chất…'
+                      : cfg?.target_catalog === 'equipments'
+                        ? 'Tìm: mã máy, tên thiết bị, ký hiệu…'
+                        : 'Lọc theo mã, tên…'
                   }
                   placeholderTextColor={CD.text.placeholder}
                 />
@@ -979,9 +1019,9 @@ export default function ModalCatalogMapping({
           (sourceCode ||
             targetCode ||
             (laMultiTarget && targetCodesNhieu.length > 0) ||
-            (laMultiSourceIcd && sourceCodesNhieu.length > 0)) ? (
+            (laMultiSource && sourceCodesNhieu.length > 0)) ? (
             <Text style={styles.tomTatChonDon}>
-              {laMultiSourceIcd
+              {laMultiSource
                 ? tenNguon
                   ? `${tenNguon} (${sourceCodesNhieu.join(', ')})`
                   : sourceCodesNhieu.join(', ') || '…'

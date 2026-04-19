@@ -8,7 +8,16 @@ Sau khi build, file chạy được (Windows 64-bit) có dạng:
 
   CDSS-BHYT-Phuong-Chau-<phiên_bản>-Windows-x64.exe
 
-Ví dụ phiên bản hiện tại trong package.json: 1.1.0
+Ví dụ phiên bản hiện tại trong package.json: 1.2.0 (đồng bộ app.json)
+
+CHUỖI ĐÓNG GÓI ĐẦY ĐỦ (mặc định khi chạy desktop:export / desktop:build:win-portable)
+--------------------------------------------------------------------------------
+Trước khi expo export, npm sẽ chạy tuần tự:
+  - tai_lieu:prepare (HTML/thư viện + manifest)
+  - tai_lieu:index-huan-luyen (chỉ mục huấn luyện trong tai_lieu/)
+  - tai_lieu:index-tai-nguyen (chỉ mục XML mẫu trong tai_nguyen/)
+Sau đó mới sinh dist/ để đóng vào Electron — bản portable mới thay thế bản cũ khi
+bạn copy đè file .exe hoặc dùng cùng thư mục output (build xóa/ghi lại output).
 
 - Không cần cài đặt qua trình cài (NSIS).
 - Copy file .exe sang USB hoặc máy khác (Windows x64) và chạy trực tiếp.

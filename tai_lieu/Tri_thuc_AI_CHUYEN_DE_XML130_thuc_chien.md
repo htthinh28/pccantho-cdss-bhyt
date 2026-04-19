@@ -76,8 +76,11 @@ Sau khi **`npm run tai_lieu:prepare`**, các file trong `tai_lieu/` (gồm tài 
 
 - *“Phân loại quy tắc CHUYEN_DE-XXX theo tài liệu Tri_thuc_AI_CHUYEN_DE_XML130_thuc_chien: điều kiện có chạy trên XML130 không, hay placeholder? Nêu rủi ro báo giả nếu tên DV khác BV.”*
 - *“Liệt kê đúng thứ tự 6 bước triển khai (mục 0) trước khi coi quy tắc là thực chiến.”*
+- *“Trên dashboard QPS, lỗi nào vào nhóm Vi phạm cấu trúc XML (`CAU_TRUC_XML`) thay vì Xuất toán / Cảnh báo CDSS? Đối chiếu `The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md`.”*
 
 Khi trả lời người dùng cuối: nhấn mạnh khớp **tên dịch vụ** phụ thuộc BV; cần **mẫu XML thật** để hiệu chỉnh từ khóa.
+
+**Bổ sung dashboard:** Báo cáo vi phạm **cấu trúc dữ liệu XML** (QĐ 3176 / tiền xử lý `kiem_tra_xml`, mã `STRUCT-*`, `XMLn-…`) được tách lớp hiển thị và lọc riêng so với cảnh báo engine CHUYEN_DE / CDSS — xem [The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md](./The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md).
 
 ## 5. Triển khai thực chiến (sản phẩm — khớp mục 0 bước 6)
 
@@ -94,6 +97,7 @@ Khi trả lời người dùng cuối: nhấn mạnh khớp **tên dịch vụ**
 | `scripts/chuyen_de_batch_manifest.json` | Trạng thái từng lô |
 | `scripts/chuyen_de_placeholder_registry.json` | Id placeholder (tự động) |
 | `tai_lieu/Kiem_soat_placeholder_CHUYEN_DE_XML130.md` | Chính sách placeholder |
+| `tai_lieu/The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md` | Phân loại `CAU_TRUC_XML` vs CDSS; chip QPS |
 | `scripts/patch_chuyen_de_batch6_dieukien.mjs` | Script tái lập lô 6 (tham khảo) |
 | `scripts/patch_chuyen_de_batch7_dieukien.mjs` | Script tái lập lô 7 (tham khảo) |
 | `scripts/patch_chuyen_de_batch8_dieukien.mjs` | Script tái lập lô 8 (tham khảo) |
