@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithEmailAndPassword } from 'firebase/auth';
 import {
+    addDoc,
     collection,
     doc,
     limit as fsLimit,
@@ -10,10 +11,12 @@ import {
     getFirestore,
     orderBy,
     query,
+    runTransaction,
     serverTimestamp,
     setDoc,
     writeBatch,
 } from 'firebase/firestore';
+import { DVKT_DATASET_SCHEMA_VERSION, danhGiaConflictPolicyTaiXuong } from './config_dataset_versioning';
   import appConfig from '../../app.json';
 
 const LOCAL_CHUNK_SIZE = 320000;
@@ -75,16 +78,21 @@ const writeLocalDatasetMeta = async (datasetKey, meta) => {
   }
 };
 
-const buildLocalDatasetMetaFromRows = (rows, { markSynced = false, now = Date.now() } = {}) => {
+const buildLocalDatasetMetaFromRows = (rows, { markSynced = false, now = Date.now(), updated_by = '' } = {}) => {
   const data = Array.isArray(rows) ? rows : [];
   const payload = JSON.stringify(data);
   const payloadHash = fastHash(payload);
   const meta = {
+    schema_version: DVKT_DATASET_SCHEMA_VERSION,
     payload_hash: payloadHash,
+    content_hash: payloadHash,
     row_count: data.length,
     payload_bytes: payload.length,
     updated_at: now,
   };
+  if (String(updated_by || '').trim()) {
+    meta.updated_by = String(updated_by || '').trim();
+  }
   if (markSynced) {
     meta.synced_payload_hash = payloadHash;
     meta.synced_at = now;
@@ -100,24 +108,31 @@ export const layMetaDatasetCucBo = async (datasetKey) => {
       ok: true,
       exists: false,
       dataset_key: key,
+      schema_version: 0,
       payload_hash: '',
+      content_hash: '',
       row_count: 0,
       payload_bytes: 0,
       updated_at_ms: 0,
       synced_payload_hash: '',
       synced_at_ms: 0,
+      updated_by: '',
     };
   }
+  const payloadHash = String(meta.payload_hash || '');
   return {
     ok: true,
     exists: true,
     dataset_key: key,
-    payload_hash: String(meta.payload_hash || ''),
+    schema_version: Number(meta.schema_version) > 0 ? Number(meta.schema_version) : DVKT_DATASET_SCHEMA_VERSION,
+    payload_hash: payloadHash,
+    content_hash: String(meta.content_hash || payloadHash || ''),
     row_count: Number(meta.row_count || 0),
     payload_bytes: Number(meta.payload_bytes || 0),
     updated_at_ms: Number(meta.updated_at || 0),
     synced_payload_hash: String(meta.synced_payload_hash || ''),
     synced_at_ms: Number(meta.synced_at || 0),
+    updated_by: String(meta.updated_by || ''),
   };
 };
 
@@ -128,6 +143,7 @@ export const capNhatMetaDatasetCucBoTheoRows = async (datasetKey, rows, options 
   if (previous && typeof previous === 'object' && !options?.markSynced) {
     if (previous.synced_payload_hash) nextMeta.synced_payload_hash = String(previous.synced_payload_hash || '');
     if (previous.synced_at) nextMeta.synced_at = Number(previous.synced_at || 0);
+    if (previous.updated_by && !nextMeta.updated_by) nextMeta.updated_by = String(previous.updated_by || '');
   }
   await writeLocalDatasetMeta(key, nextMeta);
   return {
@@ -957,24 +973,32 @@ export const layMetaDatasetFirebase = async ({
         ok: true,
         exists: false,
         dataset_key: key,
+        schema_version: 0,
         payload_hash: '',
+        content_hash: '',
         row_count: 0,
         payload_bytes: 0,
         chunk_count: 0,
         updated_at_ms: 0,
+        updated_by: '',
       };
     }
 
     const meta = metaSnap.data() || {};
+    const payloadHash = String(meta.payload_hash || '');
+    const contentHash = String(meta.content_hash || payloadHash || '');
     return {
       ok: true,
       exists: true,
       dataset_key: key,
-      payload_hash: String(meta.payload_hash || ''),
+      schema_version: Number(meta.schema_version) > 0 ? Number(meta.schema_version) : DVKT_DATASET_SCHEMA_VERSION,
+      payload_hash: payloadHash,
+      content_hash: contentHash,
       row_count: Number(meta.row_count || 0),
       payload_bytes: Number(meta.payload_bytes || 0),
       chunk_count: Number(meta.payload_chunk_count || 0),
       updated_at_ms: toMillisSafe(meta.updated_at),
+      updated_by: String(meta.updated_by || ''),
       storage_path: String(meta.storage_path || ''),
     };
   } catch (error) {
@@ -987,6 +1011,194 @@ export const layMetaDatasetFirebase = async ({
       reason: mapped.reason,
       error_code: mapped.code,
     };
+  }
+};
+
+export const danhGiaTruocKhiTaiDvktDataset = async (datasetKey) => {
+  const key = toSafeToken(datasetKey);
+  const [local, remote] = await Promise.all([
+    layMetaDatasetCucBo(key),
+    layMetaDatasetFirebase({ datasetKey: key }),
+  ]);
+  if (!remote.ok) {
+    return {
+      ok: false,
+      dataset_key: key,
+      reason: remote.reason || 'Không đọc được meta remote.',
+      policy: null,
+      local,
+      remote,
+    };
+  }
+  const policy = danhGiaConflictPolicyTaiXuong({
+    local_payload_hash: local.payload_hash,
+    synced_payload_hash: local.synced_payload_hash,
+    remote_payload_hash: remote.payload_hash,
+    remote_exists: remote.exists,
+  });
+  return {
+    ok: true,
+    dataset_key: key,
+    policy,
+    local,
+    remote,
+  };
+};
+
+export const doiSoatDanhSachDatasetVoiFirebase = async ({ datasetKeys = [] } = {}) => {
+  const keys = Array.from(new Set((Array.isArray(datasetKeys) ? datasetKeys : [])
+    .map((k) => toSafeToken(k || ''))
+    .filter(Boolean)));
+  const details = await Promise.all(
+    keys.map(async (storageKey) => {
+      const [localMetaRaw, remoteMetaRaw] = await Promise.all([
+        layMetaDatasetCucBo(storageKey),
+        layMetaDatasetFirebase({ datasetKey: storageKey }),
+      ]);
+      const lm = {
+        exists: localMetaRaw.exists,
+        payload_hash: localMetaRaw.payload_hash,
+        row_count: Number(localMetaRaw.row_count || 0),
+      };
+      const rm = {
+        exists: remoteMetaRaw.exists,
+        payload_hash: remoteMetaRaw.payload_hash,
+        row_count: Number(remoteMetaRaw.row_count || 0),
+      };
+      const differs =
+        rm.exists
+        && (lm.row_count !== rm.row_count
+          || (!!lm.payload_hash && !!rm.payload_hash && lm.payload_hash !== rm.payload_hash));
+      const policy = danhGiaConflictPolicyTaiXuong({
+        local_payload_hash: lm.payload_hash,
+        synced_payload_hash: localMetaRaw.synced_payload_hash,
+        remote_payload_hash: rm.payload_hash,
+        remote_exists: rm.exists,
+      });
+      return {
+        storage_key: storageKey,
+        differs,
+        policy,
+        local: lm,
+        remote: rm,
+      };
+    }),
+  );
+  const differs = details.filter((d) => d.differs);
+  const conflict_risk = details.filter((d) => d.policy?.severity === 'conflict');
+  return {
+    ok: true,
+    details,
+    differs_count: differs.length,
+    differs_keys: differs.map((d) => d.storage_key),
+    conflict_risk_count: conflict_risk.length,
+    conflict_risk_keys: conflict_risk.map((d) => d.storage_key),
+  };
+};
+
+const DOC_CONFIG_SYNC_LOCK = 'config_sync_lock';
+
+export const ghiNhatKyAuditConfigSync = async ({
+  action = '',
+  actor_email = '',
+  source = '',
+  dataset_summary = [],
+  payload = {},
+} = {}) => {
+  const ready = await ensureFirestoreReady({ requireWrite: true });
+  if (!ready.ok) return { ok: false, reason: ready.reason };
+  const { runtime, auth } = ready;
+  try {
+    const col = collection(runtime.db, 'orgs', runtime.orgId, 'audit_config_sync');
+    await addDoc(col, {
+      action: String(action || ''),
+      actor_email: String(actor_email || ''),
+      actor_uid: String(auth?.user?.uid || ''),
+      source: String(source || ''),
+      dataset_summary: Array.isArray(dataset_summary) ? dataset_summary : [],
+      extra: payload && typeof payload === 'object' ? payload : {},
+      schema_registry_version: DVKT_DATASET_SCHEMA_VERSION,
+      created_at: serverTimestamp(),
+    });
+    return { ok: true };
+  } catch (error) {
+    const mapped = mapFirebaseError(error, 'Không ghi được nhật ký audit.');
+    return { ok: false, reason: mapped.reason };
+  }
+};
+
+export const thuPhienDongBoCauHinh = async ({
+  ttlMs = 15 * 60 * 1000,
+  actor_email = '',
+} = {}) => {
+  const ready = await ensureFirestoreReady({ requireWrite: true });
+  if (!ready.ok) return { ok: false, reason: ready.reason };
+  const { runtime, auth } = ready;
+  const uid = String(auth?.user?.uid || '');
+  if (!uid) return { ok: false, reason: 'Thiếu UID Firebase để khóa phiên đồng bộ.' };
+  const lockRef = doc(runtime.db, 'orgs', runtime.orgId, 'system_config', DOC_CONFIG_SYNC_LOCK);
+  const now = Date.now();
+  const expiresAt = now + Math.max(60_000, Number(ttlMs) || 0);
+
+  try {
+    let blocked = false;
+    let holder = '';
+    await runTransaction(runtime.db, async (transaction) => {
+      const snap = await transaction.get(lockRef);
+      const data = snap.exists() ? (snap.data() || {}) : {};
+      const exp = Number(data.lock_expires_at_ms || 0);
+      holder = String(data.lock_holder_uid || '');
+      if (holder && holder !== uid && exp > now) {
+        blocked = true;
+        return;
+      }
+      transaction.set(lockRef, {
+        lock_holder_uid: uid,
+        lock_holder_email: String(actor_email || ''),
+        lock_expires_at_ms: expiresAt,
+        lock_acquired_at_ms: now,
+        updated_at: serverTimestamp(),
+      }, { merge: true });
+    });
+    if (blocked) {
+      return {
+        ok: false,
+        reason: `Khóa đồng bộ đang giữ bởi phiên khác (${holder || 'unknown'}). Chờ hết TTL hoặc nhả khóa từ máy đã chiếm.`,
+        code: 'config_sync_lock_held',
+      };
+    }
+    return { ok: true, expires_at_ms: expiresAt };
+  } catch (error) {
+    const mapped = mapFirebaseError(error, 'Không chiếm được khóa đồng bộ.');
+    return { ok: false, reason: mapped.reason, error_code: mapped.code };
+  }
+};
+
+export const giangPhienDongBoCauHinh = async () => {
+  const ready = await ensureFirestoreReady({ requireWrite: true });
+  if (!ready.ok) return { ok: false, reason: ready.reason };
+  const { runtime, auth } = ready;
+  const uid = String(auth?.user?.uid || '');
+  const lockRef = doc(runtime.db, 'orgs', runtime.orgId, 'system_config', DOC_CONFIG_SYNC_LOCK);
+  try {
+    await runTransaction(runtime.db, async (transaction) => {
+      const snap = await transaction.get(lockRef);
+      if (!snap.exists()) return;
+      const data = snap.data() || {};
+      const h = String(data.lock_holder_uid || '');
+      if (h && h !== uid) return;
+      transaction.set(lockRef, {
+        lock_holder_uid: '',
+        lock_holder_email: '',
+        lock_expires_at_ms: 0,
+        lock_released_at_ms: Date.now(),
+        updated_at: serverTimestamp(),
+      }, { merge: true });
+    });
+    return { ok: true };
+  } catch (error) {
+    const mapped = mapFirebaseError(error, 'Không nhả khóa đồng bộ.');
+    return { ok: false, reason: mapped.reason };
   }
 };
 
@@ -1538,6 +1750,8 @@ export const syncDvktTablesToFirebase = async ({
           download_url: '',
           row_count: rows.length,
           payload_hash: payloadHash,
+          content_hash: payloadHash,
+          schema_version: DVKT_DATASET_SCHEMA_VERSION,
           source: String(source || 'manual_sync'),
           updated_by: String(uploader || ''),
           updated_at: serverTimestamp(),
@@ -1577,6 +1791,7 @@ export const syncDvktTablesToFirebase = async ({
       updated_at: serverTimestamp(),
       source: String(source || 'manual_sync'),
       storage_mode: 'firestore_only',
+      schema_registry_version: DVKT_DATASET_SCHEMA_VERSION,
     },
     { merge: true }
   ).catch(() => {});

@@ -3,9 +3,9 @@
  * bảng catalog_mapping (client), mapping_type_config, lọc + danh sách + thêm/sửa + xuất Excel.
  */
 
-import * as XLSX from 'xlsx';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   ScrollView,
@@ -17,31 +17,40 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as XLSX from 'xlsx';
 import ModalCatalogMapping from '../thanh_phan/modal_catalog_mapping';
 import OChonNgayISO from '../thanh_phan/o_chon_ngay_iso';
 import {
-  invalidateBangCatalogMappingCache,
-  taiBangChoLoaiMapping,
-  taiTatCaBangChoMapping,
-  timTenNhieuMa,
-  timTenTheoMa,
+    invalidateBangCatalogMappingCache,
+    taiBangChoLoaiMapping,
+    taiTatCaBangChoMapping,
+    timTenNhieuMa,
+    timTenTheoMa,
 } from '../tien_ich/catalog_mapping_catalog_loaders';
 import {
-  laMappingNhieuMaDich,
-  laMappingNhieuMaNguon,
-  laMappingNhieuMaNguonIcd,
-  layCauHinhLoaiMapping,
-  LAY_MAPPING_TYPE_OPTIONS,
-  MAPPING_TYPE_CONFIG,
-} from '../tien_ich/catalog_mapping_types';
+  doiSoatCatalogMappingVoiFirebase,
+  dongBoTatCaCatalogMappingLenFirebase,
+  layKhoaBackupCatalogMapping,
+  taiTatCaCatalogMappingTuFirebase,
+} from '../tien_ich/catalog_mapping_firebase';
 import {
   luuTatCaBanGhiMapping,
   mappingCoHieuLucTaiNgay,
   taiTatCaBanGhiMapping,
   validateMappingMoi,
 } from '../tien_ich/catalog_mapping_luu_tru';
+import {
+    LAY_MAPPING_TYPE_OPTIONS,
+    MAPPING_TYPE_CONFIG,
+    laMappingNhieuMaDich,
+    laMappingNhieuMaNguon,
+    laMappingNhieuMaNguonIcd,
+    layCauHinhLoaiMapping,
+} from '../tien_ich/catalog_mapping_types';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
+import { kiemTraKetNoiFirebaseThucTe } from '../tien_ich/firebase_cloud_bhyt';
+import { taoBanSaoDuLieuHeThong } from '../tien_ich/sao_luu_du_lieu_he_thong';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 
 const BO_LOC_TRANG_THAI = [
@@ -64,6 +73,8 @@ const MappingNghiepVu = ({ navigation }) => {
   const [bangModalTheoLoai, setBangModalTheoLoai] = useState({});
   const [dangTaiModal, setDangTaiModal] = useState(false);
   const [banGhiSua, setBanGhiSua] = useState(null);
+  const [dangDongBoFirebase, setDangDongBoFirebase] = useState(false);
+  const [dangTaiFirebase, setDangTaiFirebase] = useState(false);
 
   const coDuBangTrongStateChoLoai = (br, loai) => {
     const cfg = layCauHinhLoaiMapping(loai);
@@ -143,6 +154,30 @@ const MappingNghiepVu = ({ navigation }) => {
     [bangTheoRef, bangModalTheoLoai],
   );
 
+  /** Sidebar trái (list menu lọc + thêm); rộng hơn một chút để đọc nhãn loại. */
+  const rongSidebarMapping = useMemo(() => {
+    const w = winW || 800;
+    return Math.min(268, Math.max(148, Math.round(w * 0.22)));
+  }, [winW]);
+
+  const demSoDongTheoLoai = useMemo(() => {
+    const m = {};
+    for (const { mapping_type } of MAPPING_TYPE_CONFIG) {
+      m[mapping_type] = 0;
+    }
+    for (const r of hang) {
+      const t = String(r?.mapping_type || '').trim();
+      if (m[t] === undefined) continue;
+      m[t] += 1;
+    }
+    return m;
+  }, [hang]);
+
+  const demChoMucLoc = (value) => {
+    if (!value) return hang.length;
+    return demSoDongTheoLoai[value] ?? 0;
+  };
+
   const hangLoc = useMemo(() => {
     const tk = String(tuKhoa || '').trim().toLowerCase();
     return hang.filter((r) => {
@@ -219,7 +254,7 @@ const MappingNghiepVu = ({ navigation }) => {
       merged = [rowMoi, ...hang];
     }
 
-    const v = validateMappingMoi({ rows: merged, rowMoi, boQuaId: rowMoi.id });
+    const v = validateMappingMoi({ rows: merged, rowMoi, boQuaId: rowMoi.id, bangTheoRef: bangMergedChoModal });
     if (!v.ok) {
       Alert.alert('Không lưu được', v.message || 'Lỗi validation');
       return;
@@ -333,8 +368,8 @@ const MappingNghiepVu = ({ navigation }) => {
     luuTatCaBanGhiMapping(next).then(() => setHang(next));
   };
 
-  /** Bảng tối thiểu rộng bằng khung nhìn (trừ padding) để cột flex giãn full màn hình */
-  const rongBangToiThieu = Math.max(1180, (winW || 800) - 24);
+  /** Độ rộng tối thiểu bảng theo vùng phải (sau sidebar). */
+  const rongBangToiThieu = Math.max(960, (winW || 800) - rongSidebarMapping - 52);
 
   const xuatExcel = () => {
     if (hangLoc.length === 0) {
@@ -402,179 +437,337 @@ const MappingNghiepVu = ({ navigation }) => {
     await inHoacChiaSePdfTuBang([{ sheetName: 'Mapping', columns, rows }], 'Mapping danh mục (đang lọc)');
   };
 
+  const handleDoiSoatFirebaseMapping = async () => {
+    try {
+      const check = await kiemTraKetNoiFirebaseThucTe(false);
+      if (!check?.ok) {
+        Alert.alert('Firebase', check?.reason || 'Chưa kết nối được Firestore.');
+        return;
+      }
+      const kq = await doiSoatCatalogMappingVoiFirebase();
+      const lines = kq.details.map((d) => {
+        const cloud = d.remote?.exists ? `${d.remote.row_count} dòng` : 'chưa có';
+        return `${d.storage_key}: cục bộ ${d.local.row_count} | cloud ${cloud}${d.differs ? ' · lệch' : ''}`;
+      });
+      const head = `${kq.differs_count}/${kq.details.length} shard lệch hoặc khác hash.`;
+      const body = lines.slice(0, 16).join('\n');
+      const tail = lines.length > 16 ? `\n… +${lines.length - 16} shard` : '';
+      Alert.alert('Đối soát mapping — Firebase', `${head}\n\n${body}${tail}`);
+    } catch (e) {
+      Alert.alert('Firebase', e?.message || String(e));
+    }
+  };
+
+  const handleDongBoMappingLenFirebase = async () => {
+    if (dangDongBoFirebase || dangTaiFirebase) return;
+    setDangDongBoFirebase(true);
+    try {
+      const check = await kiemTraKetNoiFirebaseThucTe(true);
+      if (!check?.ok) {
+        Alert.alert('Firebase', check?.reason || 'Chưa ghi được Firestore.');
+        return;
+      }
+      const kq = await dongBoTatCaCatalogMappingLenFirebase({ uploader: '', onlyChanged: true });
+      const msg = kq?.ok
+        ? `Đã xử lý ${kq.processed_count}/${kq.total_count} shard (upload mới: ${kq.uploaded_count}, giữ hash: ${kq.skipped_count}).`
+        : (kq?.reason || 'Đồng bộ thất bại.');
+      Alert.alert('Đồng bộ mapping lên Firebase', msg);
+    } catch (e) {
+      Alert.alert('Firebase', e?.message || String(e));
+    } finally {
+      setDangDongBoFirebase(false);
+    }
+  };
+
+  const chayTaiMappingTuFirebase = async () => {
+    if (dangDongBoFirebase || dangTaiFirebase) return;
+    setDangTaiFirebase(true);
+    try {
+      const check = await kiemTraKetNoiFirebaseThucTe(false);
+      if (!check?.ok) {
+        Alert.alert('Firebase', check?.reason || 'Chưa đọc được Firestore.');
+        return;
+      }
+      try {
+        await taoBanSaoDuLieuHeThong({
+          reason: 'AUTO_BEFORE_FIREBASE_PULL_CATALOG_MAPPING',
+          includeKeys: layKhoaBackupCatalogMapping(),
+        });
+      } catch (be) {
+        console.warn('Auto-backup trước khi tải mapping:', be);
+      }
+      const kq = await taiTatCaCatalogMappingTuFirebase();
+      invalidateBangCatalogMappingCache();
+      await nap();
+      const miss = (kq.missing_remote || []).length;
+      Alert.alert(
+        'Tải mapping từ Firebase',
+        `Đã ghi ${kq.downloaded}/${kq.shard_count} shard.${miss ? ` ${miss} shard chưa có trên cloud.` : ''}`,
+      );
+    } catch (e) {
+      Alert.alert('Firebase', e?.message || String(e));
+    } finally {
+      setDangTaiFirebase(false);
+    }
+  };
+
+  const handleTaiMappingTuFirebase = () => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.confirm) {
+      if (
+        window.confirm(
+          'Tải mapping từ Firebase ghi đè shard cục bộ (CATALOG_MAP_V1__*). Tiếp tục?',
+        )
+      ) {
+        void chayTaiMappingTuFirebase();
+      }
+      return;
+    }
+    Alert.alert('Xác nhận', 'Tải mapping từ Firebase sẽ ghi đè shard cục bộ.', [
+      { text: 'Hủy', style: 'cancel' },
+      { text: 'Tiếp tục', onPress: () => { void chayTaiMappingTuFirebase(); } },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.vung_an_toan}>
-      <View style={styles.khoi_header_gop}>
-        <View style={styles.thanh_tieu_de}>
-          <TouchableOpacity onPress={() => quayLaiAnToan(navigation, 'TongQuan')} style={styles.nut_quay_lai}>
-            <Text style={styles.chu_nut_header}>⬅ TỔNG QUAN</Text>
-          </TouchableOpacity>
-          <Text style={styles.chu_tieu_de} numberOfLines={1}>MAPPING DANH MỤC</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('QuanLyDanhMuc')} style={styles.nut_phu}>
-            <Text style={styles.chu_nut_header}>📋 DM GỐC</Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          style={styles.hang_the_header}
-          contentContainerStyle={styles.hang_the_header_content}
-        >
-          {MAPPING_TYPE_CONFIG.map((c) => (
-            <TouchableOpacity
-              key={c.mapping_type}
-              style={[styles.the_loai_header, dangTaiModal && styles.nut_loai_mapping_tac]}
-              onPress={() => moThemMapping(c.mapping_type)}
-              disabled={dangTaiModal}
-            >
-              <Text style={styles.chu_the_loai_ma} numberOfLines={1}>+ {c.mapping_type}</Text>
-              <Text style={styles.chu_the_loai_ten} numberOfLines={1}>{c.display_name}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      <Text style={styles.moTa} numberOfLines={3}>
-        Bảng <Text style={styles.inDam}>catalog_mapping</Text> — <Text style={styles.inDam}>mapping_type</Text>. Mô hình M:N: một dòng có thể nhiều mã nguồn (ICD; nhân viên/DVKT khi map máy)
-        và/hoặc nhiều mã đích (thuốc, VTYT, máy…); nhiều dòng khác nhau có thể chia sẻ cùng mã. Lưu cục bộ · {MAPPING_TYPE_CONFIG.length} loại.
-      </Text>
-
-      <View style={styles.khoi_loc}>
-        <Text style={styles.nhan_loc_nho}>Lọc loại (sub-tab)</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hang_sub_tab}>
-          {LAY_MAPPING_TYPE_OPTIONS.map((opt) => (
-            <TouchableOpacity
-              key={opt.value || 'all'}
-              style={[styles.chip_sub, locLoai === opt.value && styles.chip_sub_chon]}
-              onPress={() => setLocLoai(opt.value)}
-            >
-              <Text style={[styles.chu_chip_sub, locLoai === opt.value && styles.chu_chip_sub_chon]} numberOfLines={1}>
-                {opt.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        <View style={styles.hang_loc_phu}>
-          <Text style={styles.nhan_loc_nho}>Trạng thái</Text>
-          <View style={styles.hang_loc_row}>
-            {BO_LOC_TRANG_THAI.map((opt) => (
-              <TouchableOpacity
-                key={opt.value}
-                style={[styles.chip_nho, locTrangThai === opt.value && styles.chip_loc_chon]}
-                onPress={() => setLocTrangThai(opt.value)}
-              >
-                <Text style={[styles.chu_chip_nho, locTrangThai === opt.value && styles.chu_chip_loc_chon]} numberOfLines={1}>
-                  {opt.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.hai_o_nho}>
-          <View style={styles.o_loc_co_nhan}>
-            <Text style={styles.nhan_loc_nho}>Hiệu lực tại ngày</Text>
-            <OChonNgayISO
-              style={styles.o_ngay_nho}
-              value={locNgay}
-              onChangeValue={setLocNgay}
-              placeholder="Trống = hôm nay"
-            />
-          </View>
-          <View style={[styles.o_loc_co_nhan, { flex: 1, minWidth: 160 }]}>
-            <Text style={styles.nhan_loc_nho}>Tìm nhanh</Text>
-            <TextInput
-              style={styles.o_ngay_nho}
-              value={tuKhoa}
-              onChangeText={setTuKhoa}
-              placeholder="Mã, loại…"
-              placeholderTextColor={CD.text.placeholder}
-            />
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.hang_hanh_dong}>
-        <TouchableOpacity style={styles.nut_phu2} onPress={xuatExcel}>
-          <Text style={styles.chu_nut_phu}>📥 XUẤT EXCEL</Text>
+      <View style={styles.thanh_tieu_de}>
+        <TouchableOpacity onPress={() => quayLaiAnToan(navigation, 'TongQuan')} style={styles.nut_quay_lai}>
+          <Text style={styles.chu_nut_header}>⬅ TỔNG QUAN</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.nut_phu2} onPress={() => void inPdfDanhSachMapping()}>
-          <Text style={styles.chu_nut_phu}>🖨 IN / PDF</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.nut_phu2} onPress={nap}>
-          <Text style={styles.chu_nut_phu}>↻ TẢI LẠI</Text>
+        <Text style={styles.chu_tieu_de} numberOfLines={1}>MAPPING DANH MỤC</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('QuanLyDanhMuc')} style={styles.nut_phu}>
+          <Text style={styles.chu_nut_header}>📋 DM GỐC</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.vung_bang_outer}>
-        {!taiXong ? (
-          <Text style={styles.dang_tai}>Đang tải…</Text>
-        ) : (
+      <View style={styles.khung_chinh_mapping}>
+        <View style={[styles.sidebar_trai, { width: rongSidebarMapping }]}>
           <ScrollView
-            horizontal
-            nestedScrollEnabled
-            style={styles.bang_ngang}
-            contentContainerStyle={[styles.bang_ngang_content, { minWidth: rongBangToiThieu }]}
+            style={styles.sidebar_scroll}
+            contentContainerStyle={styles.sidebar_scroll_content}
+            showsVerticalScrollIndicator
             keyboardShouldPersistTaps="handled"
           >
-            <View style={[styles.bang, { width: rongBangToiThieu, minWidth: rongBangToiThieu }]}>
-              <View style={styles.dong_tieu_de_bang}>
-                <Text style={[styles.cot, styles.cot_stt]}>STT</Text>
-                <Text style={[styles.cot, styles.cot_loai]}>Loại</Text>
-                <Text style={[styles.cot, styles.cot_ma]}>Mã NC</Text>
-                <Text style={[styles.cot, styles.cot_ten]}>Tên NC</Text>
-                <Text style={[styles.cot, styles.cot_ma_cd]}>Mã chỉ định</Text>
-                <Text style={[styles.cot, styles.cot_ten_nhom]}>Tên chỉ định</Text>
-                <Text style={[styles.cot, styles.cot_ma_cd]}>Mã TH</Text>
-                <Text style={[styles.cot, styles.cot_ten_nhom]}>Tên TH</Text>
-                <Text style={[styles.cot, styles.cot_hl]}>Hiệu lực</Text>
-                <Text style={[styles.cot, styles.cot_tt]}>TT</Text>
-                <Text style={[styles.cot, styles.cot_tac]}>Thao tác</Text>
-              </View>
-              <ScrollView nestedScrollEnabled style={styles.cuon_doc_bang} keyboardShouldPersistTaps="handled">
-                {hangLoc.map((r, i) => (
-                  <View key={r.id} style={[styles.dong_du_lieu, i % 2 === 1 && styles.dong_le]}>
-                    <Text style={[styles.cot, styles.cot_stt]}>{i + 1}</Text>
-                    <Text style={[styles.cot, styles.cot_loai]}>{r.mapping_type}</Text>
-                    <Text style={[styles.cot, styles.cot_ma]}>{r.source_code}</Text>
-                    <Text style={[styles.cot, styles.cot_ten]}>{tenNguon(r) || '—'}</Text>
-                    <Text style={[styles.cot, styles.cot_ma_cd]}>{maDichChiDinh(r) || '—'}</Text>
-                    <Text style={[styles.cot, styles.cot_ten_nhom]}>{tenDichChiDinh(r) || '—'}</Text>
-                    <Text style={[styles.cot, styles.cot_ma_cd]}>{maDichThucHien(r) || '—'}</Text>
-                    <Text style={[styles.cot, styles.cot_ten_nhom]}>{tenDichThucHien(r) || '—'}</Text>
-                    <Text style={[styles.cot, styles.cot_hl]}>
-                      {(r.effective_from || '…') + ' → ' + (r.effective_to || '∞')}
+            <Text style={styles.chu_sidebar_tieu_de}>Thêm mapping</Text>
+            {MAPPING_TYPE_CONFIG.map((c) => {
+              const n = demSoDongTheoLoai[c.mapping_type] ?? 0;
+              return (
+                <TouchableOpacity
+                  key={c.mapping_type}
+                  style={[styles.muc_loai_mapping, dangTaiModal && styles.nut_loai_mapping_tac]}
+                  onPress={() => moThemMapping(c.mapping_type)}
+                  disabled={dangTaiModal}
+                  activeOpacity={0.88}
+                >
+                  <View style={styles.hang_ma_va_dem}>
+                    <Text style={styles.chu_ma_loai_mapping} numberOfLines={1}>
+                      + {c.mapping_type}
                     </Text>
-                    <Text style={[styles.cot, styles.cot_tt]}>
-                      {r.is_active === false ? 'OFF' : mappingCoHieuLucTaiNgay(r) ? 'ON' : 'HẾT HL'}
-                    </Text>
-                    <View style={[styles.cot, styles.cot_tac, styles.cot_tac_flex]}>
-                      {layCauHinhLoaiMapping(r.mapping_type)?.require_approval && r.approval_status === 'PENDING' ? (
-                        <TouchableOpacity style={styles.nut_mini} onPress={() => duyet(r)}>
-                          <Text style={styles.chu_mini}>Duyệt</Text>
-                        </TouchableOpacity>
-                      ) : null}
-                      <TouchableOpacity style={styles.nut_mini} onPress={() => moSuaMapping(r)}>
-                        <Text style={styles.chu_mini}>Sửa</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.nut_mini_xoa} onPress={() => xoaVinhVien(r)}>
-                        <Text style={styles.chu_mini}>Xóa</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.nut_mini_do} onPress={() => voHieuHoa(r)}>
-                        <Text style={styles.chu_mini}>Vô hiệu</Text>
-                      </TouchableOpacity>
-                    </View>
+                    <Text style={styles.chu_dem_loai}>{n}</Text>
                   </View>
-                ))}
-                {hangLoc.length === 0 ? (
-                  <Text style={styles.trong}>Chưa có bản ghi. Thêm từ header hoặc chỉnh bộ lọc.</Text>
-                ) : null}
-              </ScrollView>
-            </View>
+                  <Text style={styles.chu_ten_loai_mapping} numberOfLines={2}>
+                    {c.display_name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+
+            <View style={styles.gach_sidebar} />
+            <Text style={[styles.chu_sidebar_tieu_de, styles.chu_sidebar_section]}>Lọc bảng</Text>
+            {LAY_MAPPING_TYPE_OPTIONS.map((opt) => {
+              const dem = demChoMucLoc(opt.value);
+              const chon = locLoai === opt.value;
+              return (
+                <TouchableOpacity
+                  key={opt.value || 'all'}
+                  style={[styles.muc_list_loc, chon && styles.muc_list_loc_chon]}
+                  onPress={() => setLocLoai(opt.value)}
+                  activeOpacity={0.88}
+                >
+                  <View style={styles.hang_ma_va_dem}>
+                    <Text
+                      style={[styles.chu_list_loc, chon && styles.chu_list_loc_chon]}
+                      numberOfLines={4}
+                    >
+                      {opt.label}
+                    </Text>
+                    <Text style={[styles.chu_dem_loai, chon && styles.chu_dem_loai_chon]}>{dem}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+
+            <View style={styles.gach_sidebar} />
+            <Text style={[styles.chu_sidebar_tieu_de, styles.chu_sidebar_section]}>Trạng thái</Text>
+            {BO_LOC_TRANG_THAI.map((opt) => {
+              const chon = locTrangThai === opt.value;
+              return (
+                <TouchableOpacity
+                  key={opt.value}
+                  style={[styles.muc_list_loc, chon && styles.muc_list_loc_chon]}
+                  onPress={() => setLocTrangThai(opt.value)}
+                  activeOpacity={0.88}
+                >
+                  <Text style={[styles.chu_list_loc, chon && styles.chu_list_loc_chon]} numberOfLines={2}>
+                    {opt.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
-        )}
+
+          <View style={styles.sidebar_footer}>
+            <Text style={styles.chu_sidebar_tieu_de}>Firebase</Text>
+            <TouchableOpacity
+              style={[styles.nut_cloud_sidebar, (dangDongBoFirebase || dangTaiFirebase) && styles.nut_tac]}
+              onPress={handleDoiSoatFirebaseMapping}
+              disabled={dangDongBoFirebase || dangTaiFirebase}
+            >
+              <Text style={styles.chu_nut_cloud_sidebar}>Đối soát</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.nut_cloud_sidebar, styles.nut_cloud_sidebar_xanh, (dangDongBoFirebase || dangTaiFirebase) && styles.nut_tac]}
+              onPress={handleDongBoMappingLenFirebase}
+              disabled={dangDongBoFirebase || dangTaiFirebase}
+            >
+              {dangDongBoFirebase ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <Text style={[styles.chu_nut_cloud_sidebar, styles.chu_nut_cloud_sang]}>Đẩy lên</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.nut_cloud_sidebar, styles.nut_cloud_sidebar_cam, (dangDongBoFirebase || dangTaiFirebase) && styles.nut_tac]}
+              onPress={handleTaiMappingTuFirebase}
+              disabled={dangDongBoFirebase || dangTaiFirebase}
+            >
+              {dangTaiFirebase ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <Text style={[styles.chu_nut_cloud_sidebar, styles.chu_nut_cloud_sang]}>Tải về</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.khoi_noi_dung_phai}>
+          <Text style={styles.moTa} numberOfLines={2}>
+            <Text style={styles.inDam}>catalog_mapping</Text> (M:N). <Text style={styles.inDam}>Lọc loại / trạng thái</Text> và{' '}
+            <Text style={styles.inDam}>Firebase</Text> ở cột trái; thêm dòng từ mục «Thêm mapping».
+          </Text>
+
+          <View style={styles.khoi_loc}>
+            <Text style={styles.nhan_loc_nho}>Lọc nhanh (bảng)</Text>
+            <View style={styles.hai_o_nho}>
+              <View style={styles.o_loc_co_nhan}>
+                <Text style={styles.nhan_loc_nho}>Hiệu lực tại ngày</Text>
+                <OChonNgayISO
+                  style={styles.o_ngay_nho}
+                  value={locNgay}
+                  onChangeValue={setLocNgay}
+                  placeholder="Trống = hôm nay"
+                />
+              </View>
+              <View style={[styles.o_loc_co_nhan, { flex: 1, minWidth: 140 }]}>
+                <Text style={styles.nhan_loc_nho}>Tìm nhanh</Text>
+                <TextInput
+                  style={styles.o_ngay_nho}
+                  value={tuKhoa}
+                  onChangeText={setTuKhoa}
+                  placeholder="Mã, loại…"
+                  placeholderTextColor={CD.text.placeholder}
+                />
+              </View>
+            </View>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            style={styles.hang_hanh_dong_cuon}
+            contentContainerStyle={styles.hang_hanh_dong_cuon_content}
+          >
+            <TouchableOpacity style={styles.nut_phu2} onPress={xuatExcel}>
+              <Text style={styles.chu_nut_phu}>📥 XUẤT EXCEL</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nut_phu2} onPress={() => void inPdfDanhSachMapping()}>
+              <Text style={styles.chu_nut_phu}>🖨 IN / PDF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nut_phu2} onPress={nap}>
+              <Text style={styles.chu_nut_phu}>↻ TẢI LẠI</Text>
+            </TouchableOpacity>
+          </ScrollView>
+
+          <View style={styles.vung_bang_outer}>
+            {!taiXong ? (
+              <Text style={styles.dang_tai}>Đang tải…</Text>
+            ) : (
+              <ScrollView
+                horizontal
+                nestedScrollEnabled
+                style={styles.bang_ngang}
+                contentContainerStyle={[styles.bang_ngang_content, { minWidth: rongBangToiThieu }]}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={[styles.bang, { width: rongBangToiThieu, minWidth: rongBangToiThieu }]}>
+                  <View style={styles.dong_tieu_de_bang}>
+                    <Text style={[styles.cot, styles.cot_stt]}>STT</Text>
+                    <Text style={[styles.cot, styles.cot_loai]}>Loại</Text>
+                    <Text style={[styles.cot, styles.cot_ma]}>Mã NC</Text>
+                    <Text style={[styles.cot, styles.cot_ten]}>Tên NC</Text>
+                    <Text style={[styles.cot, styles.cot_ma_cd]}>Mã chỉ định</Text>
+                    <Text style={[styles.cot, styles.cot_ten_nhom]}>Tên chỉ định</Text>
+                    <Text style={[styles.cot, styles.cot_ma_cd]}>Mã TH</Text>
+                    <Text style={[styles.cot, styles.cot_ten_nhom]}>Tên TH</Text>
+                    <Text style={[styles.cot, styles.cot_hl]}>Hiệu lực</Text>
+                    <Text style={[styles.cot, styles.cot_tt]}>TT</Text>
+                    <Text style={[styles.cot, styles.cot_tac]}>Thao tác</Text>
+                  </View>
+                  <ScrollView nestedScrollEnabled style={styles.cuon_doc_bang} keyboardShouldPersistTaps="handled">
+                    {hangLoc.map((r, i) => (
+                      <View key={r.id} style={[styles.dong_du_lieu, i % 2 === 1 && styles.dong_le]}>
+                        <Text style={[styles.cot, styles.cot_stt]}>{i + 1}</Text>
+                        <Text style={[styles.cot, styles.cot_loai]}>{r.mapping_type}</Text>
+                        <Text style={[styles.cot, styles.cot_ma]}>{r.source_code}</Text>
+                        <Text style={[styles.cot, styles.cot_ten]}>{tenNguon(r) || '—'}</Text>
+                        <Text style={[styles.cot, styles.cot_ma_cd]}>{maDichChiDinh(r) || '—'}</Text>
+                        <Text style={[styles.cot, styles.cot_ten_nhom]}>{tenDichChiDinh(r) || '—'}</Text>
+                        <Text style={[styles.cot, styles.cot_ma_cd]}>{maDichThucHien(r) || '—'}</Text>
+                        <Text style={[styles.cot, styles.cot_ten_nhom]}>{tenDichThucHien(r) || '—'}</Text>
+                        <Text style={[styles.cot, styles.cot_hl]}>
+                          {(r.effective_from || '…') + ' → ' + (r.effective_to || '∞')}
+                        </Text>
+                        <Text style={[styles.cot, styles.cot_tt]}>
+                          {r.is_active === false ? 'OFF' : mappingCoHieuLucTaiNgay(r) ? 'ON' : 'HẾT HL'}
+                        </Text>
+                        <View style={[styles.cot, styles.cot_tac, styles.cot_tac_flex]}>
+                          {layCauHinhLoaiMapping(r.mapping_type)?.require_approval && r.approval_status === 'PENDING' ? (
+                            <TouchableOpacity style={styles.nut_mini} onPress={() => duyet(r)}>
+                              <Text style={styles.chu_mini}>Duyệt</Text>
+                            </TouchableOpacity>
+                          ) : null}
+                          <TouchableOpacity style={styles.nut_mini} onPress={() => moSuaMapping(r)}>
+                            <Text style={styles.chu_mini}>Sửa</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.nut_mini_xoa} onPress={() => xoaVinhVien(r)}>
+                            <Text style={styles.chu_mini}>Xóa</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.nut_mini_do} onPress={() => voHieuHoa(r)}>
+                            <Text style={styles.chu_mini}>Vô hiệu</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+                    {hangLoc.length === 0 ? (
+                      <Text style={styles.trong}>Chưa có bản ghi. Thêm từ cột trái hoặc chỉnh «Lọc bảng» / «Trạng thái».</Text>
+                    ) : null}
+                  </ScrollView>
+                </View>
+              </ScrollView>
+            )}
+          </View>
+        </View>
       </View>
 
       <ModalCatalogMapping
@@ -597,42 +790,168 @@ const styles = StyleSheet.create({
     backgroundColor: CD.bg.gradient_mobile,
     ...Platform.select({ web: { backgroundImage: CD.web.gradient_bg } }),
   },
-  khoi_header_gop: {
-    flexShrink: 0,
-    backgroundColor: CD.brand.mauDam,
-    borderBottomWidth: 1,
-    borderBottomColor: CD.border.header,
-    ...Platform.select({ web: { backgroundImage: CD.web.gradient_header, backdropFilter: CD.web.blur_header, boxShadow: CD.web.shadow_header } }),
-  },
   thanh_tieu_de: {
+    flexShrink: 0,
     paddingHorizontal: 12,
     paddingVertical: 10,
     paddingTop: 32,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: CD.brand.mauDam,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.header,
+    ...Platform.select({ web: { backgroundImage: CD.web.gradient_header, backdropFilter: CD.web.blur_header, boxShadow: CD.web.shadow_header } }),
   },
-  hang_the_header: { maxHeight: 52, flexGrow: 0 },
-  hang_the_header_content: {
+  khung_chinh_mapping: {
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'stretch',
-    paddingHorizontal: 8,
-    paddingBottom: 8,
-    gap: 6,
+    minHeight: 0,
+    minWidth: 0,
   },
-  the_loai_header: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+  sidebar_trai: {
+    alignSelf: 'stretch',
+    flexDirection: 'column',
+    minHeight: 0,
+    paddingTop: 8,
+    paddingHorizontal: 8,
+    paddingBottom: 4,
+    borderRightWidth: 1,
+    borderRightColor: CD.border.glass_md,
+    backgroundColor: 'rgba(0,0,0,0.24)',
+    ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  chu_sidebar_tieu_de: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: CD.text.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingHorizontal: 6,
+    paddingBottom: 6,
+    fontFamily: CD.font.family,
+  },
+  chu_sidebar_section: {
+    marginTop: 4,
+    paddingTop: 4,
+  },
+  gach_sidebar: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: CD.border.glass_md,
+    marginVertical: 10,
+    marginHorizontal: 4,
+  },
+  sidebar_scroll: { flex: 1, minHeight: 0 },
+  sidebar_scroll_content: { paddingBottom: 16 },
+  muc_list_loc: {
+    paddingVertical: 7,
+    paddingHorizontal: 8,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.35)',
-    minWidth: 112,
-    maxWidth: 200,
+    borderColor: CD.border.glass,
+    backgroundColor: CD.bg.glass_input,
+    marginBottom: 4,
     ...Platform.select({ web: { cursor: 'pointer' } }),
   },
-  chu_the_loai_ma: { color: '#FFF', fontWeight: '800', fontSize: 11, fontFamily: CD.font.family },
-  chu_the_loai_ten: { color: 'rgba(255,255,255,0.9)', fontSize: 10, marginTop: 2, fontFamily: CD.font.family },
+  muc_list_loc_chon: {
+    backgroundColor: '#D81B60',
+    borderColor: '#AD1457',
+  },
+  chu_list_loc: {
+    flex: 1,
+    fontSize: 10,
+    lineHeight: 14,
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+  },
+  chu_list_loc_chon: {
+    color: '#FFF',
+    fontWeight: '700',
+  },
+  chu_dem_loai_chon: {
+    color: '#FFF',
+    backgroundColor: 'rgba(255,255,255,0.22)',
+  },
+  sidebar_footer: {
+    flexShrink: 0,
+    paddingTop: 6,
+    paddingBottom: 4,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: CD.border.glass_md,
+    gap: 5,
+  },
+  nut_cloud_sidebar: {
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: CD.border.glass,
+    backgroundColor: CD.bg.glass_card,
+    alignItems: 'center',
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  nut_cloud_sidebar_xanh: {
+    backgroundColor: '#1565C0',
+    borderColor: '#0D47A1',
+  },
+  nut_cloud_sidebar_cam: {
+    backgroundColor: '#E65100',
+    borderColor: '#BF360C',
+  },
+  chu_nut_cloud_sidebar: {
+    color: CD.text.primary,
+    fontWeight: '800',
+    fontSize: 11,
+    fontFamily: CD.font.family,
+  },
+  chu_nut_cloud_sang: { color: '#FFF' },
+  nut_tac: { opacity: 0.55 },
+  muc_loai_mapping: {
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: CD.border.glass,
+    backgroundColor: CD.bg.glass_card,
+    marginBottom: 4,
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  hang_ma_va_dem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 4 },
+  chu_ma_loai_mapping: {
+    flex: 1,
+    color: CD.text.primary,
+    fontWeight: '800',
+    fontSize: 10,
+    fontFamily: CD.font.family,
+  },
+  chu_dem_loai: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: CD.text.muted,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 4,
+    overflow: 'hidden',
+    fontFamily: CD.font.family,
+  },
+  chu_ten_loai_mapping: {
+    marginTop: 2,
+    fontSize: 10,
+    lineHeight: 13,
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+  },
+  khoi_noi_dung_phai: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 0,
+    flexDirection: 'column',
+    paddingHorizontal: 10,
+    paddingTop: 8,
+    paddingBottom: 6,
+    ...Platform.select({ web: { paddingLeft: 12, paddingRight: 14 } }),
+  },
   nut_quay_lai: {
     padding: 10,
     backgroundColor: CD.bg.glass_input,
@@ -650,41 +969,39 @@ const styles = StyleSheet.create({
   chu_nut_header: { color: CD.text.primary, fontWeight: 'bold', fontSize: 16, fontFamily: CD.font.family },
   chu_tieu_de: { flex: 1, textAlign: 'center', fontSize: 17, color: CD.text.primary, fontWeight: 'bold', fontFamily: CD.font.family },
   moTa: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 11,
+    lineHeight: 15,
     color: CD.text.secondary,
-    marginHorizontal: 12,
-    marginTop: 8,
     marginBottom: 6,
     fontFamily: CD.font.family,
+    flexShrink: 0,
   },
   inDam: { fontWeight: '800', color: CD.text.primary },
   khoi_loc: {
     flexShrink: 0,
     backgroundColor: CD.bg.glass_card,
-    borderRadius: 0,
-    borderWidth: 0,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: CD.border.glass,
-  },
-  nhan_loc_nho: { fontSize: 11, color: CD.text.muted, marginBottom: 4, fontFamily: CD.font.family, textTransform: 'uppercase', letterSpacing: 0.3 },
-  hang_sub_tab: { marginBottom: 6, maxHeight: 40 },
-  chip_sub: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: CD.border.glass,
-    marginRight: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
+  },
+  nhan_loc_nho: { fontSize: 11, color: CD.text.muted, marginBottom: 4, fontFamily: CD.font.family, textTransform: 'uppercase', letterSpacing: 0.3 },
+  hang_sub_tab: { marginBottom: 4, maxHeight: 34 },
+  chip_sub: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: CD.border.glass,
+    marginRight: 5,
     backgroundColor: CD.bg.glass_input,
-    maxHeight: 34,
+    maxHeight: 30,
     justifyContent: 'center',
   },
   chip_sub_chon: { backgroundColor: '#D81B60', borderColor: '#AD1457' },
-  chu_chip_sub: { fontSize: 11, color: CD.text.secondary, fontFamily: CD.font.family },
+  chu_chip_sub: { fontSize: 10, color: CD.text.secondary, fontFamily: CD.font.family },
   chu_chip_sub_chon: { color: '#FFF', fontWeight: '700' },
   hang_loc_phu: { marginBottom: 6 },
   hang_loc_row: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 0 },
@@ -700,19 +1017,24 @@ const styles = StyleSheet.create({
     borderColor: CD.border.input,
     borderRadius: 8,
     color: CD.text.primary,
-    fontSize: 14,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    fontSize: 13,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     fontFamily: CD.font.family,
   },
   nut_loai_mapping_tac: { opacity: 0.55 },
-  hang_hanh_dong: {
+  hang_hanh_dong_cuon: {
+    flexGrow: 0,
     flexShrink: 0,
+    maxHeight: 46,
+    marginBottom: 6,
+  },
+  hang_hanh_dong_cuon_content: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    paddingRight: 8,
   },
   nut_chinh: {
     backgroundColor: '#D81B60',
@@ -726,13 +1048,13 @@ const styles = StyleSheet.create({
     backgroundColor: CD.bg.glass_input,
     borderWidth: 1,
     borderColor: CD.border.glass_md,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 11,
+    borderRadius: 10,
   },
-  chu_nut_phu: { color: CD.text.primary, fontWeight: '700', fontSize: 15, fontFamily: CD.font.family },
+  chu_nut_phu: { color: CD.text.primary, fontWeight: '700', fontSize: 12, fontFamily: CD.font.family },
   dang_tai: { color: CD.text.muted, fontSize: 16, fontFamily: CD.font.family, padding: 16 },
-  vung_bang_outer: { flex: 1, minHeight: 0, paddingHorizontal: 8, paddingBottom: 8 },
+  vung_bang_outer: { flex: 1, minHeight: 0, minWidth: 0, paddingHorizontal: 0, paddingBottom: 4 },
   bang_ngang: { flex: 1, minHeight: 0, width: '100%' },
   bang_ngang_content: { flexGrow: 1, paddingBottom: 4 },
   bang: {

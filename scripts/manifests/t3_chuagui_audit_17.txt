@@ -1,0 +1,18 @@
+# 17 hồ sơ T3_chuagui — đường dẫn tương đối gốc repo (npm run qa:audit-t3-chuagui-17)
+tai_nguyen/T3_chuagui/PC022100450_OP26004633.xml
+tai_nguyen/T3_chuagui/PC022102305_OP26004898.xml
+tai_nguyen/T3_chuagui/PC022102824_OP26004560.xml
+tai_nguyen/T3_chuagui/PC022103228_OP26004577.xml
+tai_nguyen/T3_chuagui/PC022103314_OP26004671.xml
+tai_nguyen/T3_chuagui/PC022103342_OP26004648.xml
+tai_nguyen/T3_chuagui/PC022103445_OP26005003.xml
+tai_nguyen/T3_chuagui/PC022103671_OP26004494.xml
+tai_nguyen/T3_chuagui/PC022104579_OP26004277.xml
+tai_nguyen/T3_chuagui/PC022104787_OP26004647.xml
+tai_nguyen/T3_chuagui/PC022104821_OP26004844.xml
+tai_nguyen/T3_chuagui/PC022105183_OP26004761.xml
+tai_nguyen/T3_chuagui/PC022108255_OP26004894.xml
+tai_nguyen/T3_chuagui/PC022108263_OP26005021.xml
+tai_nguyen/T3_chuagui/PC022108418_OP26004889.xml
+tai_nguyen/T3_chuagui/PC022108424_OP26004709.xml
+tai_nguyen/T3_chuagui/PC022108667_OP26005001.xml

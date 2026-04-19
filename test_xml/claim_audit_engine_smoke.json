@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-04-18T02:34:51.093Z",
+    "generated_at": "2026-04-19T13:59:09.179Z",
     "claim_path": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\ip\\PC022601307_IP26000073.xml",
     "ma_lk": "000368",
     "total_warnings": 83,
@@ -9,6 +9,13 @@
       "Critical": 4,
       "Error": 50,
       "Warning": 29
+    },
+    "by_tang_V15": {
+      "L0": 61,
+      "L1": 7,
+      "L23": 2,
+      "L4": 1,
+      "L5": 12
     },
     "by_namespace": {
       "DVKT_NO_CODE": 12,
@@ -95,7 +102,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML1",
@@ -108,7 +116,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML1",
@@ -121,7 +130,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML1",
@@ -134,7 +144,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -147,7 +158,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -160,7 +172,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -173,7 +186,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -186,7 +200,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -199,7 +214,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -212,7 +228,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -225,7 +242,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -238,7 +256,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -251,7 +270,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML3",
@@ -264,7 +284,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "XML3_KHAC",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết"
+      "luong_giai_trinh": "XML3 -> rule chưa phân loại chi tiết",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -277,7 +298,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -290,7 +312,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -303,7 +326,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -316,7 +340,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -329,7 +354,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -342,7 +368,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -355,7 +382,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -368,7 +396,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -381,7 +410,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -394,7 +424,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -407,7 +438,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -420,7 +452,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -433,7 +466,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -446,7 +480,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -459,7 +494,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -472,7 +508,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -485,7 +522,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -498,7 +536,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -511,7 +550,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -524,7 +564,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -537,7 +578,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -550,7 +592,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -563,7 +606,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -576,7 +620,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -589,7 +634,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -602,7 +648,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -615,7 +662,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -628,7 +676,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -641,7 +690,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -654,7 +704,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -667,7 +718,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -680,7 +732,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -693,7 +746,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -706,7 +760,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -719,7 +774,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -732,7 +788,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -745,7 +802,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -758,7 +816,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -771,7 +830,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -784,7 +844,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "id": "Chuyen_de_268",
@@ -800,7 +861,8 @@
       "namespace_quy_tac": "GIAM_DINH_CHUYEN_DE",
       "nguon_quy_tac": "luat_giam_dinh_chuyen_de_hardcoded",
       "luong_giai_trinh": "XML3 -> hardcoded giám định chuyên đề",
-      "tab_quan_tri_goi_y": "LUAT_GIAM_DINH_CHUYEN_DE"
+      "tab_quan_tri_goi_y": "LUAT_GIAM_DINH_CHUYEN_DE",
+      "tang_V15": "L4"
     },
     {
       "phan_he": "XML3",
@@ -815,7 +877,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -830,7 +893,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -845,7 +909,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -860,7 +925,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -875,7 +941,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -890,7 +957,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -905,7 +973,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -920,7 +989,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -935,7 +1005,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -950,7 +1021,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -965,7 +1037,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "phan_he": "XML3",
@@ -980,7 +1053,8 @@
       "namespace_quy_tac": "DVKT_NO_CODE",
       "nguon_quy_tac": "rule_engine_dvkt_no_code",
       "luong_giai_trinh": "XML3 -> DVKT no-code -> operator",
-      "tab_quan_tri_goi_y": "LUAT_CDHA"
+      "tab_quan_tri_goi_y": "LUAT_CDHA",
+      "tang_V15": "L5"
     },
     {
       "id": "HC_171",
@@ -996,7 +1070,8 @@
       "namespace_quy_tac": "HANH_CHINH_HARDCODED",
       "nguon_quy_tac": "luat_hanh_chinh_hardcoded",
       "luong_giai_trinh": "XML1 -> hardcoded hành chính",
-      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH",
+      "tang_V15": "L1"
     },
     {
       "id": "HC_65",
@@ -1012,7 +1087,8 @@
       "namespace_quy_tac": "HANH_CHINH_HARDCODED",
       "nguon_quy_tac": "luat_hanh_chinh_hardcoded",
       "luong_giai_trinh": "XML1 -> hardcoded hành chính",
-      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH",
+      "tang_V15": "L1"
     },
     {
       "id": "HC_76",
@@ -1028,7 +1104,8 @@
       "namespace_quy_tac": "HANH_CHINH_HARDCODED",
       "nguon_quy_tac": "luat_hanh_chinh_hardcoded",
       "luong_giai_trinh": "XML1 -> hardcoded hành chính",
-      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH"
+      "tab_quan_tri_goi_y": "LUAT_HANH_CHINH",
+      "tang_V15": "L1"
     },
     {
       "id": "XML_36",
@@ -1044,7 +1121,8 @@
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
       "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
-      "tab_quan_tri_goi_y": ""
+      "tab_quan_tri_goi_y": "",
+      "tang_V15": "L1"
     },
     {
       "id": "XML_37",
@@ -1060,7 +1138,8 @@
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
       "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
-      "tab_quan_tri_goi_y": ""
+      "tab_quan_tri_goi_y": "",
+      "tang_V15": "L1"
     },
     {
       "phan_he": "XML1",
@@ -1073,7 +1152,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L1"
     },
     {
       "phan_he": "XML1",
@@ -1086,7 +1166,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L1"
     },
     {
       "phan_he": "XML10",
@@ -1099,7 +1180,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML11",
@@ -1112,7 +1194,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML12",
@@ -1125,7 +1208,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML13",
@@ -1138,7 +1222,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML14",
@@ -1151,7 +1236,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML15",
@@ -1164,7 +1250,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     },
     {
       "phan_he": "XML4",
@@ -1177,7 +1264,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L23"
     },
     {
       "phan_he": "XML4",
@@ -1190,7 +1278,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L23"
     },
     {
       "phan_he": "XML9",
@@ -1203,7 +1292,8 @@
       "dieu_kien": "STATIC",
       "namespace_quy_tac": "QUY_TAC_NOI_BO",
       "nguon_quy_tac": "dong_co_giam_dinh",
-      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML"
+      "luong_giai_trinh": "Suy ra từ MA_LUAT / phân hệ XML",
+      "tang_V15": "L0"
     }
   ]
 }

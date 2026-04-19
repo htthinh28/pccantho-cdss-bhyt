@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_THUOC (9).xlsx */
-export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-12_muc8_thuoc_thuoc482_clopi';
+export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-19_muc8_thuoc98_icd_m10_m14';
 export const COT_SEED_LUAT_THUOC_MUC8 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","GHI_CHU","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
   {
@@ -977,9 +977,9 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "THUOC_98",
     "TEN_QUY_TAC": "[Celecoxib] Kiểm tra Chỉ định ICD-10",
-    "DIEU_KIEN": "XML2.MA_THUOC == '40.28' AND XML1.MA_BENH_CHINH NOT IN ('M15', 'M05', 'M06', 'M45', 'M25.5') AND XML1.MA_BENH_KT NOT LIKE '%M15%' AND XML1.MA_BENH_KT NOT LIKE '%M05%' AND XML1.MA_BENH_KT NOT LIKE '%M06%' AND XML1.MA_BENH_KT NOT LIKE '%M45%' AND XML1.MA_BENH_KT NOT LIKE '%M25.5%' AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|VIÊM KHỚP DẠNG THẤP|VIÊM CỘT SỐNG DÍNH|VIÊM CỘT SỐNG DÍ|ĐAU KHỚP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: Thuốc Celosti 200 chỉ được thanh toán cho chẩn đoán Thoái hóa khớp, Viêm khớp dạng thấp, Viêm cột sống dính khớp, Đau khớp (M15, M05, M06, M45, M25.5).",
-    "GHI_CHU": "SỬA 21/03/2026: Bổ sung M25.5 (Đau khớp) - phát hiện từ rà soát HĐ BN HUỲNH THỊ PHƯƠNG (401925)",
+    "DIEU_KIEN": "XML2.MA_THUOC == '40.28' AND NOT ((XML1.MA_BENH_CHINH REGEXP '^(M10|M10\\.0|M10\\.1|M10\\.2|M10\\.3|M10\\.4|M10\\.9|M14\\.0|M14\\.00|M14\\.01|M14\\.02|M14\\.03|M14\\.04|M14\\.05|M14\\.06|M14\\.07|M14\\.08|M14\\.09)$') OR (XML1.MA_BENH_KT REGEXP '(^|;|,)(M10|M10\\.0|M10\\.1|M10\\.2|M10\\.3|M10\\.4|M10\\.9|M14\\.0|M14\\.00|M14\\.01|M14\\.02|M14\\.03|M14\\.04|M14\\.05|M14\\.06|M14\\.07|M14\\.08|M14\\.09)(;|,|$)')) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|VIÊM KHỚP DẠNG THẤP|VIÊM CỘT SỐNG DÍNH|VIÊM CỘT SỐNG DÍ|ĐAU KHỚP|GÚT|GOUT|BỆNH GÚT)'",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: Celecoxib (40.28 / Celosti 200) chỉ được thanh toán khi có chỉ định ICD-10: M10, M10.0–M10.4, M10.9, M14.0, M14.00–M14.09 (gút / biến chứng gút) — hoặc chẩn đoán văn bản tương ứng trên hồ sơ.",
+    "GHI_CHU": "2026-04-19: Đổi tập mã ICD chỉ định theo danh sách M10|M14.0*; giữ hỗ trợ CHAN_DOAN_RV (thoái hóa khớp, viêm khớp, gút…).",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
   {

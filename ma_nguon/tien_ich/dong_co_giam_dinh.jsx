@@ -135,20 +135,44 @@ const SUBSTR = (val, start, length) => {
  * 1,2,5 → 100%; 3 → 95%; 4 → 80%.
  * Ngoại lệ mức 3 và 4: 100% phạm vi khi (i) một lần KCB < 15% LCS; (ii) gợi ý KCB tuyến xã/trạm (MA_KHOA);
  * (iii) MA_KHUVUC K1/K2/K3 + khám ngoại trú (thường gắn KCB tại tuyến y tế cơ sở).
+ *
+ * Công văn 38/BYT-BH (06/01/2026) + điểm a khoản 1 Điều 2 Nghị quyết 261/2025/QH15: BHXH chuyển mã quyền lợi
+ * trên thẻ — CN (hộ cận nghèo) từ 3→2; LH (≥75 tuổi, trợ cấp hưu trí xã hội) từ 4→2 kể từ 01/01/2026.
+ * Hồ sơ XML có thể còn ký tự thứ 3 in cũ; `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` quy đổi khi suy tỷ lệ T_BHTT.
  */
 const DONG_LUONG_CO_SO_BHYT_MM = 2340000;
 const NGUONG_MOT_LAN_KCB_15_PHAN_TRAM_LCS = 0.15 * DONG_LUONG_CO_SO_BHYT_MM;
 
 const KY_HIEU_SO_THU_BA_THE_BHYT = (xml1) => String(SUBSTR(xml1?.MA_THE_BHYT, 3, 1) || '').trim();
 
+/** YYYYMMDD từ NGAY_VAO / NGAY_RA / NGAY_TTOAN — so sánh chuỗi với mốc pháp lý. */
+const mocNgayYyyyMmDdChoThe = (xml1) => {
+    const s = String(xml1?.NGAY_VAO || xml1?.NGAY_RA || xml1?.NGAY_TTOAN || '').replace(/\D/g, '');
+    return s.length >= 8 ? s.slice(0, 8) : '';
+};
+
+/**
+ * Ký tự thứ 3 dùng suy tỷ lệ T_BHTT / T_TONGCHI_BH (sau quy đổi CV 38/BYT-BH + NQ 261/2025/QH15).
+ * Giữ `KY_HIEU_SO_THU_BA_THE_BHYT` cho đúng ký tự in trên chuỗi MA_THE_BHYT (HC-01c, cảnh báo lệch prefix).
+ */
+const KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT = (xml1) => {
+    const raw = KY_HIEU_SO_THU_BA_THE_BHYT(xml1);
+    const moc = mocNgayYyyyMmDdChoThe(xml1);
+    if (!moc || moc < '20260101') return raw;
+    const ma = UPPER(String(xml1?.MA_THE_BHYT || '').trim());
+    if (ma.startsWith('CN') && raw === '3') return '2';
+    if (ma.startsWith('LH') && raw === '4') return '2';
+    return raw;
+};
+
 /** Hai ký tự đầu (loại đối tượng) theo bảng kèm ký hiệu số thứ 3 — để phát hiện lệch khai báo (thẻ hỏng/sai số). */
 const BANG_HAI_KY_TU_THEO_KY_HIEU_SO3 = Object.freeze({
     '1': new Set(['CC', 'TE']),
-    '2': new Set(['CK', 'CB', 'KC', 'HN', 'DT', 'DK', 'XD', 'BT', 'TS', 'AK', 'CT']),
+    '2': new Set(['CK', 'CB', 'KC', 'HN', 'DT', 'DK', 'XD', 'BT', 'TS', 'AK', 'CT', 'CN', 'LH']),
     '3': new Set(['HT', 'TC', 'CN', 'PV', 'TG', 'DS', 'HK']),
     '4': new Set([
         'DN', 'HX', 'CH', 'NN', 'TK', 'HC', 'XK', 'TB', 'NO', 'XB', 'TN', 'CS', 'XN', 'MS', 'HD', 'TQ', 'TA', 'TY',
-        'HG', 'LS', 'HS', 'SV', 'GB', 'GD', 'ND', 'TH', 'TV', 'TD', 'TU', 'BA',
+        'HG', 'LS', 'LH', 'HS', 'SV', 'GB', 'GD', 'ND', 'TH', 'TV', 'TD', 'TU', 'BA',
     ]),
     '5': new Set(['QN', 'CA', 'CY']),
 });
@@ -165,7 +189,7 @@ const THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU = (xml1) => {
 };
 
 const TY_LE_KCB_BHYT_THEO_SO3 = (xml1) => {
-    const d = KY_HIEU_SO_THU_BA_THE_BHYT(xml1);
+    const d = KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT(xml1);
     if (d === '1' || d === '2' || d === '5') return 1;
     if (d === '3') return 0.95;
     if (d === '4') return 0.8;
@@ -221,7 +245,7 @@ const VI_PHAM_TYLE_T_BHTT_TONGCHI_BH = (xml1) => {
     if (tt <= 0) return false;
     const tb = TO_NUMBER(xml1?.T_BHTT);
     const expected = tt * ty;
-    const d = KY_HIEU_SO_THU_BA_THE_BHYT(xml1);
+    const d = KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT(xml1);
     const tol = 1;
     if (d === '1' || d === '2' || d === '5') {
         return tb + tol < expected;
@@ -567,6 +591,75 @@ const boSungCoSoPhapLyMacDinh = (danhSach = []) => (Array.isArray(danhSach) ? da
     return { ...loi, co_so_phap_ly: coSoMacDinh };
 });
 
+/**
+ * Tầng pipeline V15 (đồng bộ chayGiamDinhToanDienV15): L0 ngoại lệ/cấu trúc, L1 HC, L23 danh mục BV+BYT,
+ * L4 lâm sàng / chuyên đề / PTTT / CDHA / tương tác, L5 no-code DVKT, L5b CDSS mapping nâng cấp.
+ * Giá trị gộp L2+L3 thành L23 để tránh map nặng; đủ cho lọc báo cáo/hồi quy.
+ */
+export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => {
+    const maLuat = String(loi?.ma_luat || loi?._maLuat || '').trim().toUpperCase();
+    const ns = String(namespaceQuyTacDaSuyRa || loi?.namespace_quy_tac || '').trim();
+    const phanHe = String(loi?.phan_he || '').trim().toUpperCase();
+    const nguonGd = String(loi?.nguon_giam_dinh || '').trim().toUpperCase();
+
+    if (/^FPG-/.test(maLuat)) return 'L0';
+    if (/^STRUCT/.test(maLuat)) return 'L0';
+    if (/^XML\d+-(REQ|MISSING)/.test(maLuat)) return 'L0';
+
+    if (/^HC-|^HC_/.test(maLuat)) return 'L1';
+
+    if (/^DVKT-OP-/.test(maLuat)) return 'L5';
+    if (/^CDSS_DM_UPGRADE/.test(maLuat)) return 'L5b';
+    if (nguonGd === 'PYTHON_SERVICE') return 'L5';
+
+    if (/^ICD-TT06-/.test(maLuat)) return 'L23';
+
+    if (/^(DM-THUOC-|DMBV-THUOC-|DM-DVKT-|DMBV-DVKT-|DM-VTYT-|DMBV-VTYT-|DM-KHOA-)/.test(maLuat)) {
+        return 'L23';
+    }
+
+    if (
+        /^CLN-/.test(maLuat)
+        || /^THUOC_/.test(maLuat)
+        || /^CDHA_/.test(maLuat)
+        || /^CHUYEN_DE/.test(maLuat)
+        || /^NS_/.test(maLuat)
+        || /^DVKT_/.test(maLuat)
+        || /^TUONGTAC_/.test(maLuat)
+    ) {
+        return 'L4';
+    }
+
+    const nsMap = {
+        DVKT_NO_CODE: 'L5',
+        HANH_CHINH_BUILTIN: 'L1',
+        HANH_CHINH_HARDCODED: 'L1',
+        THUOC_DANH_MUC_BUILTIN: 'L23',
+        THUOC_HARDCODED: 'L4',
+        NHAN_SU_HARDCODED: 'L4',
+        PTTT_BUILTIN: 'L4',
+        PTTT_SEED: 'L4',
+        CDHA_BUILTIN: 'L4',
+        CDHA_HARDCODED: 'L4',
+        XDC_BUILTIN: 'L4',
+        ICD10_TT06_BUILTIN: 'L23',
+        DVKT_DANH_MUC: 'L23',
+        GIAM_DINH_CHUYEN_DE: 'L4',
+        PYTHON_SERVICE: 'L5',
+        XML3_KHAC: 'L4',
+    };
+    if (ns && nsMap[ns]) return nsMap[ns];
+
+    if (ns === 'QUY_TAC_NOI_BO') {
+        if (phanHe === 'XML5') return 'L4';
+        if (phanHe === 'XML1') return 'L1';
+        if (/^XML[234]/.test(phanHe)) return 'L23';
+        return 'L23';
+    }
+
+    return 'L23';
+};
+
 export const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
     const maLuat = String(loi?.ma_luat || loi?._maLuat || '').trim().toUpperCase();
     const phanHe = String(loi?.phan_he || '').trim().toUpperCase();
@@ -627,11 +720,14 @@ export const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
         nguonQuyTac = 'dong_co_giam_dinh';
     }
 
+    const tangV15 = suyRaTangV15TuCanhBao(loi, namespaceQuyTac);
+
     return {
         namespace_quy_tac: namespaceQuyTac,
         nguon_quy_tac: nguonQuyTac,
         luong_giai_trinh: luongGiaiTrinh,
         tab_quan_tri_goi_y: tabQuanTriGoiY,
+        tang_V15: tangV15,
     };
 };
 
@@ -643,6 +739,7 @@ const boSungNamespaceVaGiaiTrinhQuyTac = (danhSach = []) => (Array.isArray(danhS
         ...(meta.nguon_quy_tac ? { nguon_quy_tac: meta.nguon_quy_tac } : {}),
         ...(meta.luong_giai_trinh ? { luong_giai_trinh: meta.luong_giai_trinh } : {}),
         ...(meta.tab_quan_tri_goi_y ? { tab_quan_tri_goi_y: meta.tab_quan_tri_goi_y } : {}),
+        tang_V15: meta.tang_V15,
     };
 });
 
@@ -2065,10 +2162,10 @@ const taoBoQuyTacDoiTuongKcb = (rows = []) => {
     };
 };
 
-const layThongTinMucHuongTuThe = (maTheBHYT) => {
-    const normalized = normalizeMaTheBHYT(maTheBHYT);
+const layThongTinMucHuongTuThe = (xml1) => {
+    const normalized = normalizeMaTheBHYT(xml1?.MA_THE_BHYT);
     const validFormat = MA_THE_BHYT_REGEX.test(normalized);
-    const code = validFormat ? normalized.substring(2, 3) : '';
+    const code = validFormat ? KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT({ ...xml1, MA_THE_BHYT: normalized }) : '';
     return {
         normalized,
         validFormat,
@@ -2429,7 +2526,7 @@ const giamDinhQuyenLoiTheoDoiTuongVaThe = (hoSo, dm) => {
         .map((row) => Math.max(0, TO_NUMBER(row?.MUC_HUONG)))
         .filter((value) => value > 0);
     const coPhatSinhThanhToanBHYT = TO_NUMBER(xml1.T_BHTT) > 0 || TO_NUMBER(xml1.T_BNCCT) > 0 || chiTietHuong.length > 0;
-    const thongTinThe = layThongTinMucHuongTuThe(xml1.MA_THE_BHYT);
+    const thongTinThe = layThongTinMucHuongTuThe(xml1);
 
     if (rule.zeroCoverage && coPhatSinhThanhToanBHYT) {
         addLỗi(
@@ -2716,7 +2813,7 @@ const giamDinhHanhChinh = (hoSo, dm) => {
     } else if (!MA_THE_BHYT_REGEX.test(normalizeMaTheBHYT(x.MA_THE_BHYT))) {
         addLỗi('HC-01b', 'Định dạng thẻ BHYT', `Mã thẻ [${x.MA_THE_BHYT}] không đúng định dạng (2 chữ + 13 số).`, 'Error', 'MA_THE_BHYT');
     } else {
-        const thongTinThe = layThongTinMucHuongTuThe(x.MA_THE_BHYT);
+        const thongTinThe = layThongTinMucHuongTuThe(x);
         if (thongTinThe.benefitCode && thongTinThe.benefitPercent === null) {
             addLỗi('HC-01c', 'Mã mức hưởng trên thẻ BHYT', `Ký tự mức hưởng trên thẻ BHYT [${thongTinThe.benefitCode}] chưa nằm trong nhóm mã hưởng chuẩn 1-5.`, 'Warning', 'MA_THE_BHYT');
         }
@@ -3874,6 +3971,7 @@ const SYS_KEYWORDS_RULE_DONG = Object.freeze([
     'IS_EMPTY', 'STARTS_WITH', 'SUBSTR', 'TO_NUMBER', 'DIFF_DAYS', 'DIFF_HOURS', 'DIFF_MINUTES', 'DIFF_MONTHS', 'DIFF_YEARS', 'YEAR', 'LEN', 'COUNT_IF', 'COUNT', 'ALL', 'EXISTS', 'COUNT_DISTINCT', 'SUM_IF',
     'KY_VONG_SO_NGAY_DTRI_VBHN17',
     'KY_HIEU_SO_THU_BA_THE_BHYT',
+    'KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT',
     'TY_LE_KCB_BHYT_THEO_SO3',
     'TY_LE_KCB_BHYT_SAU_NGOAI_LE',
     'THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU',
@@ -4818,6 +4916,7 @@ const taoHamDieuKienLuatDong = (jsQuery = '') => {
                 COUNT_IF, COUNT, ALL, EXISTS, COUNT_DISTINCT, SUM_IF,
                 IS_EMPTY, STARTS_WITH, SUBSTR, TO_NUMBER, KY_VONG_SO_NGAY_DTRI_VBHN17,
         KY_HIEU_SO_THU_BA_THE_BHYT,
+        KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT,
         TY_LE_KCB_BHYT_THEO_SO3,
         TY_LE_KCB_BHYT_SAU_NGOAI_LE,
         THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU,
@@ -4975,6 +5074,7 @@ const taoNguCanhRuleDong = (hoSo, batchContext = null) => {
         TO_NUMBER,
         KY_VONG_SO_NGAY_DTRI_VBHN17,
         KY_HIEU_SO_THU_BA_THE_BHYT,
+        KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT,
         TY_LE_KCB_BHYT_THEO_SO3,
         TY_LE_KCB_BHYT_SAU_NGOAI_LE,
         THE_SO3_KHONG_KHOP_HAI_KY_TU_DAU,

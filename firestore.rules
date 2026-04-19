@@ -87,6 +87,22 @@ service cloud.firestore {
           && request.resource.data.chunk_data is string;
         allow delete: if canWriteOrg(orgId);
       }
+
+      /** Khóa phiên đồng bộ cấu hình (transaction client); TTL trong lock_expires_at_ms */
+      match /system_config/{docId} {
+        allow read: if canReadOrg(orgId);
+        allow create, update: if canWriteOrg(orgId);
+        allow delete: if canAdminOrg(orgId);
+      }
+
+      /** Nhật ký đồng bộ — chỉ thêm (append-only), không cho client sửa/xóa nhật ký */
+      match /audit_config_sync/{docId} {
+        allow read: if canReadOrg(orgId);
+        allow create: if canWriteOrg(orgId)
+          && request.resource.data.action is string
+          && request.resource.data.actor_uid is string;
+        allow update, delete: if false;
+      }
     }
 
     match /{document=**} {

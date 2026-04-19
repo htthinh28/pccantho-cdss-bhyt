@@ -1,13 +1,13 @@
 {
-  "version": "2026-04-13",
+  "version": "2026-04-19",
   "source_file": "ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx",
   "on_off_reference": "ma_nguon/tien_ich/quy_tac_on_off_noi_bo.jsx (DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF)",
   "totals": {
-    "rules": 603,
+    "rules": 581,
     "placeholder_count": 0,
-    "xml130_condition_count": 603,
-    "seed_on_among_xml130": 593,
-    "seed_off_among_xml130": 10
+    "xml130_condition_count": 581,
+    "seed_on_among_xml130": 572,
+    "seed_off_among_xml130": 9
   },
   "policy_note": "xml130_condition = DIEU_KIEN không phải CHUYEN_DE_XML130_CHO_XU_LY_SAU. Engine chỉ bỏ qua placeholder; quy tắc mặc định OFF nội bộ vẫn cần bật trong Quản lý ON/OFF để chạy thật.",
   "lists": {
@@ -16,101 +16,57 @@
       "CHUYEN_DE-001",
       "CHUYEN_DE-002",
       "CHUYEN_DE-003",
-      "CHUYEN_DE-004",
       "CHUYEN_DE-005",
-      "CHUYEN_DE-006",
-      "CHUYEN_DE-007",
-      "CHUYEN_DE-008",
-      "CHUYEN_DE-009",
-      "CHUYEN_DE-010",
       "CHUYEN_DE-011",
       "CHUYEN_DE-012",
-      "CHUYEN_DE-013",
       "CHUYEN_DE-014",
       "CHUYEN_DE-015",
       "CHUYEN_DE-016",
-      "CHUYEN_DE-017",
-      "CHUYEN_DE-018",
-      "CHUYEN_DE-019",
       "CHUYEN_DE-020",
-      "CHUYEN_DE-021",
       "CHUYEN_DE-022",
       "CHUYEN_DE-023",
       "CHUYEN_DE-024",
       "CHUYEN_DE-025",
       "CHUYEN_DE-026",
-      "CHUYEN_DE-027",
-      "CHUYEN_DE-028",
-      "CHUYEN_DE-029",
-      "CHUYEN_DE-030",
       "CHUYEN_DE-031",
-      "CHUYEN_DE-032",
-      "CHUYEN_DE-033",
       "CHUYEN_DE-034",
       "CHUYEN_DE-035",
-      "CHUYEN_DE-036",
-      "CHUYEN_DE-037",
       "CHUYEN_DE-038",
       "CHUYEN_DE-039",
       "CHUYEN_DE-040",
       "CHUYEN_DE-041",
       "CHUYEN_DE-042",
-      "CHUYEN_DE-043",
-      "CHUYEN_DE-044",
-      "CHUYEN_DE-045",
-      "CHUYEN_DE-046",
       "CHUYEN_DE-047",
-      "CHUYEN_DE-048",
-      "CHUYEN_DE-049",
-      "CHUYEN_DE-050",
-      "CHUYEN_DE-051",
       "CHUYEN_DE-052",
       "CHUYEN_DE-053",
       "CHUYEN_DE-054",
       "CHUYEN_DE-055",
       "CHUYEN_DE-056",
-      "CHUYEN_DE-057",
-      "CHUYEN_DE-058",
       "CHUYEN_DE-059",
       "CHUYEN_DE-060",
-      "CHUYEN_DE-061",
       "CHUYEN_DE-062",
       "CHUYEN_DE-063",
       "CHUYEN_DE-064",
-      "CHUYEN_DE-065",
       "CHUYEN_DE-066",
-      "CHUYEN_DE-067",
-      "CHUYEN_DE-068",
       "CHUYEN_DE-069",
       "CHUYEN_DE-070",
       "CHUYEN_DE-071",
-      "CHUYEN_DE-072",
-      "CHUYEN_DE-073",
       "CHUYEN_DE-074",
       "CHUYEN_DE-075",
       "CHUYEN_DE-076",
       "CHUYEN_DE-077",
       "CHUYEN_DE-078",
       "CHUYEN_DE-079",
-      "CHUYEN_DE-080",
       "CHUYEN_DE-081",
       "CHUYEN_DE-082",
       "CHUYEN_DE-083",
       "CHUYEN_DE-084",
-      "CHUYEN_DE-085",
       "CHUYEN_DE-086",
       "CHUYEN_DE-087",
       "CHUYEN_DE-088",
-      "CHUYEN_DE-089",
       "CHUYEN_DE-090",
-      "CHUYEN_DE-091",
-      "CHUYEN_DE-092",
       "CHUYEN_DE-093",
       "CHUYEN_DE-094",
-      "CHUYEN_DE-095",
-      "CHUYEN_DE-096",
-      "CHUYEN_DE-097",
-      "CHUYEN_DE-098",
       "CHUYEN_DE-099",
       "CHUYEN_DE-100",
       "CHUYEN_DE-101",
@@ -120,30 +76,25 @@
       "CHUYEN_DE-105",
       "CHUYEN_DE-106",
       "CHUYEN_DE-107",
-      "CHUYEN_DE-108",
       "CHUYEN_DE-109",
       "CHUYEN_DE-110",
       "CHUYEN_DE-111",
-      "CHUYEN_DE-112",
       "CHUYEN_DE-113",
       "CHUYEN_DE-114",
       "CHUYEN_DE-115",
       "CHUYEN_DE-116",
       "CHUYEN_DE-117",
       "CHUYEN_DE-118",
-      "CHUYEN_DE-119",
       "CHUYEN_DE-120",
       "CHUYEN_DE-121",
       "CHUYEN_DE-122",
       "CHUYEN_DE-123",
-      "CHUYEN_DE-124",
       "CHUYEN_DE-125",
       "CHUYEN_DE-126",
       "CHUYEN_DE-127",
       "CHUYEN_DE-128",
       "CHUYEN_DE-129",
       "CHUYEN_DE-130",
-      "CHUYEN_DE-131",
       "CHUYEN_DE-132",
       "CHUYEN_DE-133",
       "CHUYEN_DE-134",
@@ -152,7 +103,6 @@
       "CHUYEN_DE-137",
       "CHUYEN_DE-138",
       "CHUYEN_DE-139",
-      "CHUYEN_DE-140",
       "CHUYEN_DE-141",
       "CHUYEN_DE-142",
       "CHUYEN_DE-143",
@@ -172,7 +122,6 @@
       "CHUYEN_DE-157",
       "CHUYEN_DE-158",
       "CHUYEN_DE-159",
-      "CHUYEN_DE-160",
       "CHUYEN_DE-161",
       "CHUYEN_DE-162",
       "CHUYEN_DE-163",
@@ -193,10 +142,8 @@
       "CHUYEN_DE-178",
       "CHUYEN_DE-179",
       "CHUYEN_DE-180",
-      "CHUYEN_DE-181",
       "CHUYEN_DE-182",
       "CHUYEN_DE-183",
-      "CHUYEN_DE-184",
       "CHUYEN_DE-185",
       "CHUYEN_DE-186",
       "CHUYEN_DE-187",
@@ -211,14 +158,12 @@
       "CHUYEN_DE-196",
       "CHUYEN_DE-197",
       "CHUYEN_DE-198",
-      "CHUYEN_DE-199",
       "CHUYEN_DE-200",
       "CHUYEN_DE-201",
       "CHUYEN_DE-202",
       "CHUYEN_DE-203",
       "CHUYEN_DE-204",
       "CHUYEN_DE-205",
-      "CHUYEN_DE-206",
       "CHUYEN_DE-207",
       "CHUYEN_DE-208",
       "CHUYEN_DE-209",
@@ -239,7 +184,6 @@
       "CHUYEN_DE-224",
       "CHUYEN_DE-225",
       "CHUYEN_DE-226",
-      "CHUYEN_DE-227",
       "CHUYEN_DE-228",
       "CHUYEN_DE-229",
       "CHUYEN_DE-230",
@@ -260,8 +204,6 @@
       "CHUYEN_DE-245",
       "CHUYEN_DE-246",
       "CHUYEN_DE-247",
-      "CHUYEN_DE-248",
-      "CHUYEN_DE-249",
       "CHUYEN_DE-250",
       "CHUYEN_DE-251",
       "CHUYEN_DE-252",
@@ -283,13 +225,11 @@
       "CHUYEN_DE-268",
       "CHUYEN_DE-269",
       "CHUYEN_DE-270",
-      "CHUYEN_DE-271",
       "CHUYEN_DE-272",
       "CHUYEN_DE-273",
       "CHUYEN_DE-274",
       "CHUYEN_DE-275",
       "CHUYEN_DE-276",
-      "CHUYEN_DE-277",
       "CHUYEN_DE-278",
       "CHUYEN_DE-279",
       "CHUYEN_DE-280",
@@ -308,14 +248,12 @@
       "CHUYEN_DE-293",
       "CHUYEN_DE-294",
       "CHUYEN_DE-295",
-      "CHUYEN_DE-296",
       "CHUYEN_DE-297",
       "CHUYEN_DE-298",
       "CHUYEN_DE-299",
       "CHUYEN_DE-300",
       "CHUYEN_DE-301",
       "CHUYEN_DE-302",
-      "CHUYEN_DE-303",
       "CHUYEN_DE-304",
       "CHUYEN_DE-305",
       "CHUYEN_DE-306",
@@ -342,7 +280,6 @@
       "CHUYEN_DE-327",
       "CHUYEN_DE-328",
       "CHUYEN_DE-329",
-      "CHUYEN_DE-330",
       "CHUYEN_DE-331",
       "CHUYEN_DE-332",
       "CHUYEN_DE-333",
@@ -371,12 +308,9 @@
       "CHUYEN_DE-356",
       "CHUYEN_DE-357",
       "CHUYEN_DE-358",
-      "CHUYEN_DE-359",
       "CHUYEN_DE-360",
       "CHUYEN_DE-361",
       "CHUYEN_DE-362",
-      "CHUYEN_DE-363",
-      "CHUYEN_DE-364",
       "CHUYEN_DE-365",
       "CHUYEN_DE-366",
       "CHUYEN_DE-367",
@@ -393,7 +327,6 @@
       "CHUYEN_DE-378",
       "CHUYEN_DE-379",
       "CHUYEN_DE-380",
-      "CHUYEN_DE-381",
       "CHUYEN_DE-382",
       "CHUYEN_DE-383",
       "CHUYEN_DE-384",
@@ -402,7 +335,6 @@
       "CHUYEN_DE-387",
       "CHUYEN_DE-388",
       "CHUYEN_DE-389",
-      "CHUYEN_DE-390",
       "CHUYEN_DE-391",
       "CHUYEN_DE-392",
       "CHUYEN_DE-393",
@@ -463,7 +395,6 @@
       "CHUYEN_DE-448",
       "CHUYEN_DE-449",
       "CHUYEN_DE-450",
-      "CHUYEN_DE-451",
       "CHUYEN_DE-452",
       "CHUYEN_DE-453",
       "CHUYEN_DE-454",
@@ -474,7 +405,6 @@
       "CHUYEN_DE-459",
       "CHUYEN_DE-460",
       "CHUYEN_DE-461",
-      "CHUYEN_DE-462",
       "CHUYEN_DE-463",
       "CHUYEN_DE-464",
       "CHUYEN_DE-465",
@@ -615,104 +545,109 @@
       "CHUYEN_DE-600",
       "CHUYEN_DE-601",
       "CHUYEN_DE-602",
-      "CHUYEN_DE-603"
+      "CHUYEN_DE-603",
+      "CHUYEN_DE-604",
+      "CHUYEN_DE-605",
+      "CHUYEN_DE-606",
+      "CHUYEN_DE-607",
+      "CHUYEN_DE-608",
+      "CHUYEN_DE-609",
+      "CHUYEN_DE-610",
+      "CHUYEN_DE-611",
+      "CHUYEN_DE-612",
+      "CHUYEN_DE-613",
+      "CHUYEN_DE-614",
+      "CHUYEN_DE-615",
+      "CHUYEN_DE-616",
+      "CHUYEN_DE-617",
+      "CHUYEN_DE-618",
+      "CHUYEN_DE-619",
+      "CHUYEN_DE-620",
+      "CHUYEN_DE-621",
+      "CHUYEN_DE-622",
+      "CHUYEN_DE-623",
+      "CHUYEN_DE-624",
+      "CHUYEN_DE-625",
+      "CHUYEN_DE-626",
+      "CHUYEN_DE-627",
+      "CHUYEN_DE-628",
+      "CHUYEN_DE-629",
+      "CHUYEN_DE-630",
+      "CHUYEN_DE-631",
+      "CHUYEN_DE-632",
+      "CHUYEN_DE-633",
+      "CHUYEN_DE-634",
+      "CHUYEN_DE-635",
+      "CHUYEN_DE-636",
+      "CHUYEN_DE-637",
+      "CHUYEN_DE-638",
+      "CHUYEN_DE-639",
+      "CHUYEN_DE-640",
+      "CHUYEN_DE-641",
+      "CHUYEN_DE-642",
+      "CHUYEN_DE-643",
+      "CHUYEN_DE-645",
+      "CHUYEN_DE-646",
+      "CHUYEN_DE-647",
+      "CHUYEN_DE-648",
+      "CHUYEN_DE-649",
+      "CHUYEN_DE-650",
+      "CHUYEN_DE-651",
+      "CHUYEN_DE-652"
     ],
     "xml130_seed_on_rule_ids": [
       "CHUYEN_DE-001",
       "CHUYEN_DE-002",
       "CHUYEN_DE-003",
-      "CHUYEN_DE-004",
       "CHUYEN_DE-005",
-      "CHUYEN_DE-006",
-      "CHUYEN_DE-007",
-      "CHUYEN_DE-008",
-      "CHUYEN_DE-009",
-      "CHUYEN_DE-010",
       "CHUYEN_DE-011",
       "CHUYEN_DE-012",
-      "CHUYEN_DE-013",
       "CHUYEN_DE-014",
       "CHUYEN_DE-015",
       "CHUYEN_DE-016",
-      "CHUYEN_DE-017",
-      "CHUYEN_DE-018",
-      "CHUYEN_DE-019",
       "CHUYEN_DE-020",
-      "CHUYEN_DE-021",
       "CHUYEN_DE-022",
       "CHUYEN_DE-023",
       "CHUYEN_DE-025",
       "CHUYEN_DE-026",
-      "CHUYEN_DE-027",
-      "CHUYEN_DE-028",
-      "CHUYEN_DE-029",
-      "CHUYEN_DE-030",
       "CHUYEN_DE-031",
-      "CHUYEN_DE-032",
-      "CHUYEN_DE-033",
       "CHUYEN_DE-034",
       "CHUYEN_DE-035",
-      "CHUYEN_DE-036",
-      "CHUYEN_DE-037",
       "CHUYEN_DE-038",
       "CHUYEN_DE-039",
       "CHUYEN_DE-040",
       "CHUYEN_DE-041",
       "CHUYEN_DE-042",
-      "CHUYEN_DE-043",
-      "CHUYEN_DE-044",
-      "CHUYEN_DE-045",
-      "CHUYEN_DE-046",
       "CHUYEN_DE-047",
-      "CHUYEN_DE-048",
-      "CHUYEN_DE-049",
-      "CHUYEN_DE-050",
-      "CHUYEN_DE-051",
       "CHUYEN_DE-052",
       "CHUYEN_DE-053",
       "CHUYEN_DE-054",
       "CHUYEN_DE-055",
       "CHUYEN_DE-056",
-      "CHUYEN_DE-057",
-      "CHUYEN_DE-058",
       "CHUYEN_DE-059",
       "CHUYEN_DE-060",
-      "CHUYEN_DE-061",
       "CHUYEN_DE-062",
       "CHUYEN_DE-063",
       "CHUYEN_DE-064",
-      "CHUYEN_DE-065",
       "CHUYEN_DE-066",
-      "CHUYEN_DE-067",
-      "CHUYEN_DE-068",
       "CHUYEN_DE-069",
       "CHUYEN_DE-070",
       "CHUYEN_DE-071",
-      "CHUYEN_DE-072",
-      "CHUYEN_DE-073",
       "CHUYEN_DE-074",
       "CHUYEN_DE-075",
       "CHUYEN_DE-076",
       "CHUYEN_DE-077",
       "CHUYEN_DE-078",
       "CHUYEN_DE-079",
-      "CHUYEN_DE-080",
       "CHUYEN_DE-081",
       "CHUYEN_DE-083",
       "CHUYEN_DE-084",
-      "CHUYEN_DE-085",
       "CHUYEN_DE-086",
       "CHUYEN_DE-087",
       "CHUYEN_DE-088",
-      "CHUYEN_DE-089",
       "CHUYEN_DE-090",
-      "CHUYEN_DE-091",
-      "CHUYEN_DE-092",
       "CHUYEN_DE-093",
       "CHUYEN_DE-094",
-      "CHUYEN_DE-096",
-      "CHUYEN_DE-097",
-      "CHUYEN_DE-098",
       "CHUYEN_DE-099",
       "CHUYEN_DE-100",
       "CHUYEN_DE-101",
@@ -722,30 +657,25 @@
       "CHUYEN_DE-105",
       "CHUYEN_DE-106",
       "CHUYEN_DE-107",
-      "CHUYEN_DE-108",
       "CHUYEN_DE-109",
       "CHUYEN_DE-110",
       "CHUYEN_DE-111",
-      "CHUYEN_DE-112",
       "CHUYEN_DE-113",
       "CHUYEN_DE-114",
       "CHUYEN_DE-115",
       "CHUYEN_DE-116",
       "CHUYEN_DE-117",
       "CHUYEN_DE-118",
-      "CHUYEN_DE-119",
       "CHUYEN_DE-120",
       "CHUYEN_DE-121",
       "CHUYEN_DE-122",
       "CHUYEN_DE-123",
-      "CHUYEN_DE-124",
       "CHUYEN_DE-125",
       "CHUYEN_DE-126",
       "CHUYEN_DE-127",
       "CHUYEN_DE-128",
       "CHUYEN_DE-129",
       "CHUYEN_DE-130",
-      "CHUYEN_DE-131",
       "CHUYEN_DE-132",
       "CHUYEN_DE-133",
       "CHUYEN_DE-134",
@@ -754,7 +684,6 @@
       "CHUYEN_DE-137",
       "CHUYEN_DE-138",
       "CHUYEN_DE-139",
-      "CHUYEN_DE-140",
       "CHUYEN_DE-141",
       "CHUYEN_DE-142",
       "CHUYEN_DE-143",
@@ -774,7 +703,6 @@
       "CHUYEN_DE-157",
       "CHUYEN_DE-158",
       "CHUYEN_DE-159",
-      "CHUYEN_DE-160",
       "CHUYEN_DE-161",
       "CHUYEN_DE-162",
       "CHUYEN_DE-163",
@@ -795,10 +723,8 @@
       "CHUYEN_DE-178",
       "CHUYEN_DE-179",
       "CHUYEN_DE-180",
-      "CHUYEN_DE-181",
       "CHUYEN_DE-182",
       "CHUYEN_DE-183",
-      "CHUYEN_DE-184",
       "CHUYEN_DE-185",
       "CHUYEN_DE-186",
       "CHUYEN_DE-187",
@@ -813,14 +739,12 @@
       "CHUYEN_DE-196",
       "CHUYEN_DE-197",
       "CHUYEN_DE-198",
-      "CHUYEN_DE-199",
       "CHUYEN_DE-200",
       "CHUYEN_DE-201",
       "CHUYEN_DE-202",
       "CHUYEN_DE-203",
       "CHUYEN_DE-204",
       "CHUYEN_DE-205",
-      "CHUYEN_DE-206",
       "CHUYEN_DE-207",
       "CHUYEN_DE-208",
       "CHUYEN_DE-209",
@@ -841,7 +765,6 @@
       "CHUYEN_DE-224",
       "CHUYEN_DE-225",
       "CHUYEN_DE-226",
-      "CHUYEN_DE-227",
       "CHUYEN_DE-228",
       "CHUYEN_DE-229",
       "CHUYEN_DE-230",
@@ -862,8 +785,6 @@
       "CHUYEN_DE-245",
       "CHUYEN_DE-246",
       "CHUYEN_DE-247",
-      "CHUYEN_DE-248",
-      "CHUYEN_DE-249",
       "CHUYEN_DE-250",
       "CHUYEN_DE-251",
       "CHUYEN_DE-252",
@@ -885,12 +806,10 @@
       "CHUYEN_DE-268",
       "CHUYEN_DE-269",
       "CHUYEN_DE-270",
-      "CHUYEN_DE-271",
       "CHUYEN_DE-273",
       "CHUYEN_DE-274",
       "CHUYEN_DE-275",
       "CHUYEN_DE-276",
-      "CHUYEN_DE-277",
       "CHUYEN_DE-278",
       "CHUYEN_DE-279",
       "CHUYEN_DE-280",
@@ -908,14 +827,12 @@
       "CHUYEN_DE-293",
       "CHUYEN_DE-294",
       "CHUYEN_DE-295",
-      "CHUYEN_DE-296",
       "CHUYEN_DE-297",
       "CHUYEN_DE-298",
       "CHUYEN_DE-299",
       "CHUYEN_DE-300",
       "CHUYEN_DE-301",
       "CHUYEN_DE-302",
-      "CHUYEN_DE-303",
       "CHUYEN_DE-304",
       "CHUYEN_DE-305",
       "CHUYEN_DE-306",
@@ -940,7 +857,6 @@
       "CHUYEN_DE-327",
       "CHUYEN_DE-328",
       "CHUYEN_DE-329",
-      "CHUYEN_DE-330",
       "CHUYEN_DE-331",
       "CHUYEN_DE-332",
       "CHUYEN_DE-333",
@@ -969,12 +885,9 @@
       "CHUYEN_DE-356",
       "CHUYEN_DE-357",
       "CHUYEN_DE-358",
-      "CHUYEN_DE-359",
       "CHUYEN_DE-360",
       "CHUYEN_DE-361",
       "CHUYEN_DE-362",
-      "CHUYEN_DE-363",
-      "CHUYEN_DE-364",
       "CHUYEN_DE-365",
       "CHUYEN_DE-366",
       "CHUYEN_DE-367",
@@ -991,7 +904,6 @@
       "CHUYEN_DE-378",
       "CHUYEN_DE-379",
       "CHUYEN_DE-380",
-      "CHUYEN_DE-381",
       "CHUYEN_DE-382",
       "CHUYEN_DE-383",
       "CHUYEN_DE-384",
@@ -1000,7 +912,6 @@
       "CHUYEN_DE-387",
       "CHUYEN_DE-388",
       "CHUYEN_DE-389",
-      "CHUYEN_DE-390",
       "CHUYEN_DE-391",
       "CHUYEN_DE-392",
       "CHUYEN_DE-394",
@@ -1060,7 +971,6 @@
       "CHUYEN_DE-448",
       "CHUYEN_DE-449",
       "CHUYEN_DE-450",
-      "CHUYEN_DE-451",
       "CHUYEN_DE-452",
       "CHUYEN_DE-453",
       "CHUYEN_DE-454",
@@ -1071,7 +981,6 @@
       "CHUYEN_DE-459",
       "CHUYEN_DE-460",
       "CHUYEN_DE-461",
-      "CHUYEN_DE-462",
       "CHUYEN_DE-463",
       "CHUYEN_DE-464",
       "CHUYEN_DE-465",
@@ -1210,385 +1119,56 @@
       "CHUYEN_DE-600",
       "CHUYEN_DE-601",
       "CHUYEN_DE-602",
-      "CHUYEN_DE-603"
+      "CHUYEN_DE-603",
+      "CHUYEN_DE-604",
+      "CHUYEN_DE-605",
+      "CHUYEN_DE-606",
+      "CHUYEN_DE-607",
+      "CHUYEN_DE-608",
+      "CHUYEN_DE-609",
+      "CHUYEN_DE-610",
+      "CHUYEN_DE-611",
+      "CHUYEN_DE-612",
+      "CHUYEN_DE-613",
+      "CHUYEN_DE-614",
+      "CHUYEN_DE-615",
+      "CHUYEN_DE-616",
+      "CHUYEN_DE-617",
+      "CHUYEN_DE-618",
+      "CHUYEN_DE-619",
+      "CHUYEN_DE-620",
+      "CHUYEN_DE-621",
+      "CHUYEN_DE-622",
+      "CHUYEN_DE-623",
+      "CHUYEN_DE-624",
+      "CHUYEN_DE-625",
+      "CHUYEN_DE-626",
+      "CHUYEN_DE-627",
+      "CHUYEN_DE-628",
+      "CHUYEN_DE-629",
+      "CHUYEN_DE-630",
+      "CHUYEN_DE-631",
+      "CHUYEN_DE-632",
+      "CHUYEN_DE-633",
+      "CHUYEN_DE-634",
+      "CHUYEN_DE-635",
+      "CHUYEN_DE-636",
+      "CHUYEN_DE-637",
+      "CHUYEN_DE-638",
+      "CHUYEN_DE-639",
+      "CHUYEN_DE-640",
+      "CHUYEN_DE-641",
+      "CHUYEN_DE-642",
+      "CHUYEN_DE-643",
+      "CHUYEN_DE-645",
+      "CHUYEN_DE-646",
+      "CHUYEN_DE-647",
+      "CHUYEN_DE-648",
+      "CHUYEN_DE-649",
+      "CHUYEN_DE-650",
+      "CHUYEN_DE-651",
+      "CHUYEN_DE-652"
     ],
-    "xml130_seed_on_but_default_off_noi_bo": [
-      {
-        "id": "CHUYEN_DE-003",
-        "ma_normalized": "CHUYEN_DE_003"
-      },
-      {
-        "id": "CHUYEN_DE-009",
-        "ma_normalized": "CHUYEN_DE_009"
-      },
-      {
-        "id": "CHUYEN_DE-010",
-        "ma_normalized": "CHUYEN_DE_010"
-      },
-      {
-        "id": "CHUYEN_DE-011",
-        "ma_normalized": "CHUYEN_DE_011"
-      },
-      {
-        "id": "CHUYEN_DE-012",
-        "ma_normalized": "CHUYEN_DE_012"
-      },
-      {
-        "id": "CHUYEN_DE-014",
-        "ma_normalized": "CHUYEN_DE_014"
-      },
-      {
-        "id": "CHUYEN_DE-019",
-        "ma_normalized": "CHUYEN_DE_019"
-      },
-      {
-        "id": "CHUYEN_DE-020",
-        "ma_normalized": "CHUYEN_DE_020"
-      },
-      {
-        "id": "CHUYEN_DE-027",
-        "ma_normalized": "CHUYEN_DE_027"
-      },
-      {
-        "id": "CHUYEN_DE-029",
-        "ma_normalized": "CHUYEN_DE_029"
-      },
-      {
-        "id": "CHUYEN_DE-031",
-        "ma_normalized": "CHUYEN_DE_031"
-      },
-      {
-        "id": "CHUYEN_DE-037",
-        "ma_normalized": "CHUYEN_DE_037"
-      },
-      {
-        "id": "CHUYEN_DE-038",
-        "ma_normalized": "CHUYEN_DE_038"
-      },
-      {
-        "id": "CHUYEN_DE-039",
-        "ma_normalized": "CHUYEN_DE_039"
-      },
-      {
-        "id": "CHUYEN_DE-043",
-        "ma_normalized": "CHUYEN_DE_043"
-      },
-      {
-        "id": "CHUYEN_DE-044",
-        "ma_normalized": "CHUYEN_DE_044"
-      },
-      {
-        "id": "CHUYEN_DE-047",
-        "ma_normalized": "CHUYEN_DE_047"
-      },
-      {
-        "id": "CHUYEN_DE-055",
-        "ma_normalized": "CHUYEN_DE_055"
-      },
-      {
-        "id": "CHUYEN_DE-058",
-        "ma_normalized": "CHUYEN_DE_058"
-      },
-      {
-        "id": "CHUYEN_DE-068",
-        "ma_normalized": "CHUYEN_DE_068"
-      },
-      {
-        "id": "CHUYEN_DE-083",
-        "ma_normalized": "CHUYEN_DE_083"
-      },
-      {
-        "id": "CHUYEN_DE-091",
-        "ma_normalized": "CHUYEN_DE_091"
-      },
-      {
-        "id": "CHUYEN_DE-097",
-        "ma_normalized": "CHUYEN_DE_097"
-      },
-      {
-        "id": "CHUYEN_DE-112",
-        "ma_normalized": "CHUYEN_DE_112"
-      },
-      {
-        "id": "CHUYEN_DE-121",
-        "ma_normalized": "CHUYEN_DE_121"
-      },
-      {
-        "id": "CHUYEN_DE-124",
-        "ma_normalized": "CHUYEN_DE_124"
-      },
-      {
-        "id": "CHUYEN_DE-125",
-        "ma_normalized": "CHUYEN_DE_125"
-      },
-      {
-        "id": "CHUYEN_DE-138",
-        "ma_normalized": "CHUYEN_DE_138"
-      },
-      {
-        "id": "CHUYEN_DE-139",
-        "ma_normalized": "CHUYEN_DE_139"
-      },
-      {
-        "id": "CHUYEN_DE-151",
-        "ma_normalized": "CHUYEN_DE_151"
-      },
-      {
-        "id": "CHUYEN_DE-166",
-        "ma_normalized": "CHUYEN_DE_166"
-      },
-      {
-        "id": "CHUYEN_DE-169",
-        "ma_normalized": "CHUYEN_DE_169"
-      },
-      {
-        "id": "CHUYEN_DE-172",
-        "ma_normalized": "CHUYEN_DE_172"
-      },
-      {
-        "id": "CHUYEN_DE-175",
-        "ma_normalized": "CHUYEN_DE_175"
-      },
-      {
-        "id": "CHUYEN_DE-180",
-        "ma_normalized": "CHUYEN_DE_180"
-      },
-      {
-        "id": "CHUYEN_DE-182",
-        "ma_normalized": "CHUYEN_DE_182"
-      },
-      {
-        "id": "CHUYEN_DE-189",
-        "ma_normalized": "CHUYEN_DE_189"
-      },
-      {
-        "id": "CHUYEN_DE-191",
-        "ma_normalized": "CHUYEN_DE_191"
-      },
-      {
-        "id": "CHUYEN_DE-209",
-        "ma_normalized": "CHUYEN_DE_209"
-      },
-      {
-        "id": "CHUYEN_DE-211",
-        "ma_normalized": "CHUYEN_DE_211"
-      },
-      {
-        "id": "CHUYEN_DE-212",
-        "ma_normalized": "CHUYEN_DE_212"
-      },
-      {
-        "id": "CHUYEN_DE-215",
-        "ma_normalized": "CHUYEN_DE_215"
-      },
-      {
-        "id": "CHUYEN_DE-223",
-        "ma_normalized": "CHUYEN_DE_223"
-      },
-      {
-        "id": "CHUYEN_DE-244",
-        "ma_normalized": "CHUYEN_DE_244"
-      },
-      {
-        "id": "CHUYEN_DE-257",
-        "ma_normalized": "CHUYEN_DE_257"
-      },
-      {
-        "id": "CHUYEN_DE-258",
-        "ma_normalized": "CHUYEN_DE_258"
-      },
-      {
-        "id": "CHUYEN_DE-289",
-        "ma_normalized": "CHUYEN_DE_289"
-      },
-      {
-        "id": "CHUYEN_DE-294",
-        "ma_normalized": "CHUYEN_DE_294"
-      },
-      {
-        "id": "CHUYEN_DE-295",
-        "ma_normalized": "CHUYEN_DE_295"
-      },
-      {
-        "id": "CHUYEN_DE-298",
-        "ma_normalized": "CHUYEN_DE_298"
-      },
-      {
-        "id": "CHUYEN_DE-299",
-        "ma_normalized": "CHUYEN_DE_299"
-      },
-      {
-        "id": "CHUYEN_DE-306",
-        "ma_normalized": "CHUYEN_DE_306"
-      },
-      {
-        "id": "CHUYEN_DE-322",
-        "ma_normalized": "CHUYEN_DE_322"
-      },
-      {
-        "id": "CHUYEN_DE-342",
-        "ma_normalized": "CHUYEN_DE_342"
-      },
-      {
-        "id": "CHUYEN_DE-357",
-        "ma_normalized": "CHUYEN_DE_357"
-      },
-      {
-        "id": "CHUYEN_DE-364",
-        "ma_normalized": "CHUYEN_DE_364"
-      },
-      {
-        "id": "CHUYEN_DE-371",
-        "ma_normalized": "CHUYEN_DE_371"
-      },
-      {
-        "id": "CHUYEN_DE-374",
-        "ma_normalized": "CHUYEN_DE_374"
-      },
-      {
-        "id": "CHUYEN_DE-381",
-        "ma_normalized": "CHUYEN_DE_381"
-      },
-      {
-        "id": "CHUYEN_DE-385",
-        "ma_normalized": "CHUYEN_DE_385"
-      },
-      {
-        "id": "CHUYEN_DE-390",
-        "ma_normalized": "CHUYEN_DE_390"
-      },
-      {
-        "id": "CHUYEN_DE-408",
-        "ma_normalized": "CHUYEN_DE_408"
-      },
-      {
-        "id": "CHUYEN_DE-414",
-        "ma_normalized": "CHUYEN_DE_414"
-      },
-      {
-        "id": "CHUYEN_DE-416",
-        "ma_normalized": "CHUYEN_DE_416"
-      },
-      {
-        "id": "CHUYEN_DE-417",
-        "ma_normalized": "CHUYEN_DE_417"
-      },
-      {
-        "id": "CHUYEN_DE-434",
-        "ma_normalized": "CHUYEN_DE_434"
-      },
-      {
-        "id": "CHUYEN_DE-440",
-        "ma_normalized": "CHUYEN_DE_440"
-      },
-      {
-        "id": "CHUYEN_DE-457",
-        "ma_normalized": "CHUYEN_DE_457"
-      },
-      {
-        "id": "CHUYEN_DE-458",
-        "ma_normalized": "CHUYEN_DE_458"
-      },
-      {
-        "id": "CHUYEN_DE-472",
-        "ma_normalized": "CHUYEN_DE_472"
-      },
-      {
-        "id": "CHUYEN_DE-482",
-        "ma_normalized": "CHUYEN_DE_482"
-      },
-      {
-        "id": "CHUYEN_DE-491",
-        "ma_normalized": "CHUYEN_DE_491"
-      },
-      {
-        "id": "CHUYEN_DE-495",
-        "ma_normalized": "CHUYEN_DE_495"
-      },
-      {
-        "id": "CHUYEN_DE-496",
-        "ma_normalized": "CHUYEN_DE_496"
-      },
-      {
-        "id": "CHUYEN_DE-504",
-        "ma_normalized": "CHUYEN_DE_504"
-      },
-      {
-        "id": "CHUYEN_DE-507",
-        "ma_normalized": "CHUYEN_DE_507"
-      },
-      {
-        "id": "CHUYEN_DE-520",
-        "ma_normalized": "CHUYEN_DE_520"
-      },
-      {
-        "id": "CHUYEN_DE-522",
-        "ma_normalized": "CHUYEN_DE_522"
-      },
-      {
-        "id": "CHUYEN_DE-526",
-        "ma_normalized": "CHUYEN_DE_526"
-      },
-      {
-        "id": "CHUYEN_DE-528",
-        "ma_normalized": "CHUYEN_DE_528"
-      },
-      {
-        "id": "CHUYEN_DE-530",
-        "ma_normalized": "CHUYEN_DE_530"
-      },
-      {
-        "id": "CHUYEN_DE-534",
-        "ma_normalized": "CHUYEN_DE_534"
-      },
-      {
-        "id": "CHUYEN_DE-540",
-        "ma_normalized": "CHUYEN_DE_540"
-      },
-      {
-        "id": "CHUYEN_DE-543",
-        "ma_normalized": "CHUYEN_DE_543"
-      },
-      {
-        "id": "CHUYEN_DE-546",
-        "ma_normalized": "CHUYEN_DE_546"
-      },
-      {
-        "id": "CHUYEN_DE-551",
-        "ma_normalized": "CHUYEN_DE_551"
-      },
-      {
-        "id": "CHUYEN_DE-554",
-        "ma_normalized": "CHUYEN_DE_554"
-      },
-      {
-        "id": "CHUYEN_DE-561",
-        "ma_normalized": "CHUYEN_DE_561"
-      },
-      {
-        "id": "CHUYEN_DE-563",
-        "ma_normalized": "CHUYEN_DE_563"
-      },
-      {
-        "id": "CHUYEN_DE-566",
-        "ma_normalized": "CHUYEN_DE_566"
-      },
-      {
-        "id": "CHUYEN_DE-571",
-        "ma_normalized": "CHUYEN_DE_571"
-      },
-      {
-        "id": "CHUYEN_DE-580",
-        "ma_normalized": "CHUYEN_DE_580"
-      },
-      {
-        "id": "CHUYEN_DE-582",
-        "ma_normalized": "CHUYEN_DE_582"
-      },
-      {
-        "id": "CHUYEN_DE-591",
-        "ma_normalized": "CHUYEN_DE_591"
-      }
-    ]
+    "xml130_seed_on_but_default_off_noi_bo": []
   }
 }

@@ -131,6 +131,33 @@ export const taiBangChoLoaiMapping = async (mappingType) => {
   };
 };
 
+/**
+ * Mã có khớp một dòng danh mục đã chuẩn hóa (code + các cột mã trong raw, v.v.).
+ * Dùng cho quy tắc: có chỉ định / mapping thì mỗi mã phải có tương ứng trong DM — không có → mapping sai.
+ */
+export const maKhopVoiDongDanhMuc = (dong, ma, catalogRef) => {
+  const norm = (s) => String(s || '').trim();
+  const m = norm(ma);
+  if (!m || !dong) return false;
+  if (norm(dong.code) === m) return true;
+  if (catalogRef === 'dvkt_items' && norm(dong.maTuongDuong) === m) return true;
+  const meta = CATALOG_REF[catalogRef];
+  const raw = dong.raw && typeof dong.raw === 'object' ? dong.raw : {};
+  if (meta && Array.isArray(meta.codeFields)) {
+    for (const k of meta.codeFields) {
+      if (norm(raw[k]) === m) return true;
+    }
+  }
+  return false;
+};
+
+/** Các mã không tìm thấy trong danh sách đã nạp (rỗng nếu danhSach rỗng — tầng trên quyết định chặn lưu). */
+export const timMaKhongThuocDanhMuc = (danhSach, codes, catalogRef) => {
+  if (!Array.isArray(danhSach) || danhSach.length === 0) return [];
+  const uniq = [...new Set((codes || []).map((c) => chuanHoaMa(c)).filter(Boolean))];
+  return uniq.filter((c) => !danhSach.some((x) => maKhopVoiDongDanhMuc(x, c, catalogRef)));
+};
+
 export const timTenTheoMa = (danhSach, ma) => {
   const m = chuanHoaMa(ma);
   if (!m) return '';

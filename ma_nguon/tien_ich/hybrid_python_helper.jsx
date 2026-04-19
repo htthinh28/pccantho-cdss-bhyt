@@ -197,8 +197,6 @@ export const kichHoatKetNoiPythonSauKhoiDongUngDung = async (options = {}) => {
   }
   thoiDiemKetNoiPythonGanNhat = Date.now();
   return ketNoiPythonServiceLucKhoiDong({
-    maxAttempts: 4,
-    delaysMs: [0, 400, 1200, 2800],
     ...options,
   });
 };
@@ -216,10 +214,11 @@ export const dangKyTuDongKetNoiLaiPythonKhiMangHoacPhien = () => {
 
   const thuLai = async () => {
     if (!coTheThuKetNoiPythonLaiNgay(6000)) return;
-    await ketNoiPythonServiceLucKhoiDong({
-      maxAttempts: 3,
-      delaysMs: [0, 500, 1600],
-    }).catch(() => {});
+    await ketNoiPythonServiceLucKhoiDong(
+      Platform.OS === 'web'
+        ? { maxAttempts: 1, delaysMs: [0] }
+        : { maxAttempts: 3, delaysMs: [0, 500, 1600] },
+    ).catch(() => {});
   };
 
   const sub = AppState.addEventListener('change', (next) => {
@@ -245,31 +244,51 @@ export const dangKyTuDongKetNoiLaiPythonKhiMangHoacPhien = () => {
   };
 };
 
+/** Gộp các lần gọi song song tới cùng một chuỗi /health (giảm spam console web khi nhiều màn hình warm-up). */
+let ketNoiPythonDangChay = null;
+
 /**
  * Thử kết nối Python nhiều lần (lần 1 ngay; các lần sau chờ thêm để service cold-start / mạng ổn định).
  * Không phụ thuộc navigator.onLine — máy offline vẫn có thể tới 127.0.0.1 / 10.0.2.2.
+ * Trên web mặc định ít lần thử hơn (mỗi lần thất bại browser hay log ERR_CONNECTION_REFUSED).
  */
 export const ketNoiPythonServiceLucKhoiDong = async (options = {}) => {
-  const cfg = pythonServiceConfig();
-  const maxAttempts = Number(options.maxAttempts) > 0 ? Number(options.maxAttempts) : 4;
-  const delaysMs = Array.isArray(options.delaysMs) ? options.delaysMs : [0, 400, 1200, 2800];
-  const healthTimeoutMs = Number.isFinite(options.healthTimeoutMs) && options.healthTimeoutMs > 0
-    ? options.healthTimeoutMs
-    : cfg.healthTimeoutMs;
-
-  let last = null;
-  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    if (attempt > 0) {
-      await hoan(delaysMs[attempt] ?? 1500 * attempt);
-    }
-    last = await kiemTraPythonServiceSanSang({ healthTimeoutMs });
-    if (last.ok) {
-      trangThaiPythonGanNhat = { ...last, soLanThu: attempt + 1 };
-      return { ...last, soLanThu: attempt + 1 };
-    }
+  if (ketNoiPythonDangChay) {
+    return ketNoiPythonDangChay;
   }
-  trangThaiPythonGanNhat = { ...last, soLanThu: maxAttempts };
-  return { ...last, soLanThu: maxAttempts };
+  ketNoiPythonDangChay = (async () => {
+    try {
+      const cfg = pythonServiceConfig();
+      const laWeb = Platform.OS === 'web';
+      const maxAttempts = Number(options.maxAttempts) > 0
+        ? Number(options.maxAttempts)
+        : (laWeb ? 2 : 4);
+      const delaysMs = Array.isArray(options.delaysMs)
+        ? options.delaysMs
+        : (laWeb ? [0, 900] : [0, 400, 1200, 2800]);
+      const healthTimeoutMs = Number.isFinite(options.healthTimeoutMs) && options.healthTimeoutMs > 0
+        ? options.healthTimeoutMs
+        : cfg.healthTimeoutMs;
+
+      let last = null;
+      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+        if (attempt > 0) {
+          await hoan(delaysMs[attempt] ?? 1500 * attempt);
+        }
+        last = await kiemTraPythonServiceSanSang({ healthTimeoutMs });
+        if (last.ok) {
+          trangThaiPythonGanNhat = { ...last, soLanThu: attempt + 1 };
+          return { ...last, soLanThu: attempt + 1 };
+        }
+      }
+      trangThaiPythonGanNhat = { ...last, soLanThu: maxAttempts };
+      return { ...last, soLanThu: maxAttempts };
+    } finally {
+      ketNoiPythonDangChay = null;
+    }
+  })();
+
+  return ketNoiPythonDangChay;
 };
 
 export const kiemTraPythonServiceSanSang = async (options = {}) => {

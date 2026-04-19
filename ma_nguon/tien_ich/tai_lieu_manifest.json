@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-19T01:31:14.109Z",
+  "generatedAt": "2026-04-19T14:46:45.672Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -575,6 +575,60 @@
       "id": "md:The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.md",
       "relPath": "The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.html",
       "title": "CHỈ MỤC ENGINE: GIÁM ĐỊNH THUỐC (MÃ NGUỒN + LUỒNG CẢNH BÁO)",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.md",
+      "relPath": "The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.html",
+      "title": "THẺ TRI THỨC: CÔNG VĂN 38/BYT-BH — CHUYỂN MÃ QUYỀN LỢI THẺ BHYT (CN, LH) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT01_18_noi_soi_dd_ta_trang_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT01_18_noi_soi_dd_ta_trang_AI.html",
+      "title": "THẺ TRI THỨC: KT01.18 — NỘI SOI DẠ DÀY TÁ TRÀNG (CHẨN ĐOÁN vs CAN THIỆP, CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT01_19_noi_soi_dai_trang_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT01_19_noi_soi_dai_trang_AI.html",
+      "title": "THẺ TRI THỨC: KT01.19 — NỘI SOI ĐẠI TRÀNG / TRỰC TRÀNG (CHẨN ĐOÁN vs CAN THIỆP, CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT01_4_VK_nhuom_soi_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT01_4_VK_nhuom_soi_AI.html",
+      "title": "THẺ TRI THỨC: KT01.4 — VI KHUẨN NHUỘM SOI vs NUÔI CẤY ĐỊNH DANH (CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT08_PT_ty_le_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT08_PT_ty_le_AI.html",
+      "title": "THẺ TRI THỨC: KT08 — TỶ LỆ PHẪU THUẬT THỨ 2+ TRONG CÙNG MỘT LẦN MỔ (CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT105_thay_bang_vet_mo_15_30_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT105_thay_bang_vet_mo_15_30_AI.html",
+      "title": "THẺ TRI THỨC: KT105 — THAY BĂNG VẾT MỔ 15–30 CM SAU MỔ LẤY THAI (NỘI TRÚ, TỐI ĐA 3 LẦN) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT144_DVKT_khong_TT_noi_tru_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT144_DVKT_khong_TT_noi_tru_AI.html",
+      "title": "THẺ TRI THỨC: KT144 — DVKT CHỈ NGOẠI TRÚ, KHÔNG TÁCH THU KÈM TIỀN GIƯỜNG NỘI TRÚ (CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT183_CT_can_quang_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT183_CT_can_quang_AI.html",
+      "title": "THẺ TRI THỨC: KT183 — CT/CLVT MÃ «CÓ CẢN QUANG» NHƯNG KHÔNG CÓ THUỐC CẢN QUANG (CV266) CHO AI GIÁM ĐỊNH",
+      "nguon": "markdown"
+    },
+    {
+      "id": "md:The_tri_thuc_CV266_KT37_ProBNP_BNP_AI.md",
+      "relPath": "The_tri_thuc_CV266_KT37_ProBNP_BNP_AI.html",
+      "title": "THẺ TRI THỨC: KT37 — BNP vs NT‑PROBNP (THEO SUY THẬN / SUY TIM, CV266) CHO AI GIÁM ĐỊNH",
       "nguon": "markdown"
     },
     {

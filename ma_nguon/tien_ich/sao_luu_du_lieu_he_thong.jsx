@@ -261,11 +261,13 @@ export const layDanhSachBanSaoDuLieu = async () => {
 
 export const taoBanSaoDuLieuHeThong = async ({
   reason = 'MANUAL_BACKUP',
+  ten_hien_thi = '',
   keyPrefixes = DEFAULT_KEY_PREFIXES,
   includeKeys = [],
   maxKeep = MAX_SNAPSHOT_KEEP,
 } = {}) => {
   const snapshotId = `BK_${Date.now()}`;
+  const tenAnhXa = String(ten_hien_thi || '').trim();
   const { asyncKeys, localKeys, prefixes } = await getManagedKeys({ keyPrefixes, includeKeys });
   const localRef = getLocalStorageRef();
   const entries = [];
@@ -287,6 +289,7 @@ export const taoBanSaoDuLieuHeThong = async ({
   const meta = {
     id: snapshotId,
     reason,
+    ten_hien_thi: tenAnhXa,
     created_at: nowIso(),
     prefixes,
     include_keys: includeKeys || [],
@@ -298,6 +301,7 @@ export const taoBanSaoDuLieuHeThong = async ({
   index.items.unshift({
     id: snapshotId,
     reason,
+    ten_hien_thi: tenAnhXa,
     created_at: meta.created_at,
     entry_count: entries.length,
   });

@@ -10,6 +10,8 @@ import { DANH_MUC_NHAN_SU } from '../thanh_phan/nhan_su';
 import { DANH_MUC_TRANG_THIET_BI_M06 } from '../thanh_phan/trang_thiet_bi';
 import { DU_LIEU_DVKT_PHAMVI_MAPPING } from './dvkt_phamvi_mapping_seed';
 import {
+    danhGiaTruocKhiTaiDvktDataset,
+    ghiNhatKyAuditConfigSync,
     hydrateDvktTableFromFirebase,
     syncDvktTablesToFirebase,
     taiKetQuaGiamDinhLenFirebase,
@@ -1184,7 +1186,40 @@ export const dongBoTatCaDanhMucVaQuyTacLenFirebase = async ({
   };
 };
 
-export const taiDuLieuRuleEngineTuFirebase = async () => {
+export const layKhoaDatasetRuleEngineDongBo = () =>
+  Array.from(new Set(DVKT_SYNC_TABLES.map((item) => item.datasetKey)));
+
+export const lietKeCanhBaoTruocKhiTaiRuleEngine = async () => {
+  const details = await Promise.all(
+    DVKT_SYNC_TABLES.map(async (item) => {
+      const evaluation = await danhGiaTruocKhiTaiDvktDataset(item.datasetKey);
+      return {
+        dataset_key: item.datasetKey,
+        ...evaluation,
+      };
+    }),
+  );
+  const warnings = details.filter(
+    (d) => d.ok
+      && d.policy
+      && (d.policy.severity === 'conflict' || d.policy.severity === 'local_unsynced'),
+  );
+  return {
+    ok: true,
+    details,
+    warnings,
+    warning_count: warnings.length,
+  };
+};
+
+export const taiDuLieuRuleEngineTuFirebase = async (options = {}) => {
+  const opts = typeof options === 'object' && options !== null ? options : {};
+  const {
+    actor_email = '',
+    source = 'rule_engine_pull',
+    ghi_audit = false,
+  } = opts;
+
   const details = await Promise.all(
     DVKT_SYNC_TABLES.map(async (item) => {
       const res = await hydrateDvktTableFromFirebase({
@@ -1204,12 +1239,27 @@ export const taiDuLieuRuleEngineTuFirebase = async () => {
   const downloaded = details.filter((x) => x.ok).length;
 
   xoaCacheRuleEngineDvkt();
-  return {
+  const result = {
     ok: downloaded > 0,
     downloaded_count: downloaded,
     total_count: DVKT_SYNC_TABLES.length,
     details,
   };
+
+  if (ghi_audit && result.ok) {
+    await ghiNhatKyAuditConfigSync({
+      action: 'pull_rule_engine_tables',
+      actor_email: String(actor_email || ''),
+      source: String(source || ''),
+      dataset_summary: details.map((d) => ({
+        dataset_key: d.dataset_key,
+        ok: d.ok,
+        row_count: d.row_count,
+      })),
+    }).catch(() => {});
+  }
+
+  return result;
 };
 
 const getXml1 = (hoSo) => {

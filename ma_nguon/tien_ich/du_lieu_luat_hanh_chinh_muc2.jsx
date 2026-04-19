@@ -1,4 +1,4 @@
-/** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) */
+/** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) + HC_251 (CV 38/BYT-BH, NQ 261/2025/QH15) */
 export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-15_HC83_ts_ty_le_95';
 export const COT_SEED_LUAT_HANH_CHINH_MUC2 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
@@ -225,9 +225,9 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "id": "SEED_HANHCHINH_25",
     "TRANG_THAI": "ON",
     "MA_LUAT": "HC_25",
-    "TEN_QUY_TAC": "Nhóm Hộ cận nghèo (CN)",
+    "TEN_QUY_TAC": "Nhóm Hộ cận nghèo (CN) — tỷ lệ phạm vi theo thẻ (NQ 261/2025; CV 38/BYT-BH)",
     "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'CN' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)",
-    "CANH_BAO": "⛔ [Mức 3 / CN]: Theo QĐ 1018/QĐ-BHXH — ký hiệu số thứ 3 = 3 → 95% phạm vi chi trả (có giới hạn thuốc/VKT/DVKT). T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
+    "CANH_BAO": "⛔ [CN / mức quyền lợi]: Từ 01/01/2026 theo NQ 261/2025/QH15 và Công văn 38/BYT-BH (06/01/2026), đối tượng CN được chuyển mã quyền lợi từ 3 (95%) sang 2 (100%) trong phạm vi chi trả; engine suy tỷ lệ theo `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` (kể cả khi ký tự thứ 3 trên XML còn 3). Trước 01/01/2026 vẫn theo QĐ 1018 — mức 3 → 95%. T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {
@@ -2323,7 +2323,16 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "MA_LUAT": "HC_250",
     "TEN_QUY_TAC": "Thẻ BHYT: 2 ký tự đầu không khớp nhóm theo ký hiệu số thứ 3 (nghi ngờ sai thẻ/khai báo)",
     "DIEU_KIEN": "VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX(XML1)",
-    "CANH_BAO": "⚠️ [Thẻ BHYT]: Hai ký tự đầu MA_THE_BHYT không thuộc nhóm đối tượng thông thường của ký tự thứ 3 (theo bảng nội bộ QĐ 1018). Kiểm tra thẻ cứng/BHXH hoặc nhập lại mã thẻ — không dùng kết quả này một mình để kết luận sai tỷ lệ T_BHTT.",
+    "CANH_BAO": "⚠️ [Thẻ BHYT]: Hai ký tự đầu MA_THE_BHYT không thuộc nhóm đối tượng thông thường của ký tự thứ 3 in trên thẻ (bảng nội bộ QĐ 1018, bổ sung nhóm CN/LH mức 2 theo CV 38/BYT-BH). Kiểm tra thẻ cứng/BHXH hoặc nhập lại mã thẻ — không dùng kết quả này một mình để kết luận sai tỷ lệ T_BHTT.",
     "NGUON_DU_LIEU": "dong_co_giam_dinh.jsx (BANG_HAI_KY_TU_THEO_KY_HIEU_SO3)"
+  },
+  {
+    "id": "SEED_HANHCHINH_251",
+    "TRANG_THAI": "ON",
+    "MA_LUAT": "HC_251",
+    "TEN_QUY_TAC": "Người cao tuổi LH (trợ cấp hưu trí XH) — tỷ lệ phạm vi theo thẻ (NQ 261/2025; CV 38/BYT-BH)",
+    "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'LH' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)",
+    "CANH_BAO": "⛔ [LH / mức quyền lợi]: Từ 01/01/2026 theo NQ 261/2025/QH15 và Công văn 38/BYT-BH (06/01/2026), đối tượng LH được chuyển mã quyền lợi từ 4 (80%) sang 2 (100%) trong phạm vi chi trả; engine suy tỷ lệ theo `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` (kể cả khi ký tự thứ 3 trên XML còn 4). Trước 01/01/2026 vẫn theo QĐ 1018 — mức 4 → 80%. T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
+    "NGUON_DU_LIEU": "dong_co_giam_dinh.jsx (KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT) + Công văn 38/BYT-BH"
   }
 ];

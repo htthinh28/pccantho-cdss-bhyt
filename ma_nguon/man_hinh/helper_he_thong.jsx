@@ -25,11 +25,14 @@ import {
 } from '../tien_ich/firebase_cloud_bhyt';
 import { docPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import {
-    dongBoTatCaDanhMucVaQuyTacLenFirebase,
-    taiDuLieuRuleEngineTuFirebase,
-} from '../tien_ich/rule_engine_dvkt_no_code';
+  chayDoiSoatNhanhChoWizard,
+  dongBoFullHelper,
+  taiRuleEngineVeMayHelper,
+} from '../tien_ich/config_sync_domain_service';
+import { lietKeCanhBaoTruocKhiTaiRuleEngine } from '../tien_ich/rule_engine_dvkt_no_code';
 import {
     phucHoiDuLieuHeThongTuJsonText,
+    taoBanSaoDuLieuHeThong,
     xuatDuLieuHeThongRaFileJsonWeb,
 } from '../tien_ich/sao_luu_du_lieu_he_thong';
 
@@ -212,6 +215,19 @@ const ManHinhHelperHeThong = ({ navigation }) => {
   const [soLuongDmKhamRuntime, setSoLuongDmKhamRuntime] = useState(0);
   const [soLuongDmCongKhamNoiBoRuntime, setSoLuongDmCongKhamNoiBoRuntime] = useState(0);
   const [soLuongMaKhoaKhamRuntime, setSoLuongMaKhoaKhamRuntime] = useState(0);
+  const [vaiTroPhien, setVaiTroPhien] = useState('');
+  const [wizardBuoc, setWizardBuoc] = useState(1);
+  const [ketQuaDoiSoatWizard, setKetQuaDoiSoatWizard] = useState(null);
+  const [dangDoiSoatWizard, setDangDoiSoatWizard] = useState(false);
+
+  const taiPhienVaVaiTro = async () => {
+    const s = await docPhienDangNhap();
+    setVaiTroPhien(String(s.role || '').trim().toUpperCase());
+  };
+
+  const chiDocCauHinh = ['REVIEWER', 'USER'].includes(vaiTroPhien);
+  const duocDongBoLenCloud = vaiTroPhien === 'ADMIN';
+  const duocTaiVeCloud = ['ADMIN', 'AUDITOR', 'OPERATOR'].includes(vaiTroPhien);
 
   const nhanTrangThaiSmoke =
     trangThaiSmokeTestPython === TRANG_THAI_SMOKE_TEST.THANH_CONG
@@ -307,17 +323,28 @@ const ManHinhHelperHeThong = ({ navigation }) => {
   useEffect(() => {
     capNhatTrangThaiFirebase(false, false).catch(() => {});
     taiTongHopHelperHybrid().catch(() => {});
+    taiPhienVaVaiTro().catch(() => {});
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       taiTongHopHelperHybrid().catch(() => {});
+      taiPhienVaVaiTro().catch(() => {});
     });
     return unsubscribe;
   }, [navigation]);
 
   const xuLyDongBoCloud = async () => {
-    if (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) return;
+    if (
+      chiDocCauHinh
+      || !duocDongBoLenCloud
+      || dangDongBo
+      || dangTaiCloud
+      || dangKiemTraCloud
+      || dangKiemTraDanhMucCloud
+      || dangKiemTraChunkMoCoiCloud
+      || dangDonDepChunkMoCoiCloud
+    ) return;
     setDangDongBo(true);
     try {
       const check = await capNhatTrangThaiFirebase(true, false);
@@ -330,13 +357,16 @@ const ManHinhHelperHeThong = ({ navigation }) => {
 
       const session = await docPhienDangNhap();
       const uploader = session.email || '';
-      const ketQua = await dongBoTatCaDanhMucVaQuyTacLenFirebase({
+      const ketQua = await dongBoFullHelper({
         uploader: uploader || '',
         source: 'helper_full_sync',
+        su_dung_khoa: true,
+        actor_email: uploader || '',
+        ghi_audit: true,
       });
 
       if (!ketQua?.ok) {
-        const lyDo = ketQua?.reason || 'Đồng bộ thất bại.';
+        const lyDo = ketQua?.reason || ketQua?.code || 'Đồng bộ thất bại.';
         setThongBaoCloud(lyDo);
         Alert.alert('Đồng bộ Firebase', lyDo);
         return;
@@ -364,36 +394,141 @@ const ManHinhHelperHeThong = ({ navigation }) => {
     }
   };
 
+  const thucHienTaiDuLieuRuleEngine = async () => {
+    const session = await docPhienDangNhap();
+    return taiRuleEngineVeMayHelper({
+      actor_email: session.email || '',
+      source: 'helper_pull_rule_engine',
+      ghi_audit: true,
+    });
+  };
+
   const xuLyTaiCloudVeMay = async () => {
-    if (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) return;
-    setDangTaiCloud(true);
+    if (
+      chiDocCauHinh
+      || !duocTaiVeCloud
+      || dangDongBo
+      || dangTaiCloud
+      || dangKiemTraCloud
+      || dangKiemTraDanhMucCloud
+      || dangKiemTraChunkMoCoiCloud
+      || dangDonDepChunkMoCoiCloud
+    ) return;
+
+    const checkFirst = await capNhatTrangThaiFirebase(false, false);
+    if (!checkFirst?.ok) {
+      const lyDo = checkFirst?.reason || 'Firebase chưa sẵn sàng để tải dữ liệu.';
+      setThongBaoCloud(lyDo);
+      Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+      return;
+    }
+
+    const pre = await lietKeCanhBaoTruocKhiTaiRuleEngine();
+    const runPull = async () => {
+      setDangTaiCloud(true);
+      try {
+        const check = await capNhatTrangThaiFirebase(false, false);
+        if (!check?.ok) {
+          const lyDo = check?.reason || 'Firebase chưa sẵn sàng để tải dữ liệu.';
+          setThongBaoCloud(lyDo);
+          Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+          return;
+        }
+
+        const ketQua = await thucHienTaiDuLieuRuleEngine();
+        if (!ketQua?.ok) {
+          const lyDo = ketQua?.reason || 'Không tìm thấy dữ liệu cloud để tải.';
+          setThongBaoCloud(lyDo);
+          Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+          return;
+        }
+
+        const msg = `Đã tải ${ketQua.downloaded_count || 0}/${ketQua.total_count || 0} bảng từ Firebase.`;
+        await capNhatTrangThaiFirebase(false, false);
+        setThongBaoCloud(msg);
+        Alert.alert('Tải dữ liệu từ Firebase', msg);
+      } catch (error) {
+        const lyDo = error?.message || 'Không thể tải dữ liệu từ Firebase.';
+        setThongBaoCloud(lyDo);
+        Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+      } finally {
+        setDangTaiCloud(false);
+      }
+    };
+
+    if (pre.warning_count > 0) {
+      const tomTat = pre.warnings
+        .slice(0, 8)
+        .map((w) => `• ${w.dataset_key}: cục bộ chưa khớp cloud / chưa đẩy (${w.policy?.severity || ''})`)
+        .join('\n');
+      Alert.alert(
+        'Kiểm tra trước khi tải',
+        `Một số bảng DVKT có cục bộ chưa đồng bộ hoặc khác hash so với lần đẩy gần nhất — tải cloud sẽ ghi đè dữ liệu máy.\n\n${tomTat}\n\nVẫn tiếp tục tải?`,
+        [
+          { text: 'Hủy', style: 'cancel' },
+          { text: 'Tiếp tục tải', style: 'destructive', onPress: () => { runPull().catch(() => {}); } },
+        ],
+      );
+      return;
+    }
+
+    await runPull();
+  };
+
+  const xuLyDoiSoatWizardTap = async () => {
+    if (
+      dangDoiSoatWizard
+      || dangDongBo
+      || dangTaiCloud
+      || dangKiemTraCloud
+      || dangKiemTraDanhMucCloud
+      || dangKiemTraChunkMoCoiCloud
+      || dangDonDepChunkMoCoiCloud
+    ) return;
+    setDangDoiSoatWizard(true);
     try {
       const check = await capNhatTrangThaiFirebase(false, false);
       if (!check?.ok) {
-        const lyDo = check?.reason || 'Firebase chưa sẵn sàng để tải dữ liệu.';
-        setThongBaoCloud(lyDo);
-        Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+        Alert.alert('Đối soát', check?.reason || 'Firebase chưa sẵn sàng.');
         return;
       }
-
-      const ketQua = await taiDuLieuRuleEngineTuFirebase();
-      if (!ketQua?.ok) {
-        const lyDo = ketQua?.reason || 'Không tìm thấy dữ liệu cloud để tải.';
-        setThongBaoCloud(lyDo);
-        Alert.alert('Tải dữ liệu từ Firebase', lyDo);
-        return;
-      }
-
-      const msg = `Đã tải ${ketQua.downloaded_count || 0}/${ketQua.total_count || 0} bảng từ Firebase.`;
-      await capNhatTrangThaiFirebase(false, false);
+      const kq = await chayDoiSoatNhanhChoWizard();
+      setKetQuaDoiSoatWizard(kq);
+      setWizardBuoc(3);
+      const msg = `Đối soát nhanh: ${kq.differs_count || 0} dataset khác metadata · ${kq.conflict_risk_count || 0} có rủi ro chồng sửa cục bộ/cloud khi tải.`;
       setThongBaoCloud(msg);
-      Alert.alert('Tải dữ liệu từ Firebase', msg);
-    } catch (error) {
-      const lyDo = error?.message || 'Không thể tải dữ liệu từ Firebase.';
-      setThongBaoCloud(lyDo);
-      Alert.alert('Tải dữ liệu từ Firebase', lyDo);
+      Alert.alert('Đối soát nhanh', msg);
+    } catch (e) {
+      Alert.alert('Đối soát', e?.message || 'Lỗi đối soát.');
     } finally {
-      setDangTaiCloud(false);
+      setDangDoiSoatWizard(false);
+    }
+  };
+
+  const xuLyTaoSnapshotTenWizard = async () => {
+    if (chiDocCauHinh) {
+      Alert.alert('Snapshot', 'Vai trò chỉ đọc không tạo snapshot ghi nội bộ.');
+      return;
+    }
+    try {
+      let ten = '';
+      if (Platform.OS === 'web' && typeof window !== 'undefined' && typeof window.prompt === 'function') {
+        ten = window.prompt('Tên phiên bản (tuỳ chọn, hiển thị trong danh sách snapshot):', '') || '';
+      }
+      const ketQua = await taoBanSaoDuLieuHeThong({
+        reason: 'WIZARD_NAMED_SNAPSHOT',
+        ten_hien_thi: ten,
+      });
+      if (!ketQua?.ok) {
+        Alert.alert('Snapshot', ketQua?.message || 'Không tạo được snapshot.');
+        return;
+      }
+      Alert.alert(
+        'Snapshot nội bộ',
+        `Đã lưu ${ketQua.snapshot_id || ''} (${ketQua.entry_count || 0} mục).`,
+      );
+    } catch (error) {
+      Alert.alert('Snapshot', error?.message || 'Lỗi snapshot.');
     }
   };
 
@@ -460,6 +595,10 @@ const ManHinhHelperHeThong = ({ navigation }) => {
   };
 
   const xuLyDonDepChunkMoCoiCloud = async () => {
+    if (chiDocCauHinh || !duocDongBoLenCloud) {
+      Alert.alert('Dọn chunk', 'Chỉ ADMIN được thực hiện thao tác ghi lên Firebase.');
+      return;
+    }
     if (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) return;
     setDangDonDepChunkMoCoiCloud(true);
     try {
@@ -558,6 +697,11 @@ const ManHinhHelperHeThong = ({ navigation }) => {
     if (!file) return;
     event.target.value = null;
 
+    if (chiDocCauHinh) {
+      Alert.alert('Phục hồi JSON', 'Vai trò chỉ đọc không nhập phục hồi cấu hình.');
+      return;
+    }
+
     if (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || dangXuatBackupFile || dangNhapBackupFile) {
       return;
     }
@@ -584,6 +728,16 @@ const ManHinhHelperHeThong = ({ navigation }) => {
       setDangNhapBackupFile(false);
     }
   };
+
+  const cloudBtnsBusy =
+    dangDongBo
+    || dangTaiCloud
+    || dangKiemTraCloud
+    || dangKiemTraDanhMucCloud
+    || dangKiemTraChunkMoCoiCloud
+    || dangDonDepChunkMoCoiCloud;
+  const khoaDongBoLen = cloudBtnsBusy || chiDocCauHinh || !duocDongBoLenCloud;
+  const khoaTaiVe = cloudBtnsBusy || chiDocCauHinh || !duocTaiVeCloud;
 
   return (
     <SafeAreaView style={styles.vung_an_toan}>
@@ -717,6 +871,60 @@ const ManHinhHelperHeThong = ({ navigation }) => {
         </View>
 
         <View style={styles.khoi}>
+          <Text style={styles.tieu_de_khoi}>Wizard vận hành đồng bộ (3 bước)</Text>
+          <Text style={styles.wizard_hint}>
+            Local = dữ liệu trên máy (IndexedDB/AsyncStorage). Cloud = bản org trên Firestore. Đối soát chỉ đọc metadata/hash — không ghi đè.
+          </Text>
+          <View style={styles.wizard_step_block}>
+            <Text style={[styles.wizard_step_title, wizardBuoc >= 1 && styles.wizard_step_title_on]}>Bước 1 — Backup</Text>
+            <Text style={styles.wizard_step_body}>Xuất JSON ra file hoặc tạo snapshot đặt tên trong máy (AsyncStorage).</Text>
+            <View style={styles.wizard_btn_row}>
+              <TouchableOpacity
+                style={[styles.nut_cloud, styles.wizard_btn, (cloudBtnsBusy || dangXuatBackupFile || dangNhapBackupFile) && styles.nut_cloud_khoa]}
+                onPress={xuLyXuatBackupFile}
+                disabled={cloudBtnsBusy || dangXuatBackupFile || dangNhapBackupFile}
+              >
+                <Text style={styles.txt_nut_cloud}>Xuất backup JSON</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.nut_cloud, styles.wizard_btn, chiDocCauHinh && styles.nut_cloud_khoa]}
+                onPress={xuLyTaoSnapshotTenWizard}
+                disabled={chiDocCauHinh}
+              >
+                <Text style={styles.txt_nut_cloud}>Snapshot đặt tên</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.wizard_link} onPress={() => setWizardBuoc(2)}>
+              <Text style={styles.wizard_link_txt}>Tiếp bước 2 →</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.wizard_step_block}>
+            <Text style={[styles.wizard_step_title, wizardBuoc >= 2 && styles.wizard_step_title_on]}>Bước 2 — Đối soát Firebase ↔ máy</Text>
+            <Text style={styles.wizard_step_body}>So khóa hash/số dòng cho danh mục DVKT + shard mapping.</Text>
+            <TouchableOpacity
+              style={[styles.nut_cloud, styles.nut_cloud_dataset, (cloudBtnsBusy || dangDoiSoatWizard) && styles.nut_cloud_khoa]}
+              onPress={xuLyDoiSoatWizardTap}
+              disabled={cloudBtnsBusy || dangDoiSoatWizard}
+            >
+              {dangDoiSoatWizard ? <ActivityIndicator color="#fff" /> : <Text style={styles.txt_nut_cloud}>Chạy đối soát nhanh</Text>}
+            </TouchableOpacity>
+            {ketQuaDoiSoatWizard?.ok ? (
+              <Text style={styles.wizard_ket_qua}>
+                Khác metadata: {ketQuaDoiSoatWizard.differs_count || 0} · Rủi ro conflict khi tải: {ketQuaDoiSoatWizard.conflict_risk_count || 0}
+              </Text>
+            ) : null}
+          </View>
+
+          <View style={styles.wizard_step_block}>
+            <Text style={[styles.wizard_step_title, wizardBuoc >= 3 && styles.wizard_step_title_on]}>Bước 3 — Đẩy / tải</Text>
+            <Text style={styles.wizard_step_body}>
+              Dùng hai nút trong khối «Đồng bộ Firebase» bên dưới. Trước khi tải, hệ thống sẽ cảnh báo nếu cục bộ chưa đồng bộ với cloud.
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.khoi}>
           <Text style={styles.tieu_de_khoi}>Lỗi thường gặp và cách xử lý</Text>
           {TINH_HUONG_THUONG_GAP.map((item, index) => (
             <View key={`loi-${index}`} style={styles.the_loi}>
@@ -728,6 +936,19 @@ const ManHinhHelperHeThong = ({ navigation }) => {
 
         <View style={styles.khoi}>
           <Text style={styles.tieu_de_khoi}>Đồng bộ dữ liệu Firebase (chạy thật)</Text>
+          <Text style={styles.sync_tooltip}>
+            Local giữ bản làm việc; cloud là bản chia sẻ theo org. Hash (content_hash) đối chiếu nhanh; schema_version ghi nhận kiểu payload.
+          </Text>
+          {!!vaiTroPhien && (
+            <Text style={styles.role_banner}>
+              Vai trò phiên: {vaiTroPhien}
+              {' · '}
+              Đẩy org: {duocDongBoLenCloud ? 'cho phép (ADMIN)' : 'không'}
+              {' · '}
+              Tải về: {duocTaiVeCloud ? 'cho phép' : 'không'}
+              {chiDocCauHinh ? ' · Chế độ chỉ đọc cấu hình.' : ''}
+            </Text>
+          )}
           <Text style={styles.noi_dung_doan}>
             Trạng thái Firebase:{' '}
             {trangThaiFirebase?.ok
@@ -739,17 +960,17 @@ const ManHinhHelperHeThong = ({ navigation }) => {
 
           <View style={styles.hang_nut_cloud}>
             <TouchableOpacity
-              style={[styles.nut_cloud, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) && styles.nut_cloud_khoa]}
+              style={[styles.nut_cloud, khoaDongBoLen && styles.nut_cloud_khoa]}
               onPress={xuLyDongBoCloud}
-              disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud}
+              disabled={khoaDongBoLen}
             >
               {dangDongBo ? <ActivityIndicator color="#fff" /> : <Text style={styles.txt_nut_cloud}>Đồng bộ tất cả danh mục + quy tắc lên Firebase</Text>}
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.nut_cloud, styles.nut_cloud_phu, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) && styles.nut_cloud_khoa]}
+              style={[styles.nut_cloud, styles.nut_cloud_phu, khoaTaiVe && styles.nut_cloud_khoa]}
               onPress={xuLyTaiCloudVeMay}
-              disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud}
+              disabled={khoaTaiVe}
             >
               {dangTaiCloud ? <ActivityIndicator color="#fff" /> : <Text style={styles.txt_nut_cloud}>Tải dữ liệu từ Firebase về máy</Text>}
             </TouchableOpacity>
@@ -779,9 +1000,9 @@ const ManHinhHelperHeThong = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.nut_cloud, styles.nut_cloud_chunk_cleanup, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud) && styles.nut_cloud_khoa]}
+              style={[styles.nut_cloud, styles.nut_cloud_chunk_cleanup, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || chiDocCauHinh || !duocDongBoLenCloud) && styles.nut_cloud_khoa]}
               onPress={xuLyDonDepChunkMoCoiCloud}
-              disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud}
+              disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || chiDocCauHinh || !duocDongBoLenCloud}
             >
               {dangDonDepChunkMoCoiCloud ? <ActivityIndicator color="#fff" /> : <Text style={styles.txt_nut_cloud}>Dọn chunk mồ côi</Text>}
             </TouchableOpacity>
@@ -812,12 +1033,12 @@ const ManHinhHelperHeThong = ({ navigation }) => {
                   id="import-backup-json"
                 />
                 <TouchableOpacity
-                  style={[styles.nut_cloud, styles.nut_cloud_restore, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || dangXuatBackupFile || dangNhapBackupFile) && styles.nut_cloud_khoa]}
+                  style={[styles.nut_cloud, styles.nut_cloud_restore, (dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || dangXuatBackupFile || dangNhapBackupFile || chiDocCauHinh) && styles.nut_cloud_khoa]}
                   onPress={() => {
                     const input = document.getElementById('import-backup-json');
                     if (input) input.click();
                   }}
-                  disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || dangXuatBackupFile || dangNhapBackupFile}
+                  disabled={dangDongBo || dangTaiCloud || dangKiemTraCloud || dangKiemTraDanhMucCloud || dangKiemTraChunkMoCoiCloud || dangDonDepChunkMoCoiCloud || dangXuatBackupFile || dangNhapBackupFile || chiDocCauHinh}
                 >
                   {dangNhapBackupFile ? <ActivityIndicator color="#fff" /> : <Text style={styles.txt_nut_cloud}>Nhập file JSON để phục hồi</Text>}
                 </TouchableOpacity>
@@ -884,6 +1105,18 @@ const styles = StyleSheet.create({
     }),
   },
   tieu_de_khoi: { fontSize: 20, fontWeight: '800', color: CD.text.primary, marginBottom: 12, fontFamily: CD.font.family },
+  wizard_hint: { fontSize: 14, color: CD.text.secondary, marginBottom: 14, lineHeight: 21, fontFamily: CD.font.family },
+  wizard_step_block: { marginBottom: 16, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: CD.border.glass_md },
+  wizard_step_title: { fontSize: 16, fontWeight: '700', color: CD.text.secondary, fontFamily: CD.font.family },
+  wizard_step_title_on: { color: CD.text.link },
+  wizard_step_body: { fontSize: 14, color: CD.text.table_cell, marginTop: 4, marginBottom: 10, lineHeight: 21, fontFamily: CD.font.family },
+  wizard_btn_row: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  wizard_btn: { flex: 1, minWidth: 140 },
+  wizard_link: { marginTop: 8, alignSelf: 'flex-start', paddingVertical: 4 },
+  wizard_link_txt: { fontSize: 15, color: CD.text.link, fontFamily: CD.font.family },
+  wizard_ket_qua: { marginTop: 8, fontSize: 14, color: CD.text.secondary, fontFamily: CD.font.family },
+  sync_tooltip: { fontSize: 14, color: CD.text.secondary, marginBottom: 10, lineHeight: 21, fontFamily: CD.font.family },
+  role_banner: { fontSize: 14, color: CD.text.link, marginBottom: 10, fontFamily: CD.font.family },
   dong_liet_ke: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8 },
   so_thu_tu: { width: 24, fontSize: 16, fontWeight: '700', color: CD.text.link, fontFamily: CD.font.family },
   noi_dung_liet_ke: { flex: 1, fontSize: 16, color: CD.text.table_cell, lineHeight: 24, fontFamily: CD.font.family },

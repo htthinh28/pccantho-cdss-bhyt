@@ -34,6 +34,7 @@ import {
   CHE_DO_GIAM_DINH,
   docCheDoGiamDinh,
   ketNoiPythonServiceLucKhoiDong,
+  layTrangThaiPythonGanNhat,
   taiDanhMucRuntimeChoPython,
 } from '../tien_ich/hybrid_python_helper';
 import { docPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap';
@@ -515,6 +516,18 @@ const ManHinhTongQuan = ({ navigation }) => {
   useEffect(() => {
     let huy = false;
     (async () => {
+      const snap = layTrangThaiPythonGanNhat();
+      if (snap != null) {
+        if (huy) return;
+        setTrangThaiPythonKhoiDong({
+          daKiemTra: true,
+          ok: !!snap.ok,
+          chiTiet: snap.chiTiet || '',
+          baseUrl: snap.baseUrl || '',
+          lanThu: snap.soLanThu ?? 0,
+        });
+        return;
+      }
       const kq = await ketNoiPythonServiceLucKhoiDong();
       if (huy) return;
       setTrangThaiPythonKhoiDong({
@@ -2179,16 +2192,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'relative',
     overflow: 'hidden',
-    shadowColor: '#0F172A',
-    shadowOpacity: 0.14,
-    shadowRadius: 22,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 7,
     ...Platform.select({
       web: {
         backdropFilter: 'blur(20px) saturate(150%)',
         WebkitBackdropFilter: 'blur(20px) saturate(150%)',
         boxShadow: '0 28px 54px rgba(15,23,42,0.15), 0 10px 22px rgba(56,189,248,0.12), inset 0 1px 0 rgba(255,255,255,0.34)',
+      },
+      default: {
+        shadowColor: '#0F172A',
+        shadowOpacity: 0.14,
+        shadowRadius: 22,
+        shadowOffset: { width: 0, height: 10 },
+        elevation: 7,
       },
     }),
   },
@@ -2244,16 +2259,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
-    shadowColor: '#1E293B',
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 5,
     ...Platform.select({
       web: {
         backdropFilter: 'blur(16px) saturate(150%)',
         WebkitBackdropFilter: 'blur(16px) saturate(150%)',
         boxShadow: '0 18px 34px rgba(15,23,42,0.11), 0 6px 18px rgba(14,165,233,0.08), inset 0 1px 0 rgba(255,255,255,0.40)',
+      },
+      default: {
+        shadowColor: '#1E293B',
+        shadowOpacity: 0.12,
+        shadowRadius: 16,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 5,
       },
     }),
   },
@@ -2348,14 +2365,16 @@ const styles = StyleSheet.create({
     borderColor: '#1B5EB4',
     minWidth: 122,
     alignItems: 'center',
-    shadowColor: '#2563EB',
-    shadowOpacity: 0.32,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
     ...Platform.select({
       web: {
         boxShadow: '0 16px 30px rgba(37,99,235,0.34), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(15,23,42,0.10)',
+      },
+      default: {
+        shadowColor: '#2563EB',
+        shadowOpacity: 0.32,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 6,
       },
     }),
   },
@@ -2680,16 +2699,18 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(255,255,255,0.22)',
     borderLeftColor: 'rgba(255,255,255,0.18)',
     gap: 10,
-    shadowColor: '#020617',
-    shadowOpacity: 0.18,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 8,
     ...Platform.select({
       web: {
         backdropFilter: CD.web.blur_card,
         WebkitBackdropFilter: CD.web.blur_card,
         boxShadow: '0 18px 38px rgba(2,6,23,0.20), inset 0 1px 0 rgba(255,255,255,0.16)',
+      },
+      default: {
+        shadowColor: '#020617',
+        shadowOpacity: 0.18,
+        shadowRadius: 20,
+        shadowOffset: { width: 0, height: 10 },
+        elevation: 8,
       },
     }),
   },
@@ -2705,11 +2726,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.16)',
     backgroundColor: 'rgba(255,255,255,0.08)',
-    shadowColor: '#020617',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    ...Platform.select({ web: { cursor: 'pointer', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)' } }),
+    ...Platform.select({
+      web: { cursor: 'pointer', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)' },
+      default: {
+        shadowColor: '#020617',
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+      },
+    }),
   },
   rule_filter_chip_active: {
     backgroundColor: '#0F766E',
@@ -2740,16 +2765,18 @@ const styles = StyleSheet.create({
     color: CD.text.primary,
     fontSize: 14,
     fontFamily: CD.font.family,
-    shadowColor: '#020617',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
     ...Platform.select({
       web: {
         outlineStyle: 'none',
         backdropFilter: CD.web.blur_input,
         WebkitBackdropFilter: CD.web.blur_input,
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)',
+      },
+      default: {
+        shadowColor: '#020617',
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
       },
     }),
   },
@@ -2763,11 +2790,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(59,130,246,0.14)',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#0F172A',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    ...Platform.select({ web: { cursor: 'pointer', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)' } }),
+    ...Platform.select({
+      web: { cursor: 'pointer', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10)' },
+      default: {
+        shadowColor: '#0F172A',
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+      },
+    }),
   },
   rule_filter_clear_txt: {
     fontSize: 13,
@@ -2908,16 +2939,18 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
     backgroundColor: 'rgba(255,255,255,0.06)',
-    shadowColor: '#020617',
-    shadowOpacity: 0.16,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
     ...Platform.select({
       web: {
         backdropFilter: 'blur(16px) saturate(140%)',
         WebkitBackdropFilter: 'blur(16px) saturate(140%)',
         boxShadow: '0 14px 28px rgba(2,6,23,0.18), inset 0 1px 0 rgba(255,255,255,0.14)',
+      },
+      default: {
+        shadowColor: '#020617',
+        shadowOpacity: 0.16,
+        shadowRadius: 18,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 6,
       },
     }),
   },

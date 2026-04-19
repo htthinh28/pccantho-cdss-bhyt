@@ -18,6 +18,9 @@ import {
   layCauHinhLoaiMapping,
   MAPPING_TYPE_CONFIG,
 } from '../tien_ich/catalog_mapping_types';
+import { timTenTheoMa, timTenNhieuMa, timMaKhongThuocDanhMuc } from '../tien_ich/catalog_mapping_catalog_loaders';
+import { taoIdMapping } from '../tien_ich/catalog_mapping_luu_tru';
+import OChonNgayISO from './o_chon_ngay_iso';
 
 /** Nhãn danh mục nội bộ theo catalog_ref (đồng bộ Quản lý danh mục) */
 const TEN_DM_HIEN_THI = {
@@ -30,9 +33,6 @@ const TEN_DM_HIEN_THI = {
   bed_types: 'Giường / bàn khám BV',
   equipments: 'Trang thiết bị — Mẫu 06 (MA_MAY)',
 };
-import { timTenTheoMa, timTenNhieuMa } from '../tien_ich/catalog_mapping_catalog_loaders';
-import { taoIdMapping } from '../tien_ich/catalog_mapping_luu_tru';
-import OChonNgayISO from './o_chon_ngay_iso';
 
 const CHON_LOAI = MAPPING_TYPE_CONFIG.map((c) => ({ value: c.mapping_type, label: c.display_name }));
 
@@ -436,6 +436,20 @@ export default function ModalCatalogMapping({
         setLoi('Chọn ít nhất một DVKT ở nhóm được chỉ định hoặc thực hiện.');
         return;
       }
+      const badChi = timMaKhongThuocDanhMuc(dsDich, chi, 'dvkt_items');
+      const badThuc = timMaKhongThuocDanhMuc(dsDich, thuc, 'dvkt_items');
+      const badDvkt = [...new Set([...badChi, ...badThuc])];
+      if (badDvkt.length) {
+        setLoi(
+          `Mã DVKT không có trong danh mục M05 — chỉ định/thực hiện phải có mã tương ứng trong DM (thiếu → mapping sai): ${badDvkt.join(', ')}`,
+        );
+        return;
+      }
+      const badNv = timMaKhongThuocDanhMuc(dsNguon, [String(sourceCode || '').trim()].filter(Boolean), 'employees');
+      if (badNv.length) {
+        setLoi(`Mã nhân sự không có trong danh mục Mẫu 02: ${badNv.join(', ')}`);
+        return;
+      }
       const codes = [...new Set([...chi, ...thuc])].sort((a, b) =>
         a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }),
       );
@@ -459,6 +473,11 @@ export default function ModalCatalogMapping({
         setLoi('Chọn ít nhất một mã đích (có thể chọn nhiều mã trong một bản ghi).');
         return;
       }
+      const badTgtMulti = timMaKhongThuocDanhMuc(dsDich, codes, cfg.target_catalog);
+      if (badTgtMulti.length) {
+        setLoi(`Mã đích không có trong danh mục tương ứng (mapping sai nếu không khớp DM): ${badTgtMulti.join(', ')}`);
+        return;
+      }
       maDichLuu = codes.join('|');
       metadata.target_codes = codes;
     }
@@ -476,6 +495,11 @@ export default function ModalCatalogMapping({
         );
         return;
       }
+      const badSrcMulti = timMaKhongThuocDanhMuc(dsNguon, srcCodes, cfg.source_catalog);
+      if (badSrcMulti.length) {
+        setLoi(`Mã nguồn không có trong danh mục tương ứng (mapping sai nếu không khớp DM): ${badSrcMulti.join(', ')}`);
+        return;
+      }
       maNguonLuu = srcCodes.join('|');
       if (laMappingNhieuMaNguonIcd(mappingType)) {
         metadata.source_icd_codes = srcCodes;
@@ -483,6 +507,25 @@ export default function ModalCatalogMapping({
       } else {
         metadata.source_codes = srcCodes;
         delete metadata.source_icd_codes;
+      }
+    }
+
+    if (mappingType !== 'STAFF_DVKT' && !laMultiTarget && !laMultiSource) {
+      const s = String(maNguonLuu || '').trim();
+      const t = String(maDichLuu || '').trim();
+      if (s) {
+        const bs = timMaKhongThuocDanhMuc(dsNguon, [s], cfg.source_catalog);
+        if (bs.length) {
+          setLoi(`Mã nguồn không có trong danh mục tương ứng: ${bs.join(', ')}`);
+          return;
+        }
+      }
+      if (t) {
+        const bt = timMaKhongThuocDanhMuc(dsDich, [t], cfg.target_catalog);
+        if (bt.length) {
+          setLoi(`Mã đích không có trong danh mục tương ứng: ${bt.join(', ')}`);
+          return;
+        }
       }
     }
 

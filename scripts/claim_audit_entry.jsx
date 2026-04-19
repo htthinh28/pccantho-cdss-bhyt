@@ -43,11 +43,21 @@ const parseArgs = (argv) => {
     outPath: '',
     focusCodes: [],
     tuongTacOnly: false,
+    filesFrom: '',
+    filesCsv: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = String(args[index] || '').trim();
     if (!arg) continue;
+    if (arg.startsWith('--files-from=')) {
+      options.filesFrom = arg.slice('--files-from='.length).trim();
+      continue;
+    }
+    if (arg.startsWith('--files=')) {
+      options.filesCsv = arg.slice('--files='.length);
+      continue;
+    }
     if (arg.startsWith('--dir=')) {
       options.dirPath = arg.slice('--dir='.length).trim();
       continue;
@@ -74,6 +84,29 @@ const parseArgs = (argv) => {
   }
 
   return options;
+};
+
+/** Đọc manifest (mỗi dòng một đường dẫn tương đối cwd) hoặc --files= a,b,c */
+const buildExplicitPathsFromOptions = (options) => {
+  const relPaths = [];
+  if (options.filesFrom) {
+    const mf = path.resolve(process.cwd(), options.filesFrom);
+    if (!fs.existsSync(mf) || !fs.statSync(mf).isFile()) {
+      return { paths: [], error: `Khong doc duoc manifest: ${mf}` };
+    }
+    fs.readFileSync(mf, 'utf8')
+      .split(/\r?\n/)
+      .forEach((line) => {
+        const t = line.trim();
+        if (t && !t.startsWith('#')) relPaths.push(t);
+      });
+  } else if (options.filesCsv) {
+    options.filesCsv.split(',').forEach((s) => {
+      const t = String(s || '').trim();
+      if (t) relPaths.push(t);
+    });
+  }
+  return { paths: relPaths, error: '' };
 };
 
 /** Chỉ một cấp — tránh quét đệ quy chậm trên Google Drive */
@@ -144,6 +177,31 @@ const buildRuleSummary = (warnings) => {
   return Object.fromEntries(Object.entries(summary).sort((a, b) => a[0].localeCompare(b[0])));
 };
 
+/** Gộp nhiều object đếm { key: n } — dùng tổng hợp theo tầng trên cả thư mục XML. */
+const mergeCountMaps = (maps) => {
+  const out = {};
+  (Array.isArray(maps) ? maps : []).forEach((m) => {
+    if (!m || typeof m !== 'object') return;
+    Object.keys(m).forEach((k) => {
+      out[k] = (out[k] || 0) + (Number(m[k]) || 0);
+    });
+  });
+  return Object.fromEntries(Object.entries(out).sort((a, b) => a[0].localeCompare(b[0])));
+};
+
+/** Tóm tắt theo tầng pipeline V15 (đồng bộ comment trong chayGiamDinhToanDienV15). */
+const buildLayersSummary = (warnings) => ({
+  V15_pipeline:
+    'L0 FalsePositiveGuard | L1 Hành chính | L2-3 Danh mục BV+BYT | L4 Lâm sàng | L5 No-code | L5b CDSS ICD↔DM',
+  by_severity: buildSeveritySummary(warnings),
+  by_tang_V15: buildFieldSummary(warnings, 'tang_V15'),
+  by_phan_he: buildFieldSummary(warnings, 'phan_he'),
+  by_namespace_quy_tac: buildFieldSummary(warnings, 'namespace_quy_tac'),
+  by_nguon_quy_tac: buildFieldSummary(warnings, 'nguon_quy_tac'),
+  by_dieu_kien: buildFieldSummary(warnings, 'dieu_kien'),
+  rule_summary: buildRuleSummary(warnings),
+});
+
 const pickFocusSummary = (warnings, focusCodes) => {
   if (!Array.isArray(focusCodes) || focusCodes.length === 0) return {};
   const set = new Set(focusCodes.map((item) => String(item || '').trim().toUpperCase()).filter(Boolean));
@@ -188,16 +246,33 @@ const seedDanhMuc = async () => {
 
 const main = async () => {
   const options = parseArgs(process.argv);
-  if (!options.claimPath && !options.dirPath) {
+  const explicitRel = buildExplicitPathsFromOptions(options);
+  if (explicitRel.error) {
+    console.error(explicitRel.error);
+    process.exit(2);
+  }
+
+  if (!options.claimPath && !options.dirPath && explicitRel.paths.length === 0) {
     console.error('Usage:');
     console.error('  node scripts/run_claim_audit.js <claim_xml130_path> [--out=output.json] [--focus=XML_55,...] [--tuong-tac-only]');
     console.error('  node scripts/run_claim_audit.js --dir=tai_nguyen/xml [--out=audit_folder.json] [--tuong-tac-only]');
+    console.error('  node scripts/run_claim_audit.js --files-from=scripts/manifests/ten.txt [--out=...]  (mỗi dòng: đường dẫn .xml từ cwd)');
+    console.error('  node scripts/run_claim_audit.js --files=a.xml,b.xml [--out=...]');
     console.error('  (--dir chỉ đọc *.xml một cấp trong thư mục; không quét đệ quy)');
     process.exit(1);
   }
   if (options.claimPath && options.dirPath) {
     console.error('Chỉ chọn một: file XML đơn hoặc --dir=...');
     process.exit(1);
+  }
+  if (explicitRel.paths.length > 0 && (options.claimPath || options.dirPath)) {
+    console.error('Không kết hợp --files-from / --files= với file đơn hoặc --dir=');
+    process.exit(1);
+  }
+
+  if (explicitRel.paths.length > 0) {
+    await runAuditThuMuc({ ...options, explicitPaths: explicitRel.paths });
+    return;
   }
 
   if (options.dirPath) {
@@ -239,6 +314,7 @@ const main = async () => {
       total_warnings: warnings.length,
       tuong_tac_only: options.tuongTacOnly,
       by_severity: buildSeveritySummary(warnings),
+      by_tang_V15: buildFieldSummary(warnings, 'tang_V15'),
       by_namespace: buildFieldSummary(warnings, 'namespace_quy_tac'),
       by_source: buildFieldSummary(warnings, 'nguon_quy_tac'),
       focus_summary: pickFocusSummary(warnings, options.focusCodes),
@@ -254,6 +330,7 @@ const main = async () => {
   console.log(`MA_LK: ${maLK}`);
   console.log(`Tong canh bao: ${warnings.length}`);
   console.log(`Theo muc do: ${JSON.stringify(result.meta.by_severity)}`);
+  console.log(`Theo tang_V15: ${JSON.stringify(result.meta.by_tang_V15)}`);
   console.log(`Theo namespace: ${JSON.stringify(result.meta.by_namespace)}`);
   console.log(`Theo nguon: ${JSON.stringify(result.meta.by_source)}`);
   if (options.focusCodes.length > 0) {
@@ -263,15 +340,40 @@ const main = async () => {
 };
 
 const runAuditThuMuc = async (options) => {
-  const dirAbs = path.resolve(process.cwd(), options.dirPath);
-  if (!fs.existsSync(dirAbs) || !fs.statSync(dirAbs).isDirectory()) {
-    console.error(`Thu muc khong ton tai hoac khong phai thu muc: ${dirAbs}`);
-    process.exit(2);
+  let xmlPaths = [];
+  const missingExplicit = [];
+  let dirAbs = null;
+  let mode = 'directory';
+
+  if (Array.isArray(options.explicitPaths) && options.explicitPaths.length > 0) {
+    mode = 'explicit_paths';
+    for (const raw of options.explicitPaths) {
+      const p = path.resolve(process.cwd(), raw);
+      if (!fs.existsSync(p) || !fs.statSync(p).isFile() || !String(p).toLowerCase().endsWith('.xml')) {
+        missingExplicit.push(raw);
+        continue;
+      }
+      xmlPaths.push(p);
+    }
+    xmlPaths.sort((a, b) => path.basename(a).localeCompare(path.basename(b), 'vi', { numeric: true, sensitivity: 'base' }));
+  } else {
+    dirAbs = path.resolve(process.cwd(), options.dirPath);
+    if (!fs.existsSync(dirAbs) || !fs.statSync(dirAbs).isDirectory()) {
+      console.error(`Thu muc khong ton tai hoac khong phai thu muc: ${dirAbs}`);
+      process.exit(2);
+    }
+    xmlPaths = listXmlFilesOneLevel(dirAbs);
   }
 
-  const xmlPaths = listXmlFilesOneLevel(dirAbs);
   if (xmlPaths.length === 0) {
-    console.error(`Khong co file .xml (mot cap) trong: ${dirAbs}`);
+    console.error(
+      mode === 'explicit_paths'
+        ? 'Khong co file .xml hop le trong danh sach (kiem tra duong dan / phan mo rong .xml).'
+        : `Khong co file .xml (mot cap) trong: ${dirAbs}`,
+    );
+    if (missingExplicit.length) {
+      console.error(`Loi duong dan (${missingExplicit.length}): ${missingExplicit.join('; ')}`);
+    }
     process.exit(2);
   }
 
@@ -314,6 +416,7 @@ const runAuditThuMuc = async (options) => {
     });
 
     const outWarnings = options.tuongTacOnly ? tuongTacWarnings : warnings;
+    const layersFull = buildLayersSummary(warnings);
     files.push({
       claim_path: claimPath,
       ma_lk: maLK,
@@ -322,8 +425,21 @@ const runAuditThuMuc = async (options) => {
       tuong_tac_count: tuongTacWarnings.length,
       warnings: outWarnings,
       rule_summary: buildRuleSummary(outWarnings),
+      /** Luôn tính trên toàn bộ cảnh báo (trước --tuong-tac-only) để đối chiếu từng tầng. */
+      layers_summary_full: layersFull,
     });
   }
+
+  const parsedFiles = files.filter((f) => f.parse_ok);
+  const aggregateLayers = {
+    by_severity: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_severity)),
+    by_tang_V15: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_tang_V15)),
+    by_phan_he: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_phan_he)),
+    by_namespace_quy_tac: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_namespace_quy_tac)),
+    by_nguon_quy_tac: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_nguon_quy_tac)),
+    by_dieu_kien: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.by_dieu_kien)),
+    rule_summary: mergeCountMaps(parsedFiles.map((f) => f.layers_summary_full?.rule_summary)),
+  };
 
   const outputPath = path.resolve(
     process.cwd(),
@@ -332,15 +448,23 @@ const runAuditThuMuc = async (options) => {
 
   const result = {
     meta: {
-      mode: 'directory',
+      mode,
       generated_at: new Date().toISOString(),
-      dir: dirAbs,
+      ...(dirAbs
+        ? {
+            dir: dirAbs,
+            dir_abs_windows: dirAbs.replace(/\//g, '\\'),
+          }
+        : {}),
       xml_file_count: xmlPaths.length,
+      explicit_paths_skipped: missingExplicit.length ? missingExplicit : undefined,
       tuong_tac_only: options.tuongTacOnly,
       files_with_tuong_tac: files.filter((f) => f.parse_ok && (f.tuong_tac_count || 0) > 0).length,
       aggregate_tuong_tac_rule_summary: Object.fromEntries(
         Object.entries(aggregateTuongTac).sort((a, b) => a[0].localeCompare(b[0]))
       ),
+      /** Tổng hợp cảnh báo theo tầng (V15) trên toàn bộ file XML trong thư mục — dùng kiểm tra quy tắc hoạt động. */
+      aggregate_layers_full: aggregateLayers,
       focus_summary: {},
     },
     files,
@@ -349,8 +473,15 @@ const runAuditThuMuc = async (options) => {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), 'utf8');
 
-  console.log(`Thu muc: ${dirAbs}`);
-  console.log(`So file XML (mot cap): ${xmlPaths.length}`);
+  if (mode === 'directory') {
+    console.log(`Thu muc: ${dirAbs}`);
+  } else {
+    console.log(`Che do: danh sach file (${xmlPaths.length} tep hop le)`);
+    if (missingExplicit.length) {
+      console.log(`Bo qua (${missingExplicit.length}) khong ton tai hoac khong phai .xml: ${missingExplicit.join('; ')}`);
+    }
+  }
+  console.log(`So file XML: ${xmlPaths.length}`);
   console.log(`Ho so co canh bao tuong tac thuoc: ${result.meta.files_with_tuong_tac}`);
   console.log(`Tong hop ma luat (tuong tac): ${JSON.stringify(result.meta.aggregate_tuong_tac_rule_summary)}`);
   console.log(`Output: ${outputPath}`);
