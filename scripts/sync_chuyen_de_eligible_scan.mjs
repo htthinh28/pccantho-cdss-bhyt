@@ -63,7 +63,7 @@ const payload = {
     seed_off_among_xml130: seedOffNonPlaceholder.length,
   },
   policy_note:
-    'xml130_condition = DIEU_KIEN không phải CHUYEN_DE_XML130_CHO_XU_LY_SAU. Engine chỉ bỏ qua placeholder; quy tắc mặc định OFF nội bộ vẫn cần bật trong Quản lý ON/OFF để chạy thật.',
+    'xml130_condition = DIEU_KIEN không phải placeholder (EXIT_AUDIT_BACKLOG hoặc CHO_XU_LY_SAU). Engine bỏ qua CHO_XU_LY_SAU qua laDieuKienChuyenDeXml130Placeholder; EXIT_AUDIT_BACKLOG luôn false cho đến khi thay DIEU_KIEN. Quy tắc mặc định OFF (data_quy_tac_giu_off_mo_rong) vẫn cần bật trong Quản lý ON/OFF để chạy thật.',
   lists: {
     placeholder_rule_ids: placeholderIds.sort(chuyenDeSort),
     xml130_ready_rule_ids: xml130ReadyIds,

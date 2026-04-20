@@ -254,6 +254,15 @@ const DANH_SACH_QUY_TAC_TAT_CUNG = Object.freeze([
   'CDHA_113',
   'DVKT_1634',
   'XML_140',
+  // Cấu trúc QĐ3176 — tắt cứng (dương tính giả 100% hồ sơ; engine đã gỡ bắt/namespace; giữ mã để cache & Firebase đồng bộ).
+  'XML1-REQ-MA_TTDV',
+  'XML1-UNKNOWN-xsi',
+  'XML3-REQ-MA_PTTT_QT',
+  'THUOC_448',
+  'THUOC_404',
+  'TUONGTAC_017',
+  'TUONGTAC_344',
+  'DVKT-OP-07',
 ]);
 
 const taoSetMaGiuMacDinhOffTheoChinhSach = () => {
@@ -270,6 +279,7 @@ const taoSetMaGiuMacDinhOffTheoChinhSach = () => {
   addMany(DATA_QUY_TAC_GIU_OFF_MO_RONG.chuyen_de_mri);
   addMany(DATA_QUY_TAC_GIU_OFF_MO_RONG.chuyen_de_dsa);
   addMany(DATA_QUY_TAC_GIU_OFF_MO_RONG.chuyen_de_placeholder);
+  addMany(DATA_QUY_TAC_GIU_OFF_MO_RONG.cau_truc_xml_fp || []);
   DANH_SACH_QUY_TAC_TAT_CUNG.forEach(add);
   return s;
 };

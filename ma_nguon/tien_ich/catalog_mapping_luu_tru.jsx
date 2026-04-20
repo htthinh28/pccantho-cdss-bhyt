@@ -4,8 +4,9 @@
  */
 
 import { gopBanGhiMappingTuLegacyVaShard } from './config_dataset_versioning.pure.js';
-import { docMangDanhMucTuStorage, ghiMangDanhMucVaoStorage } from './luu_tru_danh_muc';
+import { chuanHoaChuoiMaChoSoSanh, tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { timMaKhongThuocDanhMuc } from './catalog_mapping_catalog_loaders';
+import { docMangDanhMucTuStorage, ghiMangDanhMucVaoStorage } from './luu_tru_danh_muc';
 import {
   layCauHinhLoaiMapping,
   MAPPING_TYPE_CONFIG,
@@ -114,6 +115,8 @@ export const validateMappingMoi = ({ rows, rowMoi, boQuaId, bangTheoRef }) => {
   const src = String(rowMoi.source_code || '').trim();
   const tgt = String(rowMoi.target_code || '').trim();
   if (!src || !tgt) return { ok: false, message: 'Thiếu mã nguồn hoặc mã đích.' };
+  const srcKey = chuanHoaChuoiMaChoSoSanh(src);
+  const tgtKey = chuanHoaChuoiMaChoSoSanh(tgt);
 
   const dm = kiemTraMaTuongUngDanhMuc(rowMoi, bangTheoRef);
   if (!dm.ok) return dm;
@@ -123,10 +126,10 @@ export const validateMappingMoi = ({ rows, rowMoi, boQuaId, bangTheoRef }) => {
   if (cfg.cardinality === 'N:1') {
     const trung = others.filter(
       (r) =>
-        String(r.source_code || '').trim() === src
+        chuanHoaChuoiMaChoSoSanh(r.source_code) === srcKey
         && r.is_active
         && mappingCoHieuLucTaiNgay(r)
-        && String(r.target_code || '').trim() !== tgt,
+        && chuanHoaChuoiMaChoSoSanh(r.target_code) !== tgtKey,
     );
     if (trung.length > 0 && rowMoi.is_active !== false) {
       return {
@@ -138,8 +141,8 @@ export const validateMappingMoi = ({ rows, rowMoi, boQuaId, bangTheoRef }) => {
 
   const trungHoanToan = others.some(
     (r) =>
-      String(r.source_code || '').trim() === src
-      && String(r.target_code || '').trim() === tgt
+      chuanHoaChuoiMaChoSoSanh(r.source_code) === srcKey
+      && chuanHoaChuoiMaChoSoSanh(r.target_code) === tgtKey
       && r.is_active
       && giaoHieuLuc(rowMoi, r),
   );
@@ -172,7 +175,7 @@ function docChiThucStaffDvkt(row) {
   }
   const tc = String(row.target_code || '').trim();
   if (!tc) return { chi: [], thuc: [] };
-  const parts = tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
+  const parts = tachChuoiNhieuMa(tc);
   return { chi: [], thuc: parts };
 }
 
@@ -190,7 +193,7 @@ export const layMaDichTuBanGhiMapping = (row) => {
     }
     const tc = String(row.target_code || '').trim();
     if (!tc) return [];
-    return [...new Set(tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc])];
+    return [...new Set(tachChuoiNhieuMa(tc))];
   }
   const tc = String(row.target_code || '').trim();
   return tc ? [tc] : [];
@@ -212,7 +215,7 @@ export const layMaNguonTuBanGhiMapping = (row) => {
     }
     const sc = String(row.source_code || '').trim();
     if (!sc) return [];
-    return [...new Set(sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc])];
+    return [...new Set(tachChuoiNhieuMa(sc))];
   }
   const sc = String(row.source_code || '').trim();
   return sc ? [sc] : [];

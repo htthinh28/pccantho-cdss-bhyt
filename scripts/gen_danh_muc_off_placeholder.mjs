@@ -87,15 +87,22 @@ function main() {
   lines.push(`Sinh tự động: ${now} (UTC có thể lệch múi giờ máy)`);
   lines.push(`Repo: ${ROOT}`);
   lines.push('');
-  lines.push('=== PHẦN A — CHUYÊN ĐỀ (CHUYEN_DE) ĐIỀU KIỆN PLACEHOLDER (CHUYEN_DE_XML130_CHO_XU_LY_SAU) ===');
+  lines.push('=== PHẦN A — CHUYÊN ĐỀ (CHUYEN_DE) ĐIỀU KIỆN PLACEHOLDER (EXIT_AUDIT_BACKLOG / CHO_XU_LY_SAU) ===');
   lines.push('Nguồn: scripts/chuyen_de_placeholder_registry.json (đồng bộ sau mỗi lần sửa luật CHUYEN_DE).');
-  lines.push('Ý nghĩa: DIEU_KIEN luôn false trên hồ sơ có MA_LK — chưa triển khai biểu thức XML130 thực chiến.');
+  lines.push('Ý nghĩa: backlog hoặc CHO_XU_LY — chưa triển khai DIEU_KIEN XML130 đủ để phát cảnh báo thực chiến.');
   lines.push('');
 
   const reg = JSON.parse(fs.readFileSync(REG, 'utf8'));
-  lines.push(`Số quy tắc placeholder: ${reg.placeholder_count}`);
+  const ids = reg.rule_ids_all_placeholder || reg.rule_ids || [];
+  lines.push(`Số quy tắc placeholder (tổng): ${reg.placeholder_count}`);
+  if (reg.exit_audit_backlog_count != null) {
+    lines.push(`  — EXIT_AUDIT_BACKLOG: ${reg.exit_audit_backlog_count}`);
+  }
+  if (reg.cho_xu_ly_sau_count != null) {
+    lines.push(`  — CHO_XU_LY_SAU: ${reg.cho_xu_ly_sau_count}`);
+  }
   lines.push('');
-  for (const rid of reg.rule_ids) {
+  for (const rid of ids) {
     lines.push(`  ${rid}`);
   }
   lines.push('');

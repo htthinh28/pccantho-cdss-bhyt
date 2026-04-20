@@ -10,7 +10,7 @@
  * Giao diện: Pink Theme Phương Châu, Arial > 20px.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -52,6 +52,30 @@ const chuanHoaToken = (value) => String(value || '')
 const layBangXmlTuGiaTri = (value = '') => {
     const match = String(value || '').toUpperCase().match(/XML\d+/);
     return match ? match[0] : 'XML1';
+};
+
+/** Gắn từng mục cảnh báo về đúng XML1…XML6 để lọc theo tab đang chọn */
+const suyRaMaBangXmlTuLoiGiamDinh = (item) => {
+    if (!item) return 'XML1';
+    const raw = String(item.phan_he || item.phan_loai || '').toUpperCase();
+    const m = raw.match(/XML[1-6]/);
+    return m ? m[0] : 'XML1';
+};
+
+const demLoiTheoBang = (danhSach, maBang) =>
+    danhSach.filter((l) => suyRaMaBangXmlTuLoiGiamDinh(l) === maBang).length;
+
+/** Hiển thị ngắn — tránh dump JSON.stringify toàn object */
+const taoDongMoTaLoiNganGon = (l) => {
+    const c = String(l?.canh_bao || l?.noi_dung || l?.noi_dung_loi || l?.mo_ta || '').trim();
+    if (c) return c;
+    const ma = String(l?.ma_luat || '').trim();
+    const vt = String(l?.truong_loi || '').trim();
+    const he = String(l?.phan_he || l?.phan_loai || '').trim();
+    const idx = Number.isFinite(Number(l?.index)) ? ` · dòng ${Number(l.index) + 1}` : '';
+    const parts = [ma, he, vt].filter(Boolean);
+    if (parts.length) return parts.join(' · ') + idx;
+    return 'Cảnh báo — đối chiếu cột / dòng trên lưới';
 };
 
 const moTaViTriSua = (viTri = null) => {
@@ -142,7 +166,7 @@ const SuaFileXML = ({ route, navigation }) => {
     };
     const [tabHienTai, setTabHienTai] = useState(getTabFromPhanHe());
 
-    // Tải dữ liệu gốc từ kho lưu trữ
+    // Chỉ nạp đúng dữ liệu trong kho — không áp dụng tự động gợi ý sửa từ route.params.loi (loi chỉ phục vụ tab/rule).
     useEffect(() => {
         const taiDuLieu = async () => {
             if (maLK) {
@@ -160,6 +184,11 @@ const SuaFileXML = ({ route, navigation }) => {
         };
         taiDuLieu();
     }, [maLK]);
+
+    const loiTheoBangDangChon = useMemo(
+        () => danhSachLoiHienTai.filter((l) => suyRaMaBangXmlTuLoiGiamDinh(l) === tabHienTai),
+        [danhSachLoiHienTai, tabHienTai],
+    );
 
     const COT_HIEN_THI = layDanhSachCot(tabHienTai);
 
@@ -208,9 +237,18 @@ const SuaFileXML = ({ route, navigation }) => {
     // Xóa dòng khỏi bảng array
     const handleXoaDong = (index) => {
         const key = tabHienTai.toLowerCase();
-        if (Platform.OS === 'web') {
-            if (!confirm(`Xác nhận xóa dòng số ${index + 1}?`)) return;
+        if (Platform.OS !== 'web') {
+            Alert.alert('Xác nhận', `Xóa dòng số ${index + 1}?`, [
+                { text: 'Hủy', style: 'cancel' },
+                { text: 'Xóa', style: 'destructive', onPress: () => thucHienXoaDong(index) },
+            ]);
+            return;
         }
+        thucHienXoaDong(index);
+    };
+
+    const thucHienXoaDong = (index) => {
+        const key = tabHienTai.toLowerCase();
         setDuLieuSua(prev => {
             const newData = { ...prev };
             const arr = [...(newData[key] || [])];
@@ -228,10 +266,12 @@ const SuaFileXML = ({ route, navigation }) => {
         const ketQua = kiemTraToanDienHoSo(duLieuSua);
         setDanhSachLoiHienTai(ketQua);
         setHienThiLoi(true);
-        if (ketQua.length === 0) {
-            Alert.alert("✅ Hồ sơ hợp lệ", "Không tìm thấy lỗi nào sau khi kiểm tra lại. Bạn có thể xuất bản XML.");
-        } else {
-            Alert.alert("⚠️ Còn lỗi", `Phát hiện ${ketQua.length} lỗi. Vui lòng kiểm tra danh sách lỗi bên dưới.`);
+        if (Platform.OS !== 'web') {
+            if (ketQua.length === 0) {
+                Alert.alert("✅ Hồ sơ hợp lệ", "Không tìm thấy lỗi nào sau khi kiểm tra lại.");
+            } else {
+                Alert.alert("⚠️ Còn lỗi", `Phát hiện ${ketQua.length} lỗi.`);
+            }
         }
     };
 
@@ -244,7 +284,9 @@ const SuaFileXML = ({ route, navigation }) => {
         try {
             const duLieuVersionHoa = taoDuLieuVersionHoa(duLieuSua, duLieuDaLuu, moCheDoBanSao);
             if (duLieuDaLuu && duLieuVersionHoa.dau_van_tay_du_lieu === duLieuDaLuu.dau_van_tay_du_lieu) {
-                Alert.alert("Thông báo", `Bản lưu hiện tại đã là phiên bản ${duLieuDaLuu.phien_ban_hien_hanh || 1}, chưa có thay đổi mới để lưu.`);
+                if (Platform.OS !== 'web') {
+                    Alert.alert("Thông báo", `Bản lưu hiện tại đã là phiên bản ${duLieuDaLuu.phien_ban_hien_hanh || 1}, chưa có thay đổi mới để lưu.`);
+                }
                 setDangLuu(false);
                 return;
             }
@@ -259,7 +301,9 @@ const SuaFileXML = ({ route, navigation }) => {
             const ketQua = await luuHoSoVaoKho([hoSoLuu]);
             if (ketQua) {
                 setDuLieuDaLuu(duLieuVersionHoa);
-                Alert.alert("✅ Đã lưu", `Đã lưu hồ sơ ${maLK} ở phiên bản ${duLieuVersionHoa.phien_ban_hien_hanh}.`);
+                if (Platform.OS !== 'web') {
+                    Alert.alert("✅ Đã lưu", `Đã lưu hồ sơ ${maLK} ở phiên bản ${duLieuVersionHoa.phien_ban_hien_hanh}.`);
+                }
             } else {
                 Alert.alert("❌ Lỗi lưu", ketQua.loi || "Không thể lưu hồ sơ.");
             }
@@ -276,30 +320,18 @@ const SuaFileXML = ({ route, navigation }) => {
         if (!duLieuSua) return;
 
         if (!duLieuDaLuu?.xml_xuat_ban_chuan) {
+            if (Platform.OS === 'web') return;
             Alert.alert("Thông báo", "Chưa có bản lưu nào để xuất. Vui lòng lưu bản sao trước.");
             return;
         }
 
         if (taoDauVanTayHoSo(duLieuSua) !== duLieuDaLuu.dau_van_tay_du_lieu) {
+            if (Platform.OS === 'web') return;
             Alert.alert("Thông báo", "Dữ liệu hiện tại khác bản đã lưu. Vui lòng lưu bản sao trước khi xuất XML.");
             return;
         }
 
-        // Kiểm tra nhanh trước khi xuất
-        const loiTruocXuat = kiemTraToanDienHoSo(duLieuDaLuu);
-        const loiCritical = loiTruocXuat.filter(l => l.muc_do === 'Critical');
-        if (loiCritical.length > 0) {
-            Alert.alert(
-                "⚠️ Cảnh báo lỗi nghiêm trọng",
-                `Còn ${loiCritical.length} lỗi Critical chưa sửa.\n\n${loiCritical.slice(0, 3).map(l => l.noi_dung).join('\n')}\n\nTiếp tục xuất?`,
-                [
-                    { text: "Hủy", style: "cancel" },
-                    { text: "Vẫn xuất", onPress: () => thucHienXuatXML() }
-                ]
-            );
-        } else {
-            thucHienXuatXML();
-        }
+        thucHienXuatXML();
     };
 
     const thucHienXuatXML = () => {
@@ -317,7 +349,9 @@ const SuaFileXML = ({ route, navigation }) => {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                Alert.alert("✅ Thành công", `Đã xuất file phiên bản lưu: ${tenFile}`);
+                if (Platform.OS !== 'web') {
+                    Alert.alert("✅ Thành công", `Đã xuất file phiên bản lưu: ${tenFile}`);
+                }
             } else {
                 // Mobile: Hiển thị nội dung XML để người dùng sao chép
                 Alert.alert(
@@ -359,29 +393,51 @@ const SuaFileXML = ({ route, navigation }) => {
         if (!loi && danhSachLoiHienTai.length === 0) return null;
         if (!hienThiLoi) return null;
 
-        const loiHienThi = danhSachLoiHienTai.length > 0 ? danhSachLoiHienTai : (loi ? [loi] : []);
-        const soLoi = danhSachLoiHienTai.length;
-        const soLoiCritical = danhSachLoiHienTai.filter(l => l.muc_do === 'Critical').length;
+        let dsHien = loiTheoBangDangChon;
+        if (dsHien.length === 0 && loi && suyRaMaBangXmlTuLoiGiamDinh(loi) === tabHienTai) {
+            dsHien = [loi];
+        }
+
+        const tongLoiHoSo = danhSachLoiHienTai.length;
+        const soLoiTab = dsHien.length;
+        const soLoiCriticalTab = dsHien.filter((l) => l.muc_do === 'Critical').length;
+
+        const tieuDe =
+            soLoiTab === 0
+                ? `✅ Không có lỗi tại ${tabHienTai}`
+                : `⚠️ ${soLoiTab} lỗi tại ${tabHienTai}${soLoiCriticalTab ? ` (${soLoiCriticalTab} Critical)` : ''}`;
+        const goiYTabKhac =
+            tongLoiHoSo > 0 && soLoiTab < tongLoiHoSo
+                ? ` · Chọn tab khác: còn ${tongLoiHoSo - soLoiTab} lỗi`
+                : '';
 
         return (
             <View style={styles.khung_loi}>
                 <View style={styles.loi_header}>
                     <Text style={styles.loi_tieu_de}>
-                        {soLoi === 0 ? '✅ Không còn lỗi' : `⚠️ ${soLoi} LỖI CẦN SỬA (${soLoiCritical} Critical)`}
+                        {tieuDe}
+                        {goiYTabKhac ? (
+                            <Text style={styles.loi_tieu_de_phu}>{goiYTabKhac}</Text>
+                        ) : null}
                     </Text>
                     <TouchableOpacity onPress={() => setHienThiLoi(false)}>
                         <Text style={styles.txt_an_loi}>Ẩn ▲</Text>
                     </TouchableOpacity>
                 </View>
-                {loiHienThi.slice(0, 5).map((l, i) => (
-                    <View key={i} style={[styles.dong_loi, { borderLeftColor: l.muc_do === 'Critical' ? '#FF6B6B' : l.muc_do === 'Error' ? '#FFB74D' : '#FFF176' }]}>
-                        <Text style={styles.txt_loi_muc_do}>[{l.muc_do || 'Info'}] {l.phan_loai || l.phan_he || ''}</Text>
-                        <Text style={styles.txt_loi_nd}>{l.noi_dung || l.mo_ta || JSON.stringify(l)}</Text>
-                    </View>
-                ))}
-                {loiHienThi.length > 5 && (
-                    <Text style={styles.txt_them_loi}>...và {loiHienThi.length - 5} lỗi khác</Text>
-                )}
+                <ScrollView style={styles.loi_scroll} nestedScrollEnabled showsVerticalScrollIndicator>
+                    {dsHien.map((l, i) => (
+                        <View
+                            key={`${tabHienTai}_${i}_${l.ma_luat || ''}_${l.truong_loi || ''}_${l.index ?? ''}`}
+                            style={[styles.dong_loi, { borderLeftColor: l.muc_do === 'Critical' ? '#FF6B6B' : l.muc_do === 'Error' ? '#FFB74D' : '#FFF176' }]}
+                        >
+                            <Text style={styles.txt_loi_muc_do}>
+                                [{l.muc_do || 'Info'}] {l.phan_he || l.phan_loai || ''}
+                                {l.ma_luat ? ` · ${l.ma_luat}` : ''}
+                            </Text>
+                            <Text style={styles.txt_loi_nd}>{taoDongMoTaLoiNganGon(l)}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
             </View>
         );
     };
@@ -416,7 +472,7 @@ const SuaFileXML = ({ route, navigation }) => {
                                 <TextInput
                                     style={[
                                         styles.input_o,
-                                        danhSachLoiHienTai.some(l => l.noi_dung?.includes(col)) && styles.input_loi,
+                                        loiTheoBangDangChon.some(l => String(l.canh_bao || l.noi_dung || '').includes(col)) && styles.input_loi,
                                         laMucTieuSua(tabHienTai, viTriSua, col) && styles.input_muc_tieu,
                                     ]}
                                     value={String(data[col] ?? "")}
@@ -463,7 +519,10 @@ const SuaFileXML = ({ route, navigation }) => {
                                             <TextInput
                                                 style={[
                                                     styles.input_grid,
-                                                    danhSachLoiHienTai.some(l => l.noi_dung?.includes(`Dòng ${rIdx + 1}`) && l.noi_dung?.includes(col)) && styles.input_loi,
+                                                    loiTheoBangDangChon.some(l =>
+                                                        String(l.canh_bao || l.noi_dung || '').includes(`Dòng ${rIdx + 1}`) ||
+                                                        (Number(l.index) === rIdx && String(l.truong_loi || '').toUpperCase() === String(col).toUpperCase()),
+                                                    ) && styles.input_loi,
                                                     laMucTieuSua(tabHienTai, viTriSua, col, rIdx) && styles.input_muc_tieu,
                                                 ]}
                                                 value={String(item[col] ?? "")}
@@ -555,22 +614,25 @@ const SuaFileXML = ({ route, navigation }) => {
                     <View style={styles.sidebar_tab_trai}>
                         <Text style={styles.sidebar_tab_title}>BẢNG XML</Text>
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            {DANH_SACH_XML.map(tab => (
+                            {DANH_SACH_XML.map((tab) => {
+                                const nLoiBang = demLoiTheoBang(danhSachLoiHienTai, tab);
+                                return (
                                 <TouchableOpacity
                                     key={tab}
                                     onPress={() => setTabHienTai(tab)}
                                     style={[
                                         styles.tab_item,
                                         tabHienTai === tab && styles.tab_active,
-                                        danhSachLoiHienTai.some(l => l.phan_loai === tab || (l.phan_loai || '').startsWith(tab)) && styles.tab_co_loi
+                                        nLoiBang > 0 && styles.tab_co_loi
                                     ]}
                                 >
                                     <Text style={[styles.txt_tab, tabHienTai === tab && styles.txt_tab_active]}>{tab}</Text>
-                                    {danhSachLoiHienTai.some(l => (l.phan_loai || '').startsWith(tab)) && (
-                                        <Text style={styles.badge_loi}>!</Text>
-                                    )}
+                                    {nLoiBang > 0 ? (
+                                        <Text style={styles.badge_so_loi}>{nLoiBang}</Text>
+                                    ) : null}
                                 </TouchableOpacity>
-                            ))}
+                                );
+                            })}
                         </ScrollView>
                     </View>
 
@@ -682,8 +744,10 @@ const styles = StyleSheet.create({
         borderWidth: 1, borderColor: CD.border.glass,
         ...Platform.select({ web: { backdropFilter: CD.web.blur_card, WebkitBackdropFilter: CD.web.blur_card, boxShadow: CD.web.shadow_card } }),
     },
-    loi_header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-    loi_tieu_de: { fontSize: 20, fontWeight: 'bold', color: '#FFF176', fontFamily: CD.font.family },
+    loi_header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 },
+    loi_tieu_de: { flex: 1, fontSize: 20, fontWeight: 'bold', color: '#FFF176', fontFamily: CD.font.family },
+    loi_tieu_de_phu: { fontSize: 16, fontWeight: '600', color: 'rgba(255,255,255,0.75)' },
+    loi_scroll: { maxHeight: 240 },
     txt_an_loi: { fontSize: 18, color: CD.brand.mauNhat, fontWeight: 'bold' },
     dong_loi: { borderLeftWidth: 4, paddingLeft: 10, marginBottom: 6, paddingVertical: 4 },
     txt_loi_muc_do: { fontSize: 16, fontWeight: 'bold', color: CD.text.secondary, fontFamily: CD.font.family },
@@ -707,7 +771,18 @@ const styles = StyleSheet.create({
     tab_co_loi: { borderColor: 'rgba(255,152,0,0.6)', borderWidth: 2 },
     txt_tab: { fontSize: 18, fontWeight: 'bold', color: '#111827', fontFamily: CD.font.family },
     txt_tab_active: { color: '#FFFFFF' },
-    badge_loi: { fontSize: 14, color: '#FFB74D', fontWeight: 'bold' },
+    badge_so_loi: {
+        minWidth: 22,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 10,
+        overflow: 'hidden',
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#B71C1C',
+        backgroundColor: 'rgba(255,193,7,0.95)',
+        textAlign: 'center',
+    },
 
     // Editor
     editor_area: { flex: 5.9 },

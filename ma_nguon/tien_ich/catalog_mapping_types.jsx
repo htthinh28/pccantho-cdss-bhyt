@@ -124,7 +124,7 @@ export const MAPPING_TYPE_CONFIG = [
   },
 ];
 
-/** Một bản ghi có thể gắn nhiều mã đích (lưu target_code dạng A|B|C + metadata.target_codes). */
+/** Một bản ghi có thể gắn nhiều mã đích (lưu target_code dạng "A; B; C" + metadata.target_codes). */
 export const MAPPING_LOAI_NHIEU_MA_DICH = [
   'ICD_DRUG',
   'ICD_DVKT',

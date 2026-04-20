@@ -110,7 +110,7 @@ const DEFAULT_DVKT_RULES = [
   { RULE_CODE: 'DVKT-OP-04', RULE_NAME: 'Máy móc thiết bị', OPERATOR: 'CHECK_EQUIPMENT', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'CSKCB không có thiết bị hợp lệ để thực hiện DVKT.' },
   { RULE_CODE: 'DVKT-OP-05', RULE_NAME: 'Giá DVKT', OPERATOR: 'CHECK_PRICE', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Đơn giá DVKT vượt giá BHYT phê duyệt.' },
   { RULE_CODE: 'DVKT-OP-06', RULE_NAME: 'Hiệu lực DVKT', OPERATOR: 'CHECK_VALIDITY', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT ngoài khoảng hiệu lực áp dụng.' },
-  { RULE_CODE: 'DVKT-OP-07', RULE_NAME: 'Phân loại PTTT', OPERATOR: 'CHECK_PTTT_LEVEL', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Thông tin phân loại PTTT chưa đúng quy định.' },
+  { RULE_CODE: 'DVKT-OP-07', RULE_NAME: 'Phân loại PTTT', OPERATOR: 'CHECK_PTTT_LEVEL', STATUS: 'OFF', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Thông tin phân loại PTTT chưa đúng quy định.' },
   { RULE_CODE: 'DVKT-OP-08', RULE_NAME: 'Ghi chú đặc thù', OPERATOR: 'CHECK_GHICHU', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Thông tin VTYT không phù hợp ghi chú đặc thù DVKT.' },
   { RULE_CODE: 'DVKT-OP-09', RULE_NAME: 'Khám và giường bệnh (nội bộ) được phê duyệt', OPERATOR: 'CHECK_INTERNAL_APPROVAL', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT không nằm trong danh mục Khám và giường bệnh (nội bộ) được phê duyệt.' },
   { RULE_CODE: 'DVKT-OP-10', RULE_NAME: 'Thời gian hành nghề bác sỹ', OPERATOR: 'CHECK_STAFF_PRACTICE_TIME', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Thông tin hành nghề bác sỹ không hợp lệ tại thời điểm thực hiện DVKT.' },

@@ -14,6 +14,7 @@ import { CD } from '../tien_ich/chu_de_giao_dien';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
 import { layGocUrlTaiLieu, taoUrlMoTaiLieu } from '../tien_ich/tai_lieu_url';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 
 const moLienKet = async (url) => {
   const trimmed = String(url || '').trim();
@@ -132,16 +133,16 @@ const ManHinhThuVien = ({ navigation }) => {
         ) : null}
 
         <View style={styles.shortcut_row}>
-          <TouchableOpacity style={styles.shortcut_btn} onPress={() => navigation.navigate('TroLyTriThuc')}>
+          <TouchableOpacity style={styles.shortcut_btn} onPress={() => dieuHuongMoTabMoi(navigation, 'TroLyTriThuc')}>
             <Text style={styles.shortcut_txt}>🤖 Trợ lý tri thức</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.shortcut_btn}
-            onPress={() => navigation.navigate('QuanLyChuyenMon')}
+            onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyChuyenMon')}
           >
             <Text style={styles.shortcut_txt}>🧠 Chuyên môn (EBM)</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.shortcut_btn} onPress={() => navigation.navigate('Helper')}>
+          <TouchableOpacity style={styles.shortcut_btn} onPress={() => dieuHuongMoTabMoi(navigation, 'Helper')}>
             <Text style={styles.shortcut_txt}>🧰 Helper</Text>
           </TouchableOpacity>
         </View>

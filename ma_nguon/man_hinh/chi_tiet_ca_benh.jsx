@@ -355,7 +355,7 @@ const ManHinhChiTiet = ({ route, navigation }) => {
                         textAlignVertical="top"
                       />
                     ) : null}
-                    <TouchableOpacity style={styles.btn_truy_van} onPress={() => navigation.navigate('SuaFileXML', { maLK: maLkHienThi, loi })}>
+                    <TouchableOpacity style={styles.btn_truy_van} onPress={() => dieuHuongMoTabMoi(navigation, 'SuaFileXML', { maLK: maLkHienThi, loi })}>
                       <Text style={styles.txt_truy_van}>Truy vấn và đề nghị sửa lỗi</Text>
                     </TouchableOpacity>
                   </View>

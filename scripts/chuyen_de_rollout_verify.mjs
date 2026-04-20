@@ -2,8 +2,8 @@
  * Kiểm tra sau khi đưa quy tắc CHUYEN_DE từ placeholder → DIEU_KIEN XML130 (từng lô / từng PR).
  *
  * Quy trình tay trước khi chạy script này:
- * 1. Sửa DIEU_KIEN trong ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx (bỏ CHUYEN_DE_XML130_CHO_XU_LY_SAU).
- * 2. npm run chuyen-de:sync-placeholder-registry
+ * 1. Sửa DIEU_KIEN trong ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx (bỏ EXIT_AUDIT_BACKLOG / CHO_XU_LY_SAU).
+ * 2. npm run chuyen-de:prepare-build (đã gắn vào desktop:export / prestart / qa:audit-all)
  * 3. (Khuyến nghị) kiểm thử vàng trên XML mẫu; thêm id vào scripts/chuyen_de_thuc_chien_manifest.json
  * 4. npm run chuyen-de:rollout-verify
  *
@@ -21,9 +21,7 @@ const isWin = process.platform === 'win32';
 const npm = isWin ? 'npm.cmd' : 'npm';
 
 const STEPS = [
-  'chuyen-de:sync-placeholder-registry',
-  'chuyen-de:sync-eligible-scan',
-  'qa:chuyen-de-placeholder',
+  'chuyen-de:prepare-build',
   'qa:chuyen-de-thuc-chien',
   'lint',
   'qa:audit-fixtures',

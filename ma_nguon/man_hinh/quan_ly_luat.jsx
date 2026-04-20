@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
 import { phucHoiBanSaoGanNhat, taoBanSaoDuLieuHeThong } from '../tien_ich/sao_luu_du_lieu_he_thong';
 import { damBaoSeedLuatPtttMuc11 } from '../tien_ich/seed_luat_pttt_muc11';
@@ -683,7 +684,7 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.chu_tieu_de}>⚙️ HỆ QUẢN TRỊ QUY TẮC BHYT ĐỘNG (NO-CODE)</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('QuanLyQuyTacOnOff')}
+          onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyQuyTacOnOff')}
           style={styles.nut_quy_tac_on_off}
         >
           <Text style={styles.chu_nut_quy_tac_on_off}>🎚 QUY TẮC ON/OFF</Text>

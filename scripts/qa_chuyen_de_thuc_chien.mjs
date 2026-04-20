@@ -1,7 +1,7 @@
 /**
  * QA quy trình thực chiến CHUYEN_DE (từng bước):
  *
- * Bước 1 — DIEU_KIEN không phải placeholder (không phải CHUYEN_DE_XML130_CHO_XU_LY_SAU).
+ * Bước 1 — DIEU_KIEN không phải placeholder (không phải EXIT_AUDIT_BACKLOG / CHO_XU_LY_SAU).
  * Bước 2 — TRANG_THAI seed = ON trong luat_giam_dinh_chuyen_de_hardcoded.jsx (hoặc chủ động OFF có lý do).
  * Bước 3 — Rà soát quy_tac_on_off_noi_bo: nếu mã nằm DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF, chỉ thực chiến khi BV bật ON có kiểm soát.
  * Bước 4 — Kiểm thử vàng trên XML thật / ca mẫu; ghi golden_test_refs trong manifest (khuyến nghị).
@@ -68,8 +68,8 @@ for (const id of approved) {
   if (!r) fail(`approved_rule_ids: không tìm thấy ${id} trong ${path.relative(ROOT, SRC)}`);
   if (r.placeholder) {
     fail(
-      `${id} vẫn là placeholder (CHUYEN_DE_XML130_CHO_XU_LY_SAU) — không được khai báo thực chiến. Viết DIEU_KIEN XML130 trước.`,
-  );
+      `${id} vẫn là placeholder (EXIT_AUDIT_BACKLOG hoặc CHO_XU_LY_SAU) — không được khai báo thực chiến. Viết DIEU_KIEN XML130 trước.`,
+    );
   }
   if (r.trangThai === 'OFF') {
     fail(

@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-04-19T03:10:29.630Z",
-  "tong_so": 4330,
-  "on": 4004,
+  "timestamp": "2026-04-20T15:01:48.473Z",
+  "tong_so": 4308,
+  "on": 3982,
   "off": 326,
   "unknown": 0,
   "danh_sach_off": [
@@ -566,9 +566,9 @@
       "ten_quy_tac": "Có thanh toán DVKT nhưng thiếu Y lệnh"
     },
     {
-      "ma_luat": "Chuyen_de_095",
+      "ma_luat": "Chuyen_de_150",
       "file": "luat_giam_dinh_chuyen_de_hardcoded.jsx",
-      "ten_quy_tac": "Bảng kê chi phí KCB lập sai quy định"
+      "ten_quy_tac": "Khám kèm siêu âm — thời gian đợt KCB rất ngắn (<10 phút)"
     },
     {
       "ma_luat": "Chuyen_de_272",
@@ -1642,10 +1642,10 @@
     "luat_nhan_su_hardcoded.jsx": 2,
     "luat_giuong_hardcoded.jsx": 60,
     "luat_hop_dong_hardcoded.jsx": 17,
-    "luat_giam_dinh_chuyen_de_hardcoded.jsx": 593,
+    "luat_giam_dinh_chuyen_de_hardcoded.jsx": 571,
     "du_lieu_luat_du_lieu_muc1.jsx": 109,
-    "du_lieu_luat_hanh_chinh_muc2.jsx": 110,
-    "du_lieu_luat_thuoc_muc8.jsx": 525,
+    "du_lieu_luat_hanh_chinh_muc2.jsx": 111,
+    "du_lieu_luat_thuoc_muc8.jsx": 524,
     "du_lieu_luat_pttt_muc11.jsx": 2319
   }
 }

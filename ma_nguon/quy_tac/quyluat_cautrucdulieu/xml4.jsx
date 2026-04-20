@@ -8,7 +8,8 @@
 export const DANH_SACH_COT_XML4 = [
   'MA_LK', 
   'STT', 
-  'MA_DICH_VU', 
+  'MA_DICH_VU',
+  'TEN_DICH_VU',
   'MA_CHI_SO', 
   'TEN_CHI_SO', 
   'GIA_TRI', 
@@ -39,6 +40,12 @@ export const QUY_TAC_KIEM_TRA_XML4 = {
     maxLength: 50,
     type: 'string', 
     mo_ta: 'Ghi mã dịch vụ kỹ thuật cận lâm sàng theo danh mục dùng chung' 
+  },
+  TEN_DICH_VU: {
+    required: false,
+    maxLength: 1024,
+    type: 'string',
+    mo_ta: 'Tên DVKT (một số PM gửi kèm); đối chiếu DVKT–CLS căn cứ MA_DICH_VU khớp XML3.',
   },
   MA_CHI_SO: { 
     required: false, 

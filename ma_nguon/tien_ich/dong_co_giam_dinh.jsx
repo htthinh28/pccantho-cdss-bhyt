@@ -48,6 +48,7 @@ import { damBaoSeedLuatHanhChinhMuc2 } from './seed_luat_hanh_chinh_muc2';
 import { damBaoSeedLuatPtttMuc11 } from './seed_luat_pttt_muc11';
 import { damBaoSeedLuatThuocMuc8 } from './seed_luat_thuoc_muc8';
 import { viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_cap_cuu';
+import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 
 // ============================================================
 // [PHẦN 1] CACHE VÀ HÀM TIỆN ÍCH CƠ BẢN
@@ -1271,10 +1272,41 @@ const taoMetaTuongTacThuocTuBang = (rows) => {
     };
 };
 
+/** Thẻ mapping nghiệp vụ ICD-10 → thuốc (AsyncStorage CATALOG_MAP_V1__ICD_DRUG) */
+const KHOA_CATALOG_ICD_DRUG = 'CATALOG_MAP_V1__ICD_DRUG';
+
+const layMaThuocTuRowMappingIcdDrug = (row) => {
+    const md = row.metadata && typeof row.metadata === 'object' ? row.metadata : {};
+    if (Array.isArray(md.target_codes) && md.target_codes.length) {
+        return md.target_codes.map((c) => String(c || '').trim()).filter(Boolean);
+    }
+    return tachChuoiNhieuMa(String(row.target_code || ''));
+};
+
+const taoMetaTuBangMappingIcdThuoc = (rowsRaw) => {
+    const rows = Array.isArray(rowsRaw) ? rowsRaw : [];
+    const icdDrug = rows.filter((r) => String(r.mapping_type || '').trim().toUpperCase() === 'ICD_DRUG');
+    const setMa = new Set();
+    icdDrug.forEach((row) => {
+        if (row.is_active === false) return;
+        layMaThuocTuRowMappingIcdDrug(row).forEach((t) => {
+            if (t) setMa.add(t);
+        });
+    });
+    return {
+        DM_MAPPING_ICD_THUOC_ROWS: icdDrug,
+        SET_MA_THUOC_CO_MAPPING_ICD: setMa,
+    };
+};
+
 const taiDanhMucHeThong = async () => {
     if (cache_DanhMucHeThong) {
-        const phacRows = await fetchChunkedData('CDSS_DATA_PHAC_DO_V3');
-        let tuongTacRows = await fetchChunkedData('DANH_MUC_TUONG_TAC_THUOC');
+        const [phacRows, tuongTacRowsRaw, mappingRows] = await Promise.all([
+            fetchChunkedData('CDSS_DATA_PHAC_DO_V3'),
+            fetchChunkedData('DANH_MUC_TUONG_TAC_THUOC'),
+            fetchChunkedData(KHOA_CATALOG_ICD_DRUG),
+        ]);
+        let tuongTacRows = tuongTacRowsRaw;
         if (!Array.isArray(tuongTacRows) || tuongTacRows.length === 0) {
             tuongTacRows = Array.isArray(tuongTacThuocSeed?.data) ? tuongTacThuocSeed.data : [];
         }
@@ -1282,6 +1314,7 @@ const taiDanhMucHeThong = async () => {
             ...cache_DanhMucHeThong,
             ...taoMetaPhacDoCdssTuBang(phacRows),
             ...taoMetaTuongTacThuocTuBang(tuongTacRows),
+            ...taoMetaTuBangMappingIcdThuoc(mappingRows),
             DM_TUONG_TAC_THUOC_ROWS: tuongTacRows,
         };
         if (!Array.isArray(base.DM_ICD10_CAP_CUU_ROWS) || base.DM_ICD10_CAP_CUU_ROWS.length === 0) {
@@ -1344,9 +1377,13 @@ const taiDanhMucHeThong = async () => {
         }
         const metaTuongTac = taoMetaTuongTacThuocTuBang(tuongTacRows);
 
+        const mappingRows = await fetchChunkedData(KHOA_CATALOG_ICD_DRUG);
+        const metaMappingIcdThuoc = taoMetaTuBangMappingIcdThuoc(mappingRows);
+
         cache_DanhMucHeThong = {
             ...metaPhacDo,
             ...metaTuongTac,
+            ...metaMappingIcdThuoc,
             DM_TUONG_TAC_THUOC_ROWS: tuongTacRows,
             DM_ICD10_CAP_CUU_ROWS: Array.isArray(icdCapCuuArr) && icdCapCuuArr.length ? icdCapCuuArr : DANH_MUC_ICD10_CAP_CUU,
             // Arrays for NLP engine (backward compatible)
@@ -1393,6 +1430,8 @@ const taiDanhMucHeThong = async () => {
             MAP_TUONG_TAC_CAP: new Map(),
             SO_CAP_TUONG_TAC: 0,
             CO_BANG_TUONG_TAC: false,
+            DM_MAPPING_ICD_THUOC_ROWS: [],
+            SET_MA_THUOC_CO_MAPPING_ICD: new Set(),
             DM_TUONG_TAC_THUOC_ROWS: [],
             DM_ICD10_CAP_CUU_ROWS: DANH_MUC_ICD10_CAP_CUU,
             DM_ICD10:[], DM_ICD10_KE_DON_TREN_30_NGAY:[], DM_BENH_MAN_TINH:[], DM_DVKT:[], DM_THUOC:[], DM_VTYT:[], DM_KHOA:[],
@@ -2566,15 +2605,19 @@ const giamDinhQuyenLoiTheoDoiTuongVaThe = (hoSo, dm) => {
         const allHigher = mucHuongValues.every((value) => value >= expected + 5);
         const allLower = mucHuongValues.every((value) => value <= expected - 5);
         if (allHigher || allLower) {
-            const huongThucTe = Math.round((mucHuongValues.reduce((sum, value) => sum + value, 0) / mucHuongValues.length) * 10) / 10;
-            addLỗi(
-                'HC-06d',
-                'Quyền lợi BHYT theo mã thẻ',
-                `Mã đối tượng KCB [${rule.code}] thuộc nhóm hưởng theo phạm vi quyền lợi, mức hưởng; ký tự mức hưởng trên thẻ BHYT [${thongTinThe.benefitCode}] tương ứng ${expected}%, nhưng mức hưởng chi tiết thực tế đang quanh ${huongThucTe}%.`,
-                'Warning',
-                'MUC_HUONG',
-                rule.legalBasis || layCoSoPhapLyHanhChinh('HC-06')
-            );
+            // Ngoại lệ (cùng khung QĐ BHXH / CV 38): một lần KCB có T_TONGCHI_BH < 15% LCS (2.340.000đ) → trong phạm vi được chi trả 100%;
+            // MUC_HUONG chi tiết ~100% với thẻ mức 4 (80%) không coi là lệch HC-06d.
+            if (!(allHigher && laMotLanKcbDuoi15PhanTramLCS(xml1))) {
+                const huongThucTe = Math.round((mucHuongValues.reduce((sum, value) => sum + value, 0) / mucHuongValues.length) * 10) / 10;
+                addLỗi(
+                    'HC-06d',
+                    'Quyền lợi BHYT theo mã thẻ',
+                    `Mã đối tượng KCB [${rule.code}] thuộc nhóm hưởng theo phạm vi quyền lợi, mức hưởng; ký tự mức hưởng trên thẻ BHYT [${thongTinThe.benefitCode}] tương ứng ${expected}%, nhưng mức hưởng chi tiết thực tế đang quanh ${huongThucTe}%.`,
+                    'Warning',
+                    'MUC_HUONG',
+                    rule.legalBasis || layCoSoPhapLyHanhChinh('HC-06')
+                );
+            }
         }
     }
 
@@ -3993,6 +4036,7 @@ const SYS_KEYWORDS_RULE_DONG = Object.freeze([
     'MATCH_MA_LOAI_KCB', 'MATCH_ANY_MA_LOAI_KCB',
     'CO_PHAC_DO_CDSS_CHO_ICD', 'CO_KHO_TRI_THUC_PHAC_DO',
     'CO_PHAC_DO_CDSS_CHO_BAT_CU_ICD_TREN_XML1', 'KHONG_CO_PHAC_DO_CDSS_CHO_MA_ICD_GOP_TREN_XML1',
+    'CO_ICD_KHOP_MAPPING_THUOC', 'CO_CO_DONG_MAPPING_ICD_THUOC', 'CO_THUOC_TRONG_DM_BV',
 ]);
 
 const MAX_RULE_DONG_EXPRESSION_LENGTH = 4000;
@@ -4971,6 +5015,56 @@ const taoHamDieuKienLuatDong = (jsQuery = '') => {
                 if (!m || typeof m.has !== 'function') return false;
                 return !codes.some((k) => m.has(k));
             };
+            const chuanHoaMaIcdPhacDoCdss = ${chuanHoaMaIcdPhacDoCdss.toString()};
+            const CO_CO_DONG_MAPPING_ICD_THUOC = (maThuoc) => {
+                const st = danhMucHeThong && danhMucHeThong.SET_MA_THUOC_CO_MAPPING_ICD;
+                const mm = String(maThuoc || '').trim();
+                return !!(st && typeof st.has === 'function' && mm && st.has(mm));
+            };
+            const CO_ICD_KHOP_MAPPING_THUOC = (maThuoc) => {
+                const rowsAll = danhMucHeThong && danhMucHeThong.DM_MAPPING_ICD_THUOC_ROWS;
+                const mThuoc = String(maThuoc || '').trim();
+                if (!Array.isArray(rowsAll) || !mThuoc) return true;
+                let ngayT = Date.now();
+                try {
+                    const nx = XML1 && (XML1.NGAY_RA || XML1.NGAY_VAO || '');
+                    const ds = String(nx || '').trim();
+                    if (ds.length >= 8) {
+                        const d = new Date(ds.slice(0, 10));
+                        if (Number.isFinite(d.getTime())) ngayT = d.getTime();
+                    }
+                } catch (_e) {}
+                const icdChoPhep = new Set();
+                const tachMap = (x) => String(x || '').trim().replace(/\\|/g,';').replace(/,/g,';').split(';').map(z=>String(z||'').trim()).filter(Boolean);
+                rowsAll.forEach((row) => {
+                    if (String(row.mapping_type || '').toUpperCase() !== 'ICD_DRUG') return;
+                    if (row.is_active === false) return;
+                    if (row.effective_from && new Date(row.effective_from).getTime() > ngayT) return;
+                    if (row.effective_to && new Date(row.effective_to).getTime() < ngayT) return;
+                    const md = row.metadata && typeof row.metadata === 'object' ? row.metadata : {};
+                    let tgts = [];
+                    if (Array.isArray(md.target_codes) && md.target_codes.length) tgts = md.target_codes.map(c=>String(c||'').trim()).filter(Boolean);
+                    else tgts = tachMap(row.target_code);
+                    if (tgts.indexOf(mThuoc) === -1) return;
+                    let srcs = [];
+                    if (Array.isArray(md.source_icd_codes) && md.source_icd_codes.length) srcs = md.source_icd_codes.map(c=>String(c||'').trim()).filter(Boolean);
+                    else srcs = tachMap(row.source_code);
+                    srcs.forEach((icdRaw) => {
+                        const x = chuanHoaMaIcdPhacDoCdss(icdRaw);
+                        const k = x ? String(x).replace(/\\./g,'').toUpperCase() : '';
+                        if (k) icdChoPhep.add(k);
+                    });
+                });
+                if (icdChoPhep.size === 0) return true;
+                const hs = layMaIcdGopChinhVaKemKhongTrung(XML1);
+                return hs.some((icd) => icdChoPhep.has(icd));
+            };
+            const CO_THUOC_TRONG_DM_BV = (maThuoc) => {
+                const m = danhMucHeThong && danhMucHeThong.MAP_THUOC_BV;
+                if (!m || typeof m.has !== 'function') return false;
+                const c = String(maThuoc || '').trim().toUpperCase();
+                return Boolean(c && m.has(c));
+            };
             const CO_KHO_TRI_THUC_PHAC_DO = () => !!(danhMucHeThong && danhMucHeThong.CO_KHO_PHAC_DO_CDSS);
             const normalizeMaLoaiKcb = ${normalizeMaLoaiKcb.toString()};
             const layTapMaLoaiKcbTheoGiaTriRule = ${layTapMaLoaiKcbTheoGiaTriRule.toString()};
@@ -5272,12 +5366,50 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
     );
 };
 
+/**
+ * Làm nóng cache trước batch: danh mục hệ thống (lần đầu đủ chunk), map ON/OFF / ghi đề quy tắc,
+ * và nạp trọn luật động theo tab — giảm I/O & parse luật lặp cho từng hồ sơ trong cùng đợt giám định.
+ */
+export const lamNongCoSoTruocBatchGiamDinh = async () => {
+    await Promise.all([
+        taiDanhMucHeThong(),
+        taiMapTrangThaiQuyTacNoiBo(),
+        taiMapGhiDeNoiDungQuyTacNoiBo(),
+    ]);
+    const danhSachTabIds = await taiDanhSachTabLuatDong();
+    const tabsCanNap = danhSachTabIds.filter((tabId) => !Array.isArray(cache_LuatGiamDinh[tabId]));
+    if (tabsCanNap.length === 0) return;
+    const luatTheoTab = await Promise.all(
+        tabsCanNap.map(async (tabId) => ({
+            tabId,
+            rules: await taiRuleDongTheoTabId(tabId),
+        })),
+    );
+    luatTheoTab.forEach(({ tabId, rules }) => {
+        cache_LuatGiamDinh[tabId] = Array.isArray(rules) ? rules : [];
+    });
+};
+
+/** Alias — đồng bộ với batch V15 */
+export const lamNongCoSoTruocBatchGiamDinhV15 = lamNongCoSoTruocBatchGiamDinh;
+
 export const chayBoMayGiamDinhNhieuHoSoV3 = async (danhSachHoSo = [], options = {}) => {
     const danhSachDauVao = Array.isArray(danhSachHoSo) ? danhSachHoSo : [];
     const ketQua = [];
     const onProgress = typeof options?.onProgress === 'function' ? options.onProgress : null;
     const forceReaudit = options?.forceReaudit !== false;
     const batchContext = taoBatchContextGiamDinh(danhSachDauVao);
+
+    const canWarm = danhSachDauVao.some(
+        (hoSo) => hoSo && (forceReaudit || !Array.isArray(hoSo?.ket_qua_giam_dinh)),
+    );
+    if (options?.warmUp !== false && canWarm) {
+        try {
+            await lamNongCoSoTruocBatchGiamDinh();
+        } catch (warmErr) {
+            console.warn('[CDSS] lamNongCoSoTruocBatchGiamDinh:', warmErr);
+        }
+    }
 
     for (let index = 0; index < danhSachDauVao.length; index += 1) {
         const hoSo = danhSachDauVao[index];
@@ -5314,12 +5446,24 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     const danhMuc = await taiDanhMucHeThong();
     let allLỗi = layLỗiCauTrucTienXuLy(hoSo);
 
-    // LAYER 0: False Positive Guard
+    // LAYER 0: False Positive Guard — vẫn giữ lỗi Critical từ kiểm_tra_xml (thiếu trường bắt buộc cổng / MA_TTDV…).
     const xml1Obj = _getXML1(hoSo);
     if (laNguonKhôngPhaBHYT(xml1Obj)) {
-        return [{ phan_he: 'XML1', index: -1, truong_loi: 'T_BHTT',
+        const ORDER_EARLY = { Critical: 0, Error: 1, Warning: 2, Info: 3 };
+        const fpGuard = [{
+            phan_he: 'XML1',
+            index: -1,
+            truong_loi: 'T_BHTT',
             canh_bao: 'Hồ sơ này không có thanh toán BHYT - bỏ qua toàn bộ kiểm tra BHYT.',
-            muc_do: 'Info', ma_luat: 'FPG-00', ten_quy_tac: 'False Positive Guard', dieu_kien: 'BUILT-IN' }];
+            muc_do: 'Info',
+            ma_luat: 'FPG-00',
+            ten_quy_tac: 'False Positive Guard',
+            dieu_kien: 'BUILT-IN',
+        }];
+        const criticalCauTruc = allLỗi.filter((x) => String(x?.muc_do || '').trim() === 'Critical');
+        const ketQua = criticalCauTruc.length > 0 ? [...criticalCauTruc, ...fpGuard] : fpGuard;
+        ketQua.sort((a, b) => (ORDER_EARLY[a.muc_do] ?? 9) - (ORDER_EARLY[b.muc_do] ?? 9));
+        return ketQua;
     }
 
     // LAYER 1: Hành chính
@@ -5372,6 +5516,52 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     const ORDER = { Critical: 0, Error: 1, Warning: 2, Info: 3 };
     ketQuaCoChiTiet.sort((a, b) => (ORDER[a.muc_do] ?? 9) - (ORDER[b.muc_do] ?? 9));
     return ketQuaCoChiTiet;
+};
+
+/**
+ * Giám định hàng loạt — cùng pipeline với `chayGiamDinhToanDienV15` (CLI QA, chi tiết ca bệnh).
+ * Khác `chayBoMayGiamDinhNhieuHoSoV3`: gồm đủ L0–L5b (hành chính, danh mục, thuốc/GDH cứng, luật động, v.v.).
+ */
+export const chayGiamDinhNhieuHoSoV15 = async (danhSachHoSo = [], options = {}) => {
+    const danhSachDauVao = Array.isArray(danhSachHoSo) ? danhSachHoSo : [];
+    const ketQua = [];
+    const onProgress = typeof options?.onProgress === 'function' ? options.onProgress : null;
+    const forceReaudit = options?.forceReaudit !== false;
+
+    const canWarm = danhSachDauVao.some(
+        (hoSo) => hoSo && (forceReaudit || !Array.isArray(hoSo?.ket_qua_giam_dinh)),
+    );
+    if (options?.warmUp !== false && canWarm) {
+        try {
+            await lamNongCoSoTruocBatchGiamDinh();
+        } catch (warmErr) {
+            console.warn('[CDSS] lamNongCoSoTruocBatchGiamDinh (V15):', warmErr);
+        }
+    }
+
+    for (let index = 0; index < danhSachDauVao.length; index += 1) {
+        const hoSo = danhSachDauVao[index];
+        if (!hoSo) continue;
+        const coKetQuaCu = Array.isArray(hoSo?.ket_qua_giam_dinh);
+        const ketQuaHoSo = (!forceReaudit && coKetQuaCu)
+            ? hoSo.ket_qua_giam_dinh
+            : await chayGiamDinhToanDienV15(hoSo);
+        ketQua.push({
+            ...hoSo,
+            ket_qua_giam_dinh: ketQuaHoSo,
+        });
+
+        if (onProgress) {
+            await onProgress({
+                index,
+                completed: index + 1,
+                total: danhSachDauVao.length,
+                hoSo: ketQua[ketQua.length - 1],
+            });
+        }
+    }
+
+    return ketQua;
 };
 
 // ============================================================

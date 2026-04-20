@@ -25,6 +25,97 @@ export const MAP_TAB_QUAN_TRI_THEO_XML = Object.freeze({
   XML6: 'LUAT_HOP_DONG',
 });
 
+/** Nhóm nghiệp vụ (dashboard) — lọc vi phạm theo loại chi phí / phân hệ XML. Khác `loai_hien_thi` (xuất toán, cảnh báo…). */
+export const NHOM_VI_PHAM_IDS = Object.freeze({
+  HANH_CHINH: 'HANH_CHINH',
+  DVKT: 'DVKT',
+  CONG_KHAM: 'CONG_KHAM',
+  GIUONG_BENH: 'GIUONG_BENH',
+  THUOC: 'THUOC',
+  VTYT: 'VTYT',
+  NHAN_SU: 'NHAN_SU',
+  CHUYEN_VIEN: 'CHUYEN_VIEN',
+});
+
+export const NHOM_VI_PHAM_TAT_CA = 'TAT_CA';
+
+export const DANH_SACH_NHOM_VI_PHAM_LOC = Object.freeze([
+  { id: NHOM_VI_PHAM_TAT_CA, label: 'Tất cả' },
+  { id: NHOM_VI_PHAM_IDS.HANH_CHINH, label: 'Hành chính' },
+  { id: NHOM_VI_PHAM_IDS.DVKT, label: 'Dịch vụ kỹ thuật' },
+  { id: NHOM_VI_PHAM_IDS.CONG_KHAM, label: 'Công khám' },
+  { id: NHOM_VI_PHAM_IDS.GIUONG_BENH, label: 'Giường bệnh' },
+  { id: NHOM_VI_PHAM_IDS.THUOC, label: 'Thuốc' },
+  { id: NHOM_VI_PHAM_IDS.VTYT, label: 'Vật tư y tế' },
+  { id: NHOM_VI_PHAM_IDS.NHAN_SU, label: 'Nhân sự' },
+  { id: NHOM_VI_PHAM_IDS.CHUYEN_VIEN, label: 'Chuyển viện' },
+]);
+
+/** Chuẩn MA_LOAI_KCB (XML1) — 1/01 → 01; đồng bộ engine / Kho lưu trữ. */
+export const chuanHoaMaLoaiKcbThongKe = (val) => {
+  const raw = String(val ?? '').trim();
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  return digits ? digits.padStart(2, '0') : raw;
+};
+
+/**
+ * Tên gợi nhớ theo mã DM loại KCB (tham chiếu phân loại BHXH — QĐ 130 / TT 37, bảng mã 802).
+ */
+export const TEN_GOI_LOAI_KCB_802 = Object.freeze({
+  '01': 'Khám bệnh',
+  '02': 'Ngoại trú',
+  '03': 'Nội trú',
+  '04': 'Nội trú ban ngày',
+  '05': 'Ngoại trú từ nội trú',
+  '06': 'Tái khám',
+  '07': 'Cấp cứu',
+  '08': 'Khác (ngoại trú…)',
+  '09': 'Nội trú (09)',
+});
+
+/** Gom mã MA_LOAI_KCB theo nhóm điều trị (tham chiếu QĐ 824 / DM loại KCB — khớp tập mã trong engine). */
+export const NHOM_CAP_LOAI_KCB_802 = Object.freeze({
+  TAT_CA: NHOM_VI_PHAM_TAT_CA,
+  NGOAI_TRU: 'NGOAI_TRU',
+  NOI_TRU: 'NOI_TRU',
+  NOI_TRU_BAN_NGAY: 'NOI_TRU_BAN_NGAY',
+  KHAC: 'KHAC',
+  CHUA_GHI: 'CHUA_GHI',
+});
+
+const TAP_MA_LOAI_KCB_NGOAI_TRU_QD824 = new Set(['01', '02', '05', '06', '07', '08']);
+const TAP_MA_LOAI_KCB_NOI_TRU_QD824 = new Set(['03', '09']);
+const TAP_MA_LOAI_KCB_NTBN_QD824 = new Set(['04']);
+
+export const layNhomCapLoaiKcb802 = (maChuanHoacRaw = '') => {
+  const raw = String(maChuanHoacRaw || '').trim();
+  if (!raw || raw === 'KHONG_RO') return NHOM_CAP_LOAI_KCB_802.CHUA_GHI;
+  const norm = chuanHoaMaLoaiKcbThongKe(raw) || raw;
+  if (TAP_MA_LOAI_KCB_NGOAI_TRU_QD824.has(norm)) return NHOM_CAP_LOAI_KCB_802.NGOAI_TRU;
+  if (TAP_MA_LOAI_KCB_NOI_TRU_QD824.has(norm)) return NHOM_CAP_LOAI_KCB_802.NOI_TRU;
+  if (TAP_MA_LOAI_KCB_NTBN_QD824.has(norm)) return NHOM_CAP_LOAI_KCB_802.NOI_TRU_BAN_NGAY;
+  return NHOM_CAP_LOAI_KCB_802.KHAC;
+};
+
+const NHAN_NHOM_CAP_LOAI_KCB_802 = Object.freeze({
+  [NHOM_CAP_LOAI_KCB_802.NGOAI_TRU]: 'Ngoại trú',
+  [NHOM_CAP_LOAI_KCB_802.NOI_TRU]: 'Nội trú',
+  [NHOM_CAP_LOAI_KCB_802.NOI_TRU_BAN_NGAY]: 'Nội trú ban ngày',
+  [NHOM_CAP_LOAI_KCB_802.KHAC]: 'Loại KCB khác',
+  [NHOM_CAP_LOAI_KCB_802.CHUA_GHI]: 'Chưa ghi loại KCB',
+});
+
+/** Thẻ lọc dashboard — nhãn «Ngoại trú» / «Nội trú», không tách từng mã. */
+export const DANH_SACH_NHOM_CAP_LOAI_KCB_LOC = Object.freeze([
+  { id: NHOM_CAP_LOAI_KCB_802.TAT_CA, label: 'Tất cả' },
+  { id: NHOM_CAP_LOAI_KCB_802.NGOAI_TRU, label: 'Ngoại trú', phu: '01,02,05–08' },
+  { id: NHOM_CAP_LOAI_KCB_802.NOI_TRU, label: 'Nội trú', phu: '03,09' },
+  { id: NHOM_CAP_LOAI_KCB_802.NOI_TRU_BAN_NGAY, label: 'Nội trú ban ngày', phu: '04' },
+  { id: NHOM_CAP_LOAI_KCB_802.KHAC, label: 'Mã khác', phu: 'ngoài DM nhóm trên' },
+  { id: NHOM_CAP_LOAI_KCB_802.CHUA_GHI, label: 'Chưa ghi mã', phu: 'XML1 thiếu' },
+]);
+
 const toNumberSafe = (value, fallback = 0) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -255,6 +346,98 @@ const layDongXmlLienQuanLoi = (loi = {}, hoSo = {}) => {
   return { row: null, phanHeBang: phanHe };
 };
 
+const NHAN_THEO_ID_NHOM_VI_PHAM = Object.freeze({
+  [NHOM_VI_PHAM_IDS.HANH_CHINH]: 'Hành chính',
+  [NHOM_VI_PHAM_IDS.DVKT]: 'Dịch vụ kỹ thuật',
+  [NHOM_VI_PHAM_IDS.CONG_KHAM]: 'Công khám',
+  [NHOM_VI_PHAM_IDS.GIUONG_BENH]: 'Giường bệnh',
+  [NHOM_VI_PHAM_IDS.THUOC]: 'Thuốc',
+  [NHOM_VI_PHAM_IDS.VTYT]: 'Vật tư y tế',
+  [NHOM_VI_PHAM_IDS.NHAN_SU]: 'Nhân sự',
+  [NHOM_VI_PHAM_IDS.CHUYEN_VIEN]: 'Chuyển viện',
+});
+
+/** XML1 — trường liên quan giấy chuyển / nơi đến đi */
+const RX_TRUONG_XML1_CHUYEN_VIEN = /GIAY_CHUYEN|CHUYEN_TUYEN|CHUYEN_VIEN|LY_DO_CT|MA_NOI_DI|MA_NOI_DEN|^NOI_DI|^NOI_DEN|TUYEN|HUONG_TRI/i;
+
+const mapNhomTuTabQuanTri = (tabRaw = '') => {
+  const tab = String(tabRaw || '').trim().toUpperCase();
+  if (!tab) return null;
+  if (tab === 'LUAT_THUOC') return NHOM_VI_PHAM_IDS.THUOC;
+  if (tab === 'LUAT_CONG_KHAM') return NHOM_VI_PHAM_IDS.CONG_KHAM;
+  if (tab === 'LUAT_GIUONG') return NHOM_VI_PHAM_IDS.GIUONG_BENH;
+  if (tab === 'LUAT_NHAN_SU' || tab === 'HAU_PHAU') return NHOM_VI_PHAM_IDS.NHAN_SU;
+  if (tab === 'LUAT_CDHA' || tab === 'LUAT_PTTT' || tab === 'LUAT_MAU') return NHOM_VI_PHAM_IDS.DVKT;
+  if (tab === 'LUAT_HOP_DONG' || tab === 'LUAT_HANH_CHINH') return NHOM_VI_PHAM_IDS.HANH_CHINH;
+  return null;
+};
+
+const laDongXml3LaGiuongHeuristic = (row = {}) => {
+  if (!row || typeof row !== 'object') return false;
+  const ma = String(row.MA_DICH_VU || '').trim().toUpperCase();
+  const nhom = chuanHoaTokenThongKeLoi(row.NHOM_DV || '');
+  const ten = chuanHoaTokenThongKeLoi(row.TEN_DICH_VU || '');
+  return ma.startsWith('19') || nhom.includes('GIUONG') || ten.includes('GIUONG');
+};
+
+const laDongXml3LaCongKhamHeuristic = (row = {}) => {
+  if (!row || typeof row !== 'object') return false;
+  if (laDongXml3LaGiuongHeuristic(row)) return false;
+  const nhom = chuanHoaTokenThongKeLoi(row.NHOM_DV || '');
+  const ten = chuanHoaTokenThongKeLoi(row.TEN_DICH_VU || '');
+  return nhom.includes('KHAM') || ten.includes('KHAM');
+};
+
+/**
+ * Gắn cảnh báo với nhóm nghiệp vụ (để lọc QPS): ưu tiên bảng XML & tab quản trị, sau đó heuristics dòng XML3.
+ */
+export const suyRaNhomViPhamTuChiTiet = (hoSo = {}, opts = {}) => {
+  const mk = (id) => ({
+    id,
+    label: NHAN_THEO_ID_NHOM_VI_PHAM[id] || 'Khác',
+  });
+
+  const phanHe = String(opts.phan_he || '').trim().toUpperCase();
+  const truong = String(opts.truong_loi || '').trim();
+  const tab = String(opts.tab_quan_tri_goi_y || '').trim().toUpperCase();
+  const idx = opts.index;
+
+  const tabMap = mapNhomTuTabQuanTri(tab);
+
+  if (phanHe === 'XML2') return mk(NHOM_VI_PHAM_IDS.THUOC);
+  if (phanHe === 'XML4') return mk(NHOM_VI_PHAM_IDS.VTYT);
+  if (phanHe === 'XML5') return mk(NHOM_VI_PHAM_IDS.DVKT);
+  if (phanHe === 'XML6') return mk(NHOM_VI_PHAM_IDS.DVKT);
+
+  if (phanHe === 'XML1') {
+    if (RX_TRUONG_XML1_CHUYEN_VIEN.test(truong)) return mk(NHOM_VI_PHAM_IDS.CHUYEN_VIEN);
+    return mk(NHOM_VI_PHAM_IDS.HANH_CHINH);
+  }
+
+  if (phanHe === 'XML3') {
+    if (tab === 'LUAT_CONG_KHAM') return mk(NHOM_VI_PHAM_IDS.CONG_KHAM);
+    if (tab === 'LUAT_GIUONG') return mk(NHOM_VI_PHAM_IDS.GIUONG_BENH);
+    if (tab === 'LUAT_NHAN_SU' || tab === 'HAU_PHAU') return mk(NHOM_VI_PHAM_IDS.NHAN_SU);
+    if (tab === 'LUAT_THUOC') return mk(NHOM_VI_PHAM_IDS.THUOC);
+
+    const loiTam = { phan_he: phanHe, truong_loi: truong, index: idx };
+    const { row } = layDongXmlLienQuanLoi(loiTam, hoSo);
+    if (row && typeof row === 'object') {
+      if (laDongXml3LaGiuongHeuristic(row)) return mk(NHOM_VI_PHAM_IDS.GIUONG_BENH);
+      if (laDongXml3LaCongKhamHeuristic(row)) return mk(NHOM_VI_PHAM_IDS.CONG_KHAM);
+    }
+    if (tabMap === NHOM_VI_PHAM_IDS.DVKT || tabMap === NHOM_VI_PHAM_IDS.CONG_KHAM
+      || tabMap === NHOM_VI_PHAM_IDS.GIUONG_BENH || tabMap === NHOM_VI_PHAM_IDS.NHAN_SU
+      || tabMap === NHOM_VI_PHAM_IDS.THUOC) {
+      return mk(tabMap);
+    }
+    return mk(NHOM_VI_PHAM_IDS.DVKT);
+  }
+
+  if (tabMap) return mk(tabMap);
+  return mk(NHOM_VI_PHAM_IDS.HANH_CHINH);
+};
+
 const layChuoiKhacRongTuDong = (dong = {}, tenTruongs = []) => {
   for (let i = 0; i < tenTruongs.length; i += 1) {
     const k = tenTruongs[i];
@@ -469,6 +652,21 @@ export const taoBanGhiLoiChiTiet = (hoSo = {}, loi = {}, stt = 0) => {
   });
   const nhomLoiCode = String(layGiaTriTheoKhoaKhongPhanBiet(daChuan, 'type', '') || thongTinLoai.id || 'KHAC').trim();
   const xml1 = layXml1HoSo(hoSo);
+  const maLoaiRaw = String(xml1?.MA_LOAI_KCB ?? xml1?.ma_loai_kcb ?? '').trim();
+  const maLoaiChuan = chuanHoaMaLoaiKcbThongKe(maLoaiRaw);
+  const tenLoai802 = maLoaiChuan ? (TEN_GOI_LOAI_KCB_802[maLoaiChuan] || '') : '';
+  const maKhoaRaw = String(xml1?.MA_KHOA ?? '').trim();
+  const maKhoaChuan = maKhoaRaw ? maKhoaRaw.toUpperCase() : 'KHONG_RO';
+  const nhomCapLoaiKcb = layNhomCapLoaiKcb802(maLoaiChuan || '');
+  const nhanNhomCapLoaiKcb = NHAN_NHOM_CAP_LOAI_KCB_802[nhomCapLoaiKcb] || '';
+  const tabQuanTri = suyRaTabQuanTriQuyTacTuLoi({ ...daChuan, ma_luat: maLuat, phan_he: phanHe });
+  const nhomViPhamMeta = suyRaNhomViPhamTuChiTiet(hoSo, {
+    ma_luat: maLuat,
+    phan_he: phanHe,
+    truong_loi: truongLoi,
+    index,
+    tab_quan_tri_goi_y: tabQuanTri,
+  });
   const khoaNoiDung = taoKhoaNoiDungChiTietLoi({
     ma_lk: layMaLKHoSo(hoSo),
     ma_luat: maLuat,
@@ -484,7 +682,13 @@ export const taoBanGhiLoiChiTiet = (hoSo = {}, loi = {}, stt = 0) => {
     khoa: taoKhoaChiTietLoi({ ma_lk: layMaLKHoSo(hoSo), ma_luat: maLuat, phan_he: phanHe, truong_loi: truongLoi, index, canh_bao: canhBao, stt }),
     ma_lk: layMaLKHoSo(hoSo),
     ten_bn: layTenBenhNhanHoSo(hoSo),
-    ma_khoa: String(xml1?.MA_KHOA || 'KHONG_RO'),
+    ma_loai_kcb: maLoaiRaw || 'KHONG_RO',
+    ma_loai_kcb_chuan: maLoaiChuan || 'KHONG_RO',
+    ten_loai_kcb_802: tenLoai802,
+    nhom_cap_loai_kcb: nhomCapLoaiKcb,
+    nhan_nhom_cap_loai_kcb: nhanNhomCapLoaiKcb,
+    ma_khoa: maKhoaRaw || 'KHONG_RO',
+    ma_khoa_chuan: maKhoaChuan,
     ma_bac_si: String(xml1?.MA_BS_KHAM || 'KHONG_RO'),
     ma_luat: coMaLuatHopLe(maLuat) ? maLuat : '',
     ten_quy_tac: tenQuyTac,
@@ -497,7 +701,9 @@ export const taoBanGhiLoiChiTiet = (hoSo = {}, loi = {}, stt = 0) => {
     luong_giai_trinh: luongTuLoi || metaQuyTac.luong_giai_trinh || '',
     co_so_phap_ly: String(layGiaTriTheoKhoaKhongPhanBiet(daChuan, 'co_so_phap_ly', '')).trim(),
     dieu_kien: String(layGiaTriTheoKhoaKhongPhanBiet(daChuan, 'dieu_kien', '')).trim(),
-    tab_quan_tri_goi_y: suyRaTabQuanTriQuyTacTuLoi({ ...daChuan, ma_luat: maLuat, phan_he: phanHe }),
+    tab_quan_tri_goi_y: tabQuanTri,
+    nhom_vi_pham: nhomViPhamMeta.id,
+    nhan_nhom_vi_pham: nhomViPhamMeta.label,
     loai_hien_thi: thongTinLoai.id,
     nhan_loai_hien_thi: thongTinLoai.label,
     muc_uu_tien: thongTinLoai.priority,
@@ -603,10 +809,22 @@ export const locDanhSachLoiChiTiet = (danhSachChiTiet = [], boLoc = {}) => {
   const tuKhoa = chuanHoaTokenThongKeLoi(boLoc?.tuKhoa || '');
   const loaiHienThi = String(boLoc?.loaiHienThi || 'TAT_CA').trim();
   const nhomLoiCode = String(boLoc?.nhomLoiCode || '').trim();
+  const nhomViPhamLoc = String(boLoc?.nhomViPham || NHOM_VI_PHAM_TAT_CA).trim();
+  const nhomCapLoaiKcbLoc = String(boLoc?.nhomCapLoaiKcb802 ?? NHOM_VI_PHAM_TAT_CA).trim();
+  const maKhoaLoc = String(boLoc?.maKhoa ?? NHOM_VI_PHAM_TAT_CA).trim();
 
   return (Array.isArray(danhSachChiTiet) ? danhSachChiTiet : []).filter((item) => {
     if (loaiHienThi !== 'TAT_CA' && item.loai_hien_thi !== loaiHienThi) return false;
     if (nhomLoiCode && item.nhom_loi_code !== nhomLoiCode) return false;
+    if (nhomViPhamLoc !== NHOM_VI_PHAM_TAT_CA && item.nhom_vi_pham !== nhomViPhamLoc) return false;
+    if (nhomCapLoaiKcbLoc !== NHOM_VI_PHAM_TAT_CA) {
+      const bucket = item.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(item.ma_loai_kcb_chuan);
+      if (bucket !== nhomCapLoaiKcbLoc) return false;
+    }
+    if (maKhoaLoc !== NHOM_VI_PHAM_TAT_CA) {
+      const mk = item.ma_khoa_chuan || 'KHONG_RO';
+      if (mk !== maKhoaLoc) return false;
+    }
     if (!tuKhoa) return true;
 
     const noiDungTim = chuanHoaTokenThongKeLoi([
@@ -618,7 +836,15 @@ export const locDanhSachLoiChiTiet = (danhSachChiTiet = [], boLoc = {}) => {
       item.phan_he,
       item.truong_loi,
       item.nhom_loi_code,
+      item.nhom_vi_pham,
+      item.nhan_nhom_vi_pham,
+      item.ma_loai_kcb_chuan,
+      item.ma_loai_kcb,
+      item.ten_loai_kcb_802,
+      item.nhom_cap_loai_kcb,
+      item.nhan_nhom_cap_loai_kcb,
       item.ma_khoa,
+      item.ma_khoa_chuan,
       item.ma_bac_si,
     ].filter(Boolean).join(' | '));
     return noiDungTim.includes(tuKhoa);

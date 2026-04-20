@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { noiChuoiNhieuMa, tachChuoiNhieuMa } from '../tien_ich/catalog_mapping_chuoi_ma';
 import {
   laMappingNhieuMaDich,
   laMappingNhieuMaNguon,
@@ -124,7 +125,7 @@ function layHaiNhomDvktTuMeta(md, targetCode) {
   }
   const tc = String(targetCode || '').trim();
   if (!tc) return { chi: [], thuc: [] };
-  const parts = tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
+  const parts = tachChuoiNhieuMa(tc);
   return { chi: [], thuc: parts };
 }
 
@@ -343,7 +344,7 @@ export default function ModalCatalogMapping({
             arr = md.target_codes.map((c) => String(c || '').trim()).filter(Boolean);
           } else {
             const tc = String(banGhiChinhSua.target_code || '').trim();
-            arr = tc ? (tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc]) : [];
+            arr = tc ? tachChuoiNhieuMa(tc) : [];
           }
           setTargetCodesNhieu(arr);
         } else {
@@ -358,14 +359,14 @@ export default function ModalCatalogMapping({
               srcArr = mdSrc.source_icd_codes.map((c) => String(c || '').trim()).filter(Boolean);
             } else {
               const sc = String(banGhiChinhSua.source_code || '').trim();
-              srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+              srcArr = sc ? tachChuoiNhieuMa(sc) : [];
             }
           } else {
             if (Array.isArray(mdSrc.source_codes) && mdSrc.source_codes.length) {
               srcArr = mdSrc.source_codes.map((c) => String(c || '').trim()).filter(Boolean);
             } else {
               const sc = String(banGhiChinhSua.source_code || '').trim();
-              srcArr = sc ? (sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc]) : [];
+              srcArr = sc ? tachChuoiNhieuMa(sc) : [];
             }
           }
           setSourceCodesNhieu(srcArr);
@@ -399,7 +400,7 @@ export default function ModalCatalogMapping({
       .map((c) => String(c || '').trim())
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }));
-    setSourceCode(sorted.join('|'));
+    setSourceCode(noiChuoiNhieuMa(sorted));
   }, [visible, laMultiSource, sourceCodesNhieu]);
 
   const tenNguon = laMultiSource
@@ -453,7 +454,7 @@ export default function ModalCatalogMapping({
       const codes = [...new Set([...chi, ...thuc])].sort((a, b) =>
         a.localeCompare(b, 'vi', { numeric: true, sensitivity: 'base' }),
       );
-      maDichLuu = codes.join('|');
+      maDichLuu = noiChuoiNhieuMa(codes);
       metadata.target_codes_chi_dinh = chi;
       metadata.target_codes_thuc_hien = thuc;
       delete metadata.target_codes;
@@ -478,7 +479,7 @@ export default function ModalCatalogMapping({
         setLoi(`Mã đích không có trong danh mục tương ứng (mapping sai nếu không khớp DM): ${badTgtMulti.join(', ')}`);
         return;
       }
-      maDichLuu = codes.join('|');
+      maDichLuu = noiChuoiNhieuMa(codes);
       metadata.target_codes = codes;
     }
 
@@ -500,7 +501,7 @@ export default function ModalCatalogMapping({
         setLoi(`Mã nguồn không có trong danh mục tương ứng (mapping sai nếu không khớp DM): ${badSrcMulti.join(', ')}`);
         return;
       }
-      maNguonLuu = srcCodes.join('|');
+      maNguonLuu = noiChuoiNhieuMa(srcCodes);
       if (laMappingNhieuMaNguonIcd(mappingType)) {
         metadata.source_icd_codes = srcCodes;
         delete metadata.source_codes;

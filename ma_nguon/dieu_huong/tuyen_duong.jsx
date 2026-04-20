@@ -55,6 +55,8 @@ import ManHinhTriThucTuGiamDinh from '../man_hinh/tri_thuc_tu_giam_dinh';
 import ManHinhTroLyTriThucChat from '../man_hinh/tro_ly_tri_thuc_chat';
 import CongTiepNhanHIS from '../man_hinh/cong_tiep_nhan_his';
 
+import { CAU_HINH_LIEN_KET } from './cau_hinh_lien_ket';
+
 const Stack = createNativeStackNavigator();
 const KHOA_DIEU_HUONG = 'CDSS_NAV_STATE_V1';
 
@@ -64,40 +66,6 @@ const layManHinhDangMo = (state) => {
   if (!route) return '';
   if (route.state) return layManHinhDangMo(route.state);
   return route.name || '';
-};
-
-// Cấu hình Deep Linking để ứng dụng chạy mượt trên Web và Mobile
-const cauHinhLienKet = {
-  prefixes: ['http://localhost', 'phuongchau://'],
-  config: {
-    screens: {
-      DangNhap: 'login',
-      TongQuan: 'dashboard',
-      Helper: 'helper',
-      DocXML: 'auditing',
-      ChiTiet: 'case-detail/:maLK',
-      KhoLuuTru: 'archive',
-      QuanLyLuat: 'rules',
-      QuanLyQuyTacOnOff: 'rules/on-off',
-      QuanLyDanhMuc: 'master-data',
-      MappingNghiepVu: 'mapping-nghiep-vu',
-      DanhMucBYTMain: 'danh-muc-byt', // Path cho Danh mục Bộ Y tế
-      PhanQuyenTruyCap: 'permissions',
-      QuanLyChuyenMon: 'clinical-guidelines',
-      ThuVien: 'thu-vien',
-      TriThucTuGiamDinh: 'tri-thuc-giam-dinh',
-      TroLyTriThuc: 'tro-ly-tri-thuc',
-      CongHIS: 'his-gateway',
-      BaoCaoVaThongKe: 'reports', // Path cho báo cáo
-      SuaFileXML: 'auditing/edit/:maLK',
-      XML1: 'xml/xml1',
-      XML2: 'xml/xml2',
-      XML3: 'xml/xml3',
-      XML4: 'xml/xml4',
-      XML5: 'xml/xml5',
-      XML6: 'xml/xml6',
-    },
-  },
 };
 
 const DieuHuongChinh = () => {
@@ -181,7 +149,7 @@ const DieuHuongChinh = () => {
   return (
     <NavigationContainer
       ref={navRef}
-      linking={cauHinhLienKet}
+      linking={CAU_HINH_LIEN_KET}
       initialState={trangThaiKhoiPhuc}
       onReady={() => {
         if (!daKiemTraKhoiDongRef.current) {

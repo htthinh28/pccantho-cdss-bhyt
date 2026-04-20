@@ -26,6 +26,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
 import {
     doiSoatBoDuLieuDanhMucVoiFirebase,
@@ -855,7 +856,7 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
           <Text style={styles.chu_nut_header}>⬅ TRỞ VỀ TỔNG QUAN</Text>
         </TouchableOpacity>
         <Text style={styles.chu_tieu_de}>🗄️ QUẢN LÝ DANH MỤC (MASTER DATA)</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('MappingNghiepVu')} style={styles.nut_hub_mapping}>
+        <TouchableOpacity onPress={() => dieuHuongMoTabMoi(navigation, 'MappingNghiepVu')} style={styles.nut_hub_mapping}>
           <Text style={styles.chu_nut_header}>🔗 MAPPING</Text>
         </TouchableOpacity>
       </View>

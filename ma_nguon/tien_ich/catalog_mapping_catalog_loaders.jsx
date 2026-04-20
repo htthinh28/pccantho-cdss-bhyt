@@ -3,6 +3,7 @@
  * Cache theo catalog + TTL + gộp request đồng thời — giảm lag khi mở mapping / popup nhiều lần.
  */
 
+import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { CATALOG_REF, layCauHinhLoaiMapping } from './catalog_mapping_types';
 import { taiBoDuLieuDanhMuc } from './luu_tru_danh_muc';
 
@@ -165,7 +166,7 @@ export const timTenTheoMa = (danhSach, ma) => {
   return hit?.name || '';
 };
 
-/** Nhiều mã (mảng, hoặc chuỗi nối bởi |) — dùng hiển thị mapping STAFF_DVKT đa DVKT */
+/** Nhiều mã (mảng, hoặc chuỗi "; " / "|" / "," legacy) — dùng hiển thị mapping đa mã */
 export const timTenNhieuMa = (danhSach, maHoacMang) => {
   if (Array.isArray(maHoacMang) && maHoacMang.length) {
     return maHoacMang
@@ -175,14 +176,10 @@ export const timTenNhieuMa = (danhSach, maHoacMang) => {
   }
   const s = String(maHoacMang || '').trim();
   if (!s) return '';
-  if (s.includes('|')) {
-    return s
-      .split('|')
-      .map((c) => c.trim())
-      .filter(Boolean)
-      .map((c) => timTenTheoMa(danhSach, c))
-      .filter(Boolean)
-      .join('; ');
-  }
-  return timTenTheoMa(danhSach, s);
+  const codes = tachChuoiNhieuMa(s);
+  if (codes.length <= 1) return timTenTheoMa(danhSach, codes[0] || s);
+  return codes
+    .map((c) => timTenTheoMa(danhSach, c))
+    .filter(Boolean)
+    .join('; ');
 };

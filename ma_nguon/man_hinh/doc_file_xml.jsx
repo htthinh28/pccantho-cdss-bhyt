@@ -355,10 +355,8 @@ const ManHinhDocXML = ({ route }) => {
       try {
         const maLK = layMaLK(hoSoDangXem);
         
-        // 1. TỰ ĐỘNG CHẠY LẠI GIÁM ĐỊNH KHI DỮ LIỆU THAY ĐỔI
         const loiMoi = await chayBoMayGiamDinhV3(hoSoDangXem);
 
-        // 2. CẬP NHẬT TRẠNG THÁI LỖI TRÊN GIAO DIỆN
         setKetQuaGiamDinhMap(prev => ({ ...prev, [maLK]: loiMoi }));
 
         const hoSoCanLuu = {

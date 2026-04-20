@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import { docVanBan, dungDoc } from '../tien_ich/giong_doc_tri_thuc';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
 import { layDanhSachTriThucTuGiamDinh } from '../tien_ich/tri_thuc_tu_giam_dinh';
@@ -105,7 +106,7 @@ const KhungTroLyTriThucChat = ({
           </TouchableOpacity>
         ) : null}
         {!laCuaSo && navigation ? (
-          <TouchableOpacity onPress={() => navigation.navigate('TongQuan')} style={styles.btn_header}>
+          <TouchableOpacity onPress={() => dieuHuongMoTabMoi(navigation, 'TongQuan')} style={styles.btn_header}>
             <Text style={styles.txt_header_btn}>⬅ TỔNG QUAN</Text>
           </TouchableOpacity>
         ) : null}
@@ -114,7 +115,7 @@ const KhungTroLyTriThucChat = ({
         </Text>
         <View style={styles.header_right_btns}>
           {navigation ? (
-            <TouchableOpacity onPress={() => navigation.navigate('ThuVien')} style={styles.btn_header}>
+            <TouchableOpacity onPress={() => dieuHuongMoTabMoi(navigation, 'ThuVien')} style={styles.btn_header}>
               <Text style={styles.btn_side_txt}>📚</Text>
             </TouchableOpacity>
           ) : null}

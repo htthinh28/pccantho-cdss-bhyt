@@ -38,6 +38,7 @@ import {
   taiDanhMucRuntimeChoPython,
 } from '../tien_ich/hybrid_python_helper';
 import { docPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import { DANH_MUC_QUY_TAC_NOI_BO, khopMaLuatTheoMau, suyRaThongTinQuanTriQuyTac } from '../tien_ich/quy_tac_on_off_noi_bo';
 import { locModuleTheoRBAC, taiRBAC } from '../tien_ich/rbac_engine';
 import {
@@ -45,6 +46,10 @@ import {
   taiMapHoTenNhanSuBaoCao,
 } from '../tien_ich/dinh_dang_cchn_bao_cao';
 import {
+  DANH_SACH_NHOM_CAP_LOAI_KCB_LOC,
+  DANH_SACH_NHOM_VI_PHAM_LOC,
+  layNhomCapLoaiKcb802,
+  NHOM_VI_PHAM_TAT_CA,
   locDanhSachLoiChiTiet,
   phangHoaDanhSachLoiChiTiet,
   layNgayYLenhNgayKqVaBacSiTuLoiHoSo,
@@ -55,7 +60,12 @@ import {
 } from '../tien_ich/thong_ke_loi_dung_chung';
 
 // [CẬP NHẬT LÕI]: Thống nhất dùng kho_du_lieu để đồng bộ với man_hinh_kho_luu_tru
-import { chayBoMayGiamDinhNhieuHoSoV3, gomTrungLapCanhBaoTheoMaLuatVaNoiDung, suyRaNamespaceVaNguonQuyTac } from '../tien_ich/dong_co_giam_dinh';
+import {
+  chayGiamDinhNhieuHoSoV15,
+  gomTrungLapCanhBaoTheoMaLuatVaNoiDung,
+  suyRaNamespaceVaNguonQuyTac,
+  xoaCacheBoMayGiamDinh,
+} from '../tien_ich/dong_co_giam_dinh';
 import {
   layDanhSachMaLKTuKho,
   layTatCaHoSoTuKho,
@@ -427,6 +437,9 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [rawDanhSach, setRawDanhSach] = useState([]); 
   const [khoaQuyTacDangChon, setKhoaQuyTacDangChon] = useState('');
   const [boLocLoaiUuTien, setBoLocLoaiUuTien] = useState('TAT_CA');
+  const [boLocNhomViPham, setBoLocNhomViPham] = useState(NHOM_VI_PHAM_TAT_CA);
+  const [boLocNhomCapLoaiKcb, setBoLocNhomCapLoaiKcb] = useState(NHOM_VI_PHAM_TAT_CA);
+  const [boLocMaKhoa, setBoLocMaKhoa] = useState(NHOM_VI_PHAM_TAT_CA);
   const [tuKhoaLocQuyTac, setTuKhoaLocQuyTac] = useState('');
   const [tuKhoaLocHoSo, setTuKhoaLocHoSo] = useState('');
   const [tuKhoaTraCuuChiTiet, setTuKhoaTraCuuChiTiet] = useState('');
@@ -548,6 +561,25 @@ const ManHinhTongQuan = ({ navigation }) => {
     return danhMuc.filter((item) => {
       if (boLocLoaiUuTien !== 'TAT_CA' && item.loai_hien_thi !== boLocLoaiUuTien) return false;
 
+      if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA) {
+        const khopNhom = (item.chi_tiet_phat_sinh || []).some((ct) => ct.nhom_vi_pham === boLocNhomViPham);
+        if (!khopNhom) return false;
+      }
+
+      if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA) {
+        const khopLoai = (item.chi_tiet_phat_sinh || []).some(
+          (ct) => (ct.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(ct.ma_loai_kcb_chuan)) === boLocNhomCapLoaiKcb,
+        );
+        if (!khopLoai) return false;
+      }
+
+      if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA) {
+        const khopKhoa = (item.chi_tiet_phat_sinh || []).some(
+          (ct) => (ct.ma_khoa_chuan || 'KHONG_RO') === boLocMaKhoa,
+        );
+        if (!khopKhoa) return false;
+      }
+
       const chuoiQuyTac = chuanHoaToken([
         item.ma_luat,
         item.ten_quy_tac,
@@ -571,12 +603,28 @@ const ManHinhTongQuan = ({ navigation }) => {
   };
 
   const danhMucDaLoc = locDanhMucQuyTac(thongKe.danhMuc);
-  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
+  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
   const danhSachLoiChiTietDashboard = useMemo(() => phangHoaDanhSachLoiChiTiet(rawDanhSach), [rawDanhSach]);
+
+  const thaKhoaTuDuLieu = useMemo(() => {
+    const map = new Map();
+    danhSachLoiChiTietDashboard.forEach((r) => {
+      const id = r.ma_khoa_chuan || 'KHONG_RO';
+      const label = id === 'KHONG_RO' ? 'Chưa ghi MA_KHOA' : `Khoa ${id}`;
+      if (!map.has(id)) map.set(id, label);
+    });
+    return [...map.entries()]
+      .map(([id, label]) => ({ id, label }))
+      .sort((a, b) => String(a.id).localeCompare(String(b.id), 'vi'));
+  }, [danhSachLoiChiTietDashboard]);
+
   const ketQuaTraCuuChiTiet = useMemo(() => locDanhSachLoiChiTiet(danhSachLoiChiTietDashboard, {
     tuKhoa: tuKhoaTraCuuChiTiet,
     loaiHienThi: loaiTraCuuChiTiet,
-  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet]);
+    nhomViPham: boLocNhomViPham,
+    nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
+    maKhoa: boLocMaKhoa,
+  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
   const ketQuaTraCuuChiTietHienThi = ketQuaTraCuuChiTiet.slice(0, 60);
 
   useEffect(() => {
@@ -588,7 +636,7 @@ const ManHinhTongQuan = ({ navigation }) => {
     if (!daTonTai) {
       setKhoaQuyTacDangChon(danhMucDaLoc[0].khoa);
     }
-  }, [boLocLoaiUuTien, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
+  }, [boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
 
   const tinhToanDashboard = (danhSachHoSo) => {
     const tongSo = danhSachHoSo.length;
@@ -602,8 +650,24 @@ const ManHinhTongQuan = ({ navigation }) => {
 
   const quyTacDangChon = danhMucDaLoc.find((item) => item.khoa === khoaQuyTacDangChon) || danhMucDaLoc[0] || null;
 
+  const chiTietPhatSinhDaLocBoLoc = useMemo(() => {
+    const raw = quyTacDangChon?.chi_tiet_phat_sinh || [];
+    return raw.filter((c) => {
+      if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
+      if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
+      if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      return true;
+    });
+  }, [quyTacDangChon, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+
   const chiTietModalDaLoc = useMemo(() => {
-    const raw = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
+    const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
+    const raw = rawAll.filter((c) => {
+      if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
+      if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
+      if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      return true;
+    });
     const q = chuanHoaToken(tuKhoaLocChiTietModal).trim();
     if (!q) return raw;
     return raw.filter((c) => {
@@ -613,10 +677,24 @@ const ManHinhTongQuan = ({ navigation }) => {
         c?.canh_bao,
         c?.vi_tri_xml,
         c?.ma_luat,
+        c?.nhan_nhom_vi_pham,
+        c?.ten_loai_kcb_802,
+        c?.nhan_nhom_cap_loai_kcb,
+        c?.ma_khoa_chuan,
       ].filter(Boolean).join(' | '));
       return s.includes(q);
     });
-  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal]);
+  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+
+  const tongCaModalSauLocBoLoc = useMemo(() => {
+    const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
+    return rawAll.filter((c) => {
+      if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
+      if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
+      if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      return true;
+    }).length;
+  }, [quyTacChoModalChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
 
   const timHoSoTrongKhoTheoMaLK = (maLK) => {
     const m = chuanHoaMaLK(maLK);
@@ -792,6 +870,12 @@ const ManHinhTongQuan = ({ navigation }) => {
     await choUICapNhat();
     
     try {
+      try {
+        xoaCacheBoMayGiamDinh();
+      } catch (_e) {
+        /* cache rule engine — best-effort */
+      }
+
       const danhSachDaCoKetQua = danhSachTienHanh.map((hoSo) => {
         const ketQuaCoSan = layKetQuaGiamDinhCoSan(hoSo);
         return ketQuaCoSan ? { ...hoSo, ket_qua_giam_dinh: ketQuaCoSan } : hoSo;
@@ -814,9 +898,9 @@ const ManHinhTongQuan = ({ navigation }) => {
             `Python chưa sẵn sàng (đã thử ${ketQuaKiemTraPython.soLanThu || '?'} lần), đang fallback JS...`,
           );
           await choUICapNhat();
-          danhSachLuuKho = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaCoKetQua, {
+          danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
             onProgress: async ({ completed, total }) => {
-              setThongBaoDangTai(`Fallback JS: đang giám định hồ sơ ${completed}/${total}...`);
+              setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
               if (completed % 2 === 0 || completed === total) {
                 await choUICapNhat();
               }
@@ -846,9 +930,9 @@ const ManHinhTongQuan = ({ navigation }) => {
                 daHopNhatPythonVaJs = true;
                 setThongBaoDangTai('Python service đã trả kết quả batch, đang hợp nhất thêm engine JS để giữ đủ chức năng...');
                 await choUICapNhat();
-                const danhSachJs = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaCoKetQua, {
+                const danhSachJs = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
                   onProgress: async ({ completed, total }) => {
-                    setThongBaoDangTai(`Hợp nhất JS: đang giám định hồ sơ ${completed}/${total}...`);
+                    setThongBaoDangTai(`Hợp nhất JS V15: đang giám định hồ sơ ${completed}/${total}...`);
                     if (completed % 2 === 0 || completed === total) {
                       await choUICapNhat();
                     }
@@ -863,9 +947,9 @@ const ManHinhTongQuan = ({ navigation }) => {
               setThongBaoDangTai('Python service chưa trả kết quả chi tiết, đang fallback sang engine JS...');
               await choUICapNhat();
               const danhSachDaGanMeta = ganMetaPythonServiceVaoHoSo(danhSachDaCoKetQua, ketQuaPython);
-              danhSachLuuKho = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaGanMeta, {
+              danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaGanMeta, {
                 onProgress: async ({ completed, total }) => {
-                  setThongBaoDangTai(`Fallback JS: đang giám định hồ sơ ${completed}/${total}...`);
+                  setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
                   if (completed % 2 === 0 || completed === total) {
                     await choUICapNhat();
                   }
@@ -877,9 +961,9 @@ const ManHinhTongQuan = ({ navigation }) => {
             console.warn('[TongQuan] Python service lỗi, chuyển fallback sang JS:', pythonError);
             setThongBaoDangTai('Python service lỗi, đang fallback sang engine JS...');
             await choUICapNhat();
-            danhSachLuuKho = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaCoKetQua, {
+            danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
               onProgress: async ({ completed, total }) => {
-                setThongBaoDangTai(`Fallback JS: đang giám định hồ sơ ${completed}/${total}...`);
+                setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
                 if (completed % 2 === 0 || completed === total) {
                   await choUICapNhat();
                 }
@@ -888,9 +972,9 @@ const ManHinhTongQuan = ({ navigation }) => {
           }
         }
       } else {
-        danhSachLuuKho = await chayBoMayGiamDinhNhieuHoSoV3(danhSachDaCoKetQua, {
+        danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
           onProgress: async ({ completed, total }) => {
-            setThongBaoDangTai(`Đang giám định hồ sơ ${completed}/${total}...`);
+            setThongBaoDangTai(`Đang giám định V15 (JS) ${completed}/${total}...`);
             if (completed % 2 === 0 || completed === total) {
               await choUICapNhat();
             }
@@ -1251,33 +1335,86 @@ const ManHinhTongQuan = ({ navigation }) => {
 
       <View style={styles.dashboard_layout}>
         <View style={styles.sidebar_dashboard}>
-          <Text style={styles.sidebar_title}>ĐIỀU HƯỚNG</Text>
+          <View style={styles.sidebar_header}>
+            <View style={[styles.sidebar_header_accent, { backgroundColor: CD.brand.mauChinh }]} />
+            <View style={styles.sidebar_header_inner}>
+              <Text style={styles.sidebar_title}>Điều hướng</Text>
+              <Text style={styles.sidebar_subtitle}>Module nghiệp vụ</Text>
+            </View>
+          </View>
+          {Platform.OS === 'web' ? (
+            <View style={styles.sidebar_hint_pill}>
+              <Text style={styles.sidebar_hint_bullet}>●</Text>
+              <Text style={styles.sidebar_hint_web}>
+                Chuột phải thẻ → tab mới · Click trái → tab hiện tại
+              </Text>
+            </View>
+          ) : null}
           <ScrollView style={styles.sidebar_scroll} showsVerticalScrollIndicator={false}>
-            <View style={styles.module_grid}>
+            <View style={styles.module_grid_sidebar}>
               {menuSidebar.map((item) => {
                 const cfg = MODULE_ICONS[item.id] || { icon: '📦', mau: '#607D8B', mauNhat: '#ECEFF1' };
                 return (
-                  <TouchableOpacity
+                  <View
                     key={item.id}
-                    style={[styles.module_card, styles.module_card_sidebar, { borderLeftColor: cfg.mau }]}
-                    onPress={() => navigation.navigate(item.route)}
+                    {...Platform.select({
+                      web: {
+                        onContextMenu: (e) => {
+                          e?.preventDefault?.();
+                          e?.stopPropagation?.();
+                          dieuHuongMoTabMoi(navigation, item.route);
+                        },
+                      },
+                      default: {},
+                    })}
                   >
-                    <View style={[styles.module_icon_wrap, { backgroundColor: cfg.mauNhat }]}>
-                      <Text style={styles.module_icon}>{cfg.icon}</Text>
-                    </View>
-                    <Text style={styles.module_name}>{item.ten}</Text>
-                  </TouchableOpacity>
+                    <Pressable
+                      accessibilityRole="button"
+                      style={({ pressed, hovered }) => [
+                        styles.module_card_sidebar_item,
+                        { borderLeftColor: cfg.mau },
+                        Platform.OS === 'web' && hovered && styles.module_card_sidebar_item_hover,
+                        pressed && styles.module_card_sidebar_item_pressed,
+                      ]}
+                      onPress={() => navigation.navigate(item.route)}
+                    >
+                      <View style={[styles.module_icon_wrap_sidebar, { backgroundColor: cfg.mauNhat }]}>
+                        <Text style={styles.module_icon_sidebar}>{cfg.icon}</Text>
+                      </View>
+                      <View style={styles.module_text_block}>
+                        <Text style={styles.module_name_sidebar} numberOfLines={2}>
+                          {item.ten}
+                        </Text>
+                      </View>
+                      <Text style={[styles.module_chevron, { color: cfg.mau }]}>›</Text>
+                    </Pressable>
+                  </View>
                 );
               })}
-              <TouchableOpacity
-                style={[styles.module_card, styles.module_card_sidebar, { borderLeftColor: '#546E7A' }]}
-                onPress={handleResetKho}
-              >
-                <View style={[styles.module_icon_wrap, { backgroundColor: '#ECEFF1' }]}>
-                  <Text style={styles.module_icon}>🔄</Text>
+              <View style={styles.sidebar_section_gap}>
+                <View style={styles.sidebar_divider}>
+                  <View style={styles.sidebar_divider_line} />
+                  <Text style={styles.sidebar_divider_label}>Tiện ích</Text>
+                  <View style={styles.sidebar_divider_line} />
                 </View>
-                <Text style={styles.module_name}>Làm mới kho</Text>
-              </TouchableOpacity>
+                <Pressable
+                  accessibilityRole="button"
+                  style={({ pressed, hovered }) => [
+                    styles.module_card_sidebar_secondary,
+                    Platform.OS === 'web' && hovered && styles.module_card_sidebar_secondary_hover,
+                    pressed && styles.module_card_sidebar_item_pressed,
+                  ]}
+                  onPress={handleResetKho}
+                >
+                  <View style={[styles.module_icon_wrap_sidebar, styles.module_icon_wrap_secondary]}>
+                    <Text style={styles.module_icon_sidebar}>🔄</Text>
+                  </View>
+                  <View style={styles.module_text_block}>
+                    <Text style={styles.module_name_sidebar_secondary}>Làm mới kho</Text>
+                    <Text style={styles.module_hint_secondary}>Đồng bộ lại dữ liệu cục bộ</Text>
+                  </View>
+                </Pressable>
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -1303,7 +1440,7 @@ const ManHinhTongQuan = ({ navigation }) => {
                   <View style={styles.import_upload_card_single}>
                     <Text style={styles.audit_engine_title}>Nạp hồ sơ XML</Text>
                     <Text style={[styles.import_upload_subtitle, styles.import_upload_subtitle_center]}>
-                      Giám định nhiều hồ sơ trong cùng một luồng. Chế độ hiện hành: {cheDoGiamDinh === CHE_DO_GIAM_DINH.PYTHON ? 'Python service' : 'JS nội bộ'}.
+                      Giám định nhiều hồ sơ trong cùng một luồng. JS nội bộ chạy pipeline V15 (5 tầng, đồng bộ QA/CLI); Python service giữ vai trò tùy cấu hình Helper — khi hợp nhất fallback vẫn dùng V15.
                     </Text>
                     <Text style={styles.python_warmup_hint}>
                       {trangThaiPythonKhoiDong.daKiemTra
@@ -1317,7 +1454,7 @@ const ManHinhTongQuan = ({ navigation }) => {
                         <Text style={styles.import_upload_highlight_key}>Batch nhiều hồ sơ</Text>
                       </View>
                       <View style={styles.import_upload_highlight_chip}>
-                        <Text style={styles.import_upload_highlight_key}>JS fallback an toàn</Text>
+                        <Text style={styles.import_upload_highlight_key}>Fallback JS = V15 đầy đủ</Text>
                       </View>
                       <View style={styles.import_upload_highlight_chip}>
                         <Text style={styles.import_upload_highlight_key}>Hybrid nằm trong Helper</Text>
@@ -1338,9 +1475,9 @@ const ManHinhTongQuan = ({ navigation }) => {
                       <View style={styles.import_auto_folder_wrap}>
                         <Text style={styles.import_auto_folder_title}>Nâng cao — giám định tự động cả thư mục</Text>
                         <Text style={styles.import_auto_folder_note}>
-                          Chọn một thư mục chứa file .xml: ứng dụng xử lý lần lượt từng file, dùng cùng engine với luồng
-                          nạp thông thường (Python service nếu bật, không thì JS), lưu kho và hiển thị nhật ký ngay trên
-                          màn hình — không dùng hộp thoại xác nhận từng file.
+                          Chọn một thư mục chứa file .xml: xử lý lần lượt, lưu kho với cùng luồng giám định Dashboard (Python
+                          nếu bật trong Helper; JS = V15 đầy đủ khi không dùng Python hoặc khi fallback). Nhật ký hiển thị
+                          trên màn hình — không hộp thoại từng file.
                         </Text>
                         <TouchableOpacity
                           style={[styles.import_auto_folder_btn, dangTai && styles.import_auto_folder_btn_disabled]}
@@ -1420,6 +1557,80 @@ const ManHinhTongQuan = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
+            <Text style={styles.rule_filter_subtitle}>Nhóm nghiệp vụ (theo bảng XML & loại lỗi)</Text>
+            <View style={styles.rule_filter_chip_row}>
+              {DANH_SACH_NHOM_VI_PHAM_LOC.map((nhom) => (
+                <TouchableOpacity
+                  key={`nhom_${nhom.id}`}
+                  style={[
+                    styles.rule_filter_chip,
+                    styles.rule_filter_chip_nhom,
+                    boLocNhomViPham === nhom.id && styles.rule_filter_chip_active,
+                  ]}
+                  onPress={() => setBoLocNhomViPham(nhom.id)}
+                >
+                  <Text style={[
+                    styles.rule_filter_chip_txt,
+                    boLocNhomViPham === nhom.id && styles.rule_filter_chip_txt_active,
+                  ]}>
+                    {nhom.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.rule_filter_subtitle}>Loại khám chữa bệnh — Ngoại trú / Nội trú (gom mã MA_LOAI_KCB theo QĐ 824)</Text>
+            <View style={styles.rule_filter_chip_row}>
+              {DANH_SACH_NHOM_CAP_LOAI_KCB_LOC.map((opt) => (
+                <TouchableOpacity
+                  key={`caplk_${opt.id}`}
+                  style={[
+                    styles.rule_filter_chip,
+                    styles.rule_filter_chip_nhom,
+                    boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_active,
+                  ]}
+                  onPress={() => setBoLocNhomCapLoaiKcb(opt.id)}
+                >
+                  <Text style={[
+                    styles.rule_filter_chip_txt,
+                    boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_txt_active,
+                  ]} numberOfLines={3}>
+                    {opt.label}{opt.phu ? `\n(${opt.phu})` : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.rule_filter_subtitle}>Khoa khám chữa bệnh (MA_KHOA)</Text>
+            <View style={styles.rule_filter_chip_row}>
+              <TouchableOpacity
+                style={[
+                  styles.rule_filter_chip,
+                  styles.rule_filter_chip_nhom,
+                  boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_active,
+                ]}
+                onPress={() => setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA)}
+              >
+                <Text style={[
+                  styles.rule_filter_chip_txt,
+                  boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_txt_active,
+                ]}>Tất cả khoa</Text>
+              </TouchableOpacity>
+              {thaKhoaTuDuLieu.map((opt) => (
+                <TouchableOpacity
+                  key={`khoa_${opt.id}`}
+                  style={[
+                    styles.rule_filter_chip,
+                    styles.rule_filter_chip_nhom,
+                    boLocMaKhoa === opt.id && styles.rule_filter_chip_active,
+                  ]}
+                  onPress={() => setBoLocMaKhoa(opt.id)}
+                >
+                  <Text style={[
+                    styles.rule_filter_chip_txt,
+                    boLocMaKhoa === opt.id && styles.rule_filter_chip_txt_active,
+                  ]}>{opt.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
             <View style={styles.rule_filter_input_row}>
               <TextInput
                 style={styles.rule_filter_input}
@@ -1440,6 +1651,9 @@ const ManHinhTongQuan = ({ navigation }) => {
                   style={styles.rule_filter_clear_btn}
                   onPress={() => {
                     setBoLocLoaiUuTien('TAT_CA');
+                    setBoLocNhomViPham(NHOM_VI_PHAM_TAT_CA);
+                    setBoLocNhomCapLoaiKcb(NHOM_VI_PHAM_TAT_CA);
+                    setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA);
                     setTuKhoaLocQuyTac('');
                     setTuKhoaLocHoSo('');
                   }}
@@ -1465,6 +1679,7 @@ const ManHinhTongQuan = ({ navigation }) => {
                   web: {
                     onContextMenu: (e) => {
                       e?.preventDefault?.();
+                      e?.stopPropagation?.();
                       moModalChiTietHoSoLoiTheoQuyTac(item);
                     },
                   },
@@ -1511,8 +1726,8 @@ const ManHinhTongQuan = ({ navigation }) => {
                       <Text style={styles.rule_flow} numberOfLines={2}>Luồng: {item.luong_giai_trinh}</Text>
                     ) : null}
                     <Text style={styles.rule_hint_action}>
-                      Chạm để mở danh sách XML phát sinh, sửa lỗi và đi tới rule ON/OFF.
-                      {Platform.OS === 'web' ? ' · Chuột phải: xem cửa sổ chi tiết ca lỗi.' : ' · Nhấn giữ: xem cửa sổ chi tiết ca lỗi.'}
+                      Chạm để mở danh sách XML phát sinh và đi tới rule ON/OFF (mở «Sửa và lưu XML» chỉ để chỉnh tay sau khi bạn chọn).
+                      {Platform.OS === 'web' ? ' · Chuột phải: truy vấn chi tiết ca.' : ' · Nhấn giữ: xem chi tiết ca.'}
                     </Text>
                   </View>
                   <View style={{ width: 110, alignItems: 'center' }}>
@@ -1547,12 +1762,18 @@ const ManHinhTongQuan = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <Text style={styles.rule_detail_note}>Mỗi dòng bên dưới liên kết trực tiếp đến XML phát sinh lỗi. Bạn có thể mở XML để rà soát, chuyển thẳng sang màn sửa để lưu bản XML hoàn chỉnh, hoặc mở đúng tab quản trị rule.</Text>
-              {quyTacDangChon.chi_tiet_phat_sinh.map((chiTiet, idx) => (
+              {chiTietPhatSinhDaLocBoLoc.length === 0 ? (
+                <View style={styles.rule_nhom_empty}>
+                  <Text style={styles.rule_nhom_empty_txt}>Không có ca nào khớp nhóm đang chọn trong quy tắc này. Đặt «Tất cả» ở lọc nhóm nghiệp vụ hoặc chọn quy tắc khác.</Text>
+                </View>
+              ) : chiTietPhatSinhDaLocBoLoc.map((chiTiet, idx) => (
                 <View key={taoKhoaChiTietPhatSinh(chiTiet) || idx} style={styles.rule_instance_card}>
                   <View style={styles.rule_instance_header}>
                     <View style={{ flex: 1, paddingRight: 12 }}>
                       <Text style={styles.rule_instance_title}>{chiTiet.ma_lk || 'N/A'} • {chiTiet.ten_bn || 'Không rõ bệnh nhân'}</Text>
-                      <Text style={styles.rule_instance_location}>{chiTiet.vi_tri_xml}</Text>
+                      <Text style={styles.rule_instance_location}>
+                        {chiTiet.vi_tri_xml}{chiTiet.nhan_nhom_vi_pham ? ` • ${chiTiet.nhan_nhom_vi_pham}` : ''}
+                      </Text>
                     </View>
                     <Text style={styles.rule_instance_tab}>{chiTiet.tab_quan_tri_goi_y || 'LUAT_HANH_CHINH'}</Text>
                   </View>
@@ -1612,6 +1833,7 @@ const ManHinhTongQuan = ({ navigation }) => {
                 placeholderTextColor={CD.text.placeholder}
               />
             </View>
+            <Text style={styles.rule_filter_section_hint}>Áp dụng cùng bộ lọc nhóm nghiệp vụ, MA_LOAI_KCB và MA_KHOA như ô Lọc phía trên.</Text>
             <Text style={styles.rule_filter_status}>Khớp {ketQuaTraCuuChiTiet.length}/{danhSachLoiChiTietDashboard.length} lỗi chi tiết{ketQuaTraCuuChiTiet.length > ketQuaTraCuuChiTietHienThi.length ? ` • đang hiển thị ${ketQuaTraCuuChiTietHienThi.length} dòng đầu` : ''}</Text>
 
             {ketQuaTraCuuChiTietHienThi.length === 0 ? (
@@ -1626,7 +1848,9 @@ const ManHinhTongQuan = ({ navigation }) => {
                   <View style={styles.rule_instance_header}>
                     <View style={{ flex: 1, paddingRight: 12 }}>
                       <Text style={styles.rule_instance_title}>{chiTiet.ma_lk || 'N/A'} • {chiTiet.ten_bn || 'Không rõ bệnh nhân'}</Text>
-                      <Text style={styles.rule_instance_location}>{chiTiet.ma_luat || 'N/A'} • {chiTiet.vi_tri_xml}</Text>
+                      <Text style={styles.rule_instance_location}>
+                        {chiTiet.ma_luat || 'N/A'} • {chiTiet.vi_tri_xml}{chiTiet.nhan_nhom_vi_pham ? ` • ${chiTiet.nhan_nhom_vi_pham}` : ''}
+                      </Text>
                     </View>
                     <Text style={styles.rule_instance_tab}>{chiTiet.tab_quan_tri_goi_y || 'LUAT_HANH_CHINH'}</Text>
                   </View>
@@ -1792,7 +2016,7 @@ const ManHinhTongQuan = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <Text style={styles.chiTietLoiModal_hint}>
-              Truy vấn và xử lý từng ca (cùng nguồn dữ liệu với bảng quy tắc). Web: chuột phải vào dòng quy tắc; cảm ứng: nhấn giữ dòng.
+              Truy vấn từng ca (cùng nguồn với bảng quy tắc). Hệ thống không sửa XML cho đến khi bạn chỉnh và lưu trên màn biên tập. Web: chuột phải vào dòng quy tắc; cảm ứng: nhấn giữ dòng.
             </Text>
             <TextInput
               style={styles.chiTietLoiModal_search}
@@ -1803,7 +2027,10 @@ const ManHinhTongQuan = ({ navigation }) => {
               {...Platform.select({ web: { outlineStyle: 'none' } })}
             />
             <Text style={styles.chiTietLoiModal_count}>
-              Hiển thị {chiTietModalDaLoc.length} / {(quyTacChoModalChiTiet?.chi_tiet_phat_sinh || []).length} ca
+              Hiển thị {chiTietModalDaLoc.length} / {tongCaModalSauLocBoLoc} ca
+              {(quyTacChoModalChiTiet?.chi_tiet_phat_sinh || []).length !== tongCaModalSauLocBoLoc
+                ? ` (toàn quy tắc: ${(quyTacChoModalChiTiet?.chi_tiet_phat_sinh || []).length} ca)`
+                : ''}
             </Text>
             <ScrollView style={styles.chiTietLoiModal_scroll} keyboardShouldPersistTaps="handled">
               {chiTietModalDaLoc.length === 0 ? (
@@ -1952,22 +2179,95 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   sidebar_dashboard: {
-    ...(Platform.OS === 'web' ? { width: 320 } : { width: '100%', maxHeight: 280 }),
-    backgroundColor: '#F7FAFC',
+    ...(Platform.OS === 'web'
+      ? { width: 300 }
+      : { width: '100%', maxHeight: 300 }),
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#D8E2EE',
-    borderRadius: 16,
-    padding: 12,
-    ...Platform.select({ web: { boxShadow: CD.web.shadow_card } }),
+    borderColor: '#E2E8F0',
+    borderRadius: 20,
+    padding: 0,
+    overflow: 'hidden',
+    ...Platform.select({
+      web: {
+        boxShadow:
+          '0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 12px 28px -6px rgba(15, 23, 42, 0.08)',
+      },
+      default: {
+        shadowColor: '#0F172A',
+        shadowOpacity: 0.07,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 5 },
+        elevation: 3,
+      },
+    }),
+  },
+  sidebar_header: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 14,
+    backgroundColor: '#FAFBFC',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEF2F7',
+  },
+  sidebar_header_accent: {
+    width: 4,
+    borderRadius: 3,
+    marginRight: 12,
+    minHeight: 44,
+  },
+  sidebar_header_inner: {
+    flex: 1,
+    justifyContent: 'center',
   },
   sidebar_title: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '800',
-    color: '#111827',
-    marginBottom: 10,
+    color: '#0F172A',
+    letterSpacing: -0.3,
     fontFamily: CD.font.family,
   },
-  sidebar_scroll: { flex: 1 },
+  sidebar_subtitle: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 4,
+    fontFamily: CD.font.family,
+  },
+  sidebar_hint_pill: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginHorizontal: 12,
+    marginTop: 10,
+    marginBottom: 2,
+    paddingVertical: 9,
+    paddingHorizontal: 11,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 11,
+    borderWidth: 1,
+    borderColor: '#EDF2F7',
+  },
+  sidebar_hint_bullet: {
+    fontSize: 8,
+    color: CD.brand.mauChinh,
+    marginTop: 5,
+    opacity: 0.85,
+  },
+  sidebar_hint_web: {
+    flex: 1,
+    fontSize: 11,
+    color: '#64748B',
+    lineHeight: 16,
+    fontFamily: CD.font.family,
+  },
+  sidebar_scroll: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: 16,
+  },
   dashboard_main: { flex: 1 },
 
   // ── KPI CARDS ──
@@ -2159,26 +2459,124 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  // ── MODULE GRID ──
-  module_grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  module_card: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: CD.bg.glass_card,
-    borderRadius: 14,
-    paddingVertical: 14, paddingHorizontal: 18,
-    borderLeftWidth: 4,
-    borderWidth: 1, borderColor: CD.border.glass,
-    minWidth: 200, flex: 1,
-    ...Platform.select({ web: { backdropFilter: CD.web.blur_card, WebkitBackdropFilter: CD.web.blur_card, boxShadow: CD.web.shadow_card, cursor: 'pointer' } }),
+  // ── SIDEBAR ĐIỀU HƯỚNG (dashboard) ──
+  module_grid_sidebar: {
+    gap: 8,
+    flexDirection: 'column',
+    width: '100%',
   },
-  module_card_sidebar: {
-    minWidth: '100%',
-    flex: 0,
+  module_card_sidebar_item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#EDF2F7',
+    borderLeftWidth: 3,
+    minWidth: '100%',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        transitionProperty: 'box-shadow, border-color, transform',
+        transitionDuration: '0.14s',
+      },
+    }),
   },
-  module_icon_wrap: { width: 42, height: 42, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
-  module_icon: { fontSize: 22 },
-  module_name: { fontSize: 17, fontWeight: '700', fontFamily: CD.font.family, flex: 1, color: '#111827' },
+  module_card_sidebar_item_hover: Platform.select({
+    web: {
+      borderColor: '#CBD5E1',
+      boxShadow: '0 6px 16px rgba(15, 23, 42, 0.07)',
+      transform: [{ translateY: -1 }],
+    },
+    default: {},
+  }),
+  module_card_sidebar_item_pressed: { opacity: 0.93 },
+  module_icon_wrap_sidebar: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      web: { boxShadow: '0 1px 2px rgba(15, 23, 42, 0.06)' },
+    }),
+  },
+  module_icon_sidebar: { fontSize: 22 },
+  module_text_block: { flex: 1, minWidth: 0 },
+  module_name_sidebar: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1E293B',
+    fontFamily: CD.font.family,
+    lineHeight: 20,
+  },
+  module_chevron: {
+    fontSize: 22,
+    fontWeight: '300',
+    opacity: 0.75,
+    marginLeft: 2,
+    ...Platform.select({ web: { userSelect: 'none' } }),
+  },
+  sidebar_section_gap: { marginTop: 4 },
+  sidebar_divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+    marginTop: 8,
+  },
+  sidebar_divider_line: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: '#E2E8F0' },
+  sidebar_divider_label: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#94A3B8',
+    letterSpacing: 1.4,
+    fontFamily: CD.font.family,
+  },
+  module_card_sidebar_secondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    minWidth: '100%',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        borderStyle: 'dashed',
+      },
+      default: {},
+    }),
+  },
+  module_card_sidebar_secondary_hover: Platform.select({
+    web: {
+      backgroundColor: '#F1F5F9',
+      borderColor: '#CBD5E1',
+    },
+    default: {},
+  }),
+  module_icon_wrap_secondary: {
+    backgroundColor: '#EEF2FF',
+  },
+  module_name_sidebar_secondary: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#475569',
+    fontFamily: CD.font.family,
+  },
+  module_hint_secondary: {
+    fontSize: 11,
+    color: '#94A3B8',
+    marginTop: 3,
+    fontFamily: CD.font.family,
+  },
 
   // ── IMPORT ZONE ──
   import_zone: {
@@ -2748,6 +3146,39 @@ const styles = StyleSheet.create({
   },
   rule_filter_chip_txt_active: {
     color: '#FFFFFF',
+  },
+  rule_filter_subtitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: CD.text.muted,
+    marginTop: 2,
+    marginBottom: -2,
+    fontFamily: CD.font.family,
+  },
+  rule_filter_chip_nhom: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  rule_filter_section_hint: {
+    fontSize: 11,
+    color: CD.text.muted,
+    fontStyle: 'italic',
+    marginBottom: 6,
+    fontFamily: CD.font.family,
+  },
+  rule_nhom_empty: {
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  rule_nhom_empty_txt: {
+    fontSize: 13,
+    color: CD.text.muted,
+    lineHeight: 20,
+    fontFamily: CD.font.family,
   },
   rule_filter_input_row: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',

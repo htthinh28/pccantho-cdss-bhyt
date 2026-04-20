@@ -20,6 +20,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import ModalCatalogMapping from '../thanh_phan/modal_catalog_mapping';
 import OChonNgayISO from '../thanh_phan/o_chon_ngay_iso';
+import { noiChuoiNhieuMa, tachChuoiNhieuMa } from '../tien_ich/catalog_mapping_chuoi_ma';
+import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import {
     invalidateBangCatalogMappingCache,
     taiBangChoLoaiMapping,
@@ -115,7 +117,7 @@ const MappingNghiepVu = ({ navigation }) => {
     if (Array.isArray(md.target_codes) && md.target_codes.length) return { chi: [], thuc: norm(md.target_codes) };
     const tc = String(r.target_code || '').trim();
     if (!tc) return { chi: [], thuc: [] };
-    return { chi: [], thuc: tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc] };
+    return { chi: [], thuc: tachChuoiNhieuMa(tc) };
   };
 
   /** ICD↔thuốc/DVKT/VTYT…: danh sách mã đích (một dòng có thể nhiều mã). */
@@ -127,7 +129,7 @@ const MappingNghiepVu = ({ navigation }) => {
     }
     const tc = String(r.target_code || '').trim();
     if (!tc) return [];
-    return tc.includes('|') ? tc.split('|').map((s) => s.trim()).filter(Boolean) : [tc];
+    return tachChuoiNhieuMa(tc);
   };
 
   /** ICD: metadata.source_icd_codes; STAFF_EQUIPMENT / DVKT_EQUIPMENT: metadata.source_codes. */
@@ -146,7 +148,16 @@ const MappingNghiepVu = ({ navigation }) => {
     }
     const sc = String(r.source_code || '').trim();
     if (!sc) return [];
-    return sc.includes('|') ? sc.split('|').map((s) => s.trim()).filter(Boolean) : [sc];
+    return tachChuoiNhieuMa(sc);
+  };
+
+  /** Mã nguồn hiển thị / xuất: chuẩn hóa nhiều ICD (v.v.) thành "A; B; C". */
+  const maNguonHienThi = (r) => {
+    if (laMappingNhieuMaNguon(r.mapping_type)) {
+      const arr = layMaNguonMulti(r);
+      if (arr.length) return noiChuoiNhieuMa(arr);
+    }
+    return String(r.source_code || '').trim();
   };
 
   const bangMergedChoModal = useMemo(
@@ -223,7 +234,7 @@ const MappingNghiepVu = ({ navigation }) => {
     }
     return timTenTheoMa(ds, r.target_code);
   };
-  const maDichChiDinh = (r) => (r.mapping_type === 'STAFF_DVKT' ? layNhomDvktStaff(r).chi.join(', ') : '');
+  const maDichChiDinh = (r) => (r.mapping_type === 'STAFF_DVKT' ? noiChuoiNhieuMa(layNhomDvktStaff(r).chi) : '');
   const tenDichChiDinh = (r) => {
     if (r.mapping_type !== 'STAFF_DVKT') return '';
     const c = layCauHinhLoaiMapping(r.mapping_type);
@@ -231,8 +242,8 @@ const MappingNghiepVu = ({ navigation }) => {
     return timTenNhieuMa(bangTheoRef[c.target_catalog] || [], layNhomDvktStaff(r).chi);
   };
   const maDichThucHien = (r) => {
-    if (r.mapping_type === 'STAFF_DVKT') return layNhomDvktStaff(r).thuc.join(', ');
-    if (laMappingNhieuMaDich(r.mapping_type)) return layMaDichMultiNghiepVu(r).join(', ');
+    if (r.mapping_type === 'STAFF_DVKT') return noiChuoiNhieuMa(layNhomDvktStaff(r).thuc);
+    if (laMappingNhieuMaDich(r.mapping_type)) return noiChuoiNhieuMa(layMaDichMultiNghiepVu(r));
     return r.target_code || '';
   };
   const tenDichThucHien = (r) => {
@@ -379,7 +390,7 @@ const MappingNghiepVu = ({ navigation }) => {
     const sheet = hangLoc.map((r, i) => ({
       STT: i + 1,
       Loai: r.mapping_type,
-      Ma_nguon: r.source_code,
+      Ma_nguon: maNguonHienThi(r),
       Ten_nguon: tenNguon(r),
       Ma_chi_dinh: maDichChiDinh(r),
       Ten_chi_dinh: tenDichChiDinh(r),
@@ -407,7 +418,7 @@ const MappingNghiepVu = ({ navigation }) => {
     const rows = hangLoc.map((r, i) => ({
       STT: i + 1,
       Loai: r.mapping_type,
-      Ma_nguon: r.source_code,
+      Ma_nguon: maNguonHienThi(r),
       Ten_nguon: tenNguon(r),
       Ma_chi_dinh: maDichChiDinh(r),
       Ten_chi_dinh: tenDichChiDinh(r),
@@ -535,7 +546,7 @@ const MappingNghiepVu = ({ navigation }) => {
           <Text style={styles.chu_nut_header}>⬅ TỔNG QUAN</Text>
         </TouchableOpacity>
         <Text style={styles.chu_tieu_de} numberOfLines={1}>MAPPING DANH MỤC</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('QuanLyDanhMuc')} style={styles.nut_phu}>
+        <TouchableOpacity onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyDanhMuc')} style={styles.nut_phu}>
           <Text style={styles.chu_nut_header}>📋 DM GỐC</Text>
         </TouchableOpacity>
       </View>
@@ -729,7 +740,7 @@ const MappingNghiepVu = ({ navigation }) => {
                       <View key={r.id} style={[styles.dong_du_lieu, i % 2 === 1 && styles.dong_le]}>
                         <Text style={[styles.cot, styles.cot_stt]}>{i + 1}</Text>
                         <Text style={[styles.cot, styles.cot_loai]}>{r.mapping_type}</Text>
-                        <Text style={[styles.cot, styles.cot_ma]}>{r.source_code}</Text>
+                        <Text style={[styles.cot, styles.cot_ma]}>{maNguonHienThi(r)}</Text>
                         <Text style={[styles.cot, styles.cot_ten]}>{tenNguon(r) || '—'}</Text>
                         <Text style={[styles.cot, styles.cot_ma_cd]}>{maDichChiDinh(r) || '—'}</Text>
                         <Text style={[styles.cot, styles.cot_ten_nhom]}>{tenDichChiDinh(r) || '—'}</Text>

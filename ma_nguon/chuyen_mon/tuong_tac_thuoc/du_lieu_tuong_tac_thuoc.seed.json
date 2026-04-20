@@ -1,5 +1,5 @@
 {
-  "phien_ban": "2026.04.14.266.trangthai",
+  "phien_ban": "2026.04.19.267.trangthai",
   "columns": [
     "id",
     "TRANG_THAI",
@@ -180,7 +180,7 @@
       "NOI_DUNG_TUONG_TAC": "[40.549] Atorvastatin (hoặc Rosuvastatin) vs [40.553] Fenofibrat",
       "CANH_BAO_HE_THONG": "⚠️ Tiêu cơ vân (Rhabdomyolysis): Tăng nguy cơ bệnh lý cơ và tiêu cơ vân cấp. Dặn dò bệnh nhân báo ngay nếu có triệu chứng đau mỏi cơ, sẫm màu nước tiểu [11].",
       "DU_LIEU_CAP_DOI_DAY_DU": "1",
-      "TRANG_THAI": "ON"
+      "TRANG_THAI": "OFF"
     },
     {
       "id": "tt-TUONGTAC_018",
