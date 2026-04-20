@@ -1,0 +1,333 @@
+DANH SÁCH CÁC MÃ LỖI CHẶN HỒ SƠ TẠI HỆ THỐNG GIÁM ĐỊNH
+Khi hồ sơ được đề nghị sang hệ thống giám định, trước khi chạy qua quá trình giám định tự động, các hồ sơ sẽ được tự động chạy qua quá trình kiểm tra lỗi với danh sách các lỗi dưới đây, nếu có lỗi thì thực hiện trả lại CTN.
+Logic xử lý
+Trong quá trình chạy giám định tự động thực hiện check các logic số học trên các bản ghi XML1, XML2 và 3, nếu gặp tình trạng không logic thì thực hiện call store. Store làm nhiệm vụ cập nhật trạng thái lỗi sang hồ sơ tương ứng bên Cổng TN (có ghi rõ mã lỗi giữa các trường hợp) sau đó thực hiện xóa bên HT Giám định, có ghi lại log xóa.
+Chú ý:
+Với luồng chạy lại hồ sơ, chỉ chạy qua các mã lỗi chặn hồ sơ khi hồ sơ thỏa mãn các điều kiện:
+Store
+Input: ID của XML1.
+Process: Thực hiện xóa hồ sơ XML có ID đầu vào, ghi log việc xóa (có thể tạo bảng lịch sử) và call đến 1 store mà bên Cổng TN đã tạo
+Làm việc với Cổng TN để thống nhất store sẽ gọi.
+Output: Mã lối nếu có
+Cổng TN có chức năng liệt kê các hồ sơ bị sai lệch đã được cập nhật trạng thái ở bước trên (hiển thị rõ lý do mà giám định trả lại hồ sơ)Người dùng có thể xóa hồ sơ đi để đẩy lại.
+Với mỗi hồ sơ, kiểm tra lần lượt tất cả các lỗi theo nghiệp vụ. Nếu có lỗi:
+Tại giám định:
+Xóa các XML12345 của hồ sơ khỉ db
+Lưu log việc trả lại hồ sơ:
+SELECT * FROM LOG_DELETE_XML WHERE LIST_XML1_ID ='ID_XML1 - TRA HS LOI';
+Tại CTN, bản ghi xml1 của hồ sơ bị lỗi được cập nhật các trường sau:
+MALOI: Lỗi đầu tiên phát hiện được.
+MIEUTA: Danh sách tất cả các lỗi mà hồ sơ vi phạm. Các mô tả lỗi cách nhau bằng dấu ‘;’. Ví dụ MIEUTA = “Sai Lý do vào viện; Sai THANH_TIEN so với SO_LUONG, DON_GIA của XML2_9324 và XML3_9324; Sai T_TONGCHI của XML1_9324 so với THANH_TIEN của XML2_9324 và XML3_9324” là hồ sơ bị vi phạm 3 lỗi với mã lỗi 1, 3, 5.
+TINHTRANGGUI = 6
+DANH SÁCH CÁC MÃ LỖI:
+Hồ sơ gửi theo 9324
+Mã lỗi 1: Sai lý do vào viện
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Mã lý do vào viện đề nghị khác các giá trị (1, 2, 3, 4)
+Mã lý do vào viện đề nghị =3 nhưng Mã ĐKBĐ = Mã CSKCB (Đúng tuyến mà gửi lên là trái tuyến).
+Mã lỗi 3: Sai thành tiền so với SO_LUONG, DON_GIA của XML2 và XML3
+XML2, XML3 vi phạm khi THANH_TIEN khác (SO_LUONG * DON_GIA * TYLE/100)
+Mã lỗi 4: Sai TONG_CHI của XML1 so với THANH_TIEN của XML2 và XML3.
+Hồ sơ vi phạm khi T_TONGCHI khác tổng (THANH_TIEN) của các xml2, xml3.
+Mã lỗi 5: Sai TONG_CHI so với T_BHTT và T_BNTT của XML1.
+Hồ sơ vi phạm khi: T_TONGCHI khác tổng T_BNTT + T_BHTT + T_NGUONKHAC (cho phép lệch 1 đơn vị).
+Mã lỗi 8: Sai thông tin thẻ
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Trong danh mục mức hưởng BHYT, không tìm thấy bản ghi có hiệu lực và có mã = 3 ký tự đầu thẻ BHYT
+Trong danh mục đơn vị BHXH, không tim thấy bản ghi có mã đơn vị = 2 ký tự thứ 4, 5 của mã thẻ BHYT.
+Mã lỗi 9 (Sai thông tin CSKCB ban đầu)
+Bỏ qua với trường hợp trẻ em không thẻ (2 ký tự đầu mã thẻ là TE; 3 ký tự thứ 8,9,10 là ‘000’ và Mã ĐKBĐ = mã đơn vị +’000’), nếu hồ sơ có Mã ĐKBĐ không nằm trong danh mục Cơ sở KCB thì vi phạm.
+Mã lỗi 10 (Sai thông tin CSKCB)
+Hồ sơ vi phạm mã lỗi trên khi: mã CSKCB của hồ sơ không tìm thấy trong danh mục CSKCB.
+Mã lỗi 11 (Hồ sơ không phát sinh chi phí Đề nghị thanh toán)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Hồ sơ có tiền đề nghị BHTT trống hoặc = 0
+Hồ sơ có mức hưởng đề nghị trống hoặc = 0
+Mã lỗi 12: Sai T_BHTT tính lại từ mức hưởng (BỎ QUA VỚI TH HỒ SƠ CÓ GOI_VTYT)
+Tính lại T_BHTT chi tiết của các XML2, XML3 theo công thức sau:
+XML2: T_BHTT = so_luong * don_gia * tyle/100 * muc_huong/100
+XML3:
+Mã nhóm 12: T_BHTT = so_luong * don_gia * tyle/100
+Mã nhóm 10, 11 nằm trong gói:
+T_BHTT = so_luong * don_gia * tyle/100 * muc_huong/100 * tỷ lệ áp trần
+Các mã nhóm còn lại: T_BHTT = so_luong * don_gia * tyle/100 * muc_huong/100
+Thực hiện so sánh: T_BHTT đề nghị tại XML1 với tổng T_BHTT vừa tính lại của các XML2, XML3. Nếu khác nhau thì hồ sơ vi phạm.
+Mã lỗi 14 (Stent động mạch vành phủ thuốc các cỡ các loại thanh toán theo TT 04/2017/TT-BYT)
+Hồ sơ vi phạm mã lỗi trên khi: đề nghị chi phí VTYT STENT mã “N06.02.020’ với số lượng > 1
+(bỏ qua xét mã lỗi này với các hồ sơ có mã thẻ là CC, TE, QN, CA, CY hoặc hồ sơ có ngày ra trước ngày 01/01/2017)
+Mã lỗi 60 (Cơ sở đăng ký khám ngoại trú nhận hồ sơ nội trú không hợp lệ)
+Hồ sơ vi phạm nếu thỏa mãn tất cả các điều kiện sau:
+Mã loại KCB = 3 (nội trú)
+Cơ sở KCB đăng ký khám Ngoại trú
+(Trong bảng LOG_LOAIHOPDONG của cơ sở đó thỏa mãn: LOAI_HOPDONG = 0 và NGAY_VAO của hồ sơ nằm trong khoảng TU_NGAY, DEN_NGAY.
+Trường hợp trong bảng LOG_LOAIHOPDONG ko có bản ghi thỏa mãn thì tìm cơ sở kcb đó trong Danh mục cơ sở KCB, cơ sở có LOAI_HOPDONG = 0).
+Mã lỗi 61: Trùng hồ sơ
+Phần này thực hiện đầu tiên trước khi làm các tác vụ khác, bộ key trùng: mã thẻ, họ tên, ngày vào, ngày ra, mã bệnh, mã cơ sở kcb, kỳ quyết toán, T_TONGCHI, T_BHTT.
+Nếu tồn tại 1 bản ghi đã có tại giám định với cả 2 tiền T_TONGCHI và T_BHTT lệch nhau không quá 2 đồng thì trả về hồ sơ.
+Hồ sơ gửi theo 4210
+Mã lỗi 1: Sai lý do vào viện
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Mã lý do vào viện đề nghị khác các giá trị (1, 2, 3, 4)
+Mã lý do vào viện đề nghị =3 nhưng Mã ĐKBĐ = Mã CSKCB (Đúng tuyến mà gửi lên là trái tuyến).
+Mã lỗi 8: Sai thông tin thẻ
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Trong danh mục mức hưởng BHYT, không tìm thấy bản ghi có hiệu lực và có mã = 3 ký tự đầu thẻ BHYT
+Trong danh mục đơn vị BHXH, không tim thấy bản ghi có mã đơn vị = 2 ký tự thứ 4, 5 của mã thẻ BHYT.
+Mã lỗi 9 (Sai thông tin CSKCB ban đầu)
+Với các hồ sơ thỏa mãn tất cả các điều kiện sau sẽ bỏ qua không xét mã lỗi này:
+3 ký tự đầu của mã thẻ có trong danh mục mức hưởng BHYT, và có hiệu lực
+2 ký tự thứ 4, 5 của mã thẻ có trong danh mục đơn vị BHYT
+2 ký tự thứ 6, 7 của mã thẻ là “KT”
+3 ký tự đầu mã thẻ là TE1, HG4 và QTTHE = 700000 và mã đk ban đầu có định dạng XX000 trong đó XX = =DM_TINHTHANH.MA
+Các hồ sơ không thuộc trường hợp trên thì xét tiếp, nếu vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Không tìm thấy mã ĐKBĐ của hồ sơ trong danh mục Cơ sở kcb.
+Hồ sơ có Mã ĐKBĐ khác, nhưng dữ liệu ở trường này: các mã CSKCB không cách nhau bởi dấu “;”
+Hồ sơ có Mã ĐKBĐ khác, dữ liệu ở trường này: các mã CSKCB cách nhau bởi dấu “;”.
+Nhưng trong số các mã CSKCB đó, tồn tại ít nhất 1 mã CSKCB không có trong danh mục CSKCB.
+Mã lỗi 10 (Sai thông tin CSKCB)
+Hồ sơ vi phạm mã lỗi trên khi: mã CSKCB của hồ sơ không tìm thấy trong danh mục CSKCB.
+Mã lỗi 11 (Hồ sơ không phát sinh chi phí Đề nghị thanh toán)
+Hồ sơ vi phạm trường hợp sau sẽ bị trả về mã lỗi trên: tiền đề nghị BHTT trống hoặc =0
+Mã lỗi 14 (Stent động mạch vành phủ thuốc các cỡ các loại thanh toán theo TT 04/2017/TT-BYT)
+Hồ sơ vi phạm mã lỗi trên khi: đề nghị chi phí VTYT STENT mã “N06.02.020’ với số lượng > 1
+(bỏ qua xét mã lỗi này với các hồ sơ có mã thẻ là CC, TE, QN, CA, CY hoặc hồ sơ có ngày ra trước ngày 01/01/2017)
+Mã lỗi 15 (Ngày sinh không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường ngày sinh không đúng 8 ký tự số
+Giá trị trường ngày sinh không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 16 (giới tính không hợp lệ)
+Hồ sơ vi phạm khi: giá trị giới tính đề nghị lên khác (1,2,3)
+Mã lỗi 17 (Mã thẻ không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường Mã thẻ không đúng 15 ký tự
+Giá trị trường Mã thẻ khác không null, nhưng các mã thẻ trong trường mã thẻ khác không cách nhau bởi dấu “;”
+Giá trị trường Mã thẻ khác không null, các mã thẻ trong trường mã thẻ khác cách nhau bởi dấu “;”. Nhưng trong đó tồn tại 1 giá trị mã thẻ không đúng 15 ký tự.
+Mã lỗi 18 (giá trị thẻ từ không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường giá trị thẻ từ khác không null, nhưng các giá trị trong trường này không cách nhau bởi dấu “;”
+Giá trị trường giá trị thẻ từ khác không null, các giá trị trong trường này cách nhau bởi dấu “;”, nhưng trong đó tồn tại 1 giá trị không đúng 8 ký tự số.
+Giá trị trường giá trị thẻ từ khác không null, các giá trị trong trường này cách nhau bởi dấu “;”,nhưng trong đó tồn tại 1 giá trị không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 19 (giá trị thẻ đến không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường giá trị thẻ đến khác không null, nhưng các giá trị trong trường này không cách nhau bởi dấu “;”
+Giá trị trường giá trị thẻ đến khác không null, các giá trị trong trường này cách nhau bởi dấu “;”, nhưng trong đó tồn tại 1 giá trị không đúng 8 ký tự số.
+Giá trị trường giá trị thẻ đến khác không null, các giá trị trong trường này cách nhau bởi dấu “;”,nhưng trong đó tồn tại 1 giá trị không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 20 (Số lượng mã thẻ và các thông tin thẻ không tương ứng)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Nếu trong 4 trường XML1.MA_THE_KHAC, XML1.MA_DKBD_KHAC, XML1.GT_THE_TU_KHAC, XML1.GT_THE_DEN_KHAC có trường rỗng, nhưng các trường còn lại vẫn có giá trị
+Tách các giá trị trong 4 trường trên theo dấu “;”,thành danh sách các giá trị cụ thể. Nếu số lượng bốn danh sách tách được không bằng nhau (ví dụ 4 mã thẻ, 3 cơ sở ĐKBĐ, 5 giá trị từ, 5 giá trị đến)
+Mã lỗi 21 (Miễn cùng chi trả không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường Miễn cùng chi trả không đúng 8 ký tự số
+Giá trị trường Miễn cùng chi trả không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 22 (Mã tai nạn không hợp lệ)
+Hồ sơ vi phạm khi giá trị trường mã tại nạn không thuộc các giá trị từ 0 đến 8.
+Mã lỗi 23 (Ngày vào không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường Ngày vào không đúng 12 ký tự số
+Giá trị trường Ngày vào không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 24 (Ngày ra không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường Ngày ra không đúng 12 ký tự số
+Giá trị trường Ngày ra không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 25 (Kết quả điều trị không hợp lệ)
+Hồ sơ vi phạm khi giá trị trường Kết quả điều trị không thuộc các giá trị từ 1đến 5.
+Mã lỗi 26 (Tình trạng ra viện không hợp lệ)
+Hồ sơ vi phạm khi giá trị trường Tình trạng ra viện không thuộc các giá trị từ 1đến 4.
+Mã lỗi 27 (Ngày thanh toán không hợp lệ)
+Hồ sơ vi phạm 1 trong các trường hợp sau sẽ bị trả về mã lỗi trên:
+Giá trị trường Ngày thanh toán không đúng 12 ký tự số
+Giá trị trường Ngày thanh toán không hợp lệ (ví dụ 20170135: ngày 35/1/2017)
+Mã lỗi 31 (T_BHTT trong XML1 khác tổng cộng các T_BHTT trong XML23)
+Hồ sơ vi phạm khi:
+T_BHTT trong xml1 != Tổng (T_BHTT) trong xml2 + Tổng (T_BHTT) trong xml3
+Mã lỗi 34 (TONGCHI trong XML1 khác tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC)
+Hồ sơ vi phạm khi:
+TONGCHI trong XML1 != Tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC
+Mã lỗi 35 (Năm quyết toán không hợp lệ)
+Hồ sơ vi phạm khi: giá trị trường Năm quyết toán > Năm hiện tại.
+Mã lỗi 36 (Tháng quyết toán không hợp lệ)
+Hồ sơ vi phạm khi: giá trị trường Tháng quyết toán không thuộc các giá trị từ 1đến 12.
+Mã lỗi 37 (Mã loại KCB không hợp lệ)
+Hồ sơ vi phạm khi: giá trị trường Mã loại KCB không thuộc các giá trị từ 1đến 3.
+Mã lỗi 38 (Mã KHU VỰC không hợp lệ)
+Hồ sơ vi phạm khi: giá trị trường Mã khu vực không thuộc các giá trị (K1, K2, K3)
+Mã lỗi 39 (Mã nhóm trong XML2 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML2 có giá trị Mã nhóm khác (4, 5, 6, 7)
+Mã lỗi 40 (Phạm vi trong XML2 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML2 có giá trị trường Phạm vi khác (1, 2)
+Mã lỗi 41 (THANHTIEN trong XML2 khác tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC)
+Hồ sơ vi phạm khi trong XML2 tồn tại ít nhất 1 bản ghi mà:
+THANH_TIEN trong XML2 != Tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC
+Mã lỗi 42 (T_NGOAIDS trong XML2 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML2 có giá trị trường T_NGOAIDS đề nghị khác 0 và khác giá trị trường T_BHTT.
+Mã lỗi 43 (Mã nhóm trong XML3 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML3 có giá trị Mã nhóm khác (1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15)
+Mã lỗi 44 (Phạm vi trong XML3 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML3 có giá trị trường Phạm vi khác (1, 2)
+Mã lỗi 45 (THANHTIEN trong XML3 khác tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC)
+Hồ sơ vi phạm khi trong XML3 tồn tại ít nhất 1 bản ghi mà:
+THANH_TIEN trong XML3 != Tổng T_BNTT + T_BNCCT + T_BHTT + T_NGUONKHAC
+Mã lỗi 46 (T_NGOAIDS trong XML3 không hợp lệ)
+Hồ sơ vi phạm khi: tồn tại ít nhất 1 bản ghi trong XML3 có giá trị trường T_NGOAIDS đề nghị khác 0 và khác giá trị trường T_BHTT.
+Mã lỗi 47: Thành tiền trong XML2 không hợp lệ
+XML2 vi phạm khi THANH_TIEN khác (so_luong * don_gia)
+Mã lỗi 48: T_BHTT trong XML2 không hợp lệ
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+T_BHTT khác (THANH_TIEN * TY_LE/100 * MUC_HUONG/100)
+T_BHTT khác (THANH_TIEN – T_NGUONKHAC)
+Mã lỗi 49: T_BNCCT trong XML2 không hợp lệ
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+Đúng tuyến
+T_BNCCT khác (THANH_TIEN * TY_LE/100 - T_BHTT)
+T_BNCCT khác (THANH_TIEN * TY_LE/100 - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi trước ngày 1/6/2018
+T_BNCCT khác 0
+T_BNCCT khác (T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi kể từ ngày 1/6/2018
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100* TY_LE/100 - T_BHTT)
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100* TY_LE/100 - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Mã lỗi 50: T_BNTT trong XML2 không hợp lệ
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+T_BNTT khác (THANH_TIEN - T_BHTT - T_BNCCT - T_NGUONKHAC)
+T_BNTT khác 0
+T_BNTT khác 0
+Mã lỗi 51: T_NGUONKHAC trong XML2 không hợp lệ
+So sánh T_NGUONKHAC phải thỏa mãn 0 <= T_NGUONKHAC<= THANH_TIEN
+Không thỏa mãn thì vi phạm (TH thanh_tien <0 thì bỏ qua không chặn).
+Mã lỗi 52: Thành tiền trong XML3 không hợp lệ
+Với XML3 thuộc 1 trong các trường hợp sau:
+Mã nhóm =13
+Mã nhóm = 15
+Mã nhóm =8 và tỷ lệ thanh toán = 50 hoặc 80
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm =8 và tỷ lệ thanh toán =35
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm thuộc (1,2,3,8) và tỷ lệ thanh toán =70
+Các XML3 này vi phạm khi THANH_TIEN khác (so_luong * don_gia * tỷ lệ TT/100)
+Các XML3 còn lại không nằm trong các TH trên:
+Vi phạm khi THANH_TIEN khác (so_luong * don_gia)
+Mã lỗi 53: T_BHTT trong XML3 không hợp lệ
+Với XML3 thuộc 1 trong các trường hợp sau:
+Mã nhóm =13
+Mã nhóm = 15
+Mã nhóm =8 và tỷ lệ thanh toán = 50 hoặc 80
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm =8 và tỷ lệ thanh toán =35
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm thuộc (1,2,3,8) và tỷ lệ thanh toán =70
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+T_BHTT khác (THANH_TIEN * MUC_HUONG/100)
+T_BHTT khác (THANH_TIEN – T_NGUONKHAC)
+Các XML3 còn lại không nằm trong các TH trên (trừ các XML3 là VTYT nằm trong gói):
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+T_BHTT khác (THANH_TIEN * TY_LE/100 * MUC_HUONG/100)
+T_BHTT khác (THANH_TIEN – T_NGUONKHAC)
+Mã lỗi 54: T_BNCCT trong XML3 không hợp lệ
+Với XML3 thuộc 1 trong các trường hợp sau:
+Mã nhóm =13
+Mã nhóm = 15
+Mã nhóm =8 và tỷ lệ thanh toán = 50 hoặc 80
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm =8 và tỷ lệ thanh toán =35
+Hồ sơ TYT có ngày vào kể từ ngày 15/07/2018, xml3 có mã nhóm thuộc (1,2,3,8) và tỷ lệ thanh toán =70
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+Đúng tuyến
+T_BNCCT khác (THANH_TIEN -T_BHTT)
+T_BNCCT khác (THANH_TIEN - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi trước ngày 1/6/2018
+T_BNCCT khác 0
+T_BNCCT khác (T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi kể từ ngày 1/6/2018
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100 - T_BHTT)
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100 - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Các XML3 còn lại không nằm trong các TH trên (trừ các XML3 là VTYT nằm trong gói):
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+Đúng tuyến
+T_BNCCT khác (THANH_TIEN * TY_LE/100 - T_BHTT)
+T_BNCCT khác (THANH_TIEN * TY_LE/100 - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi trước ngày 1/6/2018
+T_BNCCT khác 0
+T_BNCCT khác (T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Trái tuyến
+TH hồ sơ gửi kể từ ngày 1/6/2018
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100* TY_LE/100 - T_BHTT)
+T_BNCCT khác (THANH_TIEN* TYLETRAITUYEN/100* TY_LE/100 - T_BHTT + T_BNTT – T_NGUONKHAC)
+T_BNCCT khác 0
+Mã lỗi 55: T_BNTT trong XML3 không hợp lệ
+Chỉ xét với các XML3 không phải VTYT nằm trong gói:
+0 <= T_NGUONKHAC < T_BNTT
+T_BNTT <= T_ NGUONKHAC <= T_BNTT + T_BNCCT
+T_BNTT + T_BNCCT < T_NGUONKHAC <= THANH_TIEN
+T_BNTT khác (THANH_TIEN - T_BHTT - T_BNCCT - T_NGUONKHAC)
+T_BNTT khác 0
+T_BNTT khác 0
+Mã lỗi 56: T_NGUONKHAC trong XML3 không hợp lệ
+So sánh T_NGUONKHAC phải thỏa mãn 0 <= T_NGUONKHAC<= THANH_TIEN
+Không thỏa mãn thì vi phạm (TH thanh_tien <0 thì bỏ qua không chặn).
+Mã lỗi 58: Hồ sơ có ngày vào lớn hơn ngày hết hợp đồng của Cơ sở KCB
+Kiểm tra ngày hết hợp đồng của Cơ sở KCB trong danh mục Cơ sở KCB, nếu ngày vào của hồ sơ lớn hơn ngày hết hợp đồng thì vi phạm.
+Mã lỗi 60 (Cơ sở đăng ký khám ngoại trú nhận hồ sơ nội trú không hợp lệ)
+Hồ sơ vi phạm nếu thỏa mãn tất cả các điều kiện sau:
+Mã loại KCB = 3 (nội trú)
+Cơ sở KCB đăng ký khám Ngoại trú
+(Trong bảng LOG_LOAIHOPDONG của cơ sở đó thỏa mãn: LOAI_HOPDONG = 0 và NGAY_VAO của hồ sơ nằm trong khoảng TU_NGAY, DEN_NGAY.
+Trường hợp trong bảng LOG_LOAIHOPDONG ko có bản ghi thỏa mãn thì tìm cơ sở kcb đó trong Danh mục cơ sở KCB, cơ sở có LOAI_HOPDONG = 0).
+Trên đây là danh sách toàn bộ các mã lỗi chặn hồ sơ, nếu các hồ sơ vi phạm các lỗi này, sẽ tự động bị xóa khỏi hệ thống giám định, đồng thời hệ thống giám định sẽ trả về mã lỗi và miêu tả cho tất cả các lỗi mà hồ sơ vi phạm về bên cổng tiếp nhận.
+Các hồ sơ không bị lỗi, không bị chặn lại qua quá trình kiểm tra lỗi hồ sơ sẽ tiếp tục chạy qua quá trình giám định tự động hiện tại.
+Mã lỗi 61: Trùng hồ sơ
+Phần này thực hiện đầu tiên trước khi làm các tác vụ khác, bộ key trùng: mã thẻ, họ tên, ngày vào, ngày ra, mã bệnh, mã cơ sở kcb, kỳ quyết toán, T_TONGCHI, T_BHTT.
+Nếu tồn tại 1 bản ghi đã có tại giám định với cả 2 tiền T_TONGCHI và T_BHTT lệch nhau không quá 2 đồng thì trả về hồ sơ.
+Mã lỗi 101: (Bệnh nhân KCB ngoại trú trái tuyến, quỹ BHYT không thanh toán lý do vào viện Thông tuyến)
+1.Không thanh toán các hồ sơ ngoại trú có lý do vào viện là thông tuyến tại bệnh viện tuyến huyện, tuyến tỉnh, tuyến TW.
+2.Đối Với mã loại KCB (MA_LOAI_KCB) = 1,2 AND Lý do vào viện (MA_LYDO_VVIEN) = 4 mới check.
+Check điều kiện lấy ra tuyến CMKT của CSKCB:
+Select TUYENCMKT from DM_COSOKCB_BC_THANG a where X1.MA_CSKCB = a.MA and subtr(X1.NGAY_VAO,0,6)= a.THANG_QT
+- If TUYENCMKT in (1,2)
+=> vi phạm quy tắc
+- If TUYENCMKT = 3
+Select TUYENCMKT,MATINHTHANH from DM_COSOKCB a where X1.MA_DKBD = a.MA (1)
+Select TUYENCMKT,MATINHTHANH from DM_COSOKCB a where X1.MA_CSKCB = a.MA (2)
+=> So sánh:
+TH1: MATINHTHANH (1) <> MATINHTHANH (2) => vi phạm quy tắc
+TH2: MATINHTHANH (1) = MATINHTHANH (2)
+Nếu TUYENCMKT (1) in (1,2) = > vi phạm quy tắc
+Mã lỗi: 102: VTYT đi kèm DVKT không có trong hồ sơ
+Check HS có ngày vào từ 1/8/2021
+Check XML3_4210 các chi phí có mã nhóm = 10,11
+Check MA_DICH_VU nếu trống bỏ qua nếu có lấy ra thông tin MA_DICH_VU rồi check tiếp xem MA_DICH_VU có xuất hiện ở XML3_4210 có mã nhóm khác 10,11 của hồ sơ đấy ko
+select * from XML3_4210 where xml1_4210_ID = 'ID của hồ sơ đang check' and ma_nhom not in (10,11) and ma_dich_vu = 'ma_dich_vu của VTYT đang check'
+Nếu có bỏ qua ko thì vi phạm.
+Mã lỗi mới 103: Đề nghị TT hồ sơ khác năm tài chính.
+Check ngày ra của hồ sơ ( chỉ check năm ) nếu khác năm hiện tại thì trả về cổng mã lỗi 103, tinhtranggui = 6.
+Mã lỗi 104: Sai mã loại KCB với tuyến BV (Mã loại KCB = 5 không phải tuyến xã, PKĐKKV)
+Từ X1.MA_CSKCB tìm trong bảng DM_COSOKCB lấy ra TUYENCMKT và KIEUBV
+Nếu X1.MA_LOAI_KCB = 5 AND (TUYENCMKT = 4 AND KIEUBV = 7 OR TUYENCMKT = 3 AND KIEUBV = 2) thì pass ko thì vi phạm.
+Mã lỗi 105: Sai mã loại KCB, Mã loại KCB đúng = 5.
+Từ X1.MA_CSKCB tìm trong bảng DM_COSOKCB lấy ra TUYENCMKT và KIEUBV
+Nếu (TUYENCMKT = 4 AND KIEUBV = 7 OR TUYENCMKT = 3 AND KIEUBV = 2) AND Có xuất hiện từ 1 bản ghi X3.MA_DICH_VU = 'TYT.1925' or 'PKKV.1925' AND X1.MA_LOAI_KCB <> 5 thì vi phạm.
+Mã lỗi 106: Sai mã loại KCB, Mã loại KCB đúng phải khác 5.
+Từ X1.MA_CSKCB tìm trong bảng DM_COSOKCB lấy ra TUYENCMKT và KIEUBV
+Nếu (TUYENCMKT = 4 AND KIEUBV = 7 OR TUYENCMKT = 3 AND KIEUBV = 2) AND X1.MA_LOAI_KCB = 5 AND Ko có bản ghi nào thỏa mãn X3.MA_DICH_VU = 'TYT.1925' or 'PKKV.1925' thì vi phạm.
