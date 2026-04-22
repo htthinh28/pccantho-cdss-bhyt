@@ -802,7 +802,7 @@ const ManHinhHelperHeThong = ({ navigation }) => {
         <View style={styles.khoi}>
           <Text style={styles.tieu_de_khoi}>Hybrid / Python service</Text>
           <Text style={styles.hybrid_intro_text}>
-            Đổi engine mặc định, kiểm tra service và smoke test tại đây.
+            Trên Dashboard, giám định luôn chạy hybrid: engine JS (V15) bắt buộc, cộng lớp Python khi cấu hình bật và service sẵn sàng, rồi hợp nhất — không còn chế độ chỉ Python hoặc chỉ JS. Hai chip: &quot;JS nội bộ&quot; = lớp Python là tuỳ chọn; &quot;Python service&quot; = ưu tiên Python, lỗi mạng vẫn lưu bằng JS.
           </Text>
 
           <View style={styles.hybrid_mode_row}>

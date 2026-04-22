@@ -319,7 +319,7 @@ export const taoChuoiFulltextDongXml = (row = {}, truongUuTien = '') => {
  * Trích dòng XML gắn với lỗi — cùng điều kiện với khối fulltext trong `taoViTriXmlBaoCaoDayDuTuLoi`.
  * @returns {{ row: object|null, phanHeBang: string }}
  */
-const layDongXmlLienQuanLoi = (loi = {}, hoSo = {}) => {
+export const layDongXmlLienQuanLoi = (loi = {}, hoSo = {}) => {
   const phanHe = String(
     layGiaTriTheoKhoaKhongPhanBiet(loi, 'phan_he', '')
     || layBangXmlTuCanhBao(loi),

@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) + HC_251 (CV 38/BYT-BH, NQ 261/2025/QH15) */
-export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-15_HC83_ts_ty_le_95';
+export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-22_HC25_CN_CV38_100';
 export const COT_SEED_LUAT_HANH_CHINH_MUC2 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
   {
@@ -225,9 +225,9 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "id": "SEED_HANHCHINH_25",
     "TRANG_THAI": "ON",
     "MA_LUAT": "HC_25",
-    "TEN_QUY_TAC": "Nhóm Hộ cận nghèo (CN) — tỷ lệ phạm vi theo thẻ (NQ 261/2025; CV 38/BYT-BH)",
+    "TEN_QUY_TAC": "Thẻ CN (hộ cận nghèo) — mức 100% phạm vi (CV 38/BYT-BH; NQ 261/2025)",
     "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'CN' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)",
-    "CANH_BAO": "⛔ [CN / mức quyền lợi]: Từ 01/01/2026 theo NQ 261/2025/QH15 và Công văn 38/BYT-BH (06/01/2026), đối tượng CN được chuyển mã quyền lợi từ 3 (95%) sang 2 (100%) trong phạm vi chi trả; engine suy tỷ lệ theo `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` (kể cả khi ký tự thứ 3 trên XML còn 3). Trước 01/01/2026 vẫn theo QĐ 1018 — mức 3 → 95%. T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
+    "CANH_BAO": "⛔ [MỨC HƯỞNG]: Từ 01/01/2026 theo NQ 261/2025/QH15 và Công văn 38/BYT-BH (06/01/2026), người thuộc hộ cận nghèo (thẻ CN) được hưởng 100% phạm vi chi trả BHYT (không còn 95%); engine đối chiếu T_BHTT/T_TONGCHI_BH theo mã quyền lợi đã quy đổi (ký tự thứ 3 trên XML 3 → 2 kể từ mốc trên). Trước 01/01/2026 vẫn theo QĐ 1018 — mức 3 → 95%. Hiện T_BHTT chưa khớp tỷ lệ kỳ vọng so với T_TONGCHI_BH.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {

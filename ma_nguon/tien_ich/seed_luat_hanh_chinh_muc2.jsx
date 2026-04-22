@@ -25,7 +25,6 @@ const parseJSONAnToan = (raw, fallback) => {
 };
 
 const chuanHoaTrangThai = (value) => String(value || 'ON').trim().toUpperCase() === 'OFF' ? 'OFF' : 'ON';
-const chuanHoaText = (value) => String(value || '').replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
 
 const chuanHoaDongLuat = (row, index = 0) => ({
   id: String(row?.id || `SEED_HANHCHINH_${index + 1}`),
@@ -37,16 +36,6 @@ const chuanHoaDongLuat = (row, index = 0) => ({
   NGUON_DU_LIEU: String(row?.NGUON_DU_LIEU || 'DuLieu_LUAT_HANH_CHINH (7).xlsx').trim(),
 });
 
-const taoKhoaDongLuat = (row = {}) => {
-  const maLuat = String(row?.MA_LUAT || '').trim().toUpperCase();
-  if (maLuat) return `MA:${maLuat}`;
-
-  const dieuKien = chuanHoaText(row?.DIEU_KIEN);
-  const canhBao = chuanHoaText(row?.CANH_BAO);
-  const tenQuyTac = chuanHoaText(row?.TEN_QUY_TAC);
-  return `SIG:${dieuKien}|${canhBao}|${tenQuyTac}`;
-};
-
 const hopNhatCot = (existingCols = []) => {
   const merged = [...COT_MAC_DINH];
   [...(Array.isArray(existingCols) ? existingCols : []), ...COT_SEED_LUAT_HANH_CHINH_MUC2].forEach((col) => {
@@ -57,34 +46,45 @@ const hopNhatCot = (existingCols = []) => {
   return merged;
 };
 
-const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
-  const merged = [];
-  const seen = new Set();
-
-  (Array.isArray(existingRows) ? existingRows : []).forEach((row, index) => {
-    const normalized = chuanHoaDongLuat(row, index);
-    const key = taoKhoaDongLuat(normalized);
-    if (seen.has(key)) return;
-    seen.add(key);
-    merged.push(normalized);
-  });
-
-  let addedCount = 0;
-  (Array.isArray(seedRows) ? seedRows : []).forEach((row, index) => {
-    const normalized = chuanHoaDongLuat(row, index);
-    const key = taoKhoaDongLuat(normalized);
-    if (seen.has(key)) return;
-    seen.add(key);
-    merged.push(normalized);
-    addedCount += 1;
-  });
-
-  return { mergedRows: merged, addedCount };
+const tomTatNoiDungDongLuat = (row, index = 0) => {
+  const n = chuanHoaDongLuat(row, index);
+  return {
+    MA_LUAT: n.MA_LUAT,
+    TRANG_THAI: n.TRANG_THAI,
+    TEN_QUY_TAC: n.TEN_QUY_TAC,
+    DIEU_KIEN: n.DIEU_KIEN,
+    CANH_BAO: n.CANH_BAO,
+    NGUON_DU_LIEU: n.NGUON_DU_LIEU,
+  };
 };
 
-/** Khi tăng PHIEN_BAN: ưu tiên toàn bộ dòng trong bundle (cùng MA_LUAT → lấy từ seed), giữ quy tắc tùy biến BV (MA không có trong seed). */
+const dongLuatBangNhau = (a, b) => {
+  const khoaOnDinh = (x) => `${String(x.MA_LUAT || '')}\0${String(x.TEN_QUY_TAC || '')}\0${String(x.DIEU_KIEN || '')}\0${String(x.CANH_BAO || '')}`;
+  const listA = (Array.isArray(a) ? a : []).map((row, i) => tomTatNoiDungDongLuat(row, i));
+  const listB = (Array.isArray(b) ? b : []).map((row, i) => tomTatNoiDungDongLuat(row, i));
+  listA.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  listB.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  return JSON.stringify(listA) === JSON.stringify(listB);
+};
+
+/** Ưu tiên nội dung bundle cho mọi MA có trong seed; giữ quy tắc BV (MA không có trong seed). Giữ TRANG_THAI OFF nếu người dùng đã tắt quy tắc seed. */
 const hopNhatDongLuatUuTienSeed = (existingRows = [], seedRows = []) => {
-  const seedNormalized = (Array.isArray(seedRows) ? seedRows : []).map((row, index) => chuanHoaDongLuat(row, index));
+  const existingByMa = new Map();
+  (Array.isArray(existingRows) ? existingRows : []).forEach((row, index) => {
+    const n = chuanHoaDongLuat(row, index);
+    const ma = String(n?.MA_LUAT || '').trim().toUpperCase();
+    if (ma) existingByMa.set(ma, n);
+  });
+
+  const seedNormalized = (Array.isArray(seedRows) ? seedRows : []).map((row, index) => {
+    const s = chuanHoaDongLuat(row, index);
+    const ma = String(s?.MA_LUAT || '').trim().toUpperCase();
+    const prev = ma ? existingByMa.get(ma) : null;
+    if (prev && chuanHoaTrangThai(prev.TRANG_THAI) === 'OFF') {
+      return { ...s, TRANG_THAI: 'OFF' };
+    }
+    return s;
+  });
   const maTrongSeed = new Set(
     seedNormalized.map((r) => String(r?.MA_LUAT || '').trim().toUpperCase()).filter(Boolean),
   );
@@ -137,13 +137,11 @@ export const damBaoSeedLuatHanhChinhMuc2 = async () => {
     ]);
 
     const daApDungDungPhienBan = String(migrationMap?.[KHOA_PHIEN_BAN_SEED] || '') === PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2;
-    const { mergedRows, addedCount } = daApDungDungPhienBan
-      ? hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2)
-      : hopNhatDongLuatUuTienSeed(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2);
+    const { mergedRows, addedCount } = hopNhatDongLuatUuTienSeed(rowsHienTai, DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2);
     const mergedCols = hopNhatCot(colsHienTai);
-    const canGhiLai = addedCount > 0
-      || !daApDungDungPhienBan
-      || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0);
+    const canGhiLai = !daApDungDungPhienBan
+      || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0)
+      || !dongLuatBangNhau(mergedRows, rowsHienTai);
 
     if (!canGhiLai) {
       return {

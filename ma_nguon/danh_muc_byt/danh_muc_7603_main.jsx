@@ -11,9 +11,10 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import * as XLSX from 'xlsx';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
+import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import {
     flushFirebaseDanhMucQueue,
     luuBoDuLieuDanhMuc,
@@ -44,7 +45,13 @@ const MODULES_CONFIG = [
   { id: 'PL13_DUONG_DUNG', title: 'PL13: Đường Dùng', desc: 'Mã, Đường dùng', cols: ['MA_DUONG_DUNG', 'DUONG_DUNG_DANG_DUNG'] }
 ];
 
-const DanhMucBYTMain = () => {
+/** ≥ breakpoint này: sidebar trái; nhỏ hơn: thanh phụ lục ngang (cuộn) để không chèn bảng. */
+const RONG_SIDEBAR_BYT = 860;
+
+const DanhMucBYTMain = ({ navigation }) => {
+  const { width: beRongCuaSo } = useWindowDimensions();
+  const dungSidebarTrai = beRongCuaSo >= RONG_SIDEBAR_BYT;
+
   const [activeTab, setActiveTab] = useState(MODULES_CONFIG[0].id);
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -368,35 +375,7 @@ const DanhMucBYTMain = () => {
   const pageEndIndex = Math.min(data.length, pageStartIndex + SO_DONG_MOI_TRANG_BYT);
   const visibleRows = data.slice(pageStartIndex, pageEndIndex);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      
-      {/* BRAND HEADER */}
-      <View style={styles.top_brand_bar}>
-        <Image source={{ uri: LOGO_PC }} style={styles.logo_header} resizeMode="contain" />
-        <View style={{ alignItems: 'center' }}>
-          <Text style={styles.top_brand_text_main}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU SÓC TRĂNG</Text>
-          <Text style={styles.top_brand_text_sub}>HỆ THỐNG DANH MỤC DÙNG CHUNG BỘ Y TẾ (QĐ 7603)</Text>
-        </View>
-      </View>
-
-      {/* NAV BAR */}
-      <View style={styles.nav_bar}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.nav_scroll}>
-          {MODULES_CONFIG.map((module) => (
-            <TouchableOpacity
-              key={module.id}
-              style={[styles.tabItem, activeTab === module.id && styles.tabItemActive]}
-              onPress={() => chuyenTab(module.id)}
-            >
-              <Text style={[styles.tabTitle, activeTab === module.id && styles.tabTitleActive]}>{module.title}</Text>
-              <Text style={[styles.tabDesc, activeTab === module.id && styles.tabDescActive]}>{module.desc}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* TOOLBAR */}
+  const renderNoiDungBang = () => (
       <View style={styles.khung_chuc_nang}>
         <View style={styles.thanh_cong_cu}>
           <Text style={styles.tieu_de_bang}>DANH MỤC: {activeTab} ({data.length} dòng)</Text>
@@ -557,7 +536,7 @@ const DanhMucBYTMain = () => {
                   })}
                   {data.length === 0 && (
                     <Text style={styles.txt_trong}>
-                      Danh mục {activeTab} đang trống. Bác sĩ có thể bấm "TẢI FILE MẪU" rồi "IMPORT EXCEL" để nạp dữ liệu.
+                      Danh mục {activeTab} đang trống. Bác sĩ có thể bấm TẢI FILE MẪU rồi IMPORT EXCEL để nạp dữ liệu.
                     </Text>
                   )}
                   <View style={{ height: 100 }} />
@@ -570,13 +549,159 @@ const DanhMucBYTMain = () => {
         </View>
 
       </View>
+  );
+
+  const khoiChonPhuLuc = dungSidebarTrai ? (
+    <View style={styles.sidebar_wrap} accessibilityRole="navigation">
+      <View style={styles.sidebar_head}>
+        <Text style={styles.sidebar_head_tieu_de}>QĐ 7603 — Phụ lục</Text>
+        <Text style={styles.sidebar_head_phu}>Danh mục Bộ Y tế theo từng phụ lục</Text>
+      </View>
+      <ScrollView
+        style={styles.sidebar_scroll}
+        contentContainerStyle={styles.sidebar_scroll_inner}
+        showsVerticalScrollIndicator
+        keyboardShouldPersistTaps="handled"
+      >
+        {MODULES_CONFIG.map((module) => {
+          const on = activeTab === module.id;
+          return (
+            <TouchableOpacity
+              key={module.id}
+              style={[styles.sidebar_item, on && styles.sidebar_item_active]}
+              onPress={() => chuyenTab(module.id)}
+              activeOpacity={0.75}
+            >
+              <Text style={[styles.sidebar_item_title, on && styles.sidebar_item_title_on]} numberOfLines={2}>
+                {module.title}
+              </Text>
+              <Text style={[styles.sidebar_item_desc, on && styles.sidebar_item_desc_on]} numberOfLines={2}>
+                {module.desc}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
+  ) : (
+    <View style={styles.nav_bar}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.nav_scroll}>
+        {MODULES_CONFIG.map((module) => (
+          <TouchableOpacity
+            key={module.id}
+            style={[styles.tabItem, activeTab === module.id && styles.tabItemActive]}
+            onPress={() => chuyenTab(module.id)}
+          >
+            <Text style={[styles.tabTitle, activeTab === module.id && styles.tabTitleActive]}>{module.title}</Text>
+            <Text style={[styles.tabDesc, activeTab === module.id && styles.tabDescActive]}>{module.desc}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* BRAND HEADER */}
+      <View style={styles.top_brand_bar}>
+        <TouchableOpacity
+          accessibilityLabel="Về trang chủ, bảng điều khiển"
+          onPress={() => quayLaiAnToan(navigation, 'TongQuan')}
+          style={styles.nut_back_home}
+        >
+          <Text style={styles.chu_nut_back_home}>⬅ Trang chủ</Text>
+        </TouchableOpacity>
+        <View style={styles.top_brand_trung_tam}>
+          <Image source={{ uri: LOGO_PC }} style={styles.logo_header} resizeMode="contain" />
+          <View style={{ alignItems: 'center' }}>
+            <Text style={styles.top_brand_text_main}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU SÓC TRĂNG</Text>
+            <Text style={styles.top_brand_text_sub}>HỆ THỐNG DANH MỤC DÙNG CHUNG BỘ Y TẾ (QĐ 7603)</Text>
+          </View>
+        </View>
+        <View style={styles.top_brand_spacer} />
+      </View>
+
+      {dungSidebarTrai ? (
+        <View style={styles.main_split}>
+          {khoiChonPhuLuc}
+          <View style={styles.khung_chuc_nang_pane}>{renderNoiDungBang()}</View>
+        </View>
+      ) : (
+        <View style={styles.main_col_narrow}>
+          {khoiChonPhuLuc}
+          <View style={styles.khung_chuc_nang_pane}>{renderNoiDungBang()}</View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F0F4F8' },
-  top_brand_bar: { backgroundColor: '#0D47A1', paddingVertical: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', elevation: 4 },
+  main_split: {
+    flex: 1,
+    flexDirection: 'row',
+    minHeight: 0,
+  },
+  main_col_narrow: {
+    flex: 1,
+    minHeight: 0,
+  },
+  khung_chuc_nang_pane: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 0,
+  },
+  sidebar_wrap: {
+    width: 276,
+    flexShrink: 0,
+    backgroundColor: '#FFFFFF',
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    ...Platform.select({
+      web: {
+        minHeight: '100%',
+        boxShadow: '2px 0 10px rgba(15,23,42,0.07)',
+      },
+      default: { elevation: 2 },
+    }),
+  },
+  sidebar_head: {
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8EEF3',
+  },
+  sidebar_head_tieu_de: { fontSize: 12, fontWeight: '800', color: '#0D47A1', letterSpacing: 0.3, fontFamily: 'Arial' },
+  sidebar_head_phu: { fontSize: 10, color: '#64748B', marginTop: 4, fontFamily: 'Arial' },
+  sidebar_scroll: { flexGrow: 1, flexShrink: 1 },
+  sidebar_scroll_inner: { paddingBottom: 20, paddingTop: 4 },
+  sidebar_item: { paddingVertical: 11, paddingHorizontal: 12, borderLeftWidth: 4, borderLeftColor: 'transparent' },
+  sidebar_item_active: { backgroundColor: '#E3F2FD', borderLeftColor: '#0D47A1' },
+  sidebar_item_title: { fontSize: 13, fontWeight: '700', color: '#37474F', fontFamily: 'Arial' },
+  sidebar_item_title_on: { color: '#0D47A1' },
+  sidebar_item_desc: { fontSize: 10, color: '#90A4AE', marginTop: 3, lineHeight: 14, fontFamily: 'Arial' },
+  sidebar_item_desc_on: { color: '#1565C0' },
+  top_brand_bar: {
+    backgroundColor: '#0D47A1',
+    paddingVertical: 15,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    elevation: 4,
+  },
+  nut_back_home: {
+    minWidth: 132,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  chu_nut_back_home: { color: '#E3F2FD', fontSize: 14, fontWeight: '800', fontFamily: 'Arial' },
+  top_brand_trung_tam: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', minWidth: 0 },
+  top_brand_spacer: { minWidth: 132 },
   logo_header: { width: 90, height: 90, borderRadius: 45, marginRight: 20, backgroundColor: '#FFF' },
   top_brand_text_main: { color: '#FFF', fontSize: 32, fontWeight: 'bold', fontFamily: 'Arial', letterSpacing: 0.5, textAlign: 'center' },
   top_brand_text_sub: { color: '#BBDEFB', fontSize: 20, fontFamily: 'Arial', marginTop: 4, fontStyle: 'italic', textAlign: 'center' },

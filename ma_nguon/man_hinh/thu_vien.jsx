@@ -1,12 +1,15 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Linking,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +18,10 @@ import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
 import { layGocUrlTaiLieu, taoUrlMoTaiLieu } from '../tien_ich/tai_lieu_url';
 import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
+import ThuVienPanelTraCuuQuyTac from './thu_vien_panel_tra_cuu_quy_tac';
+
+const RONG_BREAKPOINT_HAI_COT = 860;
+const RONG_SIDEBAR_TOC = 300;
 
 const moLienKet = async (url) => {
   const trimmed = String(url || '').trim();
@@ -31,30 +38,106 @@ const moLienKet = async (url) => {
   }
 };
 
-const nhomTaiLieu = (items) => {
-  const m = new Map();
-  for (const it of items) {
-    const parts = String(it.relPath || '').split('/');
-    const folder = parts.length > 1 ? parts.slice(0, -1).join('/') : '__root__';
-    if (!m.has(folder)) m.set(folder, []);
-    m.get(folder).push(it);
-  }
-  const keys = [...m.keys()].sort((a, b) => {
-    if (a === '__root__') return -1;
-    if (b === '__root__') return 1;
-    return a.localeCompare(b, 'vi');
+/** Chuẩn hóa để tìm kiếm không phân biệt dấu (tiếng Việt). */
+const chuanHoaTimKiem = (s) =>
+  String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .trim();
+
+const gopTruongTim = (it) =>
+  [it.title, it.relPath, it.id, it.nguon || ''].map((x) => chuanHoaTimKiem(x)).join(' ');
+
+const locTheoTuKhoa = (items, tuKhoa) => {
+  const q = chuanHoaTimKiem(tuKhoa);
+  if (!q) return items;
+  return items.filter((it) => {
+    const s = gopTruongTim(it);
+    return s.includes(q) || q.split(/\s+/).filter(Boolean).every((t) => s.includes(t));
   });
-  return keys.map((folder) => ({ folder, items: m.get(folder) }));
+};
+
+const sapXepTheoABC = (items) =>
+  [...items].sort((a, b) =>
+    String(a.title || '').localeCompare(String(b.title || ''), 'vi', { sensitivity: 'base' }),
+  );
+
+const laFileTxt = (relPath) => String(relPath || '').toLowerCase().endsWith('.txt');
+const laFileHtml = (relPath) => {
+  const l = String(relPath || '').toLowerCase();
+  return l.endsWith('.html') || l.endsWith('.htm');
 };
 
 const ManHinhThuVien = ({ navigation }) => {
+  const { width: beRong, height: beCao } = useWindowDimensions();
+  const dungHaiCot = beRong >= RONG_BREAKPOINT_HAI_COT;
+
+  /** 'TAI_LIEU' | 'QUY_TAC' */
+  const [cheDo, setCheDo] = useState('TAI_LIEU');
+  const [tuKhoa, setTuKhoa] = useState('');
+  const [taiLieuDangXem, setTaiLieuDangXem] = useState(null);
+  const [noiDungText, setNoiDungText] = useState('');
+  const [dangTaiText, setDangTaiText] = useState(false);
+  const [loiText, setLoiText] = useState('');
+
   const quayLai = useCallback(() => {
     navigation.navigate('TongQuan');
   }, [navigation]);
 
   const items = useMemo(() => taiLieuManifest.items || [], []);
-  const nhom = useMemo(() => nhomTaiLieu(items), [items]);
   const coGoc = Boolean(layGocUrlTaiLieu());
+
+  const itemsSAPXep = useMemo(() => sapXepTheoABC(items), [items]);
+  const itemsHienThi = useMemo(
+    () => locTheoTuKhoa(itemsSAPXep, tuKhoa),
+    [itemsSAPXep, tuKhoa],
+  );
+
+  useEffect(() => {
+    if (!taiLieuDangXem) {
+      setNoiDungText('');
+      setLoiText('');
+      setDangTaiText(false);
+      return;
+    }
+    const rel = String(taiLieuDangXem.relPath || '');
+    if (!laFileTxt(rel)) {
+      setNoiDungText('');
+      setLoiText('');
+      setDangTaiText(false);
+      return;
+    }
+    const url = taoUrlMoTaiLieu(rel);
+    if (!url) {
+      setLoiText('Không tạo được URL tài liệu.');
+      setNoiDungText('');
+      return;
+    }
+    setDangTaiText(true);
+    setLoiText('');
+    const ac = new AbortController();
+    fetch(url, { signal: ac.signal })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.text();
+      })
+      .then((t) => {
+        setNoiDungText(t);
+        setLoiText('');
+      })
+      .catch((e) => {
+        if (e?.name === 'AbortError') return;
+        setNoiDungText('');
+        setLoiText(String(e?.message || e));
+      })
+      .finally(() => {
+        setDangTaiText(false);
+      });
+    return () => ac.abort();
+  }, [taiLieuDangXem]);
 
   const moTapHtml = useCallback((relPath) => {
     const url = taoUrlMoTaiLieu(relPath);
@@ -104,94 +187,285 @@ const ManHinhThuVien = ({ navigation }) => {
     );
   }, [items]);
 
+  const urlDangXem = taiLieuDangXem
+    ? taoUrlMoTaiLieu(taiLieuDangXem.relPath)
+    : '';
+  const relDangXem = taiLieuDangXem ? String(taiLieuDangXem.relPath || '') : '';
+  const xemBangIframe = Boolean(
+    taiLieuDangXem && coGoc && urlDangXem && laFileHtml(relDangXem),
+  );
+  const xemBangText = Boolean(taiLieuDangXem && coGoc && laFileTxt(relDangXem));
+
+  const renderCuaSoDoc = () => {
+    if (!taiLieuDangXem) {
+      return (
+        <View style={styles.man_hinh_cho}>
+          <Text style={styles.icon_cho}>📚</Text>
+          <Text style={styles.txt_cho_tieu_de}>Chọn một mục bên mục lục</Text>
+          <Text style={styles.txt_cho_phu}>
+            Tài liệu trong thư mục <Text style={styles.lead_mono}>tai_lieu/</Text>. Danh sách sắp theo tên (A–Z). Dùng ô
+            tìm kiếm để lọc theo từ khóa (bỏ qua dấu). Sau khi thêm file, chạy{' '}
+            <Text style={styles.lead_mono}>npm run tai_lieu:prepare</Text> rồi tải lại ứng dụng.
+          </Text>
+        </View>
+      );
+    }
+
+    if (!coGoc) {
+      return (
+        <View style={styles.bao_loi_viewer}>
+          <Text style={styles.warn_txt}>
+            Không phát hiện host (mở ngoài Expo / thiếu gốc URL). Một số chế độ xem tài liệu có thể hạn chế; thử bản
+            web hoặc bản đóng gói.
+          </Text>
+          {urlDangXem ? (
+            <TouchableOpacity style={styles.btn_mo_ngoai} onPress={() => void moLienKet(urlDangXem)}>
+              <Text style={styles.txt_mo_ngoai}>Mở bằng trình duyệt ngoài ↗</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      );
+    }
+
+    if (!urlDangXem) {
+      return (
+        <View style={styles.bao_loi_viewer}>
+          <Text style={styles.txt_bao_loi}>Không tạo được đường dẫn tài liệu.</Text>
+        </View>
+      );
+    }
+
+    if (xemBangText) {
+      if (dangTaiText) {
+        return (
+          <View style={styles.khung_tai_noi_dung}>
+            <ActivityIndicator size="large" color={CD.brand.mauChinh} />
+            <Text style={styles.txt_tai_noi_dung}>Đang tải nội dung văn bản…</Text>
+          </View>
+        );
+      }
+      if (loiText) {
+        return (
+          <View style={styles.bao_loi_viewer}>
+            <Text style={styles.txt_bao_loi}>Không đọc được file: {loiText}</Text>
+            <TouchableOpacity style={styles.btn_mo_ngoai} onPress={() => void moLienKet(urlDangXem)}>
+              <Text style={styles.txt_mo_ngoai}>Mở URL trực tiếp ↗</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+      return (
+        <ScrollView
+          style={styles.scroll_noi_dung_van_ban}
+          contentContainerStyle={styles.scroll_noi_dung_van_ban_content}
+        >
+          <Text style={styles.noi_dung_van_ban} selectable>
+            {noiDungText}
+          </Text>
+        </ScrollView>
+      );
+    }
+
+    if (xemBangIframe && Platform.OS === 'web') {
+      return (
+        <iframe
+          key={taiLieuDangXem.id}
+          src={urlDangXem}
+          style={{
+            width: '100%',
+            height: '100%',
+            minHeight: 360,
+            border: 'none',
+            backgroundColor: '#fff',
+            borderRadius: 8,
+          }}
+          title={taiLieuDangXem.title}
+        />
+      );
+    }
+
+    if (laFileHtml(relDangXem)) {
+      return (
+        <View style={styles.bao_loi_viewer}>
+          <Text style={styles.txt_bao_loi}>
+            Trên thiết bị này, tài liệu HTML mở tốt nhất trong trình duyệt (tab mới). Trên web, nội dung hiển thị ở khung
+            bên phải.
+          </Text>
+          <TouchableOpacity style={styles.btn_mo_ngoai} onPress={() => moTapHtml(taiLieuDangXem.relPath)}>
+            <Text style={styles.txt_mo_ngoai}>Mở tài liệu ↗</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.bao_loi_viewer}>
+        <Text style={styles.txt_bao_loi}>
+          Định dạng này chưa có xem nội dung tích hợp. Bạn có thể mở bằng ứng dụng bên ngoài.
+        </Text>
+        <TouchableOpacity style={styles.btn_mo_ngoai} onPress={() => void moLienKet(urlDangXem)}>
+          <Text style={styles.txt_mo_ngoai}>Mở liên kết ↗</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const khoiMucLuc = (
+    <View
+      style={[
+        styles.sidebar,
+        dungHaiCot ? styles.sidebar_ngang : styles.sidebar_dung,
+        !dungHaiCot && beCao > 0
+          ? { maxHeight: Math.min(420, Math.max(260, beCao * 0.4)) }
+          : null,
+      ]}
+    >
+      <View style={styles.sidebar_head}>
+        <Text style={styles.sidebar_tieu_de}>Mục lục (A–Z)</Text>
+        <TextInput
+          value={tuKhoa}
+          onChangeText={setTuKhoa}
+          placeholder="Tìm theo từ khóa…"
+          placeholderTextColor={CD.text.muted}
+          style={styles.o_tim_kiem}
+          autoCorrect={false}
+          autoCapitalize="none"
+          {...(Platform.OS === 'ios' ? { clearButtonMode: 'while-editing' } : {})}
+        />
+        <Text style={styles.dem_muc}>
+          {itemsHienThi.length === itemsSAPXep.length
+            ? `${itemsSAPXep.length} tài liệu`
+            : `Hiển thị ${itemsHienThi.length} / ${itemsSAPXep.length} tài liệu`}
+        </Text>
+      </View>
+      {itemsHienThi.length === 0 ? (
+        <View style={styles.empty_sidebar}>
+          <Text style={styles.empty_sidebar_txt}>
+            {itemsSAPXep.length === 0 ? 'Chưa có tài liệu trong manifest.' : 'Không khớp từ khóa. Hãy thử từ khóa ngắn hơn.'}
+          </Text>
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.sidebar_scroll}
+          contentContainerStyle={styles.sidebar_scroll_content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator
+        >
+          {itemsHienThi.map((it) => {
+            const active = taiLieuDangXem?.id === it.id;
+            return (
+              <TouchableOpacity
+                key={it.id}
+                style={[styles.muc_muc_luc, active && styles.muc_muc_luc_active]}
+                onPress={() => setTaiLieuDangXem(it)}
+                activeOpacity={0.75}
+              >
+                <Text style={[styles.muc_tieu_de, active && styles.muc_tieu_de_active]} numberOfLines={3}>
+                  {it.title}
+                </Text>
+                <Text style={styles.muc_meta} numberOfLines={1}>
+                  {it.relPath}
+                  {it.nguon === 'markdown' ? ' · MD→HTML' : ''}
+                  {it.nguon === 'text' ? ' · TXT' : ''}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      )}
+    </View>
+  );
+
+  const dauViewDoc = taiLieuDangXem ? (
+    <View style={styles.dau_cua_so_doc}>
+      <Text style={styles.tieu_de_tai_lieu} numberOfLines={2}>
+        {taiLieuDangXem.title}
+      </Text>
+      {urlDangXem ? (
+        <TouchableOpacity style={styles.btn_mo_tab} onPress={() => moTapHtml(taiLieuDangXem.relPath)} activeOpacity={0.85}>
+          <Text style={styles.txt_mo_tab}>Mở tab mới ↗</Text>
+        </TouchableOpacity>
+      ) : null}
+    </View>
+  ) : null;
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.thanh_5_the}
+        contentContainerStyle={styles.thanh_5_the_content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <TouchableOpacity
+          style={[styles.the_ngan, cheDo === 'TAI_LIEU' ? styles.the_ngan_sang : styles.the_ngan_toi]}
+          onPress={() => setCheDo('TAI_LIEU')}
+        >
+          <Text style={cheDo === 'TAI_LIEU' ? styles.chu_ngan_sang : [styles.chu_ngan_nen, styles.chu_ngan_tren_toi]}>
+            📄 Tài liệu
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.the_ngan, cheDo === 'QUY_TAC' ? styles.the_ngan_sang : styles.the_ngan_toi]}
+          onPress={() => setCheDo('QUY_TAC')}
+        >
+          <Text style={cheDo === 'QUY_TAC' ? styles.chu_ngan_sang : [styles.chu_ngan_nen, styles.chu_ngan_tren_toi]}>
+            ⚖️ Tra cứu quy tắc (phân tầng)
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.the_ngan_sang} onPress={() => dieuHuongMoTabMoi(navigation, 'TroLyTriThuc')}>
+          <Text style={styles.chu_ngan_sang}>🤖 Trợ lý tri thức</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.the_ngan_sang}
+          onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyChuyenMon')}
+        >
+          <Text style={styles.chu_ngan_sang}>🧠 Chuyên môn (EBM)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.the_ngan_sang} onPress={() => dieuHuongMoTabMoi(navigation, 'Helper')}>
+          <Text style={styles.chu_ngan_sang}>🧰 Helper</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
       <View style={styles.header}>
         <TouchableOpacity onPress={quayLai} style={styles.nut_quay_lai}>
           <Text style={styles.txt_back}>⬅ QUAY LẠI TỔNG QUAN</Text>
         </TouchableOpacity>
         <Text style={styles.txt_title}>📚 THƯ VIỆN</Text>
-        <TouchableOpacity style={styles.nut_in} onPress={() => void inDanhSachTaiLieu()} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={[styles.nut_in, cheDo !== 'TAI_LIEU' && styles.nut_in_mo]}
+          onPress={() => void inDanhSachTaiLieu()}
+          activeOpacity={0.85}
+          disabled={cheDo !== 'TAI_LIEU'}
+        >
           <Text style={styles.txt_in}>🖨 In / PDF</Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scroll_content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.lead}>
-          Tài liệu lấy từ thư mục dự án <Text style={styles.lead_mono}>tai_lieu/</Text>: mỗi mục mở bản HTML chi tiết trong
-          tab mới (web) hoặc trình duyệt hệ thống. Sau khi thêm hoặc sửa file trong{' '}
-          <Text style={styles.lead_mono}>tai_lieu/</Text>, chạy{' '}
-          <Text style={styles.lead_mono}>npm run tai_lieu:prepare</Text> rồi tải lại ứng dụng.
-        </Text>
-
-        {!coGoc ? (
-          <View style={styles.warn_box}>
-            <Text style={styles.warn_txt}>
-              Không phát hiện host (ví dụ mở ngoài Expo). Hãy dùng web hoặc bản đóng gói để mở file HTML.
-            </Text>
-          </View>
-        ) : null}
-
-        <View style={styles.shortcut_row}>
-          <TouchableOpacity style={styles.shortcut_btn} onPress={() => dieuHuongMoTabMoi(navigation, 'TroLyTriThuc')}>
-            <Text style={styles.shortcut_txt}>🤖 Trợ lý tri thức</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.shortcut_btn}
-            onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyChuyenMon')}
-          >
-            <Text style={styles.shortcut_txt}>🧠 Chuyên môn (EBM)</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shortcut_btn} onPress={() => dieuHuongMoTabMoi(navigation, 'Helper')}>
-            <Text style={styles.shortcut_txt}>🧰 Helper</Text>
-          </TouchableOpacity>
+      {cheDo === 'QUY_TAC' ? (
+        <View style={styles.khung_tra_cuu_full}>
+          <ThuVienPanelTraCuuQuyTac />
         </View>
-
-        {items.length === 0 ? (
-          <View style={styles.empty_box}>
-            <Text style={styles.empty_title}>Chưa có tài liệu HTML</Text>
-            <Text style={styles.empty_txt}>
-              Đặt file .html hoặc .md vào <Text style={styles.lead_mono}>tai_lieu/</Text>, sau đó chạy{' '}
-              <Text style={styles.lead_mono}>npm run tai_lieu:prepare</Text>.
-            </Text>
-          </View>
-        ) : (
-          nhom.map(({ folder, items: ds }) => (
-            <View key={folder} style={styles.group}>
-              <Text style={styles.section_title}>
-                {folder === '__root__' ? '📂 Thư mục gốc' : `📂 ${folder}`}
+      ) : (
+        <View style={[styles.khung_chinh, dungHaiCot ? styles.khung_hai_cot : styles.khung_mot_cot]}>
+          {khoiMucLuc}
+          <View style={styles.panel_phai}>
+            {dauViewDoc}
+            <View style={styles.vung_loi_tren}>{!coGoc ? <View style={styles.warn_box_hinh_thanh}>
+              <Text style={styles.warn_txt_nho}>
+                Không phát hiện host. HTML trong khung tối ưu trên web; thiết bị khác dùng Mở tab mới.
               </Text>
-              {ds.map((it) => (
-                <TouchableOpacity
-                  key={it.id}
-                  style={styles.row}
-                  onPress={() => moTapHtml(it.relPath)}
-                  activeOpacity={0.75}
-                >
-                  <View style={styles.row_text}>
-                    <Text style={styles.row_title} numberOfLines={3}>
-                      {it.title}
-                    </Text>
-                    <Text style={styles.row_meta} numberOfLines={1}>
-                      {it.relPath}
-                      {it.nguon === 'markdown' ? ' · từ Markdown' : ''}
-                      {it.nguon === 'docx' ? ' · Word (.docx)' : ''}
-                    </Text>
-                  </View>
-                  <Text style={styles.row_action}>Mở →</Text>
-                </TouchableOpacity>
-              ))}
+            </View> : null}</View>
+            <View style={styles.khung_viewer_flex}>{renderCuaSoDoc()}</View>
+            <View style={styles.footer_note_hinh_thanh}>
+              <Text style={styles.footer_txt}>
+                Cập nhật manifest: {taiLieuManifest.generatedAt || '—'}. Bản build web: <Text style={styles.lead_mono}>tai_lieu:prepare</Text> gói HTML vào phân phối.
+              </Text>
             </View>
-          ))
-        )}
-
-        <View style={styles.footer_note}>
-          <Text style={styles.footer_txt}>
-            Bản build web/desktop: lệnh export đã gọi <Text style={styles.lead_mono}>tai_lieu:prepare</Text> để đóng gói
-            HTML vào gói phân phối. Cập nhật lúc: {taiLieuManifest.generatedAt || '—'}.
-          </Text>
+          </View>
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -202,13 +476,51 @@ const styles = StyleSheet.create({
     backgroundColor: CD.bg.gradient_mobile,
     ...Platform.select({ web: { backgroundImage: CD.web.gradient_bg } }),
   },
+  thanh_5_the: {
+    flexGrow: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.divider,
+    backgroundColor: CD.bg.glass_card,
+  },
+  thanh_5_the_content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    minHeight: 48,
+  },
+  the_ngan: {
+    borderRadius: 22,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    flexShrink: 0,
+  },
+  the_ngan_sang: {
+    backgroundColor: CD.brand.mauNhat,
+    borderColor: CD.border.accent,
+    ...Platform.select({ web: { boxShadow: '0 1px 4px rgba(0,0,0,0.06)' } }),
+  },
+  the_ngan_toi: {
+    backgroundColor: 'rgba(30, 41, 59, 0.85)',
+    borderColor: 'rgba(148, 163, 184, 0.45)',
+  },
+  chu_ngan_nen: { fontSize: 12, fontWeight: '600', fontFamily: CD.font.family },
+  chu_ngan_tren_toi: { color: 'rgba(248, 250, 252, 0.92)' },
+  chu_ngan_sang: {
+    color: CD.brand.mauDam,
+    fontWeight: '800',
+    fontSize: 12,
+    fontFamily: CD.font.family,
+  },
   header: {
     backgroundColor: CD.brand.mauDam,
     borderBottomWidth: 1,
     borderBottomColor: CD.border.header,
     paddingHorizontal: 24,
     paddingVertical: 16,
-    paddingTop: 40,
+    paddingTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -255,136 +567,124 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: CD.font.family,
   },
-  scroll: {
-    flex: 1,
+  khung_tra_cuu_full: { flex: 1, minHeight: 0, backgroundColor: '#F0F4F8' },
+  nut_in_mo: { opacity: 0.4 },
+  khung_chinh: { flex: 1, minHeight: 0, minWidth: 0 },
+  khung_hai_cot: { flexDirection: 'row', alignItems: 'stretch' },
+  khung_mot_cot: { flexDirection: 'column', alignItems: 'stretch' },
+  sidebar: {
+    backgroundColor: CD.bg.glass_card,
+    borderColor: CD.border.glass,
+    borderWidth: 1,
+    ...Platform.select({ web: { boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }, default: { elevation: 2 } }),
   },
-  scroll_content: {
-    padding: 20,
-    paddingBottom: 40,
+  sidebar_ngang: {
+    width: RONG_SIDEBAR_TOC,
+    flexShrink: 0,
+    borderRightWidth: 1,
+    borderRightColor: CD.border.divider,
   },
-  lead: {
-    color: CD.text.secondary,
+  sidebar_dung: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.divider,
+  },
+  sidebar_head: { padding: 14, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: CD.border.divider },
+  sidebar_tieu_de: { color: CD.text.primary, fontSize: 16, fontWeight: '800', fontFamily: CD.font.family, marginBottom: 10 },
+  o_tim_kiem: {
+    backgroundColor: CD.bg.glass_input,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === 'ios' ? 10 : 8,
     fontSize: 14,
-    lineHeight: 22,
-    marginBottom: 16,
+    color: CD.text.primary,
+    fontFamily: CD.font.family,
+    marginBottom: 6,
   },
-  lead_mono: {
-    fontFamily: CD.font.mono,
-    fontSize: 13,
-    color: CD.text.accent,
-  },
-  warn_box: {
-    backgroundColor: CD.severity.warning.bg,
+  dem_muc: { color: CD.text.muted, fontSize: 11, fontFamily: CD.font.family },
+  sidebar_scroll: { flex: 1, minHeight: 0 },
+  sidebar_scroll_content: { padding: 8, paddingBottom: 20 },
+  muc_muc_luc: {
+    paddingVertical: 11,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    marginBottom: 4,
     borderWidth: 1,
-    borderColor: CD.severity.warning.border,
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 16,
+    borderColor: 'transparent',
   },
-  warn_txt: {
-    color: CD.severity.warning.text,
-    fontSize: 13,
-    lineHeight: 20,
-  },
-  shortcut_row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginBottom: 20,
-  },
-  shortcut_btn: {
+  muc_muc_luc_active: {
     backgroundColor: CD.brand.mauNhat,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    borderWidth: 1,
     borderColor: CD.border.accent,
   },
-  shortcut_txt: {
-    color: CD.brand.mauDam,
-    fontWeight: '700',
-    fontSize: 13,
-    fontFamily: CD.font.family,
-  },
-  group: {
-    marginBottom: 8,
-  },
-  section_title: {
-    color: CD.text.primary,
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 10,
-    marginTop: 12,
-  },
-  row: {
+  muc_tieu_de: { color: CD.text.primary, fontSize: 14, fontWeight: '700', fontFamily: CD.font.family },
+  muc_tieu_de_active: { color: CD.brand.mauDam },
+  muc_meta: { color: CD.text.muted, fontSize: 10, fontFamily: CD.font.mono, marginTop: 4 },
+  empty_sidebar: { padding: 16, alignItems: 'center' },
+  empty_sidebar_txt: { color: CD.text.secondary, textAlign: 'center', lineHeight: 20, fontSize: 13 },
+  panel_phai: { flex: 1, minWidth: 0, minHeight: 0, backgroundColor: 'transparent' },
+  dau_cua_so_doc: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: CD.bg.glass_card,
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: CD.border.glass,
     gap: 12,
-    ...Platform.select({
-      web: {
-        cursor: 'pointer',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-      },
-    }),
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.divider,
+    backgroundColor: CD.bg.glass_card,
   },
-  row_text: {
-    flex: 1,
-    minWidth: 0,
-  },
-  row_title: {
-    color: CD.text.primary,
-    fontSize: 15,
-    fontWeight: '700',
-    marginBottom: 4,
-    fontFamily: CD.font.family,
-  },
-  row_meta: {
-    color: CD.text.muted,
-    fontSize: 11,
-    fontFamily: CD.font.mono,
-  },
-  row_action: {
-    color: CD.brand.mauChinh,
-    fontWeight: '800',
-    fontSize: 14,
-  },
-  empty_box: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  empty_title: {
+  tieu_de_tai_lieu: {
     color: CD.text.primary,
     fontSize: 16,
     fontWeight: '800',
-    marginBottom: 8,
+    flex: 1,
+    minWidth: 0,
+    fontFamily: CD.font.family,
   },
-  empty_txt: {
-    color: CD.text.secondary,
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  footer_note: {
-    marginTop: 20,
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: CD.bg.table_row_even,
+  btn_mo_tab: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: CD.brand.mauNhat,
     borderWidth: 1,
-    borderColor: CD.border.divider,
+    borderColor: CD.border.accent,
   },
-  footer_txt: {
-    color: CD.text.muted,
-    fontSize: 12,
-    lineHeight: 18,
+  txt_mo_tab: { color: CD.brand.mauDam, fontWeight: '800', fontSize: 12, fontFamily: CD.font.family },
+  vung_loi_tren: { paddingHorizontal: 12, paddingTop: 4 },
+  warn_box_hinh_thanh: {
+    backgroundColor: CD.severity.warning.bg,
+    borderWidth: 1,
+    borderColor: CD.severity.warning.border,
+    borderRadius: 8,
+    padding: 8,
   },
+  warn_txt_nho: { color: CD.severity.warning.text, fontSize: 12, lineHeight: 18 },
+  khung_viewer_flex: { flex: 1, minHeight: 0, paddingHorizontal: 12, paddingTop: 8, paddingBottom: 0 },
+  footer_note_hinh_thanh: { paddingHorizontal: 12, paddingVertical: 8 },
+  man_hinh_cho: {
+    flex: 1,
+    minHeight: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  icon_cho: { fontSize: 42, marginBottom: 12 },
+  txt_cho_tieu_de: { color: CD.text.primary, fontSize: 18, fontWeight: '800', textAlign: 'center', fontFamily: CD.font.family },
+  txt_cho_phu: { color: CD.text.secondary, fontSize: 14, lineHeight: 22, textAlign: 'center', marginTop: 8 },
+  lead_mono: { fontFamily: CD.font.mono, fontSize: 13, color: CD.text.accent },
+  bao_loi_viewer: { flex: 1, padding: 20, alignItems: 'center', justifyContent: 'center', minHeight: 200 },
+  warn_txt: { color: CD.severity.warning.text, fontSize: 13, lineHeight: 20, textAlign: 'center' },
+  txt_bao_loi: { color: CD.text.secondary, fontSize: 14, textAlign: 'center', lineHeight: 22, marginBottom: 12 },
+  btn_mo_ngoai: { marginTop: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: CD.brand.mauChinh, borderRadius: 10 },
+  txt_mo_ngoai: { color: '#FFFFFF', fontWeight: '800', fontSize: 14, fontFamily: CD.font.family },
+  khung_tai_noi_dung: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 200, gap: 12 },
+  txt_tai_noi_dung: { color: CD.text.secondary, fontSize: 14 },
+  scroll_noi_dung_van_ban: { flex: 1, backgroundColor: '#fff', borderRadius: 8, borderWidth: 1, borderColor: CD.border.glass },
+  scroll_noi_dung_van_ban_content: { padding: 16, paddingBottom: 32 },
+  noi_dung_van_ban: { fontFamily: CD.font.mono, fontSize: 13, lineHeight: 20, color: '#1a1a1a' },
+  footer_txt: { color: CD.text.muted, fontSize: 11, lineHeight: 16 },
 });
 
 export default ManHinhThuVien;

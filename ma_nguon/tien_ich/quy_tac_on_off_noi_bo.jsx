@@ -189,7 +189,6 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-16', ten_quy_tac: 'No-code DVKT: Cảnh báo mã giường dạng cũ Kxx.xxxx (tùy chọn)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-10', ten_quy_tac: 'No-code DVKT: Thời gian hành nghề bác sĩ' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-11', ten_quy_tac: 'No-code DVKT: Danh mục 3 tạm thời' },
-  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-12', ten_quy_tac: 'No-code DVKT: Mapping người hành nghề theo DVKT' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-13', ten_quy_tac: 'No-code DVKT: Đối soát tên DVKT theo danh mục' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-14', ten_quy_tac: 'No-code DVKT: Danh mục DVKT phải có đơn giá' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-15', ten_quy_tac: 'No-code DVKT: Danh mục DVKT phải có quyết định' },

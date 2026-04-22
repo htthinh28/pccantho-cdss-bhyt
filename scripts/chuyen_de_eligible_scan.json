@@ -6,8 +6,8 @@
     "rules": 581,
     "placeholder_count": 195,
     "xml130_condition_count": 386,
-    "seed_on_among_xml130": 384,
-    "seed_off_among_xml130": 2
+    "seed_on_among_xml130": 383,
+    "seed_off_among_xml130": 3
   },
   "policy_note": "xml130_condition = DIEU_KIEN không phải placeholder (EXIT_AUDIT_BACKLOG hoặc CHO_XU_LY_SAU). Engine bỏ qua CHO_XU_LY_SAU qua laDieuKienChuyenDeXml130Placeholder; EXIT_AUDIT_BACKLOG luôn false cho đến khi thay DIEU_KIEN. Quy tắc mặc định OFF (data_quy_tac_giu_off_mo_rong) vẫn cần bật trong Quản lý ON/OFF để chạy thật.",
   "lists": {
@@ -694,7 +694,6 @@
       "CHUYEN_DE-147",
       "CHUYEN_DE-148",
       "CHUYEN_DE-149",
-      "CHUYEN_DE-150",
       "CHUYEN_DE-151",
       "CHUYEN_DE-152",
       "CHUYEN_DE-153",

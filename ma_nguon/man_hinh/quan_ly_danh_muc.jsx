@@ -108,6 +108,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   /** Import Excel: có dòng trùng khóa — chọn ghi đè / bỏ qua */
   const [modalImportTrung, setModalImportTrung] = useState(null);
   const [tuKhoaTim, setTuKhoaTim] = useState('');
+  /** Dòng cần xóa hàng loạt — theo `indexGoc` trong mảng `data` (ổn định dù tìm/ phân trang). */
+  const [dauChonDong, setDauChonDong] = useState(() => new Set());
 
   const layDoRongCot = (tenCot) => {
     const cot = String(tenCot || '').toUpperCase();
@@ -145,6 +147,7 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => {
     setTrangHienTai(1);
     setTuKhoaTim('');
+    setDauChonDong(new Set());
   }, [danhMucHienTai]);
 
   useEffect(() => {
@@ -324,6 +327,59 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
     danhDauDaSua();
     dataRef.current = newData;
     setData(newData);
+    setDauChonDong((prev) => {
+      const s = new Set();
+      prev.forEach((j) => {
+        if (j < index) s.add(j);
+        else if (j > index) s.add(j - 1);
+      });
+      return s;
+    });
+  };
+
+  const hoiXoaNhieuDong = (n) => {
+    const msg = `Bác sĩ có chắc chắn muốn xóa ${n} dòng đã chọn? Hành động không thể hoàn tác.`;
+    if (Platform.OS === 'web') {
+      return Promise.resolve(window.confirm(msg));
+    }
+    return new Promise((resolve) => {
+      Alert.alert('Xóa hàng loạt', msg, [
+        { text: 'Hủy', style: 'cancel', onPress: () => resolve(false) },
+        { text: 'Xóa', style: 'destructive', onPress: () => resolve(true) },
+      ]);
+    });
+  };
+
+  const handleToggleChonDong = (indexGoc) => {
+    setDauChonDong((prev) => {
+      const s = new Set(prev);
+      if (s.has(indexGoc)) s.delete(indexGoc);
+      else s.add(indexGoc);
+      return s;
+    });
+  };
+
+  const handleBoChonTatCa = () => setDauChonDong(new Set());
+
+  const handleXoaDaChon = async () => {
+    const tap = new Set(dauChonDong);
+    if (tap.size === 0) {
+      const msg = 'Chưa chọn dòng nào. Dùng cột [Chọn] từng dòng, hoặc bấm ô ở tiêu đề để chọn/bỏ cả trang hiện tại.';
+      if (Platform.OS === 'web') window.alert(msg);
+      else Alert.alert('Chưa chọn dòng', msg);
+      return;
+    }
+    if (!(await hoiXoaNhieuDong(tap.size))) return;
+    const newData = data.filter((_, i) => !tap.has(i));
+    danhDauDaSua();
+    dataRef.current = newData;
+    setData(newData);
+    setDauChonDong(new Set());
+    try {
+      xoaCacheBoMayGiamDinh();
+    } catch {
+      // ignore
+    }
   };
 
   const handleCellChange = (text, rowIndex, colName) => {
@@ -848,6 +904,21 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   };
 
   const duLieuTrang = hangLocChiSo.slice(chiSoBatDau, chiSoKetThuc);
+  const soDongDangChon = dauChonDong.size;
+  const soChonTrenTrangHien = duLieuTrang.filter(({ indexGoc }) => dauChonDong.has(indexGoc)).length;
+  const trangHienDangChonDayDu = duLieuTrang.length > 0 && soChonTrenTrangHien === duLieuTrang.length;
+
+  const handleToggleChonCaTrangHien = () => {
+    const trenTrang = duLieuTrang.map(({ indexGoc }) => indexGoc);
+    if (trenTrang.length === 0) return;
+    setDauChonDong((prev) => {
+      const s = new Set(prev);
+      const tatCaDaChon = trenTrang.every((i) => s.has(i));
+      if (tatCaDaChon) trenTrang.forEach((i) => s.delete(i));
+      else trenTrang.forEach((i) => s.add(i));
+      return s;
+    });
+  };
 
   return (
     <SafeAreaView style={styles.vung_an_toan}>
@@ -988,6 +1059,22 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
               <Text style={styles.chu_nut}>+ THÊM DÒNG</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity
+              style={[styles.nut_xoa_hang_loat, soDongDangChon === 0 && styles.nut_xoa_hang_loat_tat]}
+              onPress={handleBoChonTatCa}
+              disabled={soDongDangChon === 0}
+            >
+              <Text style={styles.chu_nut_xoa_loat}>BỎ CHỌN ({soDongDangChon})</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.nut_xoa_hang_loat_do, soDongDangChon === 0 && styles.nut_xoa_hang_loat_tat]}
+              onPress={() => { void handleXoaDaChon(); }}
+              disabled={soDongDangChon === 0}
+            >
+              <Text style={styles.chu_nut_xoa_loat_bold}>🗑 XÓA ĐÃ CHỌN ({soDongDangChon})</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.nut_do} onPress={() => alert(`Đang hiển thị ${data.length} dòng. Hệ thống tự động ghi nhớ mọi thay đổi!`)}>
               <Text style={styles.chu_nut}>💾 ĐÃ TỰ LƯU</Text>
             </TouchableOpacity>
@@ -1019,6 +1106,18 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
           <ScrollView horizontal style={styles.scroll_ngang}>
             <View style={styles.bang_chinh}>
               <View style={styles.dong_tieu_de}>
+                <View style={[styles.o_tieu_de, { width: 64 }]}>
+                  <TouchableOpacity
+                    onPress={handleToggleChonCaTrangHien}
+                    style={styles.o_chon_dong_header}
+                    disabled={duLieuTrang.length === 0}
+                  >
+                    <View style={[styles.hop_chon, trangHienDangChonDayDu && styles.hop_chon_dang_chon]}>
+                      {trangHienDangChonDayDu ? <Text style={styles.hop_chon_dau}>✓</Text> : soChonTrenTrangHien > 0 ? <Text style={styles.hop_chon_dau}>−</Text> : null}
+                    </View>
+                    <Text style={styles.chu_o_tieu_de_nho}>Chọn</Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={[styles.o_tieu_de, { width: 90 }]}><Text style={styles.chu_o_tieu_de}>STT</Text></View>
                 {columns.map((col, index) => {
                   const rongCot = layDoRongCot(col);
@@ -1035,8 +1134,20 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
                 {duLieuTrang.map(({ row, indexGoc }, rowIndex) => {
                   const globalIndex = indexGoc;
                   const sttHienThi = chiSoBatDau + rowIndex + 1;
+                  const dangChonDongNay = dauChonDong.has(indexGoc);
                   return (
                   <View key={`${indexGoc}-${rowIndex}`} style={[styles.dong_du_lieu, { backgroundColor: rowIndex % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.01)' }]}>
+                    <View style={[styles.o_du_lieu_stt, { width: 64 }]}>
+                      <TouchableOpacity
+                        onPress={() => handleToggleChonDong(indexGoc)}
+                        style={styles.hop_chon_tap}
+                        hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                      >
+                        <View style={[styles.hop_chon, dangChonDongNay && styles.hop_chon_dang_chon]}>
+                          {dangChonDongNay ? <Text style={styles.hop_chon_dau}>✓</Text> : null}
+                        </View>
+                      </TouchableOpacity>
+                    </View>
                     <View style={[styles.o_du_lieu_stt, { width: 90 }]}>
                       <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#F48FB1' }}>{sttHienThi}</Text>
                     </View>
@@ -1232,8 +1343,22 @@ const styles = StyleSheet.create({
     }),
   },
 
-  thanh_cong_cu: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 18, flexWrap: 'wrap', alignItems: 'center' },
-  khoi_them_cot: { flexDirection: 'row', alignItems: 'center' },
+  /** Cột: hàng 1 = thêm cột; hàng 2 = nút công cụ (wrap 2+ hàng, không tràn ngang màn hình). */
+  thanh_cong_cu: {
+    flexDirection: 'column',
+    marginBottom: 18,
+    gap: 12,
+    width: '100%',
+    alignItems: 'stretch',
+    minWidth: 0,
+  },
+  khoi_them_cot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
+    minWidth: 0,
+  },
   o_nhap_cot: {
     backgroundColor: CD.bg.glass_input,
     borderWidth: 1,
@@ -1248,7 +1373,15 @@ const styles = StyleSheet.create({
     fontFamily: CD.font.family,
     ...Platform.select({ web: { backdropFilter: CD.web.blur_input, outlineStyle: 'none' } }),
   },
-  khoi_hanh_dong: { flexDirection: 'row', gap: 15 },
+  khoi_hanh_dong: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    alignContent: 'flex-start',
+    gap: 10,
+    width: '100%',
+    minWidth: 0,
+  },
 
   // "+ THÊM CỘT" → primary button
   nut_xanh: {
@@ -1309,6 +1442,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chu_nut: { color: CD.text.primary, fontWeight: 'bold', fontSize: 18, fontFamily: CD.font.family },
+  nut_xoa_hang_loat: {
+    backgroundColor: CD.bg.glass_input,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    justifyContent: 'center',
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  nut_xoa_hang_loat_do: {
+    backgroundColor: '#C62828',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#B71C1C',
+    ...Platform.select({ web: { boxShadow: '0 2px 8px rgba(198,40,40,0.35)', cursor: 'pointer' } }),
+  },
+  nut_xoa_hang_loat_tat: { opacity: 0.45 },
+  chu_nut_xoa_loat: { color: CD.text.primary, fontWeight: '700', fontSize: 16, fontFamily: CD.font.family },
+  chu_nut_xoa_loat_bold: { color: '#FFFFFF', fontWeight: '800', fontSize: 16, fontFamily: CD.font.family },
 
   // KHU VỰC BẢNG FULLSCREEN FLEX 1
   khung_bang_master: {
@@ -1406,6 +1562,25 @@ const styles = StyleSheet.create({
   dong_tieu_de: { flexDirection: 'row', backgroundColor: '#BBDEFB', borderBottomWidth: 2, borderColor: '#1976D2' },
   o_tieu_de: { padding: 18, borderRightWidth: 1, borderColor: CD.border.divider, justifyContent: 'center' },
   chu_o_tieu_de: { fontWeight: '700', fontSize: 19, color: '#000000', fontFamily: CD.font.family, textAlign: 'center', lineHeight: 24 },
+  chu_o_tieu_de_nho: { fontWeight: '700', fontSize: 13, color: '#000000', fontFamily: CD.font.family, textAlign: 'center', marginTop: 4 },
+
+  o_chon_dong_header: { alignItems: 'center', justifyContent: 'center', ...Platform.select({ web: { cursor: CD.web.cursor_pointer } }) },
+  hop_chon_tap: { alignItems: 'center', justifyContent: 'center' },
+  hop_chon: {
+    width: 28,
+    height: 28,
+    borderWidth: 2,
+    borderColor: CD.border.glass_md,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: CD.bg.glass_input,
+  },
+  hop_chon_dang_chon: {
+    backgroundColor: CD.brand.mauChinh,
+    borderColor: CD.brand.mauChinh2,
+  },
+  hop_chon_dau: { color: '#FFFFFF', fontWeight: '900', fontSize: 16, lineHeight: 18, fontFamily: CD.font.family },
 
   scroll_doc: { flex: 1 },
   dong_du_lieu: { flexDirection: 'row', borderBottomWidth: 1, borderColor: CD.border.divider, minHeight: 65 },

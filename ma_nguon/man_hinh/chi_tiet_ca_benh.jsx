@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { chuanHoaDanhSachCanhBaoGiamDinh, chuanHoaHoSoCanhBao } from '../tien_ich/chuan_hoa_van_ban';
-import { chayGiamDinhToanDienV15 } from '../tien_ich/dong_co_giam_dinh';
+import { chayGiamDinhToanDienV15HybridDongBo } from '../tien_ich/giam_dinh_hybrid_dong_bo';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import { layNhieuHoSoTuKho } from '../tien_ich/kho_du_lieu';
 import {
@@ -236,7 +236,7 @@ const ManHinhChiTiet = ({ route, navigation }) => {
       return;
     }
 
-    const ketQua = await chayGiamDinhToanDienV15(dataGoc);
+    const ketQua = await chayGiamDinhToanDienV15HybridDongBo(dataGoc);
     const dsLoi = Array.isArray(ketQua) ? ketQua : [];
     setDanhSachLoiTam(chuanHoaDanhSachCanhBaoGiamDinh(dsLoi));
 

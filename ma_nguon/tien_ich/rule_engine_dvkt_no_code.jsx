@@ -115,13 +115,15 @@ const DEFAULT_DVKT_RULES = [
   { RULE_CODE: 'DVKT-OP-09', RULE_NAME: 'Khám và giường bệnh (nội bộ) được phê duyệt', OPERATOR: 'CHECK_INTERNAL_APPROVAL', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT không nằm trong danh mục Khám và giường bệnh (nội bộ) được phê duyệt.' },
   { RULE_CODE: 'DVKT-OP-10', RULE_NAME: 'Thời gian hành nghề bác sỹ', OPERATOR: 'CHECK_STAFF_PRACTICE_TIME', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Thông tin hành nghề bác sỹ không hợp lệ tại thời điểm thực hiện DVKT.' },
   { RULE_CODE: 'DVKT-OP-11', RULE_NAME: 'Danh mục 3 tạm thời chưa thanh toán', OPERATOR: 'CHECK_TEMP_LIST3', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT thuộc danh mục tạm thời chưa được quỹ BHYT thanh toán.' },
-  { RULE_CODE: 'DVKT-OP-12', RULE_NAME: 'Mapping người hành nghề theo DVKT', OPERATOR: 'CHECK_SERVICE_PRACTITIONER_MAPPING', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Người hành nghề không khớp mapping được phê duyệt cho DVKT.' },
   { RULE_CODE: 'DVKT-OP-13', RULE_NAME: 'Đối soát tên DVKT theo danh mục', OPERATOR: 'CHECK_CATALOG_NAME_MATCH', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Tên DVKT trên hồ sơ không khớp danh mục nội bộ M05.' },
   { RULE_CODE: 'DVKT-OP-14', RULE_NAME: 'Danh mục DVKT phải có đơn giá', OPERATOR: 'CHECK_CATALOG_PRICE_CONFIG', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Danh mục nội bộ M05 chưa cấu hình đơn giá cho DVKT.' },
   { RULE_CODE: 'DVKT-OP-15', RULE_NAME: 'Danh mục DVKT phải có quyết định', OPERATOR: 'CHECK_CATALOG_DECISION', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Danh mục nội bộ M05 chưa có thông tin quyết định phê duyệt DVKT.' },
   /** Tùy chọn: bật nếu cần cảnh báo hồ sơ còn mã giường dạng cũ Kxx.xxxx (4 số sau dấu chấm). */
   { RULE_CODE: 'DVKT-OP-16', RULE_NAME: 'Mã giường dạng cũ (Kxx.xxxx)', OPERATOR: 'CHECK_LEGACY_BED_SERVICE_FORMAT', STATUS: 'OFF', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Mã DVKT nhóm giường theo định dạng cũ — đã chuyển sang bảng mã mới (tab Giường & khám BV).' },
 ];
+
+/** Bản rời cho tra cứu (Thư viện) — cùng nội dung DEFAULT_DVKT_RULES, không tạo bản sao tĩnh ở nơi khác. */
+export const layQuyTacDvktNoCodeMacDinh = () => DEFAULT_DVKT_RULES.map((r) => ({ ...r }));
 
 const tronRuleKhongTrung = (...sources) => {
   const seen = new Set();
@@ -149,7 +151,6 @@ const LEGAL_BASIS_BY_OPERATOR = {
   CHECK_INTERNAL_APPROVAL: `${VBHN_17_META}: Điều 3 khoản 1 điểm a; Điều 3 khoản 2. ${ND_188_META}. ${TT_01_META}. ${QD_3618_BHXH_META}`,
   CHECK_PHAMVI: `${VBHN_17_META}: Điều 3 khoản 1 điểm b; Điều 3 khoản 2. ${ND_188_META}. ${QD_3618_BHXH_META}`,
   CHECK_STAFF_PRACTICE_TIME: `${VBHN_17_META}: Điều 3 khoản 1 điểm b; Điều 3 khoản 2. ${ND_188_META}. ${QD_3618_BHXH_META}`,
-  CHECK_SERVICE_PRACTITIONER_MAPPING: `${VBHN_17_META}: Điều 3 khoản 1 điểm b; Điều 3 khoản 2. ${ND_188_META}. ${QD_3618_BHXH_META}`,
   CHECK_EQUIPMENT: `${VBHN_17_META}: Điều 3 khoản 1 điểm b; Điều 3 khoản 2. ${ND_188_META}. ${QD_3618_BHXH_META}`,
   CHECK_PRICE: `${VBHN_17_META}: Điều 3 khoản 1 điểm c. ${ND_188_META}. ${QD_3618_BHXH_META}`,
   CHECK_VALIDITY: `${VBHN_17_META}: Điều 3 khoản 2. ${ND_188_META}. ${QD_3618_BHXH_META}`,
@@ -767,6 +768,7 @@ const buildEngineConfig = async () => {
   const rules = normalizeRules(rulesRaw);
   const activeRules = locTrungRuleTheoYNgia((rules.length > 0 ? rules : DEFAULT_DVKT_RULES)
     .filter((r) => isRuleOn(r.STATUS))
+    .filter((r) => toUpper(r.RULE_CODE || r.MA_LUAT || '') !== 'DVKT-OP-12')
     .filter((r) => isQuyTacNoiBoDangBat(r.RULE_CODE || r.MA_LUAT || '', mapTrangThaiNoiBo, true))
     .map((rule) => toCompiledRule(rule))
     .filter(Boolean));
@@ -1556,46 +1558,6 @@ const checkPhamVi = ({ rule, line, config }) => {
   );
 };
 
-const checkServicePractitionerMapping = ({ rule, line, config }) => {
-  const entry = findServicePractitionerEntry(line, config);
-  if (!entry) return pass();
-
-  const candidateIds = collectActorCandidateIds(line);
-  if (candidateIds.length === 0) {
-    return fail(
-      'WARNING',
-      `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI/NGUOI_THUC_HIEN để đối chiếu mapping DVKT [${line.maTuongDuong}] ${entry.tenDvkt || line.tenDvkt || ''}.`,
-      'MA_BAC_SI'
-    );
-  }
-
-  if (entry.allowedStaffIds.size === 0) {
-    if (entry.allowedStaffNames.length > 0 || entry.requiredScopes.size > 0) {
-      return fail(
-        'WARNING',
-        `${rule.ALERT_MESSAGE} Mapping DVKT [${line.maTuongDuong}] ${entry.tenDvkt || line.tenDvkt || ''} chưa resolve được người hành nghề hợp lệ từ danh mục nhân sự.`,
-        'NGUOI_THUC_HIEN'
-      );
-    }
-    return pass();
-  }
-
-  if (candidateIds.some((id) => entry.allowedStaffIds.has(id))) return pass();
-
-  const dsHoSo = candidateIds.map((id) => formatStaffDisplay(config.staffById.get(id), id)).join('; ');
-  const dsHopLe = entry.allowedStaffIds.size > 0
-    ? Array.from(entry.allowedStaffIds)
-      .map((id) => formatStaffDisplay(config.staffById.get(id), id))
-      .join('; ')
-    : entry.allowedStaffNames.join('; ');
-
-  return fail(
-    'REJECT',
-    `${rule.ALERT_MESSAGE} Hồ sơ ghi ${dsHoSo || 'không xác định'} nhưng DVKT [${line.maTuongDuong}] ${entry.tenDvkt || line.tenDvkt || ''} chỉ cho phép: ${dsHopLe || 'chưa khai báo'}.`,
-    'NGUOI_THUC_HIEN'
-  );
-};
-
 const checkEquipment = ({ rule, line, claim, config }) => {
   const requiredPrefixes = config.equipRequiredByPrefix.get(line.prefix);
   const maMayRow = toUpper(line.maMay);
@@ -1896,7 +1858,6 @@ const OPERATOR_HANDLERS = {
   CHECK_ICD_INDICATION: checkIcdIndication,
   CHECK_ICD_CONTRAINDICATION: checkIcdContraindication,
   CHECK_PHAMVI: checkPhamVi,
-  CHECK_SERVICE_PRACTITIONER_MAPPING: checkServicePractitionerMapping,
   CHECK_EQUIPMENT: checkEquipment,
   CHECK_INTERNAL_APPROVAL: checkInternalApproval,
   CHECK_STAFF_PRACTICE_TIME: checkStaffPracticeTime,

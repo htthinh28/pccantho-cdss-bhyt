@@ -11,7 +11,8 @@ import { COT_DANH_MUC_MAPPING_NGUOI_HANH_NGHE, DANH_MUC_MAPPING_NGUOI_HANH_NGHE 
 import { COT_DANH_MUC_NHAN_SU, DANH_MUC_NHAN_SU } from '../ma_nguon/thanh_phan/nhan_su.jsx';
 import { COT_DANH_MUC_THUOC_MAU_M03, DANH_MUC_THUOC_MAU_M03 } from '../ma_nguon/thanh_phan/thuoc_mau_cp.jsx';
 import { COT_DANH_MUC_TRANG_THIET_BI_M06, DANH_MUC_TRANG_THIET_BI_M06 } from '../ma_nguon/thanh_phan/trang_thiet_bi.jsx';
-import { chayGiamDinhToanDienV15, xoaCacheBoMayGiamDinh } from '../ma_nguon/tien_ich/dong_co_giam_dinh.jsx';
+import { xoaCacheBoMayGiamDinh } from '../ma_nguon/tien_ich/dong_co_giam_dinh.jsx';
+import { chayGiamDinhToanDienV15HybridDongBo } from '../ma_nguon/tien_ich/giam_dinh_hybrid_dong_bo.jsx';
 import {
   COT_SEED_LUAT_DU_LIEU_MUC1,
   DU_LIEU_SEED_LUAT_DU_LIEU_MUC1,
@@ -189,7 +190,7 @@ const mergeCountMaps = (maps) => {
   return Object.fromEntries(Object.entries(out).sort((a, b) => a[0].localeCompare(b[0])));
 };
 
-/** Tóm tắt theo tầng pipeline V15 (đồng bộ comment trong chayGiamDinhToanDienV15). */
+/** Tóm tắt theo tầng pipeline V15 (đồng bộ comment trong chayGiamDinhToanDienV15HybridDongBo). */
 const buildLayersSummary = (warnings) => ({
   V15_pipeline:
     'L0 FalsePositiveGuard | L1 Hành chính | L2-3 Danh mục BV+BYT | L4 Lâm sàng | L5 No-code | L5b CDSS ICD↔DM',
@@ -291,7 +292,7 @@ const main = async () => {
 
   const hoSo = parseClaimXml130(claimPath);
   const xml1 = Array.isArray(hoSo.XML1) && hoSo.XML1.length > 0 ? hoSo.XML1[0] : {};
-  let warnings = await chayGiamDinhToanDienV15(hoSo);
+  let warnings = await chayGiamDinhToanDienV15HybridDongBo(hoSo);
   warnings.sort((a, b) => {
     const orderDiff = (ORDER[a?.muc_do] ?? 9) - (ORDER[b?.muc_do] ?? 9);
     if (orderDiff !== 0) return orderDiff;
@@ -402,7 +403,7 @@ const runAuditThuMuc = async (options) => {
     const xml1 = Array.isArray(hoSo.XML1) && hoSo.XML1.length > 0 ? hoSo.XML1[0] : {};
     const maLK = String(xml1?.MA_LK || path.basename(claimPath, '.xml'));
 
-    let warnings = await chayGiamDinhToanDienV15(hoSo);
+    let warnings = await chayGiamDinhToanDienV15HybridDongBo(hoSo);
     warnings.sort((a, b) => {
       const orderDiff = (ORDER[a?.muc_do] ?? 9) - (ORDER[b?.muc_do] ?? 9);
       if (orderDiff !== 0) return orderDiff;

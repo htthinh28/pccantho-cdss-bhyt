@@ -218,7 +218,7 @@ const laMaKhuVucK123 = (xml1) => {
 
 /** Ngoại lệ 100% phạm vi chi trả đối với mức 3 và 4 (QĐ 1018 — điểm b, c, d). */
 const laDuocApTyLe100NgoaiLeMuc3Va4 = (xml1) => {
-    const d = KY_HIEU_SO_THU_BA_THE_BHYT(xml1);
+    const d = KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT(xml1);
     if (d !== '3' && d !== '4') return false;
     if (laMotLanKcbDuoi15PhanTramLCS(xml1)) return true;
     if (laKhoaGoiYTuyenXaHoacTram(xml1)) return true;
@@ -750,23 +750,54 @@ const boSungNamespaceVaGiaiTrinhQuyTac = (danhSach = []) => (Array.isArray(danhS
 const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
     let tanSuat = 0, slMoiLan = 0, slMoiNgay = 0, soNgay = 0;
     let donViLieuDung = '', donViTongNgay = '';
-    const rawText = String(lieuDungText || '').toLowerCase();
-    const text = rawText.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd');
+    let rawText = String(lieuDungText || '');
+    try {
+        rawText = rawText.normalize('NFKC');
+    } catch {
+        /* ignore */
+    }
+    rawText = rawText.replace(/[０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xff10 + 0x30));
+    const rawTextLower = rawText.toLowerCase();
+    const text = rawTextLower.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd');
+    /** Gỡ cụm "đối chiếu" để không khớp nhầm "chieu" / buổi chiều khi parse (không dùng lookbehind — Hermes cũ). */
+    const textChoBuoi = text
+        .replace(/\bdoi\s+chieu\b/gi, 'doi-khieu')
+        .replace(/\blien\s+chieu\b/gi, 'lien-khieu');
     const slTong = TO_NUMBER(soLuongXuat);
     const parseSo = (raw) => parseFloat(String(raw || '0').replace(',', '.'));
-    const extractByPattern = (regex) => {
-        const match = text.match(regex);
+    const extractByPattern = (regex, haystack = text) => {
+        const match = haystack.match(regex);
         return match ? parseSo(match[1]) : 0;
     };
-    const extractDose = (timeKeyword) => {
-        const regex = new RegExp(`${timeKeyword}.*?(\d+(?:[.,]\d+)?)`, 'i');
-        const match = text.match(regex);
-        return match ? parseSo(match[1]) : 0;
+    /**
+     * Liều theo buổi: ưu tiên "Sáng: 1 viên", "Chiều: 1" (dấu : hoặc ：), kể cả sau dấu phẩy/ghi chú.
+     * Trước đây `chieu.*?(\d+)` khớp nhầm "chiếu" trong "đối chiếu" rồi lấy số (MA, mg…) làm liều.
+     */
+    const extractDoseBuoi = (timeKeyword) => {
+        const kw = String(timeKeyword || '').toLowerCase();
+        const hay = textChoBuoi;
+        const soTrongNhom = (re) => {
+            const m = hay.match(re);
+            return m ? parseSo(m[1]) : 0;
+        };
+        const tuColon = soTrongNhom(new RegExp(`\\b${kw}\\s*[:：]\\s*(\\d+(?:[.,]\\d+)?)`, 'i'));
+        if (tuColon > 0) return tuColon;
+        const tuKhoang = soTrongNhom(new RegExp(`\\b${kw}\\b\\s+(\\d+(?:[.,]\\d+)?)`, 'i'));
+        if (tuKhoang > 0) return tuKhoang;
+        /** Không dùng legacy cho "chieu" — dễ ăn nhầm "… chiếu" trong cụm khác (đã tách doi/lien chieu ở trên). */
+        if (kw === 'chieu') return 0;
+        const legacy = new RegExp(`${kw}.*?(\\d+(?:[.,]\\d+)?)`, 'i');
+        const mLegacy = hay.match(legacy);
+        return mLegacy ? parseSo(mLegacy[1]) : 0;
     };
-    const sang = extractDose('sang');
-    const trua = extractDose('trua');
-    const chieu = extractDose('chieu');
-    const toi = extractDose('toi');
+    const buoiSang = extractByPattern(/\bbuoi\s+sang\s*[:：]?\s*(\d+(?:[.,]\d+)?)/i, textChoBuoi);
+    const buoiTrua = extractByPattern(/\bbuoi\s+trua\s*[:：]?\s*(\d+(?:[.,]\d+)?)/i, textChoBuoi);
+    const buoiChieu = extractByPattern(/\bbuoi\s+chieu\s*[:：]?\s*(\d+(?:[.,]\d+)?)/i, textChoBuoi);
+    const buoiToi = extractByPattern(/\bbuoi\s+toi\s*[:：]?\s*(\d+(?:[.,]\d+)?)/i, textChoBuoi);
+    const sang = Math.max(extractDoseBuoi('sang'), buoiSang);
+    const trua = Math.max(extractDoseBuoi('trua'), buoiTrua);
+    const chieu = Math.max(extractDoseBuoi('chieu'), buoiChieu);
+    const toi = Math.max(extractDoseBuoi('toi'), buoiToi);
     slMoiNgay = sang + trua + chieu + toi;
     if (sang > 0) tanSuat++;
     if (trua > 0) tanSuat++;
@@ -775,8 +806,8 @@ const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
     if (tanSuat > 0) slMoiLan = slMoiNgay / tanSuat;
     if (slMoiNgay === 0) {
         const matchTongNgay = text.match(/\*\s*(\d+(?:[.,]\d+)?)\s*ngay\b/i);
-        const matchMoiLanVaLanNgay = text.match(/(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui)\s*\/\s*lan.*?(\d+(?:[.,]\d+)?)\s*lan\s*\/\s*ngay/i);
-        const matchTongNgayTrongNgoac = text.match(/\[\s*(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui)\s*\/\s*ngay\s*\]/i);
+        const matchMoiLanVaLanNgay = text.match(/(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|gram|mcg|iu|ui)\s*\/\s*lan.*?(\d+(?:[.,]\d+)?)\s*lan\s*\/\s*ngay/i);
+        const matchTongNgayTrongNgoac = text.match(/\[\s*(\d+(?:[.,]\d+)?)\s*(vien|lo|ong|goi|chai|bom|ml|mg|g|gram|mcg|iu|ui)\s*\/\s*ngay\s*\]/i);
         if (matchMoiLanVaLanNgay) {
             slMoiLan = parseSo(matchMoiLanVaLanNgay[1]);
             donViLieuDung = chuanHoaTokenDonViThuoc(matchMoiLanVaLanNgay[2]);
@@ -794,10 +825,27 @@ const parseLieuDungThuoc = (lieuDungText, soLuongXuat) => {
         const matchMoiLan = text.match(/moi\s+lan.*?(\d+(?:[.,]\d+)?)/i);
         if (matchNgayLan && tanSuat <= 0) tanSuat = parseSo(matchNgayLan[1]);
         if (matchMoiLan && slMoiLan <= 0) slMoiLan = parseSo(matchMoiLan[1]);
+        // TT 37 / thực địa: "Ngày TMC 3 lần, mỗi lần 0,5gram (buổi sáng, …)" — không có từ khóa uống/dùng/tiêm nên matchNgayLan bỏ sót; "buổi sáng" không khớp nhánh Sáng: X viên.
+        if (tanSuat <= 0) {
+            const mTmc = text.match(/\btmc\s*(\d+(?:[.,]\d+)?)\s*lan\b/i);
+            if (mTmc) tanSuat = parseSo(mTmc[1]);
+        }
+        if (tanSuat <= 0) {
+            const mLanRoiMoiLan = text.match(/(\d+(?:[.,]\d+)?)\s*lan\s*,\s*moi\s+lan\b/i);
+            if (mLanRoiMoiLan) tanSuat = parseSo(mLanRoiMoiLan[1]);
+        }
+        if (tanSuat <= 0 && slMoiLan > 0) {
+            const buoiCoMat = ['sang', 'trua', 'chieu', 'toi'].filter((k) => new RegExp(`buoi\\s+${k}\\b`, 'i').test(text));
+            if (buoiCoMat.length >= 2) tanSuat = buoiCoMat.length;
+        }
+        if (matchMoiLan && /moi\s+lan[^[\]]*gram\b/i.test(text) && !donViLieuDung) {
+            donViLieuDung = 'g';
+            donViTongNgay = 'g';
+        }
         if (tanSuat > 0 && slMoiLan > 0) {
             slMoiNgay = tanSuat * slMoiLan;
         } else if (/\/ngay\b|\b1\s+ng(?:a|à)y\b/i.test(text)) {
-            const matchVienNgay = text.match(/(\d+(?:[.,]\d+)?).*?(vien|lo|ong|goi|chai|bom|ml|mg|g|mcg|iu|ui).*?ngay/i);
+            const matchVienNgay = text.match(/(\d+(?:[.,]\d+)?).*?(vien|lo|ong|goi|chai|bom|ml|mg|g|gram|mcg|iu|ui).*?ngay/i);
             if (matchVienNgay && slMoiNgay <= 0) {
                 slMoiNgay = parseSo(matchVienNgay[1]);
                 donViTongNgay = chuanHoaTokenDonViThuoc(matchVienNgay[2]);
@@ -863,6 +911,69 @@ const layGiaTriAnToan = (obj, tuKhoa) => {
     if (!keyTimThay) return '';
     const val = obj[keyTimThay];
     return val === undefined || val === null ? '' : val;
+};
+
+/** Giá trúng thầu / BHYT tham chiếu trên DM thuốc Mẫu 03 nội bộ — ưu tiên GIA_BH_TT, sau đó DON_GIA_TT, rồi các cột dự phòng. */
+const layGiaTrungThauNoiBoTuDmThuocM03 = (dmT) => {
+    if (!dmT || typeof dmT !== 'object') return 0;
+    const khoaGia = ['GIA_BH_TT', 'GIA_BH', 'DON_GIA_TT', 'DON_GIA_THAU', 'DON_GIA', 'GIA'];
+    for (const k of khoaGia) {
+        const raw = layGiaTriAnToan(dmT, k);
+        if (raw === undefined || raw === null || String(raw).trim() === '') continue;
+        const n = TO_NUMBER(raw);
+        if (n > 0) return n;
+    }
+    return 0;
+};
+
+/** Tên thuốc trên dòng XML2 (QĐ 130 thường dùng TEN_THUOC). */
+const layTenThuocTuDongXml2 = (row = {}) => String(row.TEN_THUOC || row.TEN_DICH_VU || row.TEN_PTHAU || '').trim();
+
+const chuanHoaChuoiSoKhopChiTietM03 = (s) => String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const tenThuocM03KhopXml2 = (rowXml, rowDm) => {
+    const a = chuanHoaChuoiSoKhopChiTietM03(layTenThuocTuDongXml2(rowXml));
+    const b = chuanHoaChuoiSoKhopChiTietM03(layGiaTriAnToan(rowDm, 'TEN_THUOC') || rowDm.TEN_THUOC);
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    return a === b || a.includes(b) || b.includes(a);
+};
+
+const donViTinhM03KhopXml2 = (rowXml, rowDm) => {
+    const a = chuanHoaTokenDonViThuoc(layGiaTriAnToan(rowXml, 'DON_VI_TINH') || rowXml.DON_VI_TINH);
+    const b = chuanHoaTokenDonViThuoc(layGiaTriAnToan(rowDm, 'DON_VI_TINH') || rowDm.DON_VI_TINH);
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    return a === b;
+};
+
+const hamLuongM03KhopXml2 = (rowXml, rowDm) => {
+    const a = chuanHoaChuoiSoKhopChiTietM03(layGiaTriAnToan(rowXml, 'HAM_LUONG') || rowXml.HAM_LUONG);
+    const b = chuanHoaChuoiSoKhopChiTietM03(layGiaTriAnToan(rowDm, 'HAM_LUONG') || rowDm.HAM_LUONG);
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    return a === b || a.includes(b) || b.includes(a);
+};
+
+/**
+ * Cùng MA_THUOC nhưng Mẫu 03 nhiều dòng: chọn dòng khớp TEN_THUOC + DON_VI_TINH + HAM_LUONG với XML2
+ * (tránh lấy nhầm GIA_BH_TT từ dòng khác cùng mã).
+ * @returns {object|null} null nếu >1 dòng cùng mã mà không bám đủ 3 trường — không dùng giá tùy ý.
+ */
+const chonDongMau03KhopChiTietVsXml2 = (rowsCungMa, rowXml) => {
+    if (!Array.isArray(rowsCungMa) || rowsCungMa.length === 0) return null;
+    if (rowsCungMa.length === 1) return rowsCungMa[0];
+    const khop = rowsCungMa.filter(
+        (r) => tenThuocM03KhopXml2(rowXml, r) && donViTinhM03KhopXml2(rowXml, r) && hamLuongM03KhopXml2(rowXml, r),
+    );
+    if (khop.length === 1) return khop[0];
+    if (khop.length > 1) return khop[0];
+    return null;
 };
 
 const standardizeValue = (val, keyName) => {
@@ -1409,6 +1520,8 @@ const taiDanhMucHeThong = async () => {
             // Maps O(1) BV nội bộ
             MAP_DVKT_BV: buildMap(dvktArr, 'MA_DICH_VU'),
             MAP_THUOC_BV: buildMap(thuocArr, 'MA_THUOC'),
+            /** Cùng Mẫu 03, đủ dòng để DM-THUOC-04 chọn đúng bản ghi khi trùng MA (khớp tên/ĐVT/HL với XML2). */
+            DM_THUOC_M03_ROWS: Array.isArray(thuocArr) ? thuocArr : [],
             MAP_VTYT_BV: buildMap(vtytArr, 'MA_VAT_TU'),
             MAP_ICD10: buildMap(icd10Arr, 'MÃ BỆNH'),
             BO_QUY_TAC_ICD10_KE_DON_TREN_30_NGAY: taoBoQuyTacIcdKeDonTren30Ngay(icdKeDonTren30NgayArr),
@@ -1438,7 +1551,7 @@ const taiDanhMucHeThong = async () => {
             PL1_DVKT:[],PL2_KHAM:[],PL3_GIUONG:[],PL4_GIUONG_BN:[],PL5_THUOC:[],
             PL6_THUOC_YHCT:[],PL7_BENH_YHCT:[],PL8_VTYT:[],PL9_MAU:[],
             PL10_DOI_TUONG:[],PL11_CLS:[],PL12_NHIEN_LIEU:[],
-            MAP_DVKT_BV: new Map(), MAP_THUOC_BV: new Map(), MAP_VTYT_BV: new Map(),
+            MAP_DVKT_BV: new Map(), MAP_THUOC_BV: new Map(), DM_THUOC_M03_ROWS: [], MAP_VTYT_BV: new Map(),
             MAP_ICD10: new Map(), BO_QUY_TAC_ICD10_KE_DON_TREN_30_NGAY: { exact: new Set(), ranges: [] }, BO_QUY_TAC_DOI_TUONG_KCB: { validCodes: new Set(), byCode: new Map() }, MAP_KHOA_BV: new Map(), MAP_NHAN_SU: new Map(),
             MAP_BYT_PL1: new Map(), MAP_BYT_PL5: new Map(), MAP_BYT_PL8: new Map(), MAP_BYT_PL11: new Map()
         };
@@ -3027,16 +3140,30 @@ const giamDinhDanhMucNoiBo = (hoSo, dm) => {
                     'MA_THUOC',
                     CO_SO_PHAP_LY_THUOC.DANH_MUC_BHYT);
         } else if (trongBV === true) {
-            // Kiểm tra giá trúng thầu
-            const dmT = dm.MAP_THUOC_BV.get(ma);
-            const giaTT = TO_NUMBER(dmT.DON_GIA_THAU || dmT.DON_GIA || dmT.GIA || 0);
+            // Kiểm tra giá trúng thầu — đối chiếu XML2.DON_GIA với đúng dòng Mẫu 03 (GIA_BH_TT / DON_GIA_TT), không chỉ theo mã nếu có nhiều bản ghi cùng MA.
+            const thuocRowsFull = Array.isArray(dm.DM_THUOC_M03_ROWS) ? dm.DM_THUOC_M03_ROWS : [];
+            const rowsCungMa = thuocRowsFull.filter((r) => UPPER(String(r.MA_THUOC || '').trim()) === ma);
+            let dmT = null;
+            if (rowsCungMa.length === 0) {
+                dmT = dm.MAP_THUOC_BV.get(ma);
+            } else if (rowsCungMa.length === 1) {
+                dmT = rowsCungMa[0];
+            } else {
+                dmT = chonDongMau03KhopChiTietVsXml2(rowsCungMa, row);
+            }
+            const giaTT = dmT ? layGiaTrungThauNoiBoTuDmThuocM03(dmT) : 0;
             const giaHS = TO_NUMBER(row.DON_GIA);
-            if (giaTT > 0 && giaHS > giaTT * 1.001)
+            const tenXml = layTenThuocTuDongXml2(row) || '—';
+            if (giaTT > 0 && giaHS > giaTT * 1.001) {
+                const nhanManhKhop = rowsCungMa.length > 1
+                    ? ' Đối chiếu theo tên/ĐVT/hàm lượng cùng mã trên Mẫu 03; tham chiếu GIA_BH_TT / DON_GIA_TT.'
+                    : ' Tham chiếu GIA_BH_TT / DON_GIA_TT trên Mẫu 03.';
                 addLỗi('XML2', idx, 'DM-THUOC-04', 'Giá thuốc vượt trúng thầu',
-                    `Đơn giá thuốc [${ma}] = ${giaHS.toLocaleString()}đ vượt giá trúng thầu nội bộ ${giaTT.toLocaleString()}đ đã phê duyệt tại cơ sở KCB.`,
+                    `Đơn giá XML2 [${ma}] ${tenXml} (DON_GIA) = ${giaHS.toLocaleString()}đ vượt giá trúng thầu BHYT trên danh mục nội bộ Mẫu 03 (${giaTT.toLocaleString()}đ).${nhanManhKhop}`,
                     'Error',
                     'DON_GIA',
                     CO_SO_PHAP_LY_THUOC.NOI_BO_GIA_THAU);
+            }
         }
     });
 
@@ -3479,7 +3606,7 @@ const giamDinhChatLuongDanhMucBenhVien = (hoSo, dm) => {
         if (!dmThuoc) return;
 
         const tenThuoc = layGiaTriDanhMuc(dmThuoc, ['TEN_THUOC', 'TEN_HOAT_CHAT', 'HOAT_CHAT', 'TEN']);
-        const donGia = TO_NUMBER(layGiaTriDanhMuc(dmThuoc, ['DON_GIA_THAU', 'DON_GIA', 'GIA']));
+        const donGia = layGiaTrungThauNoiBoTuDmThuocM03(dmThuoc);
         const tuNgay = layGiaTriDanhMuc(dmThuoc, ['TU_NGAY', 'TUNGAY', 'HD_TU', 'NGAY_HL_TU']);
         const trangThai = layGiaTriDanhMuc(dmThuoc, ['TRANG_THAI', 'TRANGTHAI', 'TINH_TRANG', 'PHE_DUYET', 'DUOC_PHE_DUYET']);
 
@@ -3488,8 +3615,8 @@ const giamDinhChatLuongDanhMucBenhVien = (hoSo, dm) => {
                 `Danh mục thuốc BV mã [${maThuoc}] thiếu TEN_THUOC/HOAT_CHAT, đề xuất bổ sung trước khi đối soát.`);
         }
         if (donGia <= 0) {
-            addLoi('XML2', 'DMBV-THUOC-02', maThuoc, 'DON_GIA_THAU',
-                `Danh mục thuốc BV mã [${maThuoc}] chưa có DON_GIA_THAU/DON_GIA hợp lệ (>0).`, 'Error');
+            addLoi('XML2', 'DMBV-THUOC-02', maThuoc, 'GIA_BH_TT',
+                `Danh mục thuốc BV mã [${maThuoc}] chưa có giá tham chiếu trúng thầu hợp lệ (>0) trên Mẫu 03 (GIA_BH_TT / DON_GIA_TT / …).`, 'Error');
         }
         if (IS_EMPTY(tuNgay)) {
             addLoi('XML2', 'DMBV-THUOC-03', maThuoc, 'TU_NGAY',

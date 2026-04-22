@@ -147,33 +147,79 @@ const hopNhatCot = (existingCols = []) => {
   return merged;
 };
 
+const tomTatNoiDungMuc1 = (row, index = 0) => {
+  const n = chuanHoaDongLuat(row, index);
+  return {
+    MA_LUAT: n.MA_LUAT,
+    TRANG_THAI: n.TRANG_THAI,
+    TEN_QUY_TAC: n.TEN_QUY_TAC,
+    DIEU_KIEN: n.DIEU_KIEN,
+    CANH_BAO: n.CANH_BAO,
+    'DIEU_KIEN (Toán tử No-Code)': n['DIEU_KIEN (Toán tử No-Code)'],
+    GHI_CHU_SUA: n.GHI_CHU_SUA,
+    NGUON_DU_LIEU: n.NGUON_DU_LIEU,
+  };
+};
+
+const dongLuatBangNhauMuc1 = (a, b) => {
+  const khoaOnDinh = (x) =>
+    `${String(x.MA_LUAT || '')}\0${String(x.TEN_QUY_TAC || '')}\0${String(x.DIEU_KIEN || '')}\0${String(x.CANH_BAO || '')}\0${String(x['DIEU_KIEN (Toán tử No-Code)'] || '')}`;
+  const listA = (Array.isArray(a) ? a : []).map((row, i) => tomTatNoiDungMuc1(row, i));
+  const listB = (Array.isArray(b) ? b : []).map((row, i) => tomTatNoiDungMuc1(row, i));
+  listA.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  listB.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  return JSON.stringify(listA) === JSON.stringify(listB);
+};
+
+const tomTatTheoMa = (rows) => {
+  const out = new Map();
+  (Array.isArray(rows) ? rows : []).forEach((row, i) => {
+    const ma = String(row?.MA_LUAT || '').trim().toUpperCase();
+    if (!ma) return;
+    out.set(ma, tomTatNoiDungMuc1(row, i));
+  });
+  return out;
+};
+
+const demDongThayDoiTheoTomTat = (truoc, sau) => {
+  const a = tomTatTheoMa(truoc);
+  const b = tomTatTheoMa(sau);
+  let n = 0;
+  b.forEach((tb, ma) => {
+    if (!a.has(ma)) {
+      n += 1;
+      return;
+    }
+    if (JSON.stringify(a.get(ma)) !== JSON.stringify(tb)) n += 1;
+  });
+  return n;
+};
+
 const upsertDongLuatTheoMa = (existingRows = [], seedRows = []) => {
-  const normalizedExisting = (Array.isArray(existingRows) ? existingRows : []).map(chuanHoaDongLuat);
+  const normalizedExisting = (Array.isArray(existingRows) ? existingRows : []).map((row, i) => chuanHoaDongLuat(row, i));
   const mapSeed = new Map(seedRows.map((row, index) => {
     const normalized = chuanHoaDongLuat(row, index);
-    return [normalized.MA_LUAT.toUpperCase(), normalized];
+    return [String(normalized.MA_LUAT || '').trim().toUpperCase(), normalized];
   }));
 
-  let updatedCount = 0;
   const mergedRows = normalizedExisting.map((row) => {
     const ma = String(row?.MA_LUAT || '').trim().toUpperCase();
     if (!mapSeed.has(ma)) return row;
     const seedRow = mapSeed.get(ma);
-    updatedCount += 1;
+    const keepOff = chuanHoaTrangThai(row?.TRANG_THAI) === 'OFF';
     return {
       ...row,
       ...seedRow,
-      TRANG_THAI: row?.TRANG_THAI || seedRow.TRANG_THAI,
+      TRANG_THAI: keepOff ? 'OFF' : seedRow.TRANG_THAI,
     };
   });
 
   mapSeed.forEach((row, ma) => {
     if (mergedRows.some((existing) => String(existing?.MA_LUAT || '').trim().toUpperCase() === ma)) return;
     mergedRows.push(row);
-    updatedCount += 1;
   });
 
-  return { mergedRows, updatedCount };
+  return { mergedRows };
 };
 
 const xoaDongLuatTheoMa = (existingRows = [], maCanXoa = new Set()) => {
@@ -204,10 +250,13 @@ export const damBaoSeedLuatDuLieuMuc1 = async () => {
     ]);
 
     const { filteredRows, removedCount } = xoaDongLuatTheoMa(rowsHienTai, MA_LUAT_CAN_XOA);
-    const { mergedRows, updatedCount } = upsertDongLuatTheoMa(filteredRows, seedRows);
+    const { mergedRows } = upsertDongLuatTheoMa(filteredRows, seedRows);
     const mergedCols = hopNhatCot(colsHienTai);
     const daApDungDungPhienBan = String(migrationMap?.[KHOA_PHIEN_BAN_SEED] || '') === PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1;
-    const canGhiLai = updatedCount > 0 || removedCount > 0 || !daApDungDungPhienBan || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0);
+    const canGhiLai = !daApDungDungPhienBan
+      || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0)
+      || removedCount > 0
+      || !dongLuatBangNhauMuc1(mergedRows, filteredRows);
 
     if (!canGhiLai) {
       return {
@@ -233,6 +282,8 @@ export const damBaoSeedLuatDuLieuMuc1 = async () => {
       updated_at: new Date().toISOString(),
     };
     await ghiRaw(KHOA_MIGRATION_SEED, JSON.stringify(migrationMoi));
+
+    const updatedCount = demDongThayDoiTheoTomTat(filteredRows, mergedRows);
 
     return {
       ok: true,

@@ -25,7 +25,6 @@ const parseJSONAnToan = (raw, fallback) => {
 };
 
 const chuanHoaTrangThai = (value) => String(value || 'ON').trim().toUpperCase() === 'OFF' ? 'OFF' : 'ON';
-const chuanHoaText = (value) => String(value || '').replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
 
 const chuanHoaDongLuat = (row, index = 0) => ({
   id: String(row?.id || `SEED_THUOC_${index + 1}`),
@@ -38,16 +37,6 @@ const chuanHoaDongLuat = (row, index = 0) => ({
   NGUON_DU_LIEU: String(row?.NGUON_DU_LIEU || 'DuLieu_LUAT_THUOC (9).xlsx').trim(),
 });
 
-const taoKhoaDongLuat = (row = {}) => {
-  const maLuat = String(row?.MA_LUAT || '').trim().toUpperCase();
-  if (maLuat) return `MA:${maLuat}`;
-
-  const dieuKien = chuanHoaText(row?.DIEU_KIEN);
-  const canhBao = chuanHoaText(row?.CANH_BAO);
-  const tenQuyTac = chuanHoaText(row?.TEN_QUY_TAC);
-  return `SIG:${dieuKien}|${canhBao}|${tenQuyTac}`;
-};
-
 const hopNhatCot = (existingCols = []) => {
   const merged = [...COT_MAC_DINH];
   [...(Array.isArray(existingCols) ? existingCols : []), ...COT_SEED_LUAT_THUOC_MUC8].forEach((col) => {
@@ -58,6 +47,30 @@ const hopNhatCot = (existingCols = []) => {
   return merged;
 };
 
+const tomTatNoiDungDongLuat = (row, index = 0) => {
+  const n = chuanHoaDongLuat(row, index);
+  return {
+    MA_LUAT: n.MA_LUAT,
+    TRANG_THAI: n.TRANG_THAI,
+    TEN_QUY_TAC: n.TEN_QUY_TAC,
+    DIEU_KIEN: n.DIEU_KIEN,
+    CANH_BAO: n.CANH_BAO,
+    GHI_CHU: n.GHI_CHU,
+    NGUON_DU_LIEU: n.NGUON_DU_LIEU,
+  };
+};
+
+const dongLuatBangNhau = (a, b) => {
+  const khoaOnDinh = (x) =>
+    `${String(x.MA_LUAT || '')}\0${String(x.TEN_QUY_TAC || '')}\0${String(x.DIEU_KIEN || '')}\0${String(x.CANH_BAO || '')}\0${String(x.GHI_CHU || '')}`;
+  const listA = (Array.isArray(a) ? a : []).map((row, i) => tomTatNoiDungDongLuat(row, i));
+  const listB = (Array.isArray(b) ? b : []).map((row, i) => tomTatNoiDungDongLuat(row, i));
+  listA.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  listB.sort((x, y) => khoaOnDinh(x).localeCompare(khoaOnDinh(y)));
+  return JSON.stringify(listA) === JSON.stringify(listB);
+};
+
+/** Ưu tiên nội dung bundle cho MA có trong seed; giữ quy tắc BV. Giữ TRANG_THAI OFF nếu người dùng đã tắt. */
 const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
   const seedNorm = (Array.isArray(seedRows) ? seedRows : []).map((row, index) => chuanHoaDongLuat(row, index));
   const seedByMa = new Map();
@@ -80,7 +93,11 @@ const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
     const ma = String(row.MA_LUAT || '').trim().toUpperCase();
     if (ma && seedByMa.has(ma)) {
       if (!seedMaEmitted.has(ma)) {
-        merged.push(seedByMa.get(ma));
+        const seedRow = seedByMa.get(ma);
+        const prev = existingFirstByMa.get(ma);
+        const out =
+          prev && chuanHoaTrangThai(prev.TRANG_THAI) === 'OFF' ? { ...seedRow, TRANG_THAI: 'OFF' } : seedRow;
+        merged.push(out);
         seedMaEmitted.add(ma);
       }
       return;
@@ -96,17 +113,7 @@ const hopNhatDongLuat = (existingRows = [], seedRows = []) => {
     }
   });
 
-  let addedCount = 0;
-  seedByMa.forEach((seedRow, ma) => {
-    const prev = existingFirstByMa.get(ma);
-    if (!prev) {
-      addedCount += 1;
-      return;
-    }
-    if (JSON.stringify(prev) !== JSON.stringify(seedRow)) addedCount += 1;
-  });
-
-  return { mergedRows: merged, addedCount };
+  return { mergedRows: merged, addedCount: seedNorm.length };
 };
 
 const docRaw = async (key) => {
@@ -151,9 +158,9 @@ export const damBaoSeedLuatThuocMuc8 = async () => {
     const { mergedRows, addedCount } = hopNhatDongLuat(rowsHienTai, DU_LIEU_SEED_LUAT_THUOC_MUC8);
     const mergedCols = hopNhatCot(colsHienTai);
     const daApDungDungPhienBan = String(migrationMap?.[KHOA_PHIEN_BAN_SEED] || '') === PHIEN_BAN_SEED_LUAT_THUOC_MUC8;
-    const canGhiLai = addedCount > 0
-      || !daApDungDungPhienBan
-      || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0);
+    const canGhiLai = !daApDungDungPhienBan
+      || mergedCols.length !== (Array.isArray(colsHienTai) ? colsHienTai.length : 0)
+      || !dongLuatBangNhau(mergedRows, rowsHienTai);
 
     if (!canGhiLai) {
       return {

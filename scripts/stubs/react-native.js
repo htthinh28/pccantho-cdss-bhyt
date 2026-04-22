@@ -10,6 +10,14 @@ export const Platform = {
   },
 };
 
+/** Tối thiểu cho Node bundle (hybrid / claim audit) — `hybrid_python_helper` đăng ký foreground. */
+export const AppState = {
+  currentState: 'active',
+  addEventListener(_event, _handler) {
+    return { remove: () => {} };
+  },
+};
+
 export const NativeModules = {};
 
-export default { Platform, NativeModules };
+export default { Platform, AppState, NativeModules };

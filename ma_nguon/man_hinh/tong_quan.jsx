@@ -26,7 +26,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
-import { auditClaimsBangPythonService } from '../dich_vu/python_service_api';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
 import KhungTroLyTriThucChat from '../thanh_phan/khung_tro_ly_tri_thuc_chat';
 import { BoChonChuDe, CD } from '../tien_ich/chu_de_giao_dien';
@@ -34,36 +33,31 @@ import {
   CHE_DO_GIAM_DINH,
   docCheDoGiamDinh,
   ketNoiPythonServiceLucKhoiDong,
+  laPythonServiceBatTrongCauHinh,
   layTrangThaiPythonGanNhat,
-  taiDanhMucRuntimeChoPython,
 } from '../tien_ich/hybrid_python_helper';
+import {
+  chayGiamDinhNhieuHoSoHybridDongBo,
+  chuanHoaMaLkChoHybrid,
+} from '../tien_ich/giam_dinh_hybrid_dong_bo';
 import { docPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import { DANH_MUC_QUY_TAC_NOI_BO, khopMaLuatTheoMau, suyRaThongTinQuanTriQuyTac } from '../tien_ich/quy_tac_on_off_noi_bo';
 import { locModuleTheoRBAC, taiRBAC } from '../tien_ich/rbac_engine';
 import {
-  boSungHoTenChoMaBacSiBaoCao,
-  taiMapHoTenNhanSuBaoCao,
-} from '../tien_ich/dinh_dang_cchn_bao_cao';
-import {
   DANH_SACH_NHOM_CAP_LOAI_KCB_LOC,
   DANH_SACH_NHOM_VI_PHAM_LOC,
+  layDongXmlLienQuanLoi,
   layNhomCapLoaiKcb802,
   NHOM_VI_PHAM_TAT_CA,
   locDanhSachLoiChiTiet,
   phangHoaDanhSachLoiChiTiet,
-  layNgayYLenhNgayKqVaBacSiTuLoiHoSo,
-  taoDeXuatKhacPhucTuLoi,
-  taoMoTaBanChatViPhamTuLoi,
-  taoViTriXmlBaoCaoDayDuTuLoi,
   tongHopQuyTacTuDanhSachChiTiet,
 } from '../tien_ich/thong_ke_loi_dung_chung';
 
 // [CẬP NHẬT LÕI]: Thống nhất dùng kho_du_lieu để đồng bộ với man_hinh_kho_luu_tru
 import {
-  chayGiamDinhNhieuHoSoV15,
   gomTrungLapCanhBaoTheoMaLuatVaNoiDung,
-  suyRaNamespaceVaNguonQuyTac,
   xoaCacheBoMayGiamDinh,
 } from '../tien_ich/dong_co_giam_dinh';
 import {
@@ -81,51 +75,108 @@ import NhapFileXML, {
 } from '../tien_ich/nhap_file_xml';
 
 const LOGO_PC = 'https://i.ibb.co/nNr9SQYr/logo-pc.png';
-const TEN_SHEET_BAO_CAO_VI_PHAM = 'DS_Loi';
-const MAU_COT_BAO_CAO_VI_PHAM = [
-  'Mã LK',
-  'Tên bệnh nhân',
-  'Mã thẻ BHYT',
-  'Thời gian vào - ra',
-  'Mã bệnh nhân',
-  'Mã luật',
-  'Tên quy tắc',
-  'Namespace quy tắc',
-  'Nguồn quy tắc',
-  'Ngày y lệnh (XML)',
-  'Ngày kết quả (XML)',
-  'Bác sĩ chỉ định (mã)',
-  'Bác sĩ thực hiện (mã)',
-  'Vị trí trong XML (sai ở đâu)',
-  'Mô tả vi phạm (sai cái gì)',
-  'Đề xuất khắc phục',
-  'Cảnh báo',
-  'Luồng giải trình',
-  'Cơ sở pháp lý',
-  'Đối chiếu chi tiết cảnh báo',
-];
-const DO_RONG_COT_BAO_CAO_VI_PHAM = [
-  { wch: 16 },
-  { wch: 28 },
-  { wch: 20 },
-  { wch: 28 },
-  { wch: 18 },
-  { wch: 14 },
-  { wch: 36 },
-  { wch: 24 },
-  { wch: 24 },
-  { wch: 22 },
-  { wch: 22 },
-  { wch: 28 },
-  { wch: 28 },
-  { wch: 88 },
-  { wch: 48 },
-  { wch: 52 },
-  { wch: 48 },
-  { wch: 42 },
-  { wch: 42 },
-  { wch: 72 },
-];
+
+const chuanHoaTenSheetXlsx = (name) => {
+  const s = String(name || 'Sheet')
+    .replace(/[\\/*?:\[\]]/g, '_')
+    .replace(/\s+/g, '_')
+    .trim() || 'Sheet';
+  return s.length > 31 ? s.slice(0, 31) : s;
+};
+
+const ghepGiaTriOExcelTuTruongDong = (v) => {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'object') {
+    try {
+      return JSON.stringify(v);
+    } catch {
+      return String(v);
+    }
+  }
+  return v;
+};
+
+const phangDongXmlChoOExcel = (row) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return {};
+  const o = {};
+  Object.keys(row).forEach((k) => {
+    o[k] = ghepGiaTriOExcelTuTruongDong(row[k]);
+  });
+  return o;
+};
+
+const taoCacDongXuatXmlGocSangNhomTheoPhanHe = (danhSachChiTietLoc, timHoSo) => {
+  const theoPhanHe = new Map();
+  (Array.isArray(danhSachChiTietLoc) ? danhSachChiTietLoc : []).forEach((detail, stt) => {
+    const loi = detail.doi_tuong_goc || {};
+    const hs = (typeof timHoSo === 'function' ? timHoSo(detail.ma_lk) : null) || {
+      ma_lk: detail.ma_lk,
+      ten_bn: detail.ten_bn,
+      xml1: detail.ma_loai_kcb ? { MA_LOAI_KCB: detail.ma_loai_kcb, MA_KHOA: detail.ma_khoa } : {},
+    };
+    const { row, phanHeBang } = layDongXmlLienQuanLoi(loi, hs);
+    const phan = String(phanHeBang || 'CHUA_XAC_DINH').toUpperCase() || 'CHUA_XAC_DINH';
+    if (!theoPhanHe.has(phan)) theoPhanHe.set(phan, []);
+    const nhom = theoPhanHe.get(phan);
+    const canhBao = String(loi.canh_bao || loi.CANH_BAO || loi.message || '').trim();
+    const maLuat = String(loi.ma_luat || loi.MA_LUAT || '').trim();
+    const metaDau = {
+      _XUAT_STT: stt + 1,
+      _XUAT_MA_LK: String(detail.ma_lk || '').trim(),
+      _XUAT_MA_LUAT: maLuat,
+      _XUAT_CANH_BAO: canhBao,
+      _XUAT_BANG_XML: phan,
+      _XUAT_INDEX_DONG: loi.index,
+      _XUAT_TRUONG_LOI: String(loi.truong_loi || '').trim(),
+    };
+    if (row && typeof row === 'object' && !Array.isArray(row) && Object.keys(row).length > 0) {
+      nhom.push({ ...metaDau, ...phangDongXmlChoOExcel(row) });
+    } else {
+      nhom.push({
+        ...metaDau,
+        _XUAT_GHI_CHU: 'Không trích được dòng dữ liệu gốc trong bảng XML tương ứng (index / hồ sơ trên kho).',
+      });
+    }
+  });
+  return theoPhanHe;
+};
+
+const sapXepKhoaCotCacDongXuat = (rows) => {
+  const s = new Set();
+  (Array.isArray(rows) ? rows : []).forEach((r) => {
+    if (r && typeof r === 'object' && !Array.isArray(r)) {
+      Object.keys(r).forEach((k) => s.add(k));
+    }
+  });
+  const all = Array.from(s);
+  const p = (k) => (k.startsWith('_XUAT_') ? 0 : 1);
+  return all.sort((a, b) => {
+    if (p(a) !== p(b)) return p(a) - p(b);
+    return a.localeCompare(b, 'vi');
+  });
+};
+
+const taoWorksheetXlsxTuCacDongDongGoc = (rows) => {
+  if (!rows || !rows.length) {
+    return { ws: XLSX.utils.aoa_to_sheet([['(không có dòng)']]), keys: [] };
+  }
+  const keys = sapXepKhoaCotCacDongXuat(rows);
+  const aoa = [keys, ...rows.map((r) => keys.map((k) => ghepGiaTriOExcelTuTruongDong(r?.[k])))];
+  return { ws: XLSX.utils.aoa_to_sheet(aoa), keys };
+};
+
+const genTenSheetXlsxDuyNhat = (tienTo, daDung) => {
+  let name = chuanHoaTenSheetXlsx(tienTo);
+  const base = name;
+  let w = 1;
+  while (daDung.has(name)) {
+    const suf = `(${w++})`;
+    const cand = base + suf;
+    name = cand.length > 31 ? base.slice(0, Math.max(1, 31 - suf.length)) + suf : cand;
+  }
+  daDung.add(name);
+  return name;
+};
 
 const THU_TU_UU_TIEN_CANH_BAO = Object.freeze({
   XUAT_TOAN: 0,
@@ -155,6 +206,12 @@ const chuanHoaToken = (value) => String(value || '')
   .replace(/[\u0300-\u036f]/g, '')
   .toUpperCase()
   .trim();
+
+const escapeXmlBaoCaoViPham = (value) => String(value ?? '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;');
 
 const layBangXmlTuCanhBao = (canhBao = {}) => {
   const match = String(canhBao?.phan_he || canhBao?.phan_loai || '').toUpperCase().match(/XML\d+/);
@@ -237,13 +294,6 @@ const taoKhoaChiTietPhatSinh = (item = {}) => [
   String(item.stt ?? item.lan_phat_sinh ?? 0),
 ].join('|');
 
-const layGiaTriAnToan = (obj, tuKhoa) => {
-  if (!obj) return 'N/A';
-  const tuKhoaChuan = String(tuKhoa || '').toLowerCase().replace(/_/g, '');
-  const keyTimThay = Object.keys(obj).find((key) => key.toLowerCase().replace(/_/g, '') === tuKhoaChuan);
-  return keyTimThay && obj[keyTimThay] ? obj[keyTimThay] : 'N/A';
-};
-
 const decodeBase64UTF8 = (base64Str) => {
   try {
     const binaryString = window.atob(base64Str);
@@ -303,132 +353,13 @@ const parseXMLToJSON = (xmlString) => {
   return result;
 };
 
-const chuanHoaMaLK = (giaTri) => String(giaTri || '').trim();
+const chuanHoaMaLK = chuanHoaMaLkChoHybrid;
 
 const choUICapNhat = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-const laCanhBaoPythonService = (canhBao = {}) => String(canhBao?.nguon_giam_dinh || '').trim().toUpperCase() === 'PYTHON_SERVICE';
-
-const taoKhoaCanhBao = (canhBao = {}) => [
-  String(canhBao?.ma_luat || ''),
-  String(canhBao?.phan_he || ''),
-  String(canhBao?.truong_loi || ''),
-  String(canhBao?.index ?? -1),
-  String(canhBao?.canh_bao || ''),
-].join('|');
-
-const hopNhatKetQuaGiamDinh = (danhSachJs = [], danhSachPython = []) => {
-  const mapCanhBao = new Map();
-  [...(Array.isArray(danhSachJs) ? danhSachJs : []), ...(Array.isArray(danhSachPython) ? danhSachPython : [])].forEach((item) => {
-    mapCanhBao.set(taoKhoaCanhBao(item), item);
-  });
-  return gomTrungLapCanhBaoTheoMaLuatVaNoiDung(Array.from(mapCanhBao.values()));
-};
 
 const layKetQuaGiamDinhCoSan = (hoSo = {}) => {
   return Array.isArray(hoSo?.ket_qua_giam_dinh) ? hoSo.ket_qua_giam_dinh : null;
 };
-
-const taoMetaAuditPython = (hoSoPython = {}, ketQuaPython = {}) => {
-  const metaCoSan = hoSoPython?.python_service_meta || {};
-  const coverage = ketQuaPython?.coverage || {};
-  const dsCanhBao = Array.isArray(hoSoPython?.ket_qua_giam_dinh) ? hoSoPython.ket_qua_giam_dinh : [];
-
-  return {
-    engine: ketQuaPython?.engine || metaCoSan?.engine || 'python-fastapi',
-    timestamp: ketQuaPython?.timestamp || metaCoSan?.timestamp || new Date().toISOString(),
-    coverage,
-    supported_rules: coverage?.supported_rules || metaCoSan?.supported_rules || [],
-    dm_kham_runtime_count: coverage?.dm_kham_runtime_count ?? metaCoSan?.dm_kham_runtime_count ?? 0,
-    ma_khoa_kham_count: coverage?.ma_khoa_kham_count ?? metaCoSan?.ma_khoa_kham_count ?? 0,
-    python_warning_count: dsCanhBao.filter(laCanhBaoPythonService).length,
-  };
-};
-
-const ganMetaPythonServiceVaoHoSo = (danhSachHoSo = [], ketQuaPython = {}) => {
-  return (Array.isArray(danhSachHoSo) ? danhSachHoSo : []).map((hoSo) => ({
-    ...hoSo,
-    python_service_audit: taoMetaAuditPython(hoSo, ketQuaPython),
-    python_service_meta: {
-      ...(hoSo?.python_service_meta || {}),
-      ...(ketQuaPython?.coverage || {}),
-      engine: ketQuaPython?.engine || hoSo?.python_service_meta?.engine || 'python-fastapi',
-      timestamp: ketQuaPython?.timestamp || hoSo?.python_service_meta?.timestamp || new Date().toISOString(),
-      supported_rules: ketQuaPython?.coverage?.supported_rules || hoSo?.python_service_meta?.supported_rules || [],
-      python_warning_count: Array.isArray(hoSo?.ket_qua_giam_dinh)
-        ? hoSo.ket_qua_giam_dinh.filter(laCanhBaoPythonService).length
-        : 0,
-    },
-  }));
-};
-
-const layDanhSachKetQuaTuPythonService = (ketQuaPython, danhSachMacDinh = []) => {
-  const claims = Array.isArray(ketQuaPython?.claims) ? ketQuaPython.claims : [];
-  if (claims.length === 0) return null;
-
-  const mapTheoMaLK = new Map(
-    claims.map((item) => [chuanHoaMaLK(item?.ma_lk || item?.xml1?.MA_LK || item?.XML1?.MA_LK), item])
-  );
-  const tapDaGhep = new Set();
-  let soHoSoKhop = 0;
-
-  const danhSachDaGhep = (Array.isArray(danhSachMacDinh) ? danhSachMacDinh : []).map((hoSo) => {
-    const maLK = chuanHoaMaLK(hoSo?.ma_lk || hoSo?.xml1?.MA_LK || hoSo?.XML1?.MA_LK);
-    const hoSoPython = mapTheoMaLK.get(maLK);
-    if (!hoSoPython) return hoSo;
-
-    soHoSoKhop += 1;
-    tapDaGhep.add(maLK);
-    return {
-      ...hoSo,
-      ...hoSoPython,
-      ma_lk: maLK || hoSoPython?.ma_lk || hoSo?.ma_lk,
-      ket_qua_giam_dinh: Array.isArray(hoSoPython?.ket_qua_giam_dinh)
-        ? hoSoPython.ket_qua_giam_dinh
-        : (Array.isArray(hoSo?.ket_qua_giam_dinh) ? hoSo.ket_qua_giam_dinh : []),
-    };
-  });
-
-  const danhSachBoSung = claims.filter((item) => !tapDaGhep.has(chuanHoaMaLK(item?.ma_lk || item?.xml1?.MA_LK || item?.XML1?.MA_LK)));
-  const ketQua = [...danhSachDaGhep, ...danhSachBoSung];
-  return soHoSoKhop > 0 || danhSachBoSung.length > 0 ? ketQua : null;
-};
-
-const nenHopNhatThemJsSauPython = (ketQuaPython = {}) => {
-  const coverage = ketQuaPython?.coverage || {};
-  return coverage?.mode === 'partial' || coverage?.fallback_recommended === true || coverage?.compatible_claim_results !== true;
-};
-
-const hopNhatDanhSachHoSoTuJsVaPython = (danhSachJs = [], danhSachPython = []) => {
-  const mapPython = new Map(
-    (Array.isArray(danhSachPython) ? danhSachPython : []).map((item) => [chuanHoaMaLK(item?.ma_lk || item?.xml1?.MA_LK || item?.XML1?.MA_LK), item])
-  );
-  const tapDaGhep = new Set();
-
-  const danhSachHopNhat = (Array.isArray(danhSachJs) ? danhSachJs : []).map((hoSoJs) => {
-    const maLK = chuanHoaMaLK(hoSoJs?.ma_lk || hoSoJs?.xml1?.MA_LK || hoSoJs?.XML1?.MA_LK);
-    const hoSoPython = mapPython.get(maLK);
-    if (!hoSoPython) return hoSoJs;
-
-    tapDaGhep.add(maLK);
-    return {
-      ...hoSoJs,
-      ...hoSoPython,
-      ma_lk: maLK || hoSoJs?.ma_lk || hoSoPython?.ma_lk,
-      ket_qua_giam_dinh: hopNhatKetQuaGiamDinh(hoSoJs?.ket_qua_giam_dinh, hoSoPython?.ket_qua_giam_dinh),
-      python_service_audit: hoSoPython?.python_service_audit || hoSoJs?.python_service_audit,
-      python_service_meta: hoSoPython?.python_service_meta || hoSoJs?.python_service_meta,
-    };
-  });
-
-  const danhSachConLai = (Array.isArray(danhSachPython) ? danhSachPython : []).filter((hoSoPython) => {
-    const maLK = chuanHoaMaLK(hoSoPython?.ma_lk || hoSoPython?.xml1?.MA_LK || hoSoPython?.XML1?.MA_LK);
-    return !tapDaGhep.has(maLK);
-  });
-
-  return [...danhSachHopNhat, ...danhSachConLai];
-};
-
 
 const ManHinhTongQuan = ({ navigation }) => {
   const [dangTai, setDangTai] = useState(false);
@@ -463,6 +394,9 @@ const ManHinhTongQuan = ({ navigation }) => {
   });
   /** Chỉ Web: nhật ký từng file khi chạy giám định tự động cả thư mục (không dùng alert). */
   const [logGiamDinhTuDongThuMuc, setLogGiamDinhTuDongThuMuc] = useState([]);
+  /** Thu gọn thẻ nạp XML: mô tả dài + giám định cả thư mục (chủ yếu web) */
+  const [importCardMoChiTietKt, setImportCardMoChiTietKt] = useState(false);
+  const [importCardMoNangCao, setImportCardMoNangCao] = useState(false);
   const [popupTriThucVisible, setPopupTriThucVisible] = useState(false);
   /** menu: chọn Trợ lý / Tri thức GD · chat: cửa sổ chat RAG */
   const [triThucModalPhan, setTriThucModalPhan] = useState('menu');
@@ -605,6 +539,31 @@ const ManHinhTongQuan = ({ navigation }) => {
   const danhMucDaLoc = locDanhMucQuyTac(thongKe.danhMuc);
   const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
   const danhSachLoiChiTietDashboard = useMemo(() => phangHoaDanhSachLoiChiTiet(rawDanhSach), [rawDanhSach]);
+
+  /** Từng dòng lỗi (chi tiết) sau bộ lọc QPS — dùng chung xuất Excel / XML, khớp ưu tiên, nhóm NV, loại KCB, khoa, 2 ô từ khóa. */
+  const danhSachLoiChiTietSauLocXuat = useMemo(() => {
+    const flat = phangHoaDanhSachLoiChiTiet(rawDanhSach);
+    const locBase = locDanhSachLoiChiTiet(flat, {
+      loaiHienThi: boLocLoaiUuTien,
+      nhomViPham: boLocNhomViPham,
+      nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
+      maKhoa: boLocMaKhoa,
+      tuKhoa: '',
+    });
+    const q1 = chuanHoaToken(tuKhoaLocQuyTac);
+    const q2 = chuanHoaToken(tuKhoaLocHoSo);
+    return locBase.filter((row) => {
+      if (q1) {
+        const chuoiQuyTac = chuanHoaToken([row.ma_luat, row.ten_quy_tac, row.canh_bao].filter(Boolean).join(' | '));
+        if (!chuoiQuyTac.includes(q1)) return false;
+      }
+      if (q2) {
+        const chuoiHoSo = chuanHoaToken([row.ma_lk, row.ten_bn].filter(Boolean).join(' | '));
+        if (!chuoiHoSo.includes(q2)) return false;
+      }
+      return true;
+    });
+  }, [rawDanhSach, boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, tuKhoaLocQuyTac, tuKhoaLocHoSo]);
 
   const thaKhoaTuDuLieu = useMemo(() => {
     const map = new Map();
@@ -881,106 +840,21 @@ const ManHinhTongQuan = ({ navigation }) => {
         return ketQuaCoSan ? { ...hoSo, ket_qua_giam_dinh: ketQuaCoSan } : hoSo;
       });
 
-      let danhSachLuuKho = null;
-      let daFallbackTuPythonSangJs = false;
-      let daHopNhatPythonVaJs = false;
-      let daDungPythonService = false;
-
-      if (cheDoGiamDinh === CHE_DO_GIAM_DINH.PYTHON) {
-        daDungPythonService = true;
-        setThongBaoDangTai('Đang kết nối Python service...');
-        await choUICapNhat();
-
-        const ketQuaKiemTraPython = await ketNoiPythonServiceLucKhoiDong();
-        if (!ketQuaKiemTraPython.ok) {
-          daFallbackTuPythonSangJs = true;
-          setThongBaoDangTai(
-            `Python chưa sẵn sàng (đã thử ${ketQuaKiemTraPython.soLanThu || '?'} lần), đang fallback JS...`,
-          );
-          await choUICapNhat();
-          danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
-            onProgress: async ({ completed, total }) => {
-              setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
-              if (completed % 2 === 0 || completed === total) {
-                await choUICapNhat();
-              }
-            },
-          });
-        } else {
-          try {
-            const { dmKhamTongHop, maKhoaKham } = await taiDanhMucRuntimeChoPython();
-
-            setThongBaoDangTai('Đang gửi batch hồ sơ sang Python service...');
+      const ketQuaHybrid = await chayGiamDinhNhieuHoSoHybridDongBo(danhSachDaCoKetQua, {
+        cheDoGiamDinh,
+        setThongBaoDangTai,
+        choUICapNhat,
+        pythonSource: 'dashboard_tong_quan',
+        onProgress: async ({ completed, total }) => {
+          setThongBaoDangTai(`Engine JS V15: ${completed}/${total}...`);
+          if (completed % 2 === 0 || completed === total) {
             await choUICapNhat();
-            const ketQuaPython = await auditClaimsBangPythonService({
-              claims: danhSachDaCoKetQua,
-              options: {
-                source: 'dashboard_tong_quan',
-                mode: 'batch_audit',
-                expect_compatible_claim_results: true,
-                dm_kham: dmKhamTongHop,
-                ma_khoa_kham: maKhoaKham,
-              },
-            });
-            const danhSachTuPython = layDanhSachKetQuaTuPythonService(ketQuaPython, danhSachDaCoKetQua);
-
-            if (danhSachTuPython) {
-              const danhSachPythonDaGanMeta = ganMetaPythonServiceVaoHoSo(danhSachTuPython, ketQuaPython);
-              if (nenHopNhatThemJsSauPython(ketQuaPython)) {
-                daHopNhatPythonVaJs = true;
-                setThongBaoDangTai('Python service đã trả kết quả batch, đang hợp nhất thêm engine JS để giữ đủ chức năng...');
-                await choUICapNhat();
-                const danhSachJs = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
-                  onProgress: async ({ completed, total }) => {
-                    setThongBaoDangTai(`Hợp nhất JS V15: đang giám định hồ sơ ${completed}/${total}...`);
-                    if (completed % 2 === 0 || completed === total) {
-                      await choUICapNhat();
-                    }
-                  },
-                });
-                danhSachLuuKho = hopNhatDanhSachHoSoTuJsVaPython(danhSachJs, danhSachPythonDaGanMeta);
-              } else {
-                danhSachLuuKho = danhSachPythonDaGanMeta;
-              }
-            } else {
-              daFallbackTuPythonSangJs = true;
-              setThongBaoDangTai('Python service chưa trả kết quả chi tiết, đang fallback sang engine JS...');
-              await choUICapNhat();
-              const danhSachDaGanMeta = ganMetaPythonServiceVaoHoSo(danhSachDaCoKetQua, ketQuaPython);
-              danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaGanMeta, {
-                onProgress: async ({ completed, total }) => {
-                  setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
-                  if (completed % 2 === 0 || completed === total) {
-                    await choUICapNhat();
-                  }
-                },
-              });
-            }
-          } catch (pythonError) {
-            daFallbackTuPythonSangJs = true;
-            console.warn('[TongQuan] Python service lỗi, chuyển fallback sang JS:', pythonError);
-            setThongBaoDangTai('Python service lỗi, đang fallback sang engine JS...');
-            await choUICapNhat();
-            danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
-              onProgress: async ({ completed, total }) => {
-                setThongBaoDangTai(`Fallback JS V15: đang giám định hồ sơ ${completed}/${total}...`);
-                if (completed % 2 === 0 || completed === total) {
-                  await choUICapNhat();
-                }
-              },
-            });
           }
-        }
-      } else {
-        danhSachLuuKho = await chayGiamDinhNhieuHoSoV15(danhSachDaCoKetQua, {
-          onProgress: async ({ completed, total }) => {
-            setThongBaoDangTai(`Đang giám định V15 (JS) ${completed}/${total}...`);
-            if (completed % 2 === 0 || completed === total) {
-              await choUICapNhat();
-            }
-          },
-        });
-      }
+        },
+      });
+      const danhSachLuuKho = ketQuaHybrid.danhSachLuuKho;
+      const daFallbackTuPythonSangJs = ketQuaHybrid.daFallbackTuPythonSangJs;
+      const daHopNhatPythonVaJs = ketQuaHybrid.daHopNhatPythonVaJs;
 
       // [CẬP NHẬT LÕI MẠNH MẼ NHẤT]: Gửi thẳng danh sách đã giám định vào hàm luuHoSoVaoKho chuẩn
       const ketQuaLuu = await luuHoSoVaoKho(danhSachLuuKho);
@@ -988,14 +862,12 @@ const ManHinhTongQuan = ({ navigation }) => {
         const soHoSoGhiDe = Number(thongTinThem?.soHoSoGhiDe) || 0;
         fetchThongTinHeThong();
         let msg = daFallbackTuPythonSangJs
-          ? `Đã gửi ${danhSachLuuKho.length} hồ sơ qua Python service và tự fallback sang engine JS để giữ kết quả giám định chi tiết.`
+          ? `Đã giám định ${danhSachLuuKho.length} hồ sơ: lớp Python không sẵn sàng hoặc lỗi (chế độ yêu cầu Python) — lưu kết quả engine JS (V15) cho đợt này.`
           : daHopNhatPythonVaJs
-            ? `Đã giám định ${danhSachLuuKho.length} hồ sơ bằng Python service và hợp nhất thêm engine JS để giữ đủ chức năng hệ thống hiện có.`
-            : daDungPythonService
-              ? `Đã giám định và lưu ${danhSachLuuKho.length} hồ sơ bằng Python service thành công.`
-              : soHoSoGhiDe > 0
-                ? `Đã giám định lại ${danhSachLuuKho.length} hồ sơ. Trong đó ${soHoSoGhiDe} hồ sơ trùng MA_LK đã được ghi đè.`
-                : `Đã giám định và lưu ${danhSachLuuKho.length} hồ sơ thành công.`;
+            ? `Đã giám định ${danhSachLuuKho.length} hồ sơ theo hybrid: hợp nhất cảnh báo Python service + engine JS (V15).`
+            : soHoSoGhiDe > 0
+              ? `Đã giám định lại ${danhSachLuuKho.length} hồ sơ (JS V15). Trong đó ${soHoSoGhiDe} hồ sơ trùng MA_LK đã được ghi đè.`
+              : `Đã giám định và lưu ${danhSachLuuKho.length} hồ sơ (engine JS V15).${!laPythonServiceBatTrongCauHinh() ? ' Bật pythonService + service chạy để có hybrid với Python.' : ''}`;
 
         const goiYlichSu = [];
         for (const hs of danhSachLuuKho) {
@@ -1115,87 +987,85 @@ const ManHinhTongQuan = ({ navigation }) => {
 
   const handleExportLoiExcel = async () => {
     if (Platform.OS !== 'web') return;
-    if (rawDanhSach.length === 0) return;
-
-    let mapHoTenNs;
-    try {
-      mapHoTenNs = await taiMapHoTenNhanSuBaoCao();
-    } catch (_e) {
-      mapHoTenNs = new Map();
+    if (rawDanhSach.length === 0) {
+      alert('Chưa có hồ sơ giám định.');
+      return;
     }
-
-    const excelData = [];
-    rawDanhSach.forEach(hs => {
-      const dsLoi = hs.ket_qua_giam_dinh || [];
-      dsLoi.forEach(loi => {
-        const canhBao = String(layGiaTriAnToan(loi, 'canhbao') || 'N/A');
-        const noiDungLoi = String(layGiaTriAnToan(loi, 'noi_dung') || layGiaTriAnToan(loi, 'mota') || 'N/A');
-        const metaQuyTac = suyRaNamespaceVaNguonQuyTac(loi);
-        const nsRaw = layGiaTriAnToan(loi, 'namespacequytac');
-        const nguonRaw = layGiaTriAnToan(loi, 'nguonquytac');
-        const namespaceQuyTac = String(
-          (nsRaw !== 'N/A' && String(nsRaw).trim() !== '' ? nsRaw : metaQuyTac.namespace_quy_tac) || ''
-        ).trim() || 'QUY_TAC_NOI_BO';
-        const nguonQuyTac = String(
-          (nguonRaw !== 'N/A' && String(nguonRaw).trim() !== '' ? nguonRaw : metaQuyTac.nguon_quy_tac) || ''
-        ).trim() || 'dong_co_giam_dinh';
-        const luongGiaiTrinh = String(layGiaTriAnToan(loi, 'luonggiaitrinh') || 'N/A');
-        const coSoPhapLy = String(layGiaTriAnToan(loi, 'cosophaply') || 'N/A');
-        const viTriTrongXml = taoViTriXmlBaoCaoDayDuTuLoi(loi, hs);
-        const lamSangXml = layNgayYLenhNgayKqVaBacSiTuLoiHoSo(loi, hs);
-        const bsChiDinh = boSungHoTenChoMaBacSiBaoCao(lamSangXml.bacSiChiDinh || 'N/A', mapHoTenNs);
-        const bsThucHien = boSungHoTenChoMaBacSiBaoCao(lamSangXml.bacSiThucHien || 'N/A', mapHoTenNs);
-        const moTaViPham = taoMoTaBanChatViPhamTuLoi(loi);
-        const deXuatKhacPhuc = taoDeXuatKhacPhucTuLoi(loi);
-        const doiChieuChiTietCanhBao = [
-          noiDungLoi !== 'N/A' ? `Lỗi chi tiết: ${noiDungLoi}` : '',
-          canhBao !== 'N/A' ? `Cảnh báo: ${canhBao}` : '',
-        ].filter(Boolean).join(' || ') || 'N/A';
-        const maThe = String(hs?.xml1?.MA_THE_BHYT || hs?.xml1?.SO_THE_BHYT || hs?.ma_the_bhyt || '');
-        const tuNgay = String(hs?.xml1?.NGAY_VAO || hs?.xml1?.TU_NGAY || '');
-        const denNgay = String(hs?.xml1?.NGAY_RA || hs?.xml1?.DEN_NGAY || '');
-        const thoiGianTuDen = (tuNgay || denNgay) ? `${tuNgay} - ${denNgay}` : 'N/A';
-        const maBenhNhan = String(hs?.xml1?.MA_BN || hs?.xml1?.MA_BENH_NHAN || hs?.ma_bn || hs?.ma_benh_nhan || '');
-
-        excelData.push([
-          String(hs.ma_lk || ''),
-          String(hs.ten_bn || hs.ten_benh_nhan || hs.xml1?.HO_TEN || ''),
-          maThe || 'N/A',
-          thoiGianTuDen,
-          maBenhNhan || 'N/A',
-          String(layGiaTriAnToan(loi, 'maluat') || 'N/A'),
-          String(layGiaTriAnToan(loi, 'tenquytac') || 'N/A'),
-          namespaceQuyTac,
-          nguonQuyTac,
-          lamSangXml.ngayYLenh || 'N/A',
-          lamSangXml.ngayKetQua || 'N/A',
-          bsChiDinh,
-          bsThucHien,
-          viTriTrongXml,
-          moTaViPham,
-          deXuatKhacPhuc,
-          canhBao,
-          luongGiaiTrinh,
-          coSoPhapLy,
-          doiChieuChiTietCanhBao,
-        ]);
-      });
-    });
-
-    if (excelData.length === 0) {
-      alert('Không có dữ liệu vi phạm để xuất.');
+    if (danhSachLoiChiTietSauLocXuat.length === 0) {
+      alert('Không có dòng lỗi nào khớp bộ lọc hiện tại (ưu tiên, nhóm nghiệp vụ, loại KCB, khoa, từ khóa). Điều chỉnh lọc hoặc bấm «Xóa lọc» rồi thử lại.');
       return;
     }
 
-    const ws = XLSX.utils.aoa_to_sheet([MAU_COT_BAO_CAO_VI_PHAM, ...excelData]);
-    ws['!cols'] = DO_RONG_COT_BAO_CAO_VI_PHAM;
-
-    const soDong = excelData.length + 1;
-    ws['!autofilter'] = { ref: `A1:T${soDong}` };
-
+    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, TEN_SHEET_BAO_CAO_VI_PHAM);
-    XLSX.writeFile(wb, `Bao_Cao_Vi_Pham_${Date.now()}.xlsx`);
+    const daDung = new Set();
+    theoPhanHe.forEach((rows, phan) => {
+      if (!rows || !rows.length) return;
+      const { ws, keys } = taoWorksheetXlsxTuCacDongDongGoc(rows);
+      const name = genTenSheetXlsxDuyNhat(phan, daDung);
+      const nRow = rows.length + 1;
+      const nCol = Math.max(1, keys.length);
+      const end = `${XLSX.utils.encode_col(nCol - 1)}${nRow}`;
+      ws['!autofilter'] = { ref: `A1:${end}` };
+      XLSX.utils.book_append_sheet(wb, ws, name);
+    });
+    if (wb.SheetNames.length === 0) {
+      alert('Không tạo được sheet Excel (không có dòng dữ liệu).');
+      return;
+    }
+    XLSX.writeFile(wb, `Bao_Cao_dong_goc_xml_theo_loi_loc_${Date.now()}.xlsx`);
+  };
+
+  const handleExportBaoCaoViPhamXml = async () => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') {
+      alert('Xuất XML báo cáo vi phạm hiện hỗ trợ trên trình duyệt (web).');
+      return;
+    }
+    if (rawDanhSach.length === 0) {
+      alert('Chưa có hồ sơ giám định.');
+      return;
+    }
+    if (danhSachLoiChiTietSauLocXuat.length === 0) {
+      alert('Không có dòng lỗi nào khớp bộ lọc hiện tại. Điều chỉnh lọc hoặc bấm «Xóa lọc» rồi thử lại.');
+      return;
+    }
+
+    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK);
+    const phanDongKhoi = [];
+    let sttG = 0;
+    theoPhanHe.forEach((rows, phan) => {
+      (rows || []).forEach((r) => {
+        sttG += 1;
+        const keysDong = sapXepKhoaCotCacDongXuat([r]);
+        const cots = keysDong.map(
+          (k) => `    <Cot an="${escapeXmlBaoCaoViPham(k)}">${escapeXmlBaoCaoViPham(ghepGiaTriOExcelTuTruongDong(r?.[k]))}</Cot>`,
+        );
+        phanDongKhoi.push(
+          `  <Dong stt="${sttG}" bang_xml="${escapeXmlBaoCaoViPham(phan)}">\n${cots.join('\n')}\n  </Dong>`,
+        );
+      });
+    });
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<BaoCaoViPhamQPS xmlns="urn:cdss-bhyt:bao-cao-vi-pham" phien_ban="1.0" tao_luc="${escapeXmlBaoCaoViPham(new Date().toISOString())}" so_dong="${sttG}">
+  <GhiChu>Chỉ các dòng dữ liệu gốc XML tương ứng từng cảnh báo (bảng XML2, XML3, …) sau lọc; cột _XUAT_* là phần cảnh báo/lỗi tham chiếu.</GhiChu>
+${phanDongKhoi.join('\n')}
+</BaoCaoViPhamQPS>
+`;
+
+    try {
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bao_Cao_dong_goc_xml_theo_loi_loc_${Date.now()}.xml`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(`Không xuất được XML: ${e?.message || e}`);
+    }
   };
 
   const xuLyDangXuat = async () => {
@@ -1421,14 +1291,29 @@ const ManHinhTongQuan = ({ navigation }) => {
 
         <ScrollView style={styles.dashboard_main} showsVerticalScrollIndicator={false}>
 
-        {/* ── 4. KHU VỰC VẬN HÀNH THỐNG NHẤT ── */}
-        <View style={[styles.section_block, styles.section_block_compact_center]}>
-          <Text style={[styles.section_title, styles.section_title_center]}>Luồng giám định tổng quát</Text>
-          <Text style={[styles.section_note, styles.section_note_center]}>Dashboard chỉ giữ luồng nạp hồ sơ, phần helper nằm riêng để tránh chiếm chỗ.</Text>
+        {/* ── 4. KHU VỰC VẬN HÀNH THỐNG NHẤT (thẻ nạp gọn) ── */}
+        <View style={[styles.section_block, styles.section_block_import_tight]}>
+          <View style={styles.import_section_head_row}>
+            <View style={{ flex: 1, minWidth: 120 }}>
+              <Text style={styles.import_section_title}>Luồng giám định tổng quát</Text>
+              <Text style={styles.import_section_sub} numberOfLines={1}>
+                Nạp hồ sơ ở đây; cấu hình Python/Hybrid ở Helper.
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setImportCardMoChiTietKt((v) => !v)}
+              style={({ pressed, hovered }) => [
+                styles.import_toggle_chip,
+                Platform.OS === 'web' && hovered && styles.import_toggle_chip_hover,
+                pressed && { opacity: 0.75 },
+              ]}
+            >
+              <Text style={styles.import_toggle_chip_txt}>
+                {importCardMoChiTietKt ? '▼ Ẩn mô tả' : 'ⓘ Mô tả kỹ thuật'}
+              </Text>
+            </Pressable>
+          </View>
           <View style={styles.import_zone}>
-            <View style={styles.import_zone_glow_primary} />
-            <View style={styles.import_zone_glow_secondary} />
-            <View style={styles.import_zone_sheen} />
             {dangTai ? (
               <View style={styles.loading_wrap}>
                 <ActivityIndicator size="large" color="#D81B60" />
@@ -1436,76 +1321,116 @@ const ManHinhTongQuan = ({ navigation }) => {
               </View>
             ) : (
               <View style={styles.import_inner}>
-                <View style={styles.import_content_single}>
-                  <View style={styles.import_upload_card_single}>
-                    <Text style={styles.audit_engine_title}>Nạp hồ sơ XML</Text>
-                    <Text style={[styles.import_upload_subtitle, styles.import_upload_subtitle_center]}>
-                      Giám định nhiều hồ sơ trong cùng một luồng. JS nội bộ chạy pipeline V15 (5 tầng, đồng bộ QA/CLI); Python service giữ vai trò tùy cấu hình Helper — khi hợp nhất fallback vẫn dùng V15.
-                    </Text>
-                    <Text style={styles.python_warmup_hint}>
-                      {trangThaiPythonKhoiDong.daKiemTra
-                        ? (trangThaiPythonKhoiDong.ok
-                          ? `🐍 Python warm-up: OK · ${trangThaiPythonKhoiDong.baseUrl || '—'}${trangThaiPythonKhoiDong.lanThu > 1 ? ` · thử ${trangThaiPythonKhoiDong.lanThu} lần` : ''}`
-                          : `🐍 Python warm-up: chưa kết nối · ${trangThaiPythonKhoiDong.chiTiet || '—'} · ${trangThaiPythonKhoiDong.baseUrl || '—'}${trangThaiPythonKhoiDong.lanThu ? ` · đã thử ${trangThaiPythonKhoiDong.lanThu} lần` : ''}`)
-                        : '🐍 Python warm-up: đang kiểm tra kết nối (tự thử lại)...'}
-                    </Text>
-                    <View style={styles.import_upload_highlights_compact}>
-                      <View style={styles.import_upload_highlight_chip}>
-                        <Text style={styles.import_upload_highlight_key}>Batch nhiều hồ sơ</Text>
-                      </View>
-                      <View style={styles.import_upload_highlight_chip}>
-                        <Text style={styles.import_upload_highlight_key}>Fallback JS = V15 đầy đủ</Text>
-                      </View>
-                      <View style={styles.import_upload_highlight_chip}>
-                        <Text style={styles.import_upload_highlight_key}>Hybrid nằm trong Helper</Text>
+                <View style={styles.import_card_compact}>
+                  <View style={styles.import_hero_row}>
+                    <View style={styles.import_hero_lead}>
+                      <Text style={styles.audit_engine_title_compact}>Nạp hồ sơ XML</Text>
+                      <Text style={styles.import_tagline} numberOfLines={1}>
+                        Lô hồ sơ · V15 · Hybrid qua Helper
+                      </Text>
+                      <View style={styles.python_badge_line}>
+                        <View
+                          style={[
+                            styles.python_badge_dot,
+                            !trangThaiPythonKhoiDong.daKiemTra && styles.python_badge_dot_checking,
+                            trangThaiPythonKhoiDong.daKiemTra && trangThaiPythonKhoiDong.ok && styles.python_badge_dot_ok,
+                            trangThaiPythonKhoiDong.daKiemTra && !trangThaiPythonKhoiDong.ok && styles.python_badge_dot_err,
+                          ]}
+                        />
+                        <Text
+                          style={styles.python_badge_txt}
+                          numberOfLines={importCardMoChiTietKt ? 4 : 1}
+                        >
+                          {trangThaiPythonKhoiDong.daKiemTra
+                            ? (trangThaiPythonKhoiDong.ok
+                              ? `Python: kết nối OK${trangThaiPythonKhoiDong.baseUrl ? ` · ${trangThaiPythonKhoiDong.baseUrl}` : ''}`
+                              : `Python: chưa kết nối — ${trangThaiPythonKhoiDong.chiTiet || 'kiểm tra VPN/cổng'}${trangThaiPythonKhoiDong.baseUrl ? ` · ${trangThaiPythonKhoiDong.baseUrl}` : ''}`)
+                            : 'Python: đang kiểm tra…'}
+                        </Text>
                       </View>
                     </View>
-                    <View style={styles.import_action_row}>
+                    <View style={styles.import_hero_actions}>
                       <NhapFileXML
                         onDuLieuSanSang={nhanDienHoSoTuFile}
-                        styleButton={styles.import_pick_btn_compact}
-                        textButton="📂 Chọn XML"
+                        styleButton={styles.import_pick_btn_sm}
+                        textButton="Chọn XML"
                       />
-                      <TouchableOpacity style={styles.helper_redirect_btn} onPress={() => navigation.navigate('Helper')}>
-                        <Text style={styles.helper_redirect_txt}>🧰 Mở Helper Hybrid</Text>
+                      <TouchableOpacity style={styles.helper_redirect_btn_tight} onPress={() => navigation.navigate('Helper')}>
+                        <Text style={styles.helper_redirect_txt_tight}>Helper</Text>
                       </TouchableOpacity>
                     </View>
+                  </View>
+                  {importCardMoChiTietKt ? (
+                    <View style={styles.import_kt_block}>
+                      <Text style={styles.import_kt_paragraph}>
+                        Giám định nhiều hồ sơ một lần. JS dùng pipeline V15; Python tùy cấu hình Helper — fallback vẫn V15.
+                      </Text>
+                      <View style={styles.import_chips_tight_row}>
+                        <View style={styles.import_chip_tight}>
+                          <Text style={styles.import_chip_tight_txt}>Batch</Text>
+                        </View>
+                        <View style={styles.import_chip_tight}>
+                          <Text style={styles.import_chip_tight_txt}>Fallback = V15</Text>
+                        </View>
+                        <View style={styles.import_chip_tight}>
+                          <Text style={styles.import_chip_tight_txt}>Hybrid → Helper</Text>
+                        </View>
+                      </View>
+                    </View>
+                  ) : null}
 
-                    {Platform.OS === 'web' ? (
-                      <View style={styles.import_auto_folder_wrap}>
-                        <Text style={styles.import_auto_folder_title}>Nâng cao — giám định tự động cả thư mục</Text>
-                        <Text style={styles.import_auto_folder_note}>
-                          Chọn một thư mục chứa file .xml: xử lý lần lượt, lưu kho với cùng luồng giám định Dashboard (Python
-                          nếu bật trong Helper; JS = V15 đầy đủ khi không dùng Python hoặc khi fallback). Nhật ký hiển thị
-                          trên màn hình — không hộp thoại từng file.
+                  {Platform.OS === 'web' ? (
+                    <View style={styles.import_nangcao_block}>
+                      <Pressable
+                        onPress={() => setImportCardMoNangCao((v) => !v)}
+                        style={({ pressed, hovered }) => [
+                          styles.import_nangcao_head,
+                          Platform.OS === 'web' && hovered && styles.import_nangcao_head_hover,
+                          pressed && { opacity: 0.8 },
+                        ]}
+                      >
+                        <Text style={styles.import_nangcao_head_txt}>
+                          {importCardMoNangCao ? '▼' : '▶'} Thư mục — chạy tự động
                         </Text>
-                        <TouchableOpacity
-                          style={[styles.import_auto_folder_btn, dangTai && styles.import_auto_folder_btn_disabled]}
-                          onPress={chayGiamDinhTuDongTrenThuMuc}
-                          disabled={dangTai}
-                        >
-                          <Text style={styles.import_auto_folder_btn_txt}>📁 Chọn thư mục XML — chạy tự động</Text>
-                        </TouchableOpacity>
                         {logGiamDinhTuDongThuMuc.length > 0 ? (
-                          <View style={styles.import_auto_folder_log}>
-                            <View style={styles.import_auto_folder_log_header}>
-                              <Text style={styles.import_auto_folder_log_title}>Nhật ký</Text>
-                              <TouchableOpacity onPress={() => setLogGiamDinhTuDongThuMuc([])}>
-                                <Text style={styles.import_auto_folder_clear}>Xóa log</Text>
-                              </TouchableOpacity>
-                            </View>
-                            <ScrollView style={styles.import_auto_folder_scroll} nestedScrollEnabled>
-                              {logGiamDinhTuDongThuMuc.map((line, idx) => (
-                                <Text key={`log-${idx}`} style={styles.import_auto_folder_line}>
-                                  {line}
-                                </Text>
-                              ))}
-                            </ScrollView>
+                          <View style={styles.import_log_badge}>
+                            <Text style={styles.import_log_badge_txt}>{logGiamDinhTuDongThuMuc.length}</Text>
                           </View>
                         ) : null}
-                      </View>
-                    ) : null}
-                  </View>
+                      </Pressable>
+                      {importCardMoNangCao ? (
+                        <View style={styles.import_nangcao_body}>
+                          <Text style={styles.import_nangcao_one_line} numberOfLines={3}>
+                            Chọn thư mục chứa .xml, xử lý lần lượt; nhật ký hiển thị tại đây (Python nếu bật, JS V15 nếu fallback).
+                          </Text>
+                          <TouchableOpacity
+                            style={[styles.import_folder_btn, dangTai && styles.import_folder_btn_disabled]}
+                            onPress={chayGiamDinhTuDongTrenThuMuc}
+                            disabled={dangTai}
+                          >
+                            <Text style={styles.import_folder_btn_txt}>Chọn thư mục</Text>
+                          </TouchableOpacity>
+                          {logGiamDinhTuDongThuMuc.length > 0 ? (
+                            <View style={styles.import_auto_folder_log}>
+                              <View style={styles.import_auto_folder_log_header}>
+                                <Text style={styles.import_auto_folder_log_title}>Nhật ký</Text>
+                                <TouchableOpacity onPress={() => setLogGiamDinhTuDongThuMuc([])}>
+                                  <Text style={styles.import_auto_folder_clear}>Xóa</Text>
+                                </TouchableOpacity>
+                              </View>
+                              <ScrollView style={styles.import_auto_folder_scroll_compact} nestedScrollEnabled>
+                                {logGiamDinhTuDongThuMuc.map((line, idx) => (
+                                  <Text key={`log-${idx}`} style={styles.import_auto_folder_line}>
+                                    {line}
+                                  </Text>
+                                ))}
+                              </ScrollView>
+                            </View>
+                          ) : null}
+                        </View>
+                      ) : null}
+                    </View>
+                  ) : null}
                 </View>
               </View>
             )}
@@ -1524,113 +1449,139 @@ const ManHinhTongQuan = ({ navigation }) => {
                 <Text style={styles.btn_export_txt}>🔄 XML → Excel</Text>
               </TouchableOpacity>
               {thongKe.danhMuc.length > 0 && (
-                <TouchableOpacity style={[styles.btn_export, { backgroundColor: '#2E7D32' }]} onPress={handleExportLoiExcel}>
-                  <Text style={styles.btn_export_txt}>📥 Xuất báo cáo</Text>
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity style={[styles.btn_export, { backgroundColor: '#2E7D32' }]} onPress={() => { void handleExportLoiExcel(); }}>
+                    <Text style={styles.btn_export_txt}>📥 Excel (dòng XML gốc)</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.btn_export, { backgroundColor: '#00695C' }]} onPress={() => { void handleExportBaoCaoViPhamXml(); }}>
+                    <Text style={styles.btn_export_txt}>📄 XML (dòng XML gốc)</Text>
+                  </TouchableOpacity>
+                </>
               )}
             </View>
           </View>
 
           <View style={styles.rule_filter_panel}>
-            <View style={styles.rule_filter_chip_row}>
-              {[
-                { id: 'TAT_CA', label: 'Tất cả' },
-                { id: 'XUAT_TOAN', label: 'Xuất toán' },
-                { id: 'CAU_TRUC_XML', label: 'Vi phạm cấu trúc XML' },
-                { id: 'CANH_BAO', label: 'Cảnh báo' },
-                { id: 'NHAC_NHO', label: 'Nhắc nhở' },
-              ].map((boLoc) => (
-                <TouchableOpacity
-                  key={boLoc.id}
-                  style={[
-                    styles.rule_filter_chip,
-                    boLocLoaiUuTien === boLoc.id && styles.rule_filter_chip_active,
-                  ]}
-                  onPress={() => setBoLocLoaiUuTien(boLoc.id)}
-                >
-                  <Text style={[
-                    styles.rule_filter_chip_txt,
-                    boLocLoaiUuTien === boLoc.id && styles.rule_filter_chip_txt_active,
-                  ]}>
-                    {boLoc.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.rule_filter_subtitle}>Nhóm nghiệp vụ (theo bảng XML & loại lỗi)</Text>
-            <View style={styles.rule_filter_chip_row}>
-              {DANH_SACH_NHOM_VI_PHAM_LOC.map((nhom) => (
-                <TouchableOpacity
-                  key={`nhom_${nhom.id}`}
-                  style={[
-                    styles.rule_filter_chip,
-                    styles.rule_filter_chip_nhom,
-                    boLocNhomViPham === nhom.id && styles.rule_filter_chip_active,
-                  ]}
-                  onPress={() => setBoLocNhomViPham(nhom.id)}
-                >
-                  <Text style={[
-                    styles.rule_filter_chip_txt,
-                    boLocNhomViPham === nhom.id && styles.rule_filter_chip_txt_active,
-                  ]}>
-                    {nhom.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.rule_filter_subtitle}>Loại khám chữa bệnh — Ngoại trú / Nội trú (gom mã MA_LOAI_KCB theo QĐ 824)</Text>
-            <View style={styles.rule_filter_chip_row}>
-              {DANH_SACH_NHOM_CAP_LOAI_KCB_LOC.map((opt) => (
-                <TouchableOpacity
-                  key={`caplk_${opt.id}`}
-                  style={[
-                    styles.rule_filter_chip,
-                    styles.rule_filter_chip_nhom,
-                    boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_active,
-                  ]}
-                  onPress={() => setBoLocNhomCapLoaiKcb(opt.id)}
-                >
-                  <Text style={[
-                    styles.rule_filter_chip_txt,
-                    boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_txt_active,
-                  ]} numberOfLines={3}>
-                    {opt.label}{opt.phu ? `\n(${opt.phu})` : ''}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.rule_filter_subtitle}>Khoa khám chữa bệnh (MA_KHOA)</Text>
-            <View style={styles.rule_filter_chip_row}>
-              <TouchableOpacity
-                style={[
-                  styles.rule_filter_chip,
-                  styles.rule_filter_chip_nhom,
-                  boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_active,
-                ]}
-                onPress={() => setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA)}
-              >
-                <Text style={[
-                  styles.rule_filter_chip_txt,
-                  boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_txt_active,
-                ]}>Tất cả khoa</Text>
-              </TouchableOpacity>
-              {thaKhoaTuDuLieu.map((opt) => (
-                <TouchableOpacity
-                  key={`khoa_${opt.id}`}
-                  style={[
-                    styles.rule_filter_chip,
-                    styles.rule_filter_chip_nhom,
-                    boLocMaKhoa === opt.id && styles.rule_filter_chip_active,
-                  ]}
-                  onPress={() => setBoLocMaKhoa(opt.id)}
-                >
-                  <Text style={[
-                    styles.rule_filter_chip_txt,
-                    boLocMaKhoa === opt.id && styles.rule_filter_chip_txt_active,
-                  ]}>{opt.label}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator
+              keyboardShouldPersistTaps="handled"
+              nestedScrollEnabled
+              style={styles.rule_filter_scroll}
+              contentContainerStyle={styles.rule_filter_scroll_content}
+            >
+              <View style={styles.rule_filter_group}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={1}>Ưu tiên</Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  {[
+                    { id: 'TAT_CA', label: 'Tất cả' },
+                    { id: 'XUAT_TOAN', label: 'Xuất toán' },
+                    { id: 'CAU_TRUC_XML', label: 'Vi phạm cấu trúc XML' },
+                    { id: 'CANH_BAO', label: 'Cảnh báo' },
+                    { id: 'NHAC_NHO', label: 'Nhắc nhở' },
+                  ].map((boLoc) => (
+                    <TouchableOpacity
+                      key={boLoc.id}
+                      style={[
+                        styles.rule_filter_chip,
+                        boLocLoaiUuTien === boLoc.id && styles.rule_filter_chip_active,
+                      ]}
+                      onPress={() => setBoLocLoaiUuTien(boLoc.id)}
+                    >
+                      <Text style={[
+                        styles.rule_filter_chip_txt,
+                        boLocLoaiUuTien === boLoc.id && styles.rule_filter_chip_txt_active,
+                      ]} numberOfLines={2}>
+                        {boLoc.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.rule_filter_group_sep} />
+              <View style={styles.rule_filter_group}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={2}>Nhóm nghiệp vụ (XML & lỗi)</Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  {DANH_SACH_NHOM_VI_PHAM_LOC.map((nhom) => (
+                    <TouchableOpacity
+                      key={`nhom_${nhom.id}`}
+                      style={[
+                        styles.rule_filter_chip,
+                        styles.rule_filter_chip_nhom,
+                        boLocNhomViPham === nhom.id && styles.rule_filter_chip_active,
+                      ]}
+                      onPress={() => setBoLocNhomViPham(nhom.id)}
+                    >
+                      <Text style={[
+                        styles.rule_filter_chip_txt,
+                        boLocNhomViPham === nhom.id && styles.rule_filter_chip_txt_active,
+                      ]} numberOfLines={2}>
+                        {nhom.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.rule_filter_group_sep} />
+              <View style={[styles.rule_filter_group, styles.rule_filter_group_wide]}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={2}>Loại KCB (QĐ 824 / MA_LOAI_KCB)</Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  {DANH_SACH_NHOM_CAP_LOAI_KCB_LOC.map((opt) => (
+                    <TouchableOpacity
+                      key={`caplk_${opt.id}`}
+                      style={[
+                        styles.rule_filter_chip,
+                        styles.rule_filter_chip_nhom,
+                        boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_active,
+                      ]}
+                      onPress={() => setBoLocNhomCapLoaiKcb(opt.id)}
+                    >
+                      <Text style={[
+                        styles.rule_filter_chip_txt,
+                        boLocNhomCapLoaiKcb === opt.id && styles.rule_filter_chip_txt_active,
+                      ]} numberOfLines={3}>
+                        {opt.label}{opt.phu ? `\n(${opt.phu})` : ''}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.rule_filter_group_sep} />
+              <View style={[styles.rule_filter_group, styles.rule_filter_group_khoa]}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={1}>Khoa (MA_KHOA)</Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  <TouchableOpacity
+                    style={[
+                      styles.rule_filter_chip,
+                      styles.rule_filter_chip_nhom,
+                      boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_active,
+                    ]}
+                    onPress={() => setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA)}
+                  >
+                    <Text style={[
+                      styles.rule_filter_chip_txt,
+                      boLocMaKhoa === NHOM_VI_PHAM_TAT_CA && styles.rule_filter_chip_txt_active,
+                    ]} numberOfLines={2}>Tất cả khoa</Text>
+                  </TouchableOpacity>
+                  {thaKhoaTuDuLieu.map((opt) => (
+                    <TouchableOpacity
+                      key={`khoa_${opt.id}`}
+                      style={[
+                        styles.rule_filter_chip,
+                        styles.rule_filter_chip_nhom,
+                        boLocMaKhoa === opt.id && styles.rule_filter_chip_active,
+                      ]}
+                      onPress={() => setBoLocMaKhoa(opt.id)}
+                    >
+                      <Text style={[
+                        styles.rule_filter_chip_txt,
+                        boLocMaKhoa === opt.id && styles.rule_filter_chip_txt_active,
+                      ]} numberOfLines={2}>{opt.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </ScrollView>
             <View style={styles.rule_filter_input_row}>
               <TextInput
                 style={styles.rule_filter_input}
@@ -1662,7 +1613,9 @@ const ManHinhTongQuan = ({ navigation }) => {
                 </TouchableOpacity>
               ) : null}
             </View>
-            <Text style={styles.rule_filter_status}>Hiển thị {danhMucDaLoc.length}/{thongKe.danhMuc.length} quy tắc</Text>
+            <Text style={styles.rule_filter_status}>
+              Hiển thị {danhMucDaLoc.length}/{thongKe.danhMuc.length} quy tắc · {danhSachLoiChiTietSauLocXuat.length} dòng lỗi khớp lọc (Excel/XML)
+            </Text>
           </View>
 
           <View style={styles.table_card}>
@@ -2442,6 +2395,226 @@ const styles = StyleSheet.create({
   // ── SECTIONS ──
   section_block: { marginHorizontal: 8, marginTop: 14 },
   section_block_compact_center: { alignItems: 'center', marginTop: 10 },
+  section_block_import_tight: { marginTop: 8, marginBottom: 4, maxWidth: Platform.OS === 'web' ? 680 : '100%', alignSelf: 'center', width: '100%' },
+  import_section_head_row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 10,
+    marginBottom: 8,
+    paddingHorizontal: 4,
+  },
+  import_section_title: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#F8FAFC',
+    fontFamily: CD.font.family,
+    letterSpacing: -0.2,
+  },
+  import_section_sub: {
+    fontSize: 11,
+    color: '#94A3B8',
+    fontFamily: CD.font.family,
+    marginTop: 2,
+  },
+  import_toggle_chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(15,23,42,0.45)',
+    borderWidth: 1,
+    borderColor: 'rgba(148,163,184,0.35)',
+    flexShrink: 0,
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  import_toggle_chip_hover: {
+    backgroundColor: 'rgba(30,41,59,0.55)',
+    borderColor: 'rgba(148,163,184,0.5)',
+  },
+  import_toggle_chip_txt: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#E2E8F0',
+    fontFamily: CD.font.family,
+  },
+  import_card_compact: {
+    width: '100%',
+    backgroundColor: 'rgba(248,250,252,0.72)',
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(226,232,240,0.85)',
+    ...Platform.select({
+      web: {
+        boxShadow: '0 8px 20px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.65)',
+      },
+      default: {
+        shadowColor: '#0F172A',
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 2,
+      },
+    }),
+  },
+  import_hero_row: {
+    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    alignItems: Platform.OS === 'web' ? 'flex-start' : 'stretch',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  import_hero_lead: { flex: 1, minWidth: 0 },
+  import_hero_actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexShrink: 0,
+    flexWrap: 'wrap',
+    justifyContent: Platform.OS === 'web' ? 'flex-end' : 'center',
+    alignSelf: Platform.OS === 'web' ? 'auto' : 'stretch',
+  },
+  audit_engine_title_compact: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+    fontFamily: CD.font.family,
+    letterSpacing: -0.2,
+  },
+  import_tagline: {
+    fontSize: 11,
+    color: '#64748B',
+    fontFamily: CD.font.family,
+    marginTop: 2,
+  },
+  python_badge_line: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8, minWidth: 0 },
+  python_badge_dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#94A3B8' },
+  python_badge_dot_checking: { backgroundColor: '#F59E0B' },
+  python_badge_dot_ok: { backgroundColor: '#22C55E' },
+  python_badge_dot_err: { backgroundColor: '#EF4444' },
+  python_badge_txt: {
+    flex: 1,
+    fontSize: 10,
+    lineHeight: 14,
+    color: '#475569',
+    fontFamily: CD.font.family,
+  },
+  import_pick_btn_sm: {
+    alignSelf: 'center',
+    backgroundColor: '#2563EB',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: '#1D4ED8',
+    minWidth: 108,
+    alignItems: 'center',
+    ...Platform.select({
+      web: { boxShadow: '0 4px 12px rgba(37,99,235,0.22)', cursor: 'pointer' },
+      default: {
+        shadowColor: '#2563EB',
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 3 },
+        elevation: 3,
+      },
+    }),
+  },
+  helper_redirect_btn_tight: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  helper_redirect_txt_tight: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#334155',
+    fontFamily: CD.font.family,
+  },
+  import_kt_block: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(148,163,184,0.35)',
+  },
+  import_kt_paragraph: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#475569',
+    fontFamily: CD.font.family,
+    marginBottom: 8,
+  },
+  import_chips_tight_row: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  import_chip_tight: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  import_chip_tight_txt: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#475569',
+    fontFamily: CD.font.family,
+  },
+  import_nangcao_block: { marginTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(148,163,184,0.25)', paddingTop: 6 },
+  import_nangcao_head: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+    gap: 8,
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  import_nangcao_head_hover: { opacity: 0.92 },
+  import_nangcao_head_txt: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F766E',
+    fontFamily: CD.font.family,
+    flex: 1,
+  },
+  import_log_badge: {
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    backgroundColor: '#0D9488',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  import_log_badge_txt: { fontSize: 10, fontWeight: '900', color: '#F0FDFA', fontFamily: CD.font.family },
+  import_nangcao_body: { paddingTop: 6, gap: 8 },
+  import_nangcao_one_line: {
+    fontSize: 10,
+    lineHeight: 15,
+    color: '#64748B',
+    fontFamily: CD.font.family,
+  },
+  import_folder_btn: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#0D9488',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: '#0F766E',
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  import_folder_btn_disabled: { opacity: 0.55 },
+  import_folder_btn_txt: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#F0FDFA',
+    fontFamily: CD.font.family,
+  },
+  import_auto_folder_scroll_compact: { maxHeight: 120, paddingHorizontal: 8, paddingVertical: 6 },
   section_title: { fontSize: 20, fontWeight: '800', color: CD.text.primary, fontFamily: CD.font.family, marginBottom: 14 },
   section_title_center: { textAlign: 'center', marginBottom: 8 },
   section_note: {
@@ -2578,30 +2751,31 @@ const styles = StyleSheet.create({
     fontFamily: CD.font.family,
   },
 
-  // ── IMPORT ZONE ──
+  // ── IMPORT ZONE (khung ngoài gọn, không lớp glow) ──
   import_zone: {
-    backgroundColor: 'rgba(214,235,255,0.16)',
-    borderRadius: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.30)',
+    backgroundColor: 'rgba(214,235,255,0.10)',
+    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     width: '100%',
-    maxWidth: Platform.OS === 'web' ? 640 : '100%',
+    maxWidth: Platform.OS === 'web' ? 680 : '100%',
     alignSelf: 'center',
     position: 'relative',
     overflow: 'hidden',
     ...Platform.select({
       web: {
-        backdropFilter: 'blur(20px) saturate(150%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-        boxShadow: '0 28px 54px rgba(15,23,42,0.15), 0 10px 22px rgba(56,189,248,0.12), inset 0 1px 0 rgba(255,255,255,0.34)',
+        backdropFilter: 'blur(12px) saturate(140%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(140%)',
+        boxShadow: '0 12px 28px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.22)',
       },
       default: {
         shadowColor: '#0F172A',
-        shadowOpacity: 0.14,
-        shadowRadius: 22,
-        shadowOffset: { width: 0, height: 10 },
-        elevation: 7,
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 3,
       },
     }),
   },
@@ -3082,8 +3256,8 @@ const styles = StyleSheet.create({
   conflict_btn_txt: { color: '#FFF', fontWeight: '700', fontSize: 17, fontFamily: CD.font.family },
 
   // ── WORKSPACE & EXPORT ──
-  workspace_header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-  export_btns: { flexDirection: 'row', gap: 10 },
+  workspace_header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 },
+  export_btns: { flexDirection: 'row', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' },
   btn_export: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 10 },
   btn_export_txt: { color: '#FFF', fontWeight: '700', fontSize: 16, fontFamily: CD.font.family },
 
@@ -3111,6 +3285,46 @@ const styles = StyleSheet.create({
         elevation: 8,
       },
     }),
+  },
+  rule_filter_scroll: {
+    flexGrow: 0,
+  },
+  rule_filter_scroll_content: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingBottom: 4,
+    paddingRight: 4,
+  },
+  rule_filter_group: {
+    maxWidth: 280,
+  },
+  rule_filter_group_wide: {
+    maxWidth: 360,
+  },
+  rule_filter_group_khoa: {
+    maxWidth: 420,
+  },
+  rule_filter_group_label: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: CD.text.muted,
+    textTransform: 'uppercase',
+    marginBottom: 6,
+    letterSpacing: 0.35,
+    fontFamily: CD.font.family,
+  },
+  rule_filter_chips_wrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    maxWidth: '100%',
+  },
+  rule_filter_group_sep: {
+    width: 1,
+    minHeight: 88,
+    marginHorizontal: 10,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    alignSelf: 'stretch',
   },
   rule_filter_chip_row: {
     flexDirection: 'row',

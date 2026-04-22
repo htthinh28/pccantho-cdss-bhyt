@@ -63,6 +63,7 @@ const main = () => {
         `--outfile=${bundlePath}`,
         `--alias:react-native=${REACT_NATIVE_STUB}`,
         `--alias:@react-native-async-storage/async-storage=${ASYNC_STORAGE_STUB}`,
+        `--alias:expo-constants=./scripts/stubs/expo-constants.js`,
       ],
       'Build claim audit bundle'
     );

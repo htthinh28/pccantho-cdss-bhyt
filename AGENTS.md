@@ -50,6 +50,14 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - Tri thức huấn luyện, thẻ tri thức, hướng dẫn nghiệp vụ: **ghi trong** `tai_lieu/` (Markdown hoặc HTML tĩnh).
 - **Sau mỗi lần thêm hoặc sửa** file trong `tai_lieu/` (đặc biệt `.md`): chạy **`npm run tai_lieu:prepare`** trước khi kết thúc tác vụ — đồng bộ `public/tai_lieu/`, cập nhật `ma_nguon/tien_ich/tai_lieu_manifest.json`, để màn **📚 Thư viện** và Trợ lý tri thức (RAG) phản ánh đủ nội dung mới. Không để chỉ sửa repo mà quên bước này.
 
+## Đồng bộ luật CDSS khi sửa đổi quy tắc (mặc định)
+
+Khi **sửa đổi hoặc bổ sung bất kỳ quy tắc nào**, phải giữ **thống nhất** giữa các nguồn và luồng chạy giám định:
+
+- **Bundle seed** (`du_lieu_luat_*` / `DU_LIEU_SEED_*`) là nguồn đúng cho các `MA_LUAT` có trong seed; khi đổi nội dung có ý nghĩa nghiệp vụ nên **bump `PHIEN_BAN_SEED_*`** tương ứng.
+- Các **`seed_luat_*.jsx`** phải cùng nguyên tắc: ưu tiên nội dung bundle cho MA trong seed, giữ `TRANG_THAI` **OFF** nếu người dùng đã tắt, chỉ ghi AsyncStorage/localStorage khi nội dung (không dựa `id`) hoặc cột/migration thực sự lệch — tránh máy vẫn hiện cảnh báo cũ dù code mới đã đúng.
+- **`dong_co_giam_dinh.jsx`** gọi `damBaoSeed*` cho từng mục (dữ liệu, hành chính, thuốc, PTTT); khi thêm mục seed mới, đảm bảo gọi tương tự và không để lệch với hardcoded fallback (`*_hardcoded.jsx`) nếu màn hình/engine vẫn dùng.
+
 ## Red Lines
 
 - Don't exfiltrate private data. Ever.
