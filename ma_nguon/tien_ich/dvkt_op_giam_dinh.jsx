@@ -1,3 +1,8 @@
+/**
+ * Giám định DVKT-OP-* (VBHN 17 / TT12 — căn cứ resolveLegalBasis): toán tử và điều kiện **cố định trong mã nguồn**;
+ * danh mục M05, thiết bị, nhân sự, Giường & khám BV… lấy từ AsyncStorage / Firebase / builtin.
+ * Không còn gọi là “engine no-code” — rule mặc định là `DEFAULT_DVKT_RULES` trong repo.
+ */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import {
@@ -122,8 +127,8 @@ const DEFAULT_DVKT_RULES = [
   { RULE_CODE: 'DVKT-OP-16', RULE_NAME: 'Mã giường dạng cũ (Kxx.xxxx)', OPERATOR: 'CHECK_LEGACY_BED_SERVICE_FORMAT', STATUS: 'OFF', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Mã DVKT nhóm giường theo định dạng cũ — đã chuyển sang bảng mã mới (tab Giường & khám BV).' },
 ];
 
-/** Bản rời cho tra cứu (Thư viện) — cùng nội dung DEFAULT_DVKT_RULES, không tạo bản sao tĩnh ở nơi khác. */
-export const layQuyTacDvktNoCodeMacDinh = () => DEFAULT_DVKT_RULES.map((r) => ({ ...r }));
+/** Bản rời cho tra cứu (Thư viện) — cùng nội dung DEFAULT_DVKT_RULES (khai báo cố định trong mã nguồn). */
+export const layQuyTacDvktOpMacDinh = () => DEFAULT_DVKT_RULES.map((r) => ({ ...r }));
 
 const tronRuleKhongTrung = (...sources) => {
   const seen = new Set();
@@ -172,7 +177,7 @@ const storageDataInFlight = new Map();
 const ENGINE_YIELD_EVERY = 120;
 const yieldToMainThread = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-export const xoaCacheRuleEngineDvkt = () => {
+export const xoaCacheDvktOpGiamDinh = () => {
   cacheConfig = null;
   storageDataCache.clear();
   storageDataInFlight.clear();
@@ -1191,7 +1196,7 @@ export const dongBoTatCaDanhMucVaQuyTacLenFirebase = async ({
 export const layKhoaDatasetRuleEngineDongBo = () =>
   Array.from(new Set(DVKT_SYNC_TABLES.map((item) => item.datasetKey)));
 
-export const lietKeCanhBaoTruocKhiTaiRuleEngine = async () => {
+export const lietKeCanhBaoTruocKhiTaiDvktOp = async () => {
   const details = await Promise.all(
     DVKT_SYNC_TABLES.map(async (item) => {
       const evaluation = await danhGiaTruocKhiTaiDvktDataset(item.datasetKey);
@@ -1240,7 +1245,7 @@ export const taiDuLieuRuleEngineTuFirebase = async (options = {}) => {
   );
   const downloaded = details.filter((x) => x.ok).length;
 
-  xoaCacheRuleEngineDvkt();
+  xoaCacheDvktOpGiamDinh();
   const result = {
     ok: downloaded > 0,
     downloaded_count: downloaded,
@@ -1922,7 +1927,7 @@ const luuClaimResults = async (summary, details) => {
   }
 };
 
-export const verifyClaimDvkt = async (hoSo) => {
+export const verifyClaimDvktOp = async (hoSo) => {
   const config = await buildEngineConfig();
   const xml1 = getXml1(hoSo);
   const dvktLines = extractDvktLines(hoSo);
@@ -1993,8 +1998,8 @@ export const verifyClaimDvkt = async (hoSo) => {
   return summary;
 };
 
-export const chayGiamDinhDvktNoCode = async (hoSo) => {
-  const result = await verifyClaimDvkt(hoSo);
+export const chayGiamDinhDvktOp = async (hoSo) => {
+  const result = await verifyClaimDvktOp(hoSo);
   return result.details.map((d) => ({
     phan_he: d.source_xml,
     index: d.line_index,

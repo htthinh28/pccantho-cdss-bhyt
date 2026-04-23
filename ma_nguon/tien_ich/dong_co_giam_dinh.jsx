@@ -42,7 +42,7 @@ import {
     taiMapGhiDeNoiDungQuyTacNoiBo,
     taiMapTrangThaiQuyTacNoiBo,
 } from './quy_tac_on_off_noi_bo';
-import { chayGiamDinhDvktNoCode } from './rule_engine_dvkt_no_code';
+import { chayGiamDinhDvktOp } from './dvkt_op_giam_dinh';
 import { damBaoSeedLuatDuLieuMuc1 } from './seed_luat_du_lieu_muc1';
 import { damBaoSeedLuatHanhChinhMuc2 } from './seed_luat_hanh_chinh_muc2';
 import { damBaoSeedLuatPtttMuc11 } from './seed_luat_pttt_muc11';
@@ -594,7 +594,7 @@ const boSungCoSoPhapLyMacDinh = (danhSach = []) => (Array.isArray(danhSach) ? da
 
 /**
  * Tầng pipeline V15 (đồng bộ chayGiamDinhToanDienV15): L0 ngoại lệ/cấu trúc, L1 HC, L23 danh mục BV+BYT,
- * L4 lâm sàng / chuyên đề / PTTT / CDHA / tương tác, L5 no-code DVKT, L5b CDSS mapping nâng cấp.
+ * L4 lâm sàng / chuyên đề / PTTT / CDHA / tương tác, L5 DVKT-OP (toán tử cung), L5b CDSS mapping nâng cấp.
  * Giá trị gộp L2+L3 thành L23 để tránh map nặng; đủ cho lọc báo cáo/hồi quy.
  */
 export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => {
@@ -632,6 +632,7 @@ export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => 
     }
 
     const nsMap = {
+        DVKT_OP: 'L5',
         DVKT_NO_CODE: 'L5',
         HANH_CHINH_BUILTIN: 'L1',
         HANH_CHINH_HARDCODED: 'L1',
@@ -681,7 +682,7 @@ export const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
     }
 
     if (/^DVKT-OP-/.test(maLuat)) {
-        ganMeta('DVKT_NO_CODE', 'rule_engine_dvkt_no_code', 'XML3 -> DVKT no-code -> operator', 'LUAT_CDHA');
+        ganMeta('DVKT_OP', 'dvkt_op_giam_dinh', 'XML3 -> DVKT-OP (cung) -> operator', 'LUAT_CDHA');
     } else if (/^HC-/.test(maLuat)) {
         ganMeta('HANH_CHINH_BUILTIN', 'dong_co_giam_dinh', 'XML1 -> built-in hành chính', 'LUAT_HANH_CHINH');
     } else if (/^HC_/.test(maLuat)) {
@@ -5433,7 +5434,7 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
             });
         }
         try {
-            const dsLoiDvkt = await chayGiamDinhDvktNoCode(hoSo);
+            const dsLoiDvkt = await chayGiamDinhDvktOp(hoSo);
             if (Array.isArray(dsLoiDvkt) && dsLoiDvkt.length > 0) {
                 danhSachCanhBao = danhSachCanhBao.concat(dsLoiDvkt);
             }

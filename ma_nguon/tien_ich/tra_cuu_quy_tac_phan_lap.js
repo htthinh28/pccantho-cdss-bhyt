@@ -1,5 +1,5 @@
 /**
- * Tổng hợp toàn bộ quy tắc phân tầng giám định: luật cứng (bundle JS) + engine DVKT no-code.
+ * Tổng hợp toàn bộ quy tắc phân tầng giám định: luật cứng (bundle JS) + DVKT-OP (toán tử cung trong dvkt_op_giam_dinh.jsx).
  * Dùng màn Thư viện — tra cứu, không nạp dong_co_giam_dinh (giữ bundle gọn).
  */
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
@@ -14,11 +14,12 @@ import { layDanhSachLuatHanhChinhHardcoded } from './luat_hanh_chinh_hardcoded';
 import { layDanhSachLuatHopDongHardcoded } from './luat_hop_dong_hardcoded';
 import { layDanhSachLuatNhanSuHardcoded } from './luat_nhan_su_hardcoded';
 import { layDanhSachLuatThuocHardcoded } from './luat_thuoc_hardcoded';
-import { layQuyTacDvktNoCodeMacDinh } from './rule_engine_dvkt_no_code';
+import { layQuyTacDvktOpMacDinh } from './dvkt_op_giam_dinh';
 
 export const LOAI_NGUON = Object.freeze({
   LUAT_CUNG: 'LUAT_CUNG',
-  ENGINE_DVKT_NOCODE: 'ENGINE_DVKT_NOCODE',
+  /** DVKT-OP-* — rule mặc định và toán tử trong mã nguồn (dvkt_op_giam_dinh.jsx) */
+  ENGINE_DVKT_OP: 'ENGINE_DVKT_OP',
 });
 
 /** Thứ tự hiển thị nhóm; key = mã nội bộ PHAN_HE / engine */
@@ -35,7 +36,7 @@ export const NHOM_GIAM_DINH_META = Object.freeze([
   { id: 'LUAT_HOP_DONG', ten: 'Hợp đồng BHYT & tổng chi hồ sơ', thu_tu: 10 },
   { id: 'LUAT_MAU', ten: 'Máu & hóa dịch (XML nếu áp dụng)', thu_tu: 11 },
   { id: 'LUAT_GIAM_DINH_CHUYEN_DE', ten: 'Giám định chuyên đề (CV 266, PL…)', thu_tu: 12 },
-  { id: 'ENGINE_DVKT_NOCODE', ten: 'Engine DVKT chuẩn hóa (DVKT-OP-*)', thu_tu: 13 },
+  { id: 'ENGINE_DVKT_OP', ten: 'DVKT-OP (toán tử cung — DVKT-OP-*)', thu_tu: 13 },
 ]);
 
 const mapNhomTen = () => {
@@ -91,7 +92,7 @@ const ghepGhiChuRuiRo = (row, loaiNguon) => {
       'Điều kiện còn placeholder XML130: engine bỏ qua, không phát cảnh báo trên hồ sơ. Khi thay bằng biểu thức thật, cần rà từng mã (dương/âm giả).',
     );
   }
-  if (loaiNguon === LOAI_NGUON.ENGINE_DVKT_NOCODE) {
+  if (loaiNguon === LOAI_NGUON.ENGINE_DVKT_OP) {
     parts.push(
       'Kết quả phụ thuộc cấu hình: danh mục DVKT M05, thiết bị, phạm vi hành nghề, phê duyệt nội bộ tại cơ sở — khác cấu hình thì cảnh báo có thể thay đổi. Đổi ON/OFF tại màn quản lý quy tắc nội bộ (DVKT-OP-*) tương ứng.',
     );
