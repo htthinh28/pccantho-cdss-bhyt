@@ -28,7 +28,7 @@ Cung cấp cho AI (và người đào tạo) **khung tri thức** để:
 | Neo vào **mã luật có sẵn** (`DVKT_*`, `CDHA_*`, …) khi ví dụ | Coi **mỗi dòng Phụ lục** đã được mã hóa đủ trong engine — thực tế danh mục **rất lớn**, chỉ một phần được rule hóa |
 | Giữ thứ tự ưu tiên: **Văn bản gốc BYT** → VBHN → TT sửa đổi → hợp đồng KCB | **Bịa** mức giá / % cụ thể nếu không có trong hồ sơ hoặc bảng giá đơn vị |
 
-**Hệ thống hiện tại** đã có chuỗi cơ sở pháp lý gợi ý trong mã (đọc, không bắt buộc sửa): `CO_SO_PHAP_LY_DVKT`, `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17`, `VBHN_17_META` trong `rule_engine_dvkt_no_code.jsx` / `dong_co_giam_dinh.jsx`.
+**Hệ thống hiện tại** đã có chuỗi cơ sở pháp lý gợi ý trong mã (đọc, không bắt buộc sửa): `CO_SO_PHAP_LY_DVKT`, `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17`, `VBHN_17_META` trong `dvkt_op_giam_dinh.jsx` / `dong_co_giam_dinh.jsx`.
 
 ---
 
@@ -157,7 +157,7 @@ Thẻ tri thức này **không** thay thế **QĐ 3618**, **QĐ 130** — chỉ 
 | Thành phần | Vai trò |
 |------------|---------|
 | `ma_nguon/tien_ich/luat_cdha_hardcoded.jsx` + seed DVKT | Rule mẫu nhóm **DVKT/CĐHA** |
-| `ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx` | Engine DVKT no-code, metadata **VBHN_17** |
+| `ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx` | Engine DVKT no-code, metadata **VBHN_17** |
 | `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` | Chuỗi **CO_SO_PHAP_LY_DVKT**, lọc cảnh báo |
 | `ma_nguon/man_hinh/quan_ly_xml3.jsx` | Xem/sửa **XML3** |
 | `ma_nguon/quy_tac/quyluat_cautrucdulieu/xml3.jsx` | Cột chuẩn XML3 |

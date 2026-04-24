@@ -14,7 +14,7 @@ import {
   dongBoTatCaDanhMucVaQuyTacLenFirebase,
   layKhoaDatasetRuleEngineDongBo,
   taiDuLieuRuleEngineTuFirebase,
-} from './rule_engine_dvkt_no_code';
+} from './dvkt_op_giam_dinh';
 
 export const layKhoaDoiSoatWizardMacDinh = () => {
   const ruleKeys = layKhoaDatasetRuleEngineDongBo();
@@ -88,9 +88,9 @@ export const dongBoFullHelper = async ({
   }
 };
 
-export const taiRuleEngineVeMayHelper = async ({
+export const taiDvktOpVeMayHelper = async ({
   actor_email = '',
-  source = 'helper_pull_rule_engine',
+  source = 'helper_pull_dvkt_op',
   ghi_audit = true,
 } = {}) =>
   taiDuLieuRuleEngineTuFirebase({

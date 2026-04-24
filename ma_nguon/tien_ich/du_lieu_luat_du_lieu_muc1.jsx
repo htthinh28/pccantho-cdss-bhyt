@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_DU_LIEU (12).xlsx */
-export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-15_muc1_xml143_bh_le_bv';
+export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-23_muc1_doc_xml_130_3176_4210_7464';
 export const COT_SEED_LUAT_DU_LIEU_MUC1 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","DIEU_KIEN (Toán tử No-Code)","GHI_CHU_SUA","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
   {

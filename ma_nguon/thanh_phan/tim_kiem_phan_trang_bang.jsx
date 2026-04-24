@@ -21,31 +21,35 @@ export default function TimKiemPhanTrangBang({
   chiSoKetThuc,
   /** Ẩn cụm phân trang khi không cần (chỉ tìm) */
   anPhanTrang = false,
+  /** Ẩn ô tìm (điều khiển từ khóa ở thanh ngoài) — vẫn hiện tóm tắt + phân trang */
+  anThanhTim = false,
 }) {
   const coLoc = tongDongSauLoc < tongDongGoc;
   const hienThiPhanTrang = !anPhanTrang && tongDongGoc > 0;
 
   return (
     <View style={styles.khung}>
-      <View style={styles.hang_tim}>
-        <Text style={styles.nhanTim}>🔎</Text>
-        <TextInput
-          style={styles.oTim}
-          value={tuKhoa}
-          onChangeText={onTuKhoa}
-          placeholder={placeholder}
-          placeholderTextColor={CD.text.placeholder}
-          autoCorrect={false}
-          autoCapitalize="none"
-          clearButtonMode="while-editing"
-          {...Platform.select({ web: { outlineStyle: 'none' } })}
-        />
-        {tuKhoa ? (
-          <TouchableOpacity style={styles.nutXoaTim} onPress={() => onTuKhoa('')} activeOpacity={0.75}>
-            <Text style={styles.chuXoaTim}>✕</Text>
-          </TouchableOpacity>
-        ) : null}
-      </View>
+      {!anThanhTim ? (
+        <View style={styles.hang_tim}>
+          <Text style={styles.nhanTim}>🔎</Text>
+          <TextInput
+            style={styles.oTim}
+            value={tuKhoa}
+            onChangeText={onTuKhoa}
+            placeholder={placeholder}
+            placeholderTextColor={CD.text.placeholder}
+            autoCorrect={false}
+            autoCapitalize="none"
+            clearButtonMode="while-editing"
+            {...Platform.select({ web: { outlineStyle: 'none' } })}
+          />
+          {tuKhoa ? (
+            <TouchableOpacity style={styles.nutXoaTim} onPress={() => onTuKhoa('')} activeOpacity={0.75}>
+              <Text style={styles.chuXoaTim}>✕</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      ) : null}
 
       <Text style={styles.dongTomTat} selectable>
         {tongDongGoc === 0

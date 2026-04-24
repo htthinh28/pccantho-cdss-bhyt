@@ -27,9 +27,9 @@ import { docPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import {
   chayDoiSoatNhanhChoWizard,
   dongBoFullHelper,
-  taiRuleEngineVeMayHelper,
+  taiDvktOpVeMayHelper,
 } from '../tien_ich/config_sync_domain_service';
-import { lietKeCanhBaoTruocKhiTaiRuleEngine } from '../tien_ich/rule_engine_dvkt_no_code';
+import { lietKeCanhBaoTruocKhiTaiDvktOp } from '../tien_ich/dvkt_op_giam_dinh';
 import {
     phucHoiDuLieuHeThongTuJsonText,
     taoBanSaoDuLieuHeThong,
@@ -72,7 +72,7 @@ const KIEM_TRA_5_TANG = [
   },
   {
     tieuDe: 'Tầng 5 - Kiểm tra động theo luật cấu hình',
-    moTa: 'Thực thi luật hardcoded, luật NO-CODE DVKT và các quy tắc đang bật trong màn hình Quản lý Luật / Quản lý quy tắc ON/OFF.',
+    moTa: 'Thực thi luật hardcoded, quy tắc DVKT-OP (toán tử trong mã nguồn) và các quy tắc đang bật trong màn Quản lý Luật / ON/OFF.',
   },
 ];
 
@@ -396,9 +396,9 @@ const ManHinhHelperHeThong = ({ navigation }) => {
 
   const thucHienTaiDuLieuRuleEngine = async () => {
     const session = await docPhienDangNhap();
-    return taiRuleEngineVeMayHelper({
+    return taiDvktOpVeMayHelper({
       actor_email: session.email || '',
-      source: 'helper_pull_rule_engine',
+      source: 'helper_pull_dvkt_op',
       ghi_audit: true,
     });
   };
@@ -423,7 +423,7 @@ const ManHinhHelperHeThong = ({ navigation }) => {
       return;
     }
 
-    const pre = await lietKeCanhBaoTruocKhiTaiRuleEngine();
+    const pre = await lietKeCanhBaoTruocKhiTaiDvktOp();
     const runPull = async () => {
       setDangTaiCloud(true);
       try {

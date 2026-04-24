@@ -8,7 +8,7 @@
  * Kỹ thuật: Nhiều DIEU_KIEN dùng biến/hàm kiểu DSL nội bộ (vd. ma_dvkt == 'CHUP_MRI', includes(…))
  * không trùng trực tiếp MA_DICH_VU / trường XML130 sau chuanHoaRuleDong. Các mã đó thường
  * không đánh giá đúng trên hồ sơ XML cho đến khi viết lại điều kiện theo XML3/XML1 hoặc
- * gộp vào engine DVKT no-code. Xem DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF trong quy_tac_on_off_noi_bo.jsx
+ * gộp vào DVKT-OP (`dvkt_op_giam_dinh.jsx`). Xem DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF trong quy_tac_on_off_noi_bo.jsx
  * và tai_lieu/Khung_chat_luong_giam_dinh_DVKT_VBHN17.md.
  *
  * Viết lại toàn bộ DIEU_KIEN theo XML1/XML3: lộ trình lô + manifest

@@ -10,7 +10,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as XLSX from 'xlsx';
-import { xuLyFileXML130 } from './xml_helper';
+import { xuLyFileXML130Va4210 } from './xml_helper';
 
 const normalizeXmlIdentityField = (fieldName, value) => {
     const cleaned = String(value ?? '').trim();
@@ -75,7 +75,7 @@ const ChuyenDoiXmlSangExcel = () => {
             }
         };
 
-        const danhSachHoSo = xuLyFileXML130(xmlString);
+        const danhSachHoSo = xuLyFileXML130Va4210(xmlString);
         if (Array.isArray(danhSachHoSo) && danhSachHoSo.length > 0) {
             const ketQuaChuan = {};
             danhSachHoSo.forEach((hoSo) => {

@@ -282,7 +282,7 @@ export const taoBangBcCm03TopKhoaBsDdi = (factCanhBao = []) => {
 const MA_RULE_DOI_CHIEU = new Set(['XML_49', 'XML_53', 'XML_109', 'XML_143']);
 
 const GOI_Y_CM04 = {
-  DVKT_NO_CODE: 'Rà soát cấu hình rule tại QuanLyQuyTacOnOff',
+  DVKT_OP: 'Rà soát cấu hình DVKT-OP tại QuanLyQuyTacOnOff',
   CDHA_HARDCODED: 'Rà soát quy trình chỉ định của khoa CĐHA',
   CDHA_BUILTIN: 'Rà soát quy trình chỉ định của khoa CĐHA',
   PTTT_BUILTIN: 'Phòng mổ rà lại quy trình mã hoá',
@@ -316,6 +316,7 @@ export const taoBangBcCm04ViPhamNamespace = (factCanhBao = []) => {
   const buckets = new Map();
   for (const c of factCanhBao) {
     let ns = chuanNamespaceCm04(c.namespace_quy_tac, c.ma_rule);
+    if (ns === 'DVKT_NO_CODE') ns = 'DVKT_OP';
     const mr = String(c.ma_rule || '').trim();
     if (MA_RULE_DOI_CHIEU.has(mr)) ns = 'LUAT_DU_LIEU';
     if (/^TUONGTAC_/i.test(mr) || String(ns).toUpperCase().includes('TUONG_TAC')) {
@@ -325,7 +326,7 @@ export const taoBangBcCm04ViPhamNamespace = (factCanhBao = []) => {
   }
 
   const specOrder = [
-    'DVKT_NO_CODE',
+    'DVKT_OP',
     'CDHA_HARDCODED',
     'PTTT_BUILTIN',
     'GIAM_DINH_CHUYEN_DE',
@@ -339,8 +340,8 @@ export const taoBangBcCm04ViPhamNamespace = (factCanhBao = []) => {
     rows.push({
       namespace: ns,
       bao_cao_gi:
-        ns === 'DVKT_NO_CODE'
-          ? 'Rule no-code DVKT bị vi phạm'
+        ns === 'DVKT_OP'
+          ? 'Quy tắc DVKT-OP bị vi phạm'
           : ns === 'CDHA_HARDCODED'
             ? 'Chỉ định CĐHA bất thường (trùng / chống chỉ định)'
             : ns === 'PTTT_BUILTIN'

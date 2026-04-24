@@ -259,8 +259,8 @@ function formatPhan2ChiTiet(map, entries, tieuDePhan) {
   return lines;
 }
 
-function parseDvktNoCodeRules() {
-  const p = path.join(TIEN_ICH, 'rule_engine_dvkt_no_code.jsx');
+function parseDvktOpRules() {
+  const p = path.join(TIEN_ICH, 'dvkt_op_giam_dinh.jsx');
   const text = fs.readFileSync(p, 'utf8');
   const out = [];
   const re =
@@ -269,7 +269,7 @@ function parseDvktNoCodeRules() {
   while ((m = re.exec(text))) {
     const alert = m[4].replace(/\\'/g, "'").replace(/\s+/g, ' ').trim();
     out.push({
-      nguon: 'ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx',
+      nguon: 'ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx',
       id: m[1],
       ma_luat: m[1],
       ten: m[2].replace(/\\'/g, "'").replace(/\s+/g, ' ').trim(),
@@ -348,12 +348,12 @@ function main() {
     }
   }
 
-  const dvktRows = parseDvktNoCodeRules();
+  const dvktRows = parseDvktOpRules();
   for (const r of dvktRows) {
     hardcodedAll.push({
       ...r,
       tab_id: 'LUAT_CDHA',
-      nhom_ten: 'No-code DVKT (DVKT-OP-*)',
+      nhom_ten: 'DVKT-OP (toán tử trong mã — DVKT-OP-*)',
     });
   }
 
@@ -450,7 +450,7 @@ function main() {
   lines.push('══════════════════════════════════════════════════════════════════════════════');
   lines.push('- Giám định chuyên đề: nhiều DIEU_KIEN dùng heuristic tên DVKT/thuốc trên XML3/XML2; thiếu trường hoặc tên không chuẩn → dễ bỏ sót (âm giả). Xem phần đầu file ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx.');
   lines.push('- Quy tắc phụ thuộc hợp đồng BHXH, đăng ký SYT, đa cơ sở, giấy tờ ngoài XML130: thường ở trạng thái placeholder hoặc cần map mở rộng — âm giả khi chỉ nhìn XML.');
-  lines.push('- No-code DVKT: kiểm tra phạm vi hành nghề, thiết bị, mapping nhân sự — thiếu danh mục nền tại BV → âm giả.');
+  lines.push('- DVKT-OP: kiểm tra phạm vi hành nghề, thiết bị, mapping nhân sự — thiếu danh mục nền tại BV → âm giả.');
   lines.push('');
 
   lines.push('══════════════════════════════════════════════════════════════════════════════');

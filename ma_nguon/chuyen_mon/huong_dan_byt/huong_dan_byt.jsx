@@ -1,9 +1,6 @@
 /**
- * ============================================================
- * FILE: chuyen_mon/huong_dan_byt/huong_dan_byt.jsx
- * MỤC ĐÍCH: Quản lý Danh mục Hướng dẫn Chẩn đoán & Điều trị (Bộ Y tế)
- * PHIÊN BẢN: Đã bọc thép (Khử lỗi Theme undefined & Web Shadow)
- * ============================================================
+ * Hướng dẫn chẩn đoán & điều trị (Bộ Y tế) — CDSS
+ * Bảng chỉnh sửa, tìm kiếm, phân trang, Import/Export.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,9 +8,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as XLSX from 'xlsx';
 
+import { CD } from '../../tien_ich/chu_de_giao_dien';
 import TimKiemPhanTrangBang from '../../thanh_phan/tim_kiem_phan_trang_bang';
 import { locDongTheoTuKhoa, SO_DONG_TRANG_MAC_DINH, tinhChiSoPhanTrang } from '../../tien_ich/bo_loc_bang_du_lieu';
-import TaiLieuGoc from './tailieu_goc';
+import InHuongDanByt, { inHoacChiaSeHuongDanBytMotDong } from './in_huong_dan_byt';
 
 const COT_MAC_DINH = [
   'Mã ICD10',
@@ -29,26 +27,36 @@ const COT_MAC_DINH = [
   'Kiểm lại (Ngày)',
   'Điều trị khác',
   'Dự phòng',
-  'Tiên lượng'
+  'Tiên lượng',
 ];
 
-const DULIEU_MAU = [{
-  id: '1',
-  'Mã ICD10': 'B16',
-  'Tên bệnh': 'Viêm gan vi rút B cấp',
-  'Lâm sàng': 'Chán ăn, mệt mỏi, vàng da, tiểu ít sậm màu, đau tức vùng gan, nôn, buồn nôn, phân bạc màu. Thể tối cấp có suy gan và não gan.',
-  'Cận lâm sàng (TT 23/2024)': '1. Định lượng AST, ALT. 2. Định lượng Bilirubin. 3. Xét nghiệm HBsAg, anti-HBc IgM.',
-  'Tiêu chuẩn chẩn đoán chính xác': '1. Tiền sử tiếp xúc nguồn lây 4 tuần - 6 tháng. 2. AST, ALT tăng cao > 5 lần. 3. HBsAg (+) hoặc (-) và anti-HBc IgM (+).',
-  'Chẩn đoán phân biệt': 'Viêm gan do vi rút khác (A, E, C), nhiễm độc, tự miễn, do rượu. Vàng da do Leptospira, sốt rét, tắc mật cơ học.',
-  'Điều trị bằng thuốc (Nhóm, Hoạt chất, Liều Min, Liều Max)': 'Thuốc kháng vi rút: (Cân nhắc trong thể tối cấp) Tenofovir hoặc Entecavir. Liều: Tenofovir 300mg/ngày; Entecavir 0.5mg/ngày.',
-  'Điều trị can thiệp (TT 23/2024)': 'Nuôi dưỡng qua đường tĩnh mạch (nếu cần).',
-  'Mã dịch vụ can thiệp': 'Đang cập nhật',
-  'Cận lâm sàng theo dõi (TT 23/2024)': 'AST, ALT, Bilirubin, thời gian đông máu, tiểu cầu.',
-  'Kiểm lại (Ngày)': '30',
-  'Điều trị khác': 'Nghỉ ngơi tuyệt đối, hạn chế chất béo, kiêng rượu bia, thuốc bổ trợ gan.',
-  'Dự phòng': 'Tiêm vắc xin sau sinh vòng 24h. An toàn tình dục, không dùng chung kim tiêm.',
-  'Tiên lượng': '> 90% khỏi hoàn toàn; gần 10% chuyển mạn tính.'
-}];
+const DULIEU_MAU = [
+  {
+    id: '1',
+    'Mã ICD10': 'B16',
+    'Tên bệnh': 'Viêm gan vi rút B cấp',
+    'Lâm sàng':
+      'Chán ăn, mệt mỏi, vàng da, tiểu ít sậm màu, đau tức vùng gan, nôn, buồn nôn, phân bạc màu. Thể tối cấp có suy gan và não gan.',
+    'Cận lâm sàng (TT 23/2024)':
+      '1. Định lượng AST, ALT. 2. Định lượng Bilirubin. 3. Xét nghiệm HBsAg, anti-HBc IgM.',
+    'Tiêu chuẩn chẩn đoán chính xác':
+      '1. Tiền sử tiếp xúc nguồn lây 4 tuần - 6 tháng. 2. AST, ALT tăng cao > 5 lần. 3. HBsAg (+) hoặc (-) và anti-HBc IgM (+).',
+    'Chẩn đoán phân biệt': 'Viêm gan do vi rút khác (A, E, C), nhiễm độc, tự miễn, do rượu. Vàng da do Leptospira, sốt rét, tắc mật cơ học.',
+    'Điều trị bằng thuốc (Nhóm, Hoạt chất, Liều Min, Liều Max)':
+      'Thuốc kháng vi rút: (Cân nhắc trong thể tối cấp) Tenofovir hoặc Entecavir. Liều: Tenofovir 300mg/ngày; Entecavir 0.5mg/ngày.',
+    'Điều trị can thiệp (TT 23/2024)': 'Nuôi dưỡng qua đường tĩnh mạch (nếu cần).',
+    'Mã dịch vụ can thiệp': 'Đang cập nhật',
+    'Cận lâm sàng theo dõi (TT 23/2024)': 'AST, ALT, Bilirubin, thời gian đông máu, tiểu cầu.',
+    'Kiểm lại (Ngày)': '30',
+    'Điều trị khác': 'Nghỉ ngơi tuyệt đối, hạn chế chất béo, kiêng rượu bia, thuốc bổ trợ gan.',
+    'Dự phòng': 'Tiêm vắc xin sau sinh vòng 24h. An toàn tình dục, không dùng chung kim tiêm.',
+    'Tiên lượng': '> 90% khỏi hoàn toàn; gần 10% chuyển mạn tính.',
+  },
+];
+
+/** Độ rộng ô dữ liệu (cuộn ngang); chọn mức để xem đủ nội dung dài. */
+const MOC_RONG_COT = [300, 400, 520, 640];
+const RONG_COT_THAO_TAC = 168;
 
 const HuongDanBoYTe = () => {
   const [columns, setColumns] = useState(COT_MAC_DINH);
@@ -56,9 +64,12 @@ const HuongDanBoYTe = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [newColName, setNewColName] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
-  
-  const [viewMode, setViewMode] = useState('table'); 
-  const [currentICD, setCurrentICD] = useState('');
+  /** Chiều cao vùng bảng quản trị — cho ScrollView dọc trong khung ngang */
+  const [chieuCaoVungBang, setChieuCaoVungBang] = useState(0);
+  const [chiSoRongCot, setChiSoRongCot] = useState(1);
+  const [viewMode, setViewMode] = useState('table');
+  const [idDongXemIn, setIdDongXemIn] = useState(null);
+
   const [tuKhoaTim, setTuKhoaTim] = useState('');
   const [soDongMotTrang, setSoDongMotTrang] = useState(SO_DONG_TRANG_MAC_DINH);
   const [trangHienTai, setTrangHienTai] = useState(1);
@@ -77,6 +88,9 @@ const HuongDanBoYTe = () => {
     [hangLocChiSo, chiSoBatDau, chiSoKetThuc],
   );
 
+  const rongCotDuLieu = MOC_RONG_COT[chiSoRongCot] ?? 400;
+  const dongXemIn = useMemo(() => data.find((r) => r.id === idDongXemIn) || null, [data, idDongXemIn]);
+
   useEffect(() => {
     if (trangHienTai > tongSoTrang) setTrangHienTai(tongSoTrang);
   }, [tongSoTrang, trangHienTai]);
@@ -91,9 +105,14 @@ const HuongDanBoYTe = () => {
         const storedCols = await AsyncStorage.getItem('CDSS_COLS_HDBYT');
         const storedData = await AsyncStorage.getItem('CDSS_DATA_HDBYT');
         if (storedCols) setColumns(JSON.parse(storedCols));
-        if (storedData) setData(JSON.parse(storedData));
-        else setData(DULIEU_MAU);
-      } catch (e) { console.error(e); }
+        if (storedData) {
+          setData(JSON.parse(storedData));
+        } else {
+          setData(DULIEU_MAU);
+        }
+      } catch (e) {
+        console.error(e);
+      }
     };
     taiDuLieu();
   }, []);
@@ -107,28 +126,31 @@ const HuongDanBoYTe = () => {
 
   const handleAddRow = () => {
     const newRow = { id: Date.now().toString() };
-    columns.forEach(col => newRow[col] = '');
+    columns.forEach((col) => {
+      newRow[col] = '';
+    });
     luuHeThong([newRow, ...data]);
   };
 
   const handleAddColumn = () => {
     if (!newColName) return;
     const colUpper = newColName.trim();
-    if (columns.includes(colUpper)) return alert("Cột đã tồn tại!");
+    if (columns.includes(colUpper)) return alert('Cột đã tồn tại!');
     luuHeThong(data, [...columns, colUpper]);
     setNewColName('');
   };
 
   const handleCellChange = (id, col, val) => {
-    const newData = data.map(row => row.id === id ? { ...row, [col]: val } : row);
+    const newData = data.map((row) => (row.id === id ? { ...row, [col]: val } : row));
     luuHeThong(newData);
   };
 
-  const toggleSelectRow = (id) => setSelectedRows(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
+  const toggleSelectRow = (id) =>
+    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));
 
   const handleDeleteBulk = () => {
-    if (selectedRows.length === 0) return alert("Chưa chọn dòng nào!");
-    const newData = data.filter(row => !selectedRows.includes(row.id));
+    if (selectedRows.length === 0) return alert('Chưa chọn dòng nào!');
+    const newData = data.filter((row) => !selectedRows.includes(row.id));
     setSelectedRows([]);
     luuHeThong(newData);
   };
@@ -145,15 +167,17 @@ const HuongDanBoYTe = () => {
 
   const handleExport = () => {
     if (Platform.OS === 'web') {
-      const exportData = data.map(row => {
-        let exportRow = {};
-        columns.forEach(col => exportRow[col] = row[col] || '');
+      const exportData = data.map((row) => {
+        const exportRow = {};
+        columns.forEach((col) => {
+          exportRow[col] = row[col] || '';
+        });
         return exportRow;
       });
       const ws = XLSX.utils.json_to_sheet(exportData, { header: columns });
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "HD_BYT");
-      XLSX.writeFile(wb, "HuongDan_BoYTe_CDSS.xlsx");
+      XLSX.utils.book_append_sheet(wb, ws, 'HD_BYT');
+      XLSX.writeFile(wb, 'HuongDan_BoYTe_CDSS.xlsx');
     }
   };
 
@@ -166,166 +190,378 @@ const HuongDanBoYTe = () => {
       const wb = XLSX.read(bstr, { type: 'binary' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
-      const importedData = XLSX.utils.sheet_to_json(ws, { defval: "" });
-      
+      const importedData = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
       if (importedData.length > 0) {
-        const importedCols = Object.keys(importedData[0]).filter(k => k !== 'id');
-        const formattedData = importedData.map(row => ({ ...row, id: Date.now().toString() + Math.random() }));
+        const importedCols = Object.keys(importedData[0]).filter((k) => k !== 'id');
+        const formattedData = importedData.map((row) => ({
+          ...row,
+          id: `${Date.now()}-${Math.random()}`,
+        }));
         luuHeThong(formattedData, importedCols.length > 0 ? importedCols : columns);
-        alert("Đã Import thành công hệ thống Hướng dẫn Bộ Y tế!");
+        alert('Đã Import thành công hệ thống Hướng dẫn Bộ Y tế!');
       }
     };
     reader.readAsBinaryString(file);
-    e.target.value = null; // Fix memory leak
+    e.target.value = null;
   };
 
-  const renderTable = () => (
-    <>
-      <View style={styles.thanh_cong_cu_top}>
-        <Text style={styles.tieu_de_chinh}>CDSS: HƯỚNG DẪN CHẨN ĐOÁN & ĐIỀU TRỊ BỘ Y TẾ</Text>
-        <View style={styles.group_buttons}>
-          <TouchableOpacity style={styles.btn_pink} onPress={handleAddRow}>
-            <Text style={styles.txt_btn}>➕ THÊM DÒNG MỚI</Text>
+  const renderBangQuanTri = () => (
+    <View style={styles.layout_bang_quan_tri}>
+      <View style={styles.thanh_cong_cu_mot_hang}>
+        <ScrollView
+          horizontal
+          nestedScrollEnabled
+          keyboardShouldPersistTaps="handled"
+          showsHorizontalScrollIndicator={false}
+          style={styles.cuon_thanh_cong_cu}
+          contentContainerStyle={styles.cuon_thanh_cong_cu_content}
+        >
+          <View style={styles.khoi_tim_tu_khoa}>
+            <Text style={styles.icon_tim}>🔎</Text>
+            <TextInput
+              style={styles.o_tim_tu_khoa}
+              value={tuKhoaTim}
+              onChangeText={setTuKhoaTim}
+              placeholder="Tìm theo từ khóa (ICD-10, tên bệnh, cột…)"
+              placeholderTextColor={CD.text.muted}
+              autoCorrect={false}
+              autoCapitalize="none"
+              {...Platform.select({ web: { outlineStyle: 'none' } })}
+            />
+            {tuKhoaTim ? (
+              <TouchableOpacity onPress={() => setTuKhoaTim('')} style={styles.nut_xoa_tim} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Text style={styles.chu_xoa_tim}>✕</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+          <TouchableOpacity style={styles.btn_gon_pink} onPress={handleAddRow}>
+            <Text style={styles.txt_btn_gon}>➕ THÊM DÒNG</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn_red} onPress={handleDeleteBulk}>
-            <Text style={styles.txt_btn}>🗑 XÓA ĐÃ CHỌN ({selectedRows.length})</Text>
+          <TouchableOpacity style={styles.btn_gon_red} onPress={handleDeleteBulk}>
+            <Text style={styles.txt_btn_gon}>🗑 XÓA ({selectedRows.length})</Text>
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.thanh_cong_cu_excel}>
-        <View style={styles.khoi_them_cot}>
-          <TextInput style={styles.o_nhap_cot} placeholder="Tên trường dữ liệu mới..." value={newColName} onChangeText={setNewColName} outlineStyle="none" />
-          <TouchableOpacity style={styles.btn_blue} onPress={handleAddColumn}>
-            <Text style={styles.txt_btn_small}>+ THÊM TRƯỜNG</Text>
+          <TextInput
+            style={styles.o_nhap_ten_cot_gon}
+            placeholder="Tên trường mới…"
+            value={newColName}
+            onChangeText={setNewColName}
+            placeholderTextColor={CD.text.muted}
+            {...Platform.select({ web: { outlineStyle: 'none' } })}
+          />
+          <TouchableOpacity style={styles.btn_gon_blue} onPress={handleAddColumn}>
+            <Text style={styles.txt_btn_gon}>+ TRƯỜNG</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.group_buttons}>
           {Platform.OS === 'web' && (
             <>
               <input type="file" accept=".xlsx, .csv" onChange={handleImport} style={{ display: 'none' }} id="import-excel-byt" />
-              <TouchableOpacity style={styles.btn_orange} onPress={() => document.getElementById('import-excel-byt').click()}>
-                <Text style={styles.txt_btn}>📥 IMPORT DATA (CSV/XLSX)</Text>
+              <TouchableOpacity style={styles.btn_gon_orange} onPress={() => document.getElementById('import-excel-byt').click()}>
+                <Text style={styles.txt_btn_gon}>📥 IMPORT</Text>
               </TouchableOpacity>
             </>
           )}
-          <TouchableOpacity style={styles.btn_green} onPress={handleExport}>
-            <Text style={styles.txt_btn}>📤 EXPORT</Text>
+          <TouchableOpacity style={styles.btn_gon_green} onPress={handleExport}>
+            <Text style={styles.txt_btn_gon}>📤 EXPORT</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn_gon_outline}
+            onPress={() => setChiSoRongCot((i) => Math.max(0, i - 1))}
+            disabled={chiSoRongCot <= 0}
+          >
+            <Text style={[styles.txt_btn_gon_outline, chiSoRongCot <= 0 && styles.txt_mo]}>◀ Cột</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn_gon_outline}
+            onPress={() => setChiSoRongCot((i) => Math.min(MOC_RONG_COT.length - 1, i + 1))}
+            disabled={chiSoRongCot >= MOC_RONG_COT.length - 1}
+          >
+            <Text style={[styles.txt_btn_gon_outline, chiSoRongCot >= MOC_RONG_COT.length - 1 && styles.txt_mo]}>Cột ▶</Text>
+          </TouchableOpacity>
+          <Text style={styles.nhan_rong_cot}>{rongCotDuLieu}px</Text>
+        </ScrollView>
+      </View>
+
+      <View style={styles.phan_bang_quan_tri} onLayout={(e) => setChieuCaoVungBang(e.nativeEvent.layout.height)}>
+        <View style={styles.khung_tim_bang_compact}>
+          <TimKiemPhanTrangBang
+            anThanhTim
+            tuKhoa={tuKhoaTim}
+            onTuKhoa={setTuKhoaTim}
+            tongDongGoc={data.length}
+            tongDongSauLoc={nSauLoc}
+            soDongMotTrang={soDongMotTrang}
+            onSoDongMotTrang={setSoDongMotTrang}
+            trangHienTai={trangDangXem}
+            onTrangHienTai={setTrangHienTai}
+            tongSoTrang={tongSoTrang}
+            chiSoBatDau={chiSoBatDau}
+            chiSoKetThuc={chiSoKetThuc}
+          />
         </View>
-      </View>
 
-      <View style={styles.khung_tim_bang}>
-        <TimKiemPhanTrangBang
-          tuKhoa={tuKhoaTim}
-          onTuKhoa={setTuKhoaTim}
-          tongDongGoc={data.length}
-          tongDongSauLoc={nSauLoc}
-          soDongMotTrang={soDongMotTrang}
-          onSoDongMotTrang={setSoDongMotTrang}
-          trangHienTai={trangDangXem}
-          onTrangHienTai={setTrangHienTai}
-          tongSoTrang={tongSoTrang}
-          chiSoBatDau={chiSoBatDau}
-          chiSoKetThuc={chiSoKetThuc}
-        />
-      </View>
-
-      <ScrollView horizontal style={styles.khung_bang}>
-        <View>
-          <View style={styles.dong_tieu_de}>
-            <View style={[styles.o_tieu_de, { width: 80 }]}><Text style={styles.chu_o_tieu_de}>CHỌN</Text></View>
-            <View style={[styles.o_tieu_de, { width: 150 }]}><Text style={styles.chu_o_tieu_de}>TÀI LIỆU GỐC</Text></View>
-            {columns.map((col, index) => (
-              <TouchableOpacity key={index} style={[styles.o_tieu_de, { width: 350 }]} onPress={col === 'Mã ICD10' ? handleSortABC : null}>
-                <Text style={styles.chu_o_tieu_de}>{col} {col === 'Mã ICD10' ? (sortAsc ? ' 🔽' : ' 🔼') : ''}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <ScrollView style={{ maxHeight: 600 }}>
-            {duLieuTrang.map(({ row }) => (
-              <View key={row.id} style={styles.dong_du_lieu}>
-                <View style={[styles.o_du_lieu, { width: 80, justifyContent: 'center', alignItems: 'center' }]}>
-                  <TouchableOpacity style={[styles.checkbox, selectedRows.includes(row.id) && styles.checkbox_active]} onPress={() => toggleSelectRow(row.id)}>
-                    {selectedRows.includes(row.id) && <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 22 }}>✓</Text>}
-                  </TouchableOpacity>
-                </View>
-                
-                <View style={[styles.o_du_lieu, { width: 150, justifyContent: 'center', alignItems: 'center' }]}>
-                  <TouchableOpacity style={styles.btn_icon_blue} onPress={() => { setCurrentICD(row['Mã ICD10']); setViewMode('doc'); }}>
-                    <Text style={styles.txt_btn_small}>📖 Xem QĐ</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {columns.map((col, colIndex) => (
-                  <TextInput key={colIndex} style={[styles.o_du_lieu, { width: 350 }, col === 'Mã ICD10' && { fontWeight: 'bold', color: '#1976D2' }]}
-                    multiline value={String(row[col] || '')} onChangeText={(val) => handleCellChange(row.id, col, val)} outlineStyle="none" />
-                ))}
+        <ScrollView
+          horizontal
+          nestedScrollEnabled
+          style={styles.khung_bang_quan_tri}
+          contentContainerStyle={styles.khung_bang_quan_tri_content}
+        >
+          <View style={[styles.khoi_cot_bang_qt, chieuCaoVungBang > 0 && { height: chieuCaoVungBang }]}>
+            <View style={styles.dong_tieu_de}>
+              <View style={[styles.o_tieu_de, { width: 80 }]}>
+                <Text style={styles.chu_o_tieu_de}>CHỌN</Text>
               </View>
-            ))}
-          </ScrollView>
-        </View>
-      </ScrollView>
+              <View style={[styles.o_tieu_de, { width: RONG_COT_THAO_TAC }]}>
+                <Text style={styles.chu_o_tieu_de}>THAO TÁC</Text>
+              </View>
+              {columns.map((col, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.o_tieu_de, { width: rongCotDuLieu }]}
+                  onPress={col === 'Mã ICD10' ? handleSortABC : undefined}
+                >
+                  <Text style={styles.chu_o_tieu_de}>
+                    {col} {col === 'Mã ICD10' ? (sortAsc ? ' 🔽' : ' 🔼') : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-      <View style={styles.khu_vuc_trich_dan}>
-        <Text style={styles.van_ban_trich_dan}>Nguồn dữ liệu: Dữ liệu được Import từ các Quyết định Hướng dẫn Chẩn đoán và Điều trị của Bộ Y tế hiện hành.</Text>
+            <ScrollView nestedScrollEnabled style={styles.cuon_bang_doc_qt} keyboardShouldPersistTaps="handled">
+              {duLieuTrang.map(({ row }) => (
+                <View key={row.id} style={styles.dong_du_lieu}>
+                  <View style={[styles.o_du_lieu, { width: 80, justifyContent: 'center', alignItems: 'center' }]}>
+                    <TouchableOpacity
+                      style={[styles.checkbox, selectedRows.includes(row.id) && styles.checkbox_active]}
+                      onPress={() => toggleSelectRow(row.id)}
+                    >
+                      {selectedRows.includes(row.id) ? (
+                        <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 22 }}>✓</Text>
+                      ) : null}
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={[styles.o_du_lieu, { width: RONG_COT_THAO_TAC, justifyContent: 'center', alignItems: 'center', gap: 6 }]}>
+                    <TouchableOpacity style={styles.btn_icon_xem} onPress={() => { setIdDongXemIn(row.id); setViewMode('xem'); }}>
+                      <Text style={styles.txt_btn_icon}>📋 Xem</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btn_icon_in} onPress={() => { setIdDongXemIn(row.id); setViewMode('in'); }}>
+                      <Text style={styles.txt_btn_icon}>🖨️ In</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {columns.map((col, colIndex) => (
+                    <TextInput
+                      key={colIndex}
+                      style={[styles.o_du_lieu, { width: rongCotDuLieu }, col === 'Mã ICD10' && styles.o_ma_icd]}
+                      multiline
+                      scrollEnabled={false}
+                      textAlignVertical="top"
+                      value={String(row[col] || '')}
+                      onChangeText={(val) => handleCellChange(row.id, col, val)}
+                      outlineStyle="none"
+                    />
+                  ))}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </ScrollView>
       </View>
-    </>
+    </View>
   );
 
-  return (
-    <SafeAreaView style={styles.vung_an_toan}>
-      {viewMode !== 'table' && (
-        <View style={styles.thanh_dieu_huong_noi_bo}>
-          <TouchableOpacity style={styles.btn_outline} onPress={() => setViewMode('table')}>
-            <Text style={styles.txt_btn_outline}>⬅ QUAY LẠI BẢNG DỮ LIỆU</Text>
-          </TouchableOpacity>
-          <Text style={styles.txt_icd_dang_xem}>Văn bản pháp lý Hướng dẫn BYT mã ICD-10: {currentICD}</Text>
-        </View>
-      )}
+  const veBang = () => {
+    setViewMode('table');
+    setIdDongXemIn(null);
+  };
 
-      {viewMode === 'table' ? renderTable() : <TaiLieuGoc maICD={currentICD} danhSachData={data} />}
-    </SafeAreaView>
+  return (
+    <View style={styles.vung_goc}>
+      {viewMode !== 'table' && dongXemIn ? (
+        <SafeAreaView style={styles.vung_quan_tri_fill}>
+          <View style={styles.thanh_xem_in}>
+            <TouchableOpacity style={styles.btn_gon_outline} onPress={veBang} activeOpacity={0.85}>
+              <Text style={styles.txt_btn_gon_outline}>⬅ Về bảng</Text>
+            </TouchableOpacity>
+            <Text style={styles.tieu_de_xem_in} numberOfLines={1}>
+              Hướng dẫn BYT — {dongXemIn['Mã ICD10'] || '—'} · {dongXemIn['Tên bệnh'] || ''}
+            </Text>
+            {viewMode === 'in' ? (
+              <TouchableOpacity
+                style={styles.btn_gon_green}
+                onPress={() => inHoacChiaSeHuongDanBytMotDong({ columns, noiDungDong: dongXemIn })}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.txt_btn_gon}>🖨️ In / PDF</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+          {viewMode === 'xem' ? (
+            <ScrollView style={styles.cuon_xem} contentContainerStyle={styles.cuon_xem_pad} showsVerticalScrollIndicator>
+              {columns.map((col) => (
+                <View key={col} style={styles.khoi_xem_section}>
+                  <Text style={styles.khoi_xem_tieu_de}>{col}</Text>
+                  <Text style={styles.khoi_xem_body} selectable>
+                    {String(dongXemIn[col] || '—')}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          ) : (
+            <InHuongDanByt maICD={dongXemIn['Mã ICD10'] || ''} columns={columns} noiDungDong={dongXemIn} />
+          )}
+        </SafeAreaView>
+      ) : (
+        <View style={styles.vung_quan_tri_fill}>{renderBangQuanTri()}</View>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  vung_an_toan: { flex: 1, backgroundColor: '#F0F4F8' },
-  thanh_cong_cu_top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#1976D2' },
-  tieu_de_chinh: { fontSize: 26, color: '#FFF', fontWeight: 'bold', fontFamily: 'Arial' },
-  thanh_cong_cu_excel: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#BBDEFB' },
-  khung_tim_bang: { paddingHorizontal: 24, marginBottom: 4 },
-  khoi_them_cot: { flexDirection: 'row', gap: 10, alignItems: 'center' },
-  o_nhap_cot: { borderWidth: 2, borderColor: '#90CAF9', borderRadius: 8, padding: 12, fontSize: 20, fontFamily: 'Arial', width: 280, backgroundColor: '#FFF', outlineStyle: 'none' },
-  group_buttons: { flexDirection: 'row', gap: 10 },
-  btn_pink: { backgroundColor: '#D81B60', padding: 15, borderRadius: 8 },
-  btn_red: { backgroundColor: '#D32F2F', padding: 15, borderRadius: 8 },
-  btn_blue: { backgroundColor: '#1976D2', padding: 15, borderRadius: 8 },
-  btn_green: { backgroundColor: '#388E3C', padding: 15, borderRadius: 8 },
-  btn_orange: { backgroundColor: '#F57C00', padding: 15, borderRadius: 8 },
-  btn_icon_blue: { backgroundColor: '#1976D2', paddingVertical: 12, paddingHorizontal: 15, borderRadius: 6 },
-  btn_outline: { backgroundColor: '#FFF', padding: 15, borderRadius: 8, borderWidth: 2, borderColor: '#1976D2' },
-  txt_btn: { color: '#FFF', fontSize: 20, fontWeight: 'bold', fontFamily: 'Arial' },
-  txt_btn_small: { color: '#FFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Arial' },
-  txt_btn_outline: { color: '#1976D2', fontSize: 20, fontWeight: 'bold', fontFamily: 'Arial' },
-  
-  khung_bang: { 
-    margin: 20, backgroundColor: '#FFF', borderRadius: 10,
-    ...Platform.select({ web: { boxShadow: '0px 4px 10px rgba(0,0,0,0.1)' }, android: { elevation: 4 } }) 
+  vung_goc: { flex: 1, backgroundColor: CD.bg.gradient_mobile, minHeight: 0 },
+  vung_quan_tri_fill: { flex: 1, minHeight: 0 },
+  layout_bang_quan_tri: { flex: 1, flexDirection: 'column', minHeight: 0 },
+  thanh_cong_cu_mot_hang: {
+    flexShrink: 0,
+    backgroundColor: CD.bg.glass_card,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.divider,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
   },
-  dong_tieu_de: { flexDirection: 'row', backgroundColor: '#E3F2FD', borderBottomWidth: 3, borderColor: '#1976D2' },
-  o_tieu_de: { padding: 20, borderRightWidth: 1, borderColor: '#BBDEFB', justifyContent: 'center', alignItems: 'center' },
-  chu_o_tieu_de: { fontSize: 20, fontWeight: 'bold', color: '#0D47A1', fontFamily: 'Arial', textAlign: 'center' },
-  dong_du_lieu: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#EEE' },
-  o_du_lieu: { padding: 20, borderRightWidth: 1, borderColor: '#EEE', fontSize: 22, fontFamily: 'Arial', color: '#333', backgroundColor: '#FFF', outlineStyle: 'none' },
-  checkbox: { width: 35, height: 35, borderWidth: 3, borderColor: '#CCC', borderRadius: 6, justifyContent: 'center', alignItems: 'center' },
+  cuon_thanh_cong_cu: { flexGrow: 0 },
+  cuon_thanh_cong_cu_content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingRight: 8,
+    paddingVertical: 2,
+  },
+  khoi_tim_tu_khoa: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minWidth: 200,
+    maxWidth: 320,
+    height: 36,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    borderRadius: 8,
+    backgroundColor: CD.bg.glass_input,
+  },
+  icon_tim: { fontSize: 14, marginRight: 4 },
+  o_tim_tu_khoa: {
+    flex: 1,
+    minWidth: 120,
+    fontSize: 14,
+    fontFamily: CD.font.family,
+    color: CD.text.primary,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
+  nut_xoa_tim: { padding: 4 },
+  chu_xoa_tim: { fontSize: 16, color: CD.text.muted, fontWeight: 'bold' },
+  btn_gon_pink: { backgroundColor: '#D81B60', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_red: { backgroundColor: '#D32F2F', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_blue: { backgroundColor: CD.brand.mauDam, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_green: { backgroundColor: '#388E3C', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_orange: { backgroundColor: '#F57C00', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  txt_btn_gon: { color: '#FFF', fontSize: 13, fontWeight: '800', fontFamily: CD.font.family },
+  btn_gon_outline: {
+    backgroundColor: CD.bg.glass_card,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: CD.border.accent,
+    justifyContent: 'center',
+  },
+  txt_btn_gon_outline: { color: CD.brand.mauDam, fontSize: 13, fontWeight: '800', fontFamily: CD.font.family },
+  txt_mo: { opacity: 0.45 },
+  nhan_rong_cot: { fontSize: 12, fontWeight: '700', color: CD.text.muted, fontFamily: CD.font.family, minWidth: 40 },
+  o_nhap_ten_cot_gon: {
+    width: 140,
+    height: 36,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    fontSize: 13,
+    fontFamily: CD.font.family,
+    color: CD.text.primary,
+    backgroundColor: CD.bg.glass_input,
+  },
+  phan_bang_quan_tri: { flex: 1, minHeight: 0, marginHorizontal: 8, marginBottom: 8, marginTop: 0 },
+  khung_tim_bang_compact: { paddingHorizontal: 2, marginBottom: 2 },
+  khung_bang_quan_tri: {
+    flex: 1,
+    minHeight: 0,
+    backgroundColor: CD.bg.glass_card,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: CD.border.glass,
+    ...Platform.select({ web: { boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }, default: { elevation: 2 } }),
+  },
+  khung_bang_quan_tri_content: { flexGrow: 1 },
+  khoi_cot_bang_qt: { flexDirection: 'column', alignSelf: 'flex-start' },
+  cuon_bang_doc_qt: { flex: 1 },
+  dong_tieu_de: { flexDirection: 'row', backgroundColor: CD.brand.mauNhat, borderBottomWidth: 2, borderColor: CD.border.accent },
+  o_tieu_de: { padding: 14, borderRightWidth: 1, borderColor: CD.border.divider, justifyContent: 'center', alignItems: 'center' },
+  chu_o_tieu_de: { fontSize: 14, fontWeight: '800', color: CD.brand.mauDam, fontFamily: CD.font.family, textAlign: 'center' },
+  dong_du_lieu: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    borderBottomWidth: 1,
+    borderColor: CD.border.divider,
+  },
+  o_du_lieu: {
+    padding: 12,
+    borderRightWidth: 1,
+    borderColor: CD.border.divider,
+    fontSize: 15,
+    fontFamily: CD.font.family,
+    color: CD.text.primary,
+    backgroundColor: CD.bg.glass_card,
+    outlineStyle: 'none',
+  },
+  btn_icon_xem: { backgroundColor: CD.brand.mauDam, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8 },
+  btn_icon_in: { backgroundColor: '#388E3C', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8 },
+  txt_btn_icon: { color: '#FFF', fontSize: 12, fontWeight: '800', fontFamily: CD.font.family },
+  thanh_xem_in: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.divider,
+    backgroundColor: CD.bg.glass_card,
+  },
+  tieu_de_xem_in: { flex: 1, fontSize: 14, fontWeight: '800', color: CD.text.primary, fontFamily: CD.font.family },
+  cuon_xem: { flex: 1, minHeight: 0 },
+  cuon_xem_pad: { padding: 14, paddingBottom: 28 },
+  khoi_xem_section: {
+    marginBottom: 14,
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: CD.bg.glass_input,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+  },
+  khoi_xem_tieu_de: { fontSize: 13, fontWeight: '800', color: CD.brand.mauDam, marginBottom: 6, fontFamily: CD.font.family },
+  khoi_xem_body: { fontSize: 14, color: CD.text.primary, lineHeight: 22, fontFamily: CD.font.family },
+  o_ma_icd: { fontWeight: '800', color: CD.brand.mauDam },
+  checkbox: {
+    width: 32,
+    height: 32,
+    borderWidth: 2,
+    borderColor: CD.border.glass_md,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   checkbox_active: { backgroundColor: '#D32F2F', borderColor: '#D32F2F' },
-  
-  thanh_dieu_huong_noi_bo: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#BBDEFB' },
-  txt_icd_dang_xem: { fontSize: 24, fontWeight: 'bold', color: '#333', fontFamily: 'Arial' },
-  khu_vuc_trich_dan: { padding: 20, backgroundColor: '#FFF', borderTopWidth: 2, borderColor: '#EEE' },
-  van_ban_trich_dan: { fontSize: 20, color: '#666', fontStyle: 'italic', fontFamily: 'Arial', marginBottom: 8 }
 });
 
 export default HuongDanBoYTe;

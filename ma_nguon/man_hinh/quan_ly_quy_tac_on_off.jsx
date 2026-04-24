@@ -33,8 +33,9 @@ import {
     taiTapMaLuatAnKhoiQuanLyNoiBo,
     taoDanhSachQuyTacNoiBoTheoTab,
 } from '../tien_ich/quy_tac_on_off_noi_bo';
-import { xoaCacheRuleEngineDvkt } from '../tien_ich/rule_engine_dvkt_no_code';
+import { xoaCacheDvktOpGiamDinh } from '../tien_ich/dvkt_op_giam_dinh';
 import { damBaoSeedLuatPtttMuc11 } from '../tien_ich/seed_luat_pttt_muc11';
+import { hopNhatQuyTacTrungTheoDoiTuong } from '../tien_ich/hop_nhat_quy_tac_trung_lap';
 
 const DANH_SACH_TAB_MAC_DINH = [
   { id: 'LUAT_DU_LIEU', ten: 'Cấu trúc XML' },
@@ -311,6 +312,8 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
   const [maLuatCanHighlight, setMaLuatCanHighlight] = useState('');
   const [tapMaLuatAnKhoiQuanLy, setTapMaLuatAnKhoiQuanLy] = useState(() => new Set());
   const khoaDieuHuongGanNhat = useRef('');
+  /** Chỉ lần tải đầu tiên hiện spinner toàn màn; các lần làm mới sau (ẩn quy tắc, import…) không chặn UI. */
+  const dangTaiLanDauRef = useRef(true);
   const { width: windowW } = useWindowDimensions();
   const { font: fontScale } = useScaleGiaoDien();
   const hepWeb = Platform.OS === 'web' && windowW < 960;
@@ -321,65 +324,82 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
   }, [tuKhoaTimKiem]);
 
   const docTatCaDuLieu = async () => {
-    setDangTai(true);
+    const hienSpinnerToanMan = dangTaiLanDauRef.current;
+    if (hienSpinnerToanMan) setDangTai(true);
     try {
-      await Promise.all([
-        damBaoSeedLuatPtttMuc11(),
-      ]);
+      await damBaoSeedLuatPtttMuc11();
+
       let allKeys = [];
       if (Platform.OS === 'web') {
-        allKeys = Object.keys(window.localStorage || {});
+        allKeys = Object.keys(window.localStorage || {}).filter((k) => String(k).startsWith('CDSS_DATA_'));
       } else {
-        allKeys = await AsyncStorage.getAllKeys();
+        allKeys = (await AsyncStorage.getAllKeys()).filter((k) => String(k).startsWith('CDSS_DATA_'));
       }
 
       const tabIdsCoDinh = DANH_SACH_TAB_MAC_DINH.map((x) => x.id);
       const tabIdsTrongStorage = Array.from(
         new Set([...tabIdsCoDinh, ...allKeys.map(layTabIdTuStorageKey).filter(Boolean)]),
       );
-      const mapTrangThaiNoiBo = await taiMapTrangThaiQuyTacNoiBo();
-      const mapGhiDeNoiBo = await taiMapGhiDeNoiDungQuyTacNoiBo();
-      const tapAnKhoiQuanLy = await taiTapMaLuatAnKhoiQuanLyNoiBo();
+
+      const [mapTrangThaiNoiBo, mapGhiDeNoiBo, tapAnKhoiQuanLy] = await Promise.all([
+        taiMapTrangThaiQuyTacNoiBo(),
+        taiMapGhiDeNoiDungQuyTacNoiBo(),
+        taiTapMaLuatAnKhoiQuanLyNoiBo(),
+      ]);
       setTapMaLuatAnKhoiQuanLy(tapAnKhoiQuanLy);
       const duLieuNoiBoTheoTab = taoDanhSachQuyTacNoiBoTheoTab(mapTrangThaiNoiBo);
 
-      const ketQuaPairs = await Promise.all(
-        DANH_SACH_TAB_MAC_DINH.map(async (tab) => {
-          const dsUngVien = timTabUngVien(tab.id, tabIdsTrongStorage);
-          let dataLoaded = [];
-          for (const tabIdUngVien of dsUngVien) {
-            let raw;
-            if (Platform.OS === 'web') {
-              raw = parseJSONAnToan(window.localStorage.getItem(`CDSS_DATA_${tabIdUngVien}`), []);
-            } else {
-              raw = parseJSONAnToan(await AsyncStorage.getItem(`CDSS_DATA_${tabIdUngVien}`), []);
-            }
-            const data = chuanHoaDuLieuLuat(raw);
-            if (Array.isArray(data) && data.length > 0) {
-              dataLoaded = data;
-              break;
-            }
-          }
+      const khoaDocStorage = [
+        ...new Set(
+          DANH_SACH_TAB_MAC_DINH.flatMap((tab) =>
+            timTabUngVien(tab.id, tabIdsTrongStorage).map((id) => `CDSS_DATA_${id}`),
+          ),
+        ),
+      ];
+      const rawTheoKhoa = {};
+      if (Platform.OS === 'web') {
+        khoaDocStorage.forEach((k) => {
+          rawTheoKhoa[k] = window.localStorage.getItem(k);
+        });
+      } else if (khoaDocStorage.length > 0) {
+        const cap = await AsyncStorage.multiGet(khoaDocStorage);
+        cap.forEach(([k, v]) => {
+          rawTheoKhoa[k] = v;
+        });
+      }
 
-          const dataRows = (Array.isArray(dataLoaded) ? dataLoaded : []).map((row) => lamGiauMetaQuanTriQuyTac({
-            ...row,
-            TRANG_THAI: row?.TRANG_THAI === 'OFF' ? 'OFF' : 'ON',
-            _kind: 'DATASET',
-          }));
-          const builtInRows = (duLieuNoiBoTheoTab[tab.id] || []).map((row) => lamGiauMetaQuanTriQuyTac(
-            { ...apGhiDeChoDongNoiBo(row, mapGhiDeNoiBo), _kind: 'BUILTIN' },
-          ));
-          const merged = gopDuLieuMotTabQuyTac(tab, dataRows, builtInRows, mapTrangThaiNoiBo, mapGhiDeNoiBo);
-          return [tab.id, merged];
-        }),
-      );
+      const ketQuaPairs = DANH_SACH_TAB_MAC_DINH.map((tab) => {
+        const dsUngVien = timTabUngVien(tab.id, tabIdsTrongStorage);
+        let dataLoaded = [];
+        for (const tabIdUngVien of dsUngVien) {
+          const raw = rawTheoKhoa[`CDSS_DATA_${tabIdUngVien}`];
+          const data = chuanHoaDuLieuLuat(parseJSONAnToan(raw, []));
+          if (Array.isArray(data) && data.length > 0) {
+            dataLoaded = data;
+            break;
+          }
+        }
+
+        const dataRows = (Array.isArray(dataLoaded) ? dataLoaded : []).map((row) => lamGiauMetaQuanTriQuyTac({
+          ...row,
+          TRANG_THAI: row?.TRANG_THAI === 'OFF' ? 'OFF' : 'ON',
+          _kind: 'DATASET',
+        }));
+        const builtInRows = (duLieuNoiBoTheoTab[tab.id] || []).map((row) => lamGiauMetaQuanTriQuyTac(
+          { ...apGhiDeChoDongNoiBo(row, mapGhiDeNoiBo), _kind: 'BUILTIN' },
+        ));
+        const merged = gopDuLieuMotTabQuyTac(tab, dataRows, builtInRows, mapTrangThaiNoiBo, mapGhiDeNoiBo);
+        const mergedGon = hopNhatQuyTacTrungTheoDoiTuong(merged, () => tab.id);
+        return [tab.id, mergedGon];
+      });
       const ketQua = Object.fromEntries(ketQuaPairs);
 
       setDuLieuTheoTab(ketQua);
+      dangTaiLanDauRef.current = false;
     } catch (e) {
       Alert.alert('Lỗi', `Không thể tải danh sách quy tắc: ${e.message || e}`);
     } finally {
-      setDangTai(false);
+      if (hienSpinnerToanMan) setDangTai(false);
     }
   };
 
@@ -583,13 +603,14 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
 
   const lamMoiCacheEngine = () => {
     try { xoaCacheBoMayGiamDinh(); } catch {}
-    try { xoaCacheRuleEngineDvkt(); } catch {}
+    try { xoaCacheDvktOpGiamDinh(); } catch {}
   };
 
   const capNhatTab = async (tabId, updater) => {
-    const hienTai = duLieuTheoTab[tabId] || [];
+    const snapshotBang = duLieuTheoTab;
+    const hienTai = snapshotBang[tabId] || [];
     const duLieuMoi = updater(hienTai);
-    const mapMoi = { ...duLieuTheoTab, [tabId]: duLieuMoi };
+    const mapMoi = { ...snapshotBang, [tabId]: duLieuMoi };
     setDuLieuTheoTab(mapMoi);
 
     try {
@@ -610,7 +631,7 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
 
       lamMoiCacheEngine();
     } catch (e) {
-      setDuLieuTheoTab(duLieuTheoTab);
+      setDuLieuTheoTab(snapshotBang);
       Alert.alert('Lỗi', `Không thể lưu trạng thái quy tắc: ${e.message || e}`);
     } finally {
       setDangLuu(false);
@@ -1130,7 +1151,9 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text style={styles.tieu_de}>QUẢN LÝ QUY TẮC ON/OFF</Text>
-          <Text style={styles.mo_ta}>Bật/tắt nhanh quy tắc theo nhóm, áp dụng ngay cho engine kiểm tra.</Text>
+          <Text style={styles.mo_ta}>
+            Bật/tắt nhanh theo nhóm; engine dùng xml1–6 sau khi nhập (ưu tiên QĐ 130/3176, fallback chuẩn hóa từ QĐ 4210/CV 7464).
+          </Text>
         </View>
       </View>
 
@@ -1324,9 +1347,9 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
             renderSectionHeader={renderSectionHeaderQuyTac}
             renderItem={renderItemQuyTac}
             stickySectionHeadersEnabled={false}
-            initialNumToRender={10}
-            maxToRenderPerBatch={16}
-            windowSize={8}
+            initialNumToRender={14}
+            maxToRenderPerBatch={28}
+            windowSize={12}
             removeClippedSubviews={Platform.OS !== 'web'}
             extraData={extraDataSectionQuyTac}
             ListEmptyComponent={(

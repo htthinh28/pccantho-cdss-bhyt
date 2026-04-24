@@ -7407,7 +7407,7 @@ export const DANH_MUC_THUOC_MAU_M03 = [
     "STT": "",
     "MA_THUOC": "40.1050",
     "TEN_HOAT_CHAT": "Vitamin B1 + B6 + B12",
-    "TEN_THUOC": "Solphabe",
+    "TEN_THUOC": "Vit B1-B6-B12",
     "DON_VI_TINH": "Viên",
     "HAM_LUONG": "110mg + 200mg + 0,5mg",
     "DUONG_DUNG": "Uống",

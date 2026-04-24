@@ -36,4 +36,4 @@ Mục đích: map từng **điểm a–m** sang **lớp dữ liệu** trong hồ
 ## Liên kết nội bộ dự án
 
 - Căn cứ pháp lý tổng hợp: `The_tri_thuc_mau_luat_BHYT_2008_2025.md` mục **11.2**; chuỗi **VTYT** mục **11.6**; **Luật KCB** + NĐ 96 + TT 32 mục **11.7** (bổ sung cho điểm **e, g, i** — phạm vi CS, hành nghề, hợp lý dịch vụ / bệnh án).  
-- **Văn bản đầy đủ** (Điều 10 khoản 1 đủ điểm a–m + Điều 13 khoản 1–3): `ma_nguon/tien_ich/co_so_phap_ly_tt12_2026.jsx` (`CHUOI_DAY_DU_TT12_2026_D10_VA_D13`). **Trích dẫn ngắn** trên báo cáo lỗi: cùng file (`CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13`) — dùng trong `dong_co_giam_dinh.jsx` (`co_so_phap_ly`) và `resolveLegalBasis` trong `rule_engine_dvkt_no_code.jsx`.
+- **Văn bản đầy đủ** (Điều 10 khoản 1 đủ điểm a–m + Điều 13 khoản 1–3): `ma_nguon/tien_ich/co_so_phap_ly_tt12_2026.jsx` (`CHUOI_DAY_DU_TT12_2026_D10_VA_D13`). **Trích dẫn ngắn** trên báo cáo lỗi: cùng file (`CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13`) — dùng trong `dong_co_giam_dinh.jsx` (`co_so_phap_ly`) và `resolveLegalBasis` trong `dvkt_op_giam_dinh.jsx`.

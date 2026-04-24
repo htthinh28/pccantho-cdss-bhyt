@@ -106,6 +106,95 @@ const coTuKhoaLienQuanChuyenMon = (tokens) => {
   return (tokens || []).some((t) => t && t.length >= 3 && k.has(t));
 };
 
+const chuanHoaCauTimThe = (s) =>
+  String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/**
+ * Thẻ nghiệp vụ khớp câu hỏi (từ khóa + mã quy tắc) — dùng cộng điểm ưu tiên tài liệu có `tags` trong manifest.
+ * @param {string} cauHoi
+ * @param {string[]} tokens — từ chuanHoaToken
+ * @param {string[]} maQuyTac
+ * @returns {Set<string>}
+ */
+export const thuThapTagTuCauHoi = (cauHoi, tokens, maQuyTac) => {
+  const active = new Set();
+  const hay = chuanHoaCauTimThe(cauHoi);
+  const compact = hay.replace(/\s/g, '');
+
+  const needleToTag = [
+    ['thuoc', 'thuoc'],
+    ['hoat chat', 'thuoc'],
+    ['khang sinh', 'thuoc'],
+    ['xml 2', 'thuoc'],
+    ['xml2', 'thuoc'],
+    ['tuong tac', 'tuong_tac_thuoc'],
+    ['dvkt', 'dvkt'],
+    ['cdha', 'dvkt'],
+    ['cls', 'dvkt'],
+    ['vtyt', 'vtyt'],
+    ['pttt', 'pttt'],
+    ['phau thuat', 'pttt'],
+    ['the bhyt', 'hanh_chinh'],
+    ['hanh chinh', 'hanh_chinh'],
+    ['xml 1', 'hanh_chinh'],
+    ['icd', 'icd_chuyen_mon'],
+    ['phac do', 'icd_chuyen_mon'],
+    ['chuyen mon', 'icd_chuyen_mon'],
+    ['cv266', 'cv266'],
+    ['nghi dinh', 'phap_ly'],
+    ['the tri thuc', 'the_tri_thuc'],
+    ['tro ly tri thuc', 'ai_huan_luyen'],
+    ['thu vien', 'ai_huan_luyen'],
+    ['chuyen de', 'xml_chuyen_de'],
+    ['xml130', 'xml_chuyen_de'],
+    ['4210', 'cau_truc_xml'],
+    ['7464', 'cau_truc_xml'],
+    ['cau truc xml', 'cau_truc_xml'],
+    ['qd 4210', 'cau_truc_xml'],
+  ];
+  for (const [needle, tag] of needleToTag) {
+    const n = needle.replace(/\s+/g, '');
+    if (hay.includes(needle) || (n.length >= 4 && compact.includes(n))) active.add(tag);
+  }
+
+  const tokenMap = {
+    thuoc: 'thuoc',
+    dvkt: 'dvkt',
+    vtyt: 'vtyt',
+    pttt: 'pttt',
+    icd: 'icd_chuyen_mon',
+  };
+  for (const t of tokens || []) {
+    if (tokenMap[t]) active.add(tokenMap[t]);
+  }
+
+  for (const m of maQuyTac || []) {
+    const u = String(m).toUpperCase();
+    if (u.startsWith('THUOC') || u.startsWith('DM-THUOC') || u.startsWith('TUONGTAC')) active.add('thuoc');
+    if (u.startsWith('DVKT') || u.startsWith('CDHA')) active.add('dvkt');
+    if (u.includes('VTYT')) active.add('vtyt');
+    if (u.startsWith('CK_') || u.startsWith('HC_') || u.startsWith('NS_')) active.add('hanh_chinh');
+  }
+
+  return active;
+};
+
+const diemTheTrenTaiLieu = (itemTags, activeTags) => {
+  if (!activeTags?.size || !Array.isArray(itemTags) || !itemTags.length) return 0;
+  let c = 0;
+  for (const t of itemTags) {
+    if (activeTags.has(t)) c += 1;
+  }
+  return c * 15;
+};
+
 const diemTieuDe = (title, relPath, tokens, maQuyTac) => {
   const haystack = chuanHoaSoSanh(`${String(title || '')} ${String(relPath || '')}`);
   let score = diemUuTienPhacDoChuyenMon(title, relPath);
@@ -170,10 +259,13 @@ export const traLoiTroLyTriThuc = async ({
   }
 
   const items = Array.isArray(manifestItems) ? manifestItems : [];
+  const activeTags = thuThapTagTuCauHoi(hoi, tokens, maQuyTac);
   const scored = items
     .map((it) => ({
       it,
-      score: diemTieuDe(it.title, it.relPath, tokens, maQuyTac),
+      score:
+        diemTieuDe(it.title, it.relPath, tokens, maQuyTac) +
+        diemTheTrenTaiLieu(it.tags, activeTags),
     }))
     .sort((a, b) => b.score - a.score);
 

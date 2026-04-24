@@ -26,7 +26,7 @@ const BANG_XML_KHONG_BAT_BAO_THIEU = new Set([
 ]);
 const TEN_QUY_TAC_CAU_TRUC = 'Kiểm tra cấu trúc XML theo QĐ3176';
 const CO_SO_PHAP_LY_CAU_TRUC_XML =
-  'QĐ 3176/QĐ-BYT (bảng trường bắt buộc đồng bộ file QD3176_Truong_Bat_Buoc_1.xlsx) + QĐ 130/QĐ-BYT.';
+  'QĐ 3176/QĐ-BYT (bảng trường bắt buộc đồng bộ file QD3176_Truong_Bat_Buoc_1.xlsx) + QĐ 130/QĐ-BYT; alias bổ sung cho cột Phụ lục 1 CV 7464/BYT-BH (QĐ 4210).';
 
 /**
  * Trường bắt buộc theo từng bảng — đồng bộ với phụ lục QĐ 3176/QĐ-BYT (file QD3176_Truong_Bat_Buoc_1.xlsx).
@@ -71,9 +71,27 @@ const ANH_XA_TRUONG_BAT_BUOC = {
     MATINH_CU_TRU: ['MA_TINH_CU_TRU'],
     MAHUYEN_CU_TRU: ['MA_HUYEN_CU_TRU'],
     MAXA_CU_TRU: ['MA_XA_CU_TRU'],
+    /** QĐ 4210 + CV 7464/BYT-BH — tên cột phụ lục 1 */
+    MA_BENH_CHINH: ['MA_BENH'],
+    MA_BENH_KT: ['MA_BENHKHAC'],
+    LY_DO_VV: ['MA_LYDO_VVIEN'],
+    MA_LOAI_RV: ['TINH_TRANG_RV'],
+    NGAY_MIEN_CCT: ['MIEN_CUNG_CT'],
   },
-  XML2: { TYLE_TT: ['TYLE_TT_BH', 'TYLE_TT_DV'] },
-  XML3: { TYLE_TT: ['TYLE_TT_BH', 'TYLE_TT_DV'] },
+  XML2: {
+    TYLE_TT: ['TYLE_TT_BH', 'TYLE_TT_DV'],
+    THANH_TIEN_BV: ['THANH_TIEN'],
+    THANH_TIEN_BH: ['THANH_TIEN'],
+    PHAM_VI: ['PHAM_Vl'],
+  },
+  XML3: {
+    TYLE_TT: ['TYLE_TT_BH', 'TYLE_TT_DV'],
+    THANH_TIEN_BV: ['THANH_TIEN'],
+    THANH_TIEN_BH: ['THANH_TIEN'],
+    DON_GIA_BV: ['DON_GIA'],
+    DON_GIA_BH: ['DON_GIA'],
+    PHAM_VI: ['PHAM_Vl'],
+  },
   XML5: { DIEN_BIEN_LS: ['DIEN_BIEN'] },
   XML6: {
     MATINH_CU_TRU: ['MA_TINH_CU_TRU'],

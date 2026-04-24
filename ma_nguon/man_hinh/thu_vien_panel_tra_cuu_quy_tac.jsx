@@ -60,7 +60,6 @@ const MucMenu = ({ chon, onPress, children, demPhu }) => (
 );
 
 const TheQuyTac = ({ item }) => {
-  const laEngine = item.loai_nguon === LOAI_NGUON.ENGINE_DVKT_NOCODE;
   const on = item.trang_thai === 'ON';
   return (
     <View style={NStyle.card}>
@@ -72,8 +71,8 @@ const TheQuyTac = ({ item }) => {
           <View style={[NStyle.badge, on ? NStyle.badgeOn : NStyle.badgeOff]}>
             <Text style={NStyle.badgeTxt}>{on ? 'BẬT' : 'TẮT'}</Text>
           </View>
-          <View style={[NStyle.badge, laEngine ? NStyle.badgeEng : NStyle.badgeCung]}>
-            <Text style={NStyle.badgeTxt}>{laEngine ? 'Engine' : 'Cứng'}</Text>
+          <View style={[NStyle.badge, NStyle.badgeCung]}>
+            <Text style={NStyle.badgeTxt}>Cứng</Text>
           </View>
           {item.phan_tang ? (
             <View style={NStyle.badgeL}>
@@ -112,8 +111,7 @@ const ThuVienPanelTraCuuQuyTac = () => {
   const tatCaGoc = useMemo(() => layTatCaBanGhiQuyTacPhanLap(), []);
 
   const locSauKhoaVaNguon = useMemo(() => {
-    const loai =
-      loaiLoc === 'cung' ? LOAI_NGUON.LUAT_CUNG : loaiLoc === 'eng' ? LOAI_NGUON.ENGINE_DVKT_NOCODE : null;
+    const loai = loaiLoc === 'cung' ? LOAI_NGUON.LUAT_CUNG : null;
     return locBanGhiQuyTac(tatCaGoc, {
       tuKhoa,
       loaiNguonLoc: loai,
@@ -131,8 +129,7 @@ const ThuVienPanelTraCuuQuyTac = () => {
   }, [locSauKhoaVaNguon]);
 
   const sections = useMemo(() => {
-    const loai =
-      loaiLoc === 'cung' ? LOAI_NGUON.LUAT_CUNG : loaiLoc === 'eng' ? LOAI_NGUON.ENGINE_DVKT_NOCODE : null;
+    const loai = loaiLoc === 'cung' ? LOAI_NGUON.LUAT_CUNG : null;
     const loc = locBanGhiQuyTac(tatCaGoc, {
       tuKhoa,
       loaiNguonLoc: loai,
@@ -202,8 +199,9 @@ const ThuVienPanelTraCuuQuyTac = () => {
       <View style={NStyle.dauPhai}>
         <Text style={NStyle.tieuDePanel}>Quy tắc theo phân tầng giám định (L0…L5)</Text>
         <Text style={NStyle.phuDe}>
-          Sắp theo nhóm nghiệp vụ; phân luật cứng (mã tĩnh) vs engine DVKT-OP-*. Tìm theo từ khóa. Trạng thái
-          BẬT/TẮT theo cấu hình mặc định.
+          Sắp theo nhóm nghiệp vụ; gồm luật cứng bundle (CDHA_*, DVKT-OP-*, thuốc, hành chính…), seed PTTT mục 11 và
+          danh mục mẫu ON/OFF — cùng nguồn định nghĩa với màn Quản lý quy tắc ON/OFF (trừ quy tắc chỉ do BV import qua
+          Excel). Tìm theo từ khóa; BẬT/TẮT hiển thị theo mặc định trong mã.
         </Text>
         <TextInput
           value={tuKhoa}
@@ -222,9 +220,6 @@ const ThuVienPanelTraCuuQuyTac = () => {
           </ChipNguon>
           <ChipNguon chon={loaiLoc === 'cung'} onPress={() => setLoaiLoc('cung')}>
             Luật cứng
-          </ChipNguon>
-          <ChipNguon chon={loaiLoc === 'eng'} onPress={() => setLoaiLoc('eng')}>
-            Engine DVKT
           </ChipNguon>
         </View>
         <Text style={NStyle.demKq}>
@@ -251,9 +246,9 @@ const ThuVienPanelTraCuuQuyTac = () => {
             </Text>
           </View>
         }
-        initialNumToRender={5}
-        maxToRenderPerBatch={8}
-        windowSize={5}
+        initialNumToRender={10}
+        maxToRenderPerBatch={16}
+        windowSize={9}
         nestedScrollEnabled
       />
     </View>
@@ -405,7 +400,6 @@ const NStyle = StyleSheet.create({
   badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   badgeOn: { backgroundColor: 'rgba(46, 125, 50, 0.12)' },
   badgeOff: { backgroundColor: 'rgba(198, 40, 40, 0.1)' },
-  badgeEng: { backgroundColor: 'rgba(2, 119, 189, 0.1)' },
   badgeCung: { backgroundColor: 'rgba(121, 85, 72, 0.1)' },
   badgeL: { backgroundColor: '#E2E8F0', paddingHorizontal: 6, borderRadius: 4 },
   badgeTxt: { fontSize: 9, fontWeight: '800', color: N.chu, fontFamily: 'Arial' },

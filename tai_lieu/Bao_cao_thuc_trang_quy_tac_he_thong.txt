@@ -1,7 +1,7 @@
 ══════════════════════════════════════════════════════════════════════════════
 BÁO CÁO THỰC TRẠNG HỆ THỐNG QUY TẮC CDSS BHYT (TỔNG HỢP TỪ MÃ NGUỒN)
-Sinh tự động: 2026-04-14 04:06:06
-Repo: c:\Users\admin\Documents\Google Drive\ung_dung_cdss_bhyt
+Sinh tự động: 2026-04-23 11:11:23
+Repo: C:\Users\admin\Documents\Google Drive\ung_dung_cdss_bhyt
 
 --- ĐỊNH NGHĨA DÙNG TRONG BÁO CÁO ---
 - "Trạng thái trong mã": TRANG_THAI ghi trong file .jsx (ON/OFF).
@@ -14,27 +14,27 @@ Repo: c:\Users\admin\Documents\Google Drive\ung_dung_cdss_bhyt
 ══════════════════════════════════════════════════════════════════════════════
 PHẦN 1 — TỔNG QUAN SỐ LIỆU
 ══════════════════════════════════════════════════════════════════════════════
-Tổng số quy tắc đếm được (mỗi mã một dòng trong bảng chi tiết): 4342
-  - Trong đó ghi TRANG_THAI=ON trong mã nguồn: 4015
-  - Trong đó ghi TRANG_THAI=OFF trong mã nguồn: 327
+Tổng số quy tắc đếm được (mỗi mã một dòng trong bảng chi tiết): 4321
+  - Trong đó ghi TRANG_THAI=ON trong mã nguồn: 3991
+  - Trong đó ghi TRANG_THAI=OFF trong mã nguồn: 330
 
-Hiệu lực mặc định (ON trong mã, không mặc định OFF, không tắt cứng): 3911
-Trạng thái ON trong mã nhưng không hiệu lực mặc định (mặc định OFF hoặc tắt cứng): 104
+Hiệu lực mặc định (ON trong mã, không mặc định OFF, không tắt cứng): 3991
+Trạng thái ON trong mã nhưng không hiệu lực mặc định (mặc định OFF hoặc tắt cứng): 0
 
-Số quy tắc chuyên đề placeholder (registry): 0
-Số mã trong DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF: 145
-Số mã trong DANH_SACH_QUY_TAC_TAT_CUNG: 4
+Số quy tắc chuyên đề placeholder (registry): 195
+Số mã trong DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF: 0
+Số mã trong DANH_SACH_QUY_TAC_TAT_CUNG: 12
 
 --- Phân bổ theo tab (TAB_ID) ---
-  LUAT_CDHA: 951 quy tắc
+  LUAT_CDHA: 928 quy tắc
   LUAT_CONG_KHAM: 57 quy tắc
-  LUAT_DU_LIEU: 114 quy tắc
+  LUAT_DU_LIEU: 115 quy tắc
   LUAT_GIUONG: 77 quy tắc
-  LUAT_HANH_CHINH: 248 quy tắc
+  LUAT_HANH_CHINH: 251 quy tắc
   LUAT_HOP_DONG: 22 quy tắc
   LUAT_NHAN_SU: 15 quy tắc
   LUAT_PTTT: 2320 quy tắc
-  LUAT_THUOC: 538 quy tắc
+  LUAT_THUOC: 536 quy tắc
 
 ══════════════════════════════════════════════════════════════════════════════
 PHẦN 2 — NHÓM DỄ DƯƠNG GIẢ (CHÍNH SÁCH MẶC ĐỊNH OFF / GHI CHÚ TRONG MÃ)
@@ -43,735 +43,6 @@ Mỗi mục gồm: mã trong danh sách, ghi chú chính sách cùng dòng (//) 
 tên quy tắc và nội dung cảnh báo lấy từ TEN_QUY_TAC / CANH_BAO (hoặc ALERT_MESSAGE với DVKT-OP-*).
 
 2A — Mặc định OFF (DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF): có thể bật lại trong màn hình Quản lý ON/OFF.
-
---- [1] Mã: DVKT-OP-03 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Phạm vi hành nghề (phụ thuộc mapping nhân sự/chuyên khoa)
-Tên quy tắc: Phạm vi hành nghề
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): Người thực hiện không đúng phạm vi chuyên môn cho DVKT.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [2] Mã: DVKT-OP-04 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Trang thiết bị (phụ thuộc danh mục M06 đầy đủ)
-Tên quy tắc: Máy móc thiết bị
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): CSKCB không có thiết bị hợp lệ để thực hiện DVKT.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [3] Mã: DVKT-OP-07 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Phân loại PTTT (phụ thuộc mã phân loại và quy ước viện)
-Tên quy tắc: Phân loại PTTT
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): Thông tin phân loại PTTT chưa đúng quy định.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [4] Mã: DVKT-OP-10 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Thời gian hành nghề bác sĩ (dễ lệch do dữ liệu ca/kíp)
-Tên quy tắc: Thời gian hành nghề bác sỹ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): Thông tin hành nghề bác sỹ không hợp lệ tại thời điểm thực hiện DVKT.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [5] Mã: DVKT-OP-11 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Danh mục 3 tạm thời (thường chưa ổn định)
-Tên quy tắc: Danh mục 3 tạm thời chưa thanh toán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): DVKT thuộc danh mục tạm thời chưa được quỹ BHYT thanh toán.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [6] Mã: DVKT-OP-12 ---
-Ghi chú chính sách (trong quy_tac_on_off_noi_bo.jsx): Mapping người hành nghề theo DVKT (phụ thuộc mapping mở rộng)
-Tên quy tắc: Mapping người hành nghề theo DVKT
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): Người hành nghề không khớp mapping được phê duyệt cho DVKT.
-Nguồn nội dung: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx
-
---- [7] Mã: CDHA_08 ---
-Tên quy tắc: XML 130: Chữ ký số của BS đọc KQ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [PHÁP LÝ]: Theo QĐ 130, kết quả CĐHA bắt buộc phải có chữ ký số của bác sĩ đọc kết quả để đủ điều kiện quyết toán.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx
-
---- [8] Mã: CDHA_09 ---
-Tên quy tắc: XML 130: Chữ ký số Bác sĩ đọc
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [PHÁP LÝ]: Kết quả CĐHA thiếu chữ ký số của bác sĩ đọc kết quả theo quy định trích xuất dữ liệu điện tử.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx
-
---- [9] Mã: CDHA_198 ---
-Tên quy tắc: [XML 130] Đối soát mã máy theo Khoa
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [LỖI DỮ LIỆU]: Mã máy trang thiết bị không nằm tại khoa phòng ghi nhận thực hiện dịch vụ. Sai lệch báo cáo TTB.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx
-
---- [10] Mã: CDHA_202 ---
-Tên quy tắc: [XML 130] Chứng chỉ hành nghề BS đọc KQ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [PHÁP LÝ]: Thiếu thông tin mã định danh/CCHN bác sĩ đọc kết quả. Hồ sơ không đủ tính pháp lý để quyết toán.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx
-
---- [11] Mã: CDHA_236 ---
-Tên quy tắc: [Người hành nghề] KTV ký XML 130 (XML3)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [PHÁP LÝ]: Thiếu thông tin Kỹ thuật viên thực hiện tại bảng dịch vụ chi tiết (XML3) theo chuẩn dữ liệu 130.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx
-
---- [12] Mã: THUOC_98 ---
-Tên quy tắc: [Celecoxib] Kiểm tra Chỉ định ICD-10
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [XUẤT TOÁN]: Thuốc Celosti 200 chỉ được thanh toán cho chẩn đoán Thoái hóa khớp, Viêm khớp dạng thấp, Viêm cột sống dính khớp, Đau khớp (M15, M05, M06, M45, M25.5).
-Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx
-
---- [13] Mã: THUOC_400 ---
-Tên quy tắc: Đơn thuốc điện tử sai định dạng mã
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [TT 26/2025]: Mã đơn thuốc điện tử quốc gia bắt buộc gồm 12 ký tự, bắt đầu bằng "DT" để đồng bộ với hệ thống Đơn thuốc quốc gia.
-Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx
-
---- [14] Mã: DVKT_1602 ---
-Tên quy tắc: Chỉ định - SA Doppler ĐM, TM chi dưới (18.0045.0004)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🔴 Cần mã: I80 (Huyết khối TM), I83 (Giãn TM), E11.5 (Bàn chân đái tháo đường).
-Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx
-
---- [15] Mã: DMBV-DVKT-00 ---
-Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
-Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
-
---- [16] Mã: DMBV-THUOC-00 ---
-Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
-Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
-
---- [17] Mã: GB_02 ---
-Tên quy tắc: Giường điều trị nội trú (mã 03/09) và mã bệnh nhẹ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [GIÁM ĐỊNH]: Chẩn đoán bệnh lý mức độ nhẹ có thể xử trí ở nhóm khám bệnh/điều trị ngoại trú theo QĐ 824 nhưng hồ sơ lại vào điều trị nội trú (mã 03/09).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [18] Mã: GB_76 ---
-Tên quy tắc: [Thời gian] Nằm viện tối thiểu 4 giờ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [XUẤT TOÁN]: Thời gian nằm viện dưới 4 giờ không đủ điều kiện thanh toán tiền giường (Trừ ca cấp cứu chuyển viện/tử vong).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [19] Mã: CK_23 ---
-Tên quy tắc: Công khám vượt định mức 2.000.000đ/năm
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [RỦI RO]: Bệnh nhân có tổng tiền công khám trong năm quá cao. BHXH sẽ kiểm tra trục lợi thẻ BHYT.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [20] Mã: CK_25 ---
-Tên quy tắc: CCHN bác sĩ Nhi khoa khám người lớn
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [SAI PHẠM VI]: Bác sĩ chuyên khoa Nhi thực hiện khám cho người bệnh trên 16 tuổi. Kiểm tra tính hợp pháp của CCHN.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [21] Mã: CK_26 ---
-Tên quy tắc: Khám bệnh mạn tính quá 12 lần/năm
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [TẦN SUẤT]: Bệnh nhân mạn tính khám quá 12 lần/năm. Kiểm tra sự cần thiết của các lần khám phát sinh.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [22] Mã: CK_27 ---
-Tên quy tắc: Công khám bệnh án mạn tính
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [TẦN SUẤT]: Bệnh nhân mạn tính tái khám dưới 15 ngày. Kiểm tra lý do khám sớm để tránh bị xuất toán tần suất.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [23] Mã: CK_36 ---
-Tên quy tắc: CCHN bác sĩ không phù hợp khoa
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI CCHN]: Bác sĩ thực hiện công khám có chứng chỉ hành nghề không phù hợp với chuyên khoa của bàn khám.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [24] Mã: CK_38 ---
-Tên quy tắc: Khám chuyên khoa tại khoa không tương ứng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI DANH MỤC]: Mã chuyên khoa của công khám không khớp với danh mục khoa phòng thực hiện.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [25] Mã: CK_46 ---
-Tên quy tắc: Khám bệnh vượt tuyến kỹ thuật
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI TUYẾN]: Cơ sở thực hiện công khám vượt quá phân tuyến kỹ thuật được phép.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [26] Mã: CK_51 ---
-Tên quy tắc: Bác sĩ khám vượt quá 02 cơ sở/ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [VI PHẠM CCHN]: Một bác sĩ không được đăng ký hành nghề và tính công khám tại quá 02 cơ sở y tế trong cùng một ngày.
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [27] Mã: CK_52 ---
-Tên quy tắc: Trùng lặp công khám cùng giờ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [VÔ LÝ]: Một bác sĩ không thể thực hiện khám cho 2 bệnh nhân tại cùng một thời điểm (phút/giây).
-Nguồn nội dung: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx
-
---- [28] Mã: NS_02 ---
-Tên quy tắc: Kiểm tra nhân sự có trong DM đăng ký hành nghề
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI QUY ĐỊNH]: Người thực hiện DVKT ({NGUOI_THUC_HIEN}) không có trong danh mục nhân sự đăng ký hành nghề tại CSKCB.
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [29] Mã: NS_03 ---
-Tên quy tắc: BS Y khoa - Phạm vi hành nghề (PL V, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI PHẠM]: DVKT {MA_DICH_VU} ngoài 507 kỹ thuật được phép của BS Y khoa (PL V, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [30] Mã: NS_04 ---
-Tên quy tắc: BS YHCT - Phạm vi hành nghề (PL VI, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI PHẠM]: DVKT {MA_DICH_VU} không thuộc danh mục kỹ thuật YHCT (PL VI, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [31] Mã: NS_05 ---
-Tên quy tắc: BS RHM - Phạm vi hành nghề (PL VIII, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI PHẠM]: DVKT {MA_DICH_VU} ngoài 339 danh mục kỹ thuật RHM (PL VIII, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [32] Mã: NS_06 ---
-Tên quy tắc: BS Chuyên khoa - Phạm vi hành nghề (PL IX, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [XUẤT TOÁN]: BS chuyên khoa thực hiện kỹ thuật ngoài danh mục chuyên khoa (PL IX, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [33] Mã: NS_07 ---
-Tên quy tắc: Điều dưỡng - Phạm vi hành nghề (PL XII, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI PHẠM]: Điều dưỡng thực hiện kỹ thuật ngoài phạm vi hành nghề (PL XII, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [34] Mã: NS_08 ---
-Tên quy tắc: Hộ sinh - Phạm vi hành nghề (PL XIII, TT 32)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI PHẠM]: Hộ sinh thực hiện DVKT ngoài 133 kỹ thuật Sản-Nhi (PL XIII, TT 32/2023/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [35] Mã: NS_09 ---
-Tên quy tắc: Kiểm tra phân cấp kỹ thuật theo vị trí chuyên môn
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI QUY ĐỊNH]: Người thực hiện không đủ phân cấp kỹ thuật (VD: Y sĩ làm kỹ thuật dành cho Bác sĩ).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [36] Mã: NS_11 ---
-Tên quy tắc: Kê thuốc đặc trị - BS không có quyền kê
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [CẢNH BÁO]: Thuốc đặc trị ({MA_THUOC}) chỉ được kê bởi BS chuyên khoa (TT 30/2018/TT-BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [37] Mã: NS_12 ---
-Tên quy tắc: CCHN hết hạn hoặc bị thu hồi
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI QUY ĐỊNH]: Người hành nghề ({NGUOI_THUC_HIEN}) có CCHN hết hạn/bị thu hồi tại thời điểm KCB. Vi phạm Luật KCB 2023.
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [38] Mã: NS_13 ---
-Tên quy tắc: DVKT ngoài DMDC BHYT hoặc ngoài phạm vi CSKCB
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [XUẤT TOÁN]: DVKT {MA_DICH_VU} không thuộc DMDC BHYT hoặc ngoài phạm vi được cấp phép của CSKCB ({MA_CSKCB}).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [39] Mã: NS_14 ---
-Tên quy tắc: BS chỉ định ≠ BS thực hiện - Thiếu y lệnh
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [CẢNH BÁO]: DVKT {MA_DICH_VU} do người khác thực hiện nhưng thiếu y lệnh/chỉ định của BS điều trị (Bảng 1).
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [40] Mã: NS_15 ---
-Tên quy tắc: Nhân sự không đăng ký tại CSKCB hiện tại
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [CẢNH BÁO]: Người thực hiện ({NGUOI_THUC_HIEN}) có CCHN nhưng không đăng ký hành nghề tại CSKCB {MA_CSKCB}.
-Nguồn nội dung: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx
-
---- [41] Mã: HD_01 ---
-Tên quy tắc: Giờ tiếp đón ngoại trú sai quy định
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ VI PHẠM ĐIỀU 1 (2.2.1): Tiếp đón ngoại trú ngoài giờ hành chính thỏa thuận (07:00-11:30 và 13:00-16:30).
-Nguồn nội dung: ma_nguon/tien_ich/luat_hop_dong_hardcoded.jsx
-
---- [42] Mã: GB_63 ---
-Tên quy tắc: [Trùng lặp] Nhiều giường trong 1 ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [TRÙNG LẶP]: Phát hiện tính 02 loại giường khác nhau cho cùng 1 bệnh nhân trong cùng 1 ngày (Trừ ngày chuyển khoa).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [43] Mã: GB_71 ---
-Tên quy tắc: Chuyển khoa và Tính ngày giường
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [XUẤT TOÁN]: Chuyển nhiều khoa trong ngày chỉ được tính 01 ngày giường tại khoa cuối cùng hoặc khoa nằm lâu nhất.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [44] Mã: GB_28 ---
-Tên quy tắc: [Sản khoa] Giường con nằm cùng mẹ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ [XML 130]: Thiếu thông tin ngày giường của trẻ sơ sinh nằm cùng mẹ (nếu có phát sinh dịch vụ cho con).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [45] Mã: GB_34 ---
-Tên quy tắc: [Hồi sức] Giường ICU và Máy thở
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ JCI Audit: Nằm giường hồi sức tích cực cấp 1 nhưng không có ghi nhận hỗ trợ hô hấp bằng máy.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [46] Mã: GB_56 ---
-Tên quy tắc: Giường và Đơn giá giường ghép 2
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [SAI ĐƠN GIÁ]: Nằm ghép 2 người chỉ được thanh toán 50% đơn giá theo quy định.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [47] Mã: GB_67 ---
-Tên quy tắc: [Logic] Ngày vào muộn hơn ngày mổ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [VÔ LÝ]: Ngày nhập viện muộn hơn ngày thực hiện phẫu thuật nội trú.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [48] Mã: GB_68 ---
-Tên quy tắc: Giường và Thời gian phẫu thuật
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [VÔ LÝ]: Tính giường hậu phẫu trước khi bệnh nhân được thực hiện phẫu thuật.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx
-
---- [49] Mã: CHUYEN_DE_003 ---
-Tên quy tắc: Áp sai giá nhóm PT Xương/Phần mềm
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Áp sai giá các PT lấy xương chết; KHX trên màn hình tăng sáng; PT vết thương phần mềm rách da đầu; PT giập nát phần mềm. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi PT/KHX/lấy xương trong DS_XML3 — đối chiếu nhóm giá TT 35/50.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [50] Mã: CHUYEN_DE_009 ---
-Tên quy tắc: Áp sai ngày giường Hồi sức cấp cứu (HSCC)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định giường HSCC nhưng hồ sơ không thể hiện tình trạng cần chăm sóc HSCC theo TT 22/2023/TT-BYT [2]. (Heuristic XML130: đợt ngoại trú <10 phút, có dòng gợi giường và gợi HSCC/hồi sức cấp cứu trong DS_XML3 — đối chiếu lâm sàng.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [51] Mã: CHUYEN_DE_010 ---
-Tên quy tắc: Chỉ định MRI chưa đủ điều kiện
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định chụp CHT (MRI) chưa đủ điều kiện lâm sàng theo quy trình kỹ thuật. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi MRI trong DS_XML3 — đối chiếu chỉ định/QTKT.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [52] Mã: CHUYEN_DE_011 ---
-Tên quy tắc: Chỉ định PT kết hợp xương đòn chưa phù hợp
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định phẫu thuật kết hợp xương đòn chưa phù hợp tình trạng bệnh (có thể điều trị bảo tồn). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi xương đòn/kết hợp trong DS_XML3 — đối chiếu chỉ định bảo tồn.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [53] Mã: CHUYEN_DE_012 ---
-Tên quy tắc: Chỉ định siêu âm đầu dò chưa phù hợp
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định siêu âm đầu dò chưa phù hợp với độ tuổi, tình trạng hôn nhân hoặc mã chẩn đoán lâm sàng.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [54] Mã: CHUYEN_DE_014 ---
-Tên quy tắc: Chỉ định XN Mô bệnh học ruột thừa không phù hợp
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định XN Mô bệnh học với bệnh phẩm ruột thừa viêm thông thường chưa phù hợp (trừ ca có biến chứng/nghi u).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [55] Mã: CHUYEN_DE_019 ---
-Tên quy tắc: Thanh toán sai 1/2 ngày giường chuyển khoa
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Tính thêm 1/2 ngày giường tại khoa chuyển đi trong ngày điều trị không đúng quy định. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi giường trong DS_XML3 — chuyển khoa/ngày giường cần đối chiếu hồ sơ nội trú.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [56] Mã: CHUYEN_DE_020 ---
-Tên quy tắc: Vượt công suất định mức máy MRI
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí ca chụp CHT (MRI) vượt định mức công suất tối đa theo quy định (chỉ được thanh toán tỷ lệ hoặc từ chối). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi MRI trong DS_XML3 — định mức máy/công suất cần đối chiếu sổ vận hành/HIS.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [57] Mã: CHUYEN_DE_024 ---
-Tên quy tắc: XN thường quy sai quy định trước mổ Phaco
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định xét nghiệm AST, ALT, Điện tim thường quy trên BN phẫu thuật Phaco nhưng không có bệnh lý nền liên quan. (Heuristic XML130: đợt ngoại trú <10 phút, có Phaco/mộng mắt và dòng gợi men gan hoặc điện tim trong DS_XML3, ICD không gợi gan/tim/ĐTĐ — đối chiếu chỉ định tiền mổ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [58] Mã: CHUYEN_DE_027 ---
-Tên quy tắc: Vượt định mức ca Chụp CLVT (CT-Scanner)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí chụp Cắt lớp vi tính vượt định mức số ca tối đa/ngày (sẽ bị giảm trừ tỷ lệ thanh toán). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi CT/CLVT trong DS_XML3 — định mức/ngày cần đối chiếu sổ máy/HIS.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [59] Mã: CHUYEN_DE_031 ---
-Tên quy tắc: Áp sai giá giường ICU vs HSCC
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thanh toán giường Hồi sức tích cực (ICU) nhưng hồ sơ chỉ phản ánh tình trạng Hồi sức cấp cứu thông thường. (Heuristic XML130: đợt ngoại trú <10 phút, có dòng gợi giường và dòng gợi ICU/HSTC trong DS_XML3 — đối chiếu mức giá/tình trạng lâm sàng.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [60] Mã: CHUYEN_DE_037 ---
-Tên quy tắc: Chỉ định Siêu âm Doppler mạch máu sai ĐK
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định SA Doppler hệ động tĩnh mạch chi dưới chưa đủ điều kiện lâm sàng. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi Doppler trong DS_XML3 — đối chiếu chỉ định/QTKT.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [61] Mã: CHUYEN_DE_038 ---
-Tên quy tắc: Chỉ định Siêu âm tim sai QTKT
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định siêu âm tim chưa đủ điều kiện theo quy trình kỹ thuật (không có bệnh lý tim mạch, hô hấp hoặc tiền phẫu liên quan). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi siêu âm tim/echo trong DS_XML3 — đối chiếu ICD/chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [62] Mã: CHUYEN_DE_039 ---
-Tên quy tắc: Chỉ định XN HBsAg chưa phù hợp
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định XN HBsAg chưa phù hợp (trừ trường hợp chuẩn bị can thiệp chảy máu hoặc có dấu hiệu lâm sàng bệnh gan). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi HBsAg/viêm gan B trong DS_XML3 — đối chiếu chỉ định lâm sàng/can thiệp.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [63] Mã: CHUYEN_DE_044 ---
-Tên quy tắc: Chụp đáy mắt không huỳnh quang sai CĐ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định chụp đáy mắt không đúng hướng dẫn chẩn đoán và điều trị đối với bệnh lý đáy mắt, võng mạc. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi đáy mắt/fundus trong DS_XML3 — đối chiếu chỉ định/QTKT.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [64] Mã: CHUYEN_DE_047 ---
-Tên quy tắc: Khám YHCT không đúng quy định
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí công khám Y học cổ truyền không đúng quy định. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi khám YHCT trong DS_XML3 — điều kiện công khám cần đối chiếu quy định/hồ sơ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [65] Mã: CHUYEN_DE_055 ---
-Tên quy tắc: Chụp CT không đủ điều kiện thanh toán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí DVKT Chụp CT không đủ điều kiện thanh toán (sai tuyến, sai chỉ định, hoặc máy chưa được phê duyệt). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi CT/CLVT trong DS_XML3 — đối chiếu chỉ định/phê duyệt máy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [66] Mã: CHUYEN_DE_058 ---
-Tên quy tắc: Thiếu thông số quy trình Cứu (YHCT)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Hồ sơ chỉ định Cứu không có số huyệt cụ thể, không chỉ định phương pháp (sai quy trình YHCT). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi châm cứu/cứu huyệt trong DS_XML3 — số huyệt cần đối chiếu y lệnh.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [67] Mã: CHUYEN_DE_068 ---
-Tên quy tắc: DVKT PHCN thiếu nhân lực đủ điều kiện
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí DVKT phục hồi chức năng chưa đủ điều kiện thanh toán về nhân lực hành nghề. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi PHCN trong DS_XML3 — đối chiếu hợp đồng/nhân sự thực hiện.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [68] Mã: CHUYEN_DE_083 ---
-Tên quy tắc: Thủy châm thiếu nhân lực đủ điều kiện
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí DVKT Thủy châm không đủ điều kiện về nhân lực thực hiện (người thực hiện chưa có CCHN hoặc chứng chỉ đào tạo YHCT hợp lệ). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi thủy châm trong DS_XML3 — CCHN/chứng chỉ cần đối chiếu hồ sơ giấy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [69] Mã: CHUYEN_DE_091 ---
-Tên quy tắc: Giường bệnh không đủ điều kiện thanh toán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí giường không đủ điều kiện thanh toán (VD: bệnh nhân vắng mặt, không có y lệnh chăm sóc). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi giường trong DS_XML3 — điều kiện nằm/y lệnh cần đối chiếu hồ sơ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [70] Mã: CHUYEN_DE_095 ---
-Tên quy tắc: Bảng kê chi phí KCB lập sai quy định
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bảng kê 01/BV, 02/BV lập không đúng quy định (thiếu chữ ký, sai định dạng, gộp dòng sai). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng gợi công khám — định dạng bảng kê/chữ ký không có trong XML130; đối chiếu bản giấy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [71] Mã: CHUYEN_DE_097 ---
-Tên quy tắc: Nội soi TMH sai chỉ định lâm sàng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Nội soi tai mũi họng chỉ định không phù hợp tình trạng bệnh (không có triệu chứng TMH). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi nội soi trong DS_XML3 — đối chiếu ICD/chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [72] Mã: CHUYEN_DE_112 ---
-Tên quy tắc: Thuốc Tiểu đường sai chẩn đoán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định thuốc điều trị đái tháo đường chưa phù hợp bệnh lý và chẩn đoán. (Heuristic XML130: đợt ngoại trú <10 phút, có thuốc gợi ĐTĐ trong DS_XML2 nhưng không thấy ICD E10–E14/O24/R73 trên XML1 — chặt hơn Chuyen_de_023; đối chiếu đường huyết/R73.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [73] Mã: CHUYEN_DE_121 ---
-Tên quy tắc: Ngày giường HSCC vượt chỉ tiêu phân bổ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Tính tiền giường HSCC vượt quá số lượng giường được phân bổ/phê duyệt cho khoa đó. (Heuristic XML130: đợt ngoại trú <10 phút, có dòng gợi giường và HSCC/hồi sức cấp cứu trong DS_XML3 — chỉ tiêu giường cần đối chiếu phê duyệt khoa.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [74] Mã: CHUYEN_DE_124 ---
-Tên quy tắc: Giường thực kê vượt giường kế hoạch
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí tiền giường vượt số giường được phê duyệt (Sẽ áp dụng cơ chế giảm trừ tỷ lệ thanh toán theo Thông tư 22/2023). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi giường trong DS_XML3 — đối chiếu số giường kế hoạch/BHXH.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [75] Mã: CHUYEN_DE_138 ---
-Tên quy tắc: Lạm dụng Xét nghiệm miễn dịch
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí xét nghiệm miễn dịch không phù hợp tình trạng lâm sàng (Tầm soát ung thư/dấu ấn miễn dịch không có bệnh cảnh). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng DVKT gợi miễn dịch/tumor marker/dấu ấn trong DS_XML3 — chỉ định cần đối chiếu ICD/hồ sơ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [76] Mã: CHUYEN_DE_139 ---
-Tên quy tắc: Nhuộm HE bệnh phẩm ruột thừa lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Nhuộm Hematoxyline-Eosin với bệnh phẩm ruột thừa viêm cấp thông thường là chưa phù hợp (chỉ làm khi nghi ngờ u/lao). (Heuristic XML130: đợt ngoại trú <10 phút, ICD gợi viêm ruột thừa (K35/K36) và có dòng gợi mô bệnh + HE + ruột thừa trong DS_XML3 — đối chiếu mô tả GPB.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [77] Mã: CHUYEN_DE_151 ---
-Tên quy tắc: Giường Khoa Nhi vượt thực kê đã thống nhất
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chi phí tiền giường sử dụng thực tế vượt số lượng giường thực kê đã thống nhất với cơ quan BHXH. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi giường kèm Nhi/sơ sinh/trẻ em trong DS_XML3 — đối chiếu biên bản thực kê/BHXH.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [78] Mã: CHUYEN_DE_166 ---
-Tên quy tắc: Vượt công suất giường bệnh
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Công suất giường vượt mức quy định nhưng chưa áp dụng tỷ lệ giảm trừ giá thanh toán theo Thông tư 22/2023/TT-BYT (Kế thừa TT 39/2018). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng gợi giường trong DS_XML3 — công suất/phê duyệt cần đối chiếu BHXH.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [79] Mã: CHUYEN_DE_169 ---
-Tên quy tắc: Lạm dụng XN Tuyến giáp (FT3, FT4, TSH)
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Xét nghiệm chức năng tuyến giáp không có mã chẩn đoán suy giáp, cường giáp, bướu cổ (Sai QĐ 320/QĐ-BYT). (Heuristic XML130: đợt ngoại trú <10 phút, có TSH/FT3/FT4 trong DS_XML3 nhưng không thấy ICD E03–E07 trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [80] Mã: CHUYEN_DE_172 ---
-Tên quy tắc: Định lượng Troponin Ths sai chỉ định
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Troponin siêu nhạy khi bệnh nhân không có đau ngực, không nghi ngờ nhồi máu cơ tim/hội chứng vành cấp. (Heuristic XML130: đợt ngoại trú <10 phút, có Troponin trong DS_XML3 nhưng không thấy ICD gợi đau ngực/ACS (I20–I24, R07) trên XML1 — đối chiếu cấp cứu tim mạch.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [81] Mã: CHUYEN_DE_175 ---
-Tên quy tắc: Định lượng Ferritin lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Ferritin trên bệnh nhân không có chẩn đoán thiếu máu thiếu sắt, quá tải sắt hoặc viêm nhiễm hệ thống. (Heuristic XML130: đợt ngoại trú <10 phút, có Ferritin trong DS_XML3 nhưng không thấy ICD D50–D52/E83 (thiếu máu/rối loạn sắt) trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [82] Mã: CHUYEN_DE_180 ---
-Tên quy tắc: Định lượng HDL-C, LDL-C lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định xét nghiệm mỡ máu chuyên sâu nhưng chẩn đoán không có mã Rối loạn Lipid máu hoặc bệnh lý tim mạch liên quan. (Heuristic XML130: đợt ngoại trú <10 phút, có HDL/LDL trong DS_XML3 nhưng không thấy ICD E78 hoặc ĐTĐ/tim mạch (E10–E14, I10/I11, I20–I25) trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [83] Mã: CHUYEN_DE_182 ---
-Tên quy tắc: Đo hoạt độ GGT lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng men gan GGT (Gama Glutamyl Transferase) khi chưa có chẩn đoán bệnh lý gan mật, ứ mật hoặc nghiện rượu. (Heuristic XML130: đợt ngoại trú <10 phút, có GGT trong DS_XML3 nhưng không thấy ICD gợi bệnh lý gan mật (K70–K77), Cushing (E24), rối loạn chuyển hóa (R74) trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [84] Mã: CHUYEN_DE_189 ---
-Tên quy tắc: Bộ VTYT thanh toán vượt định mức
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Số lượng vật tư y tế (VD: kim luồn, gạc, bơm tiêm) vượt quá định mức quy định cho 1 lần thực hiện DVKT. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng VTYT với SO_LUONG > 6 trong DS_XML5 — đối chiếu định mức theo DVKT.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [85] Mã: CHUYEN_DE_191 ---
-Tên quy tắc: Lấy nút biểu bì ống tai ngoài sai quy trình
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định lấy nút biểu bì nhưng hồ sơ khám không mô tả tình trạng có nút biểu bì hoặc thực hiện sai quy trình. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng DVKT gợi lấy nút biểu bì ống tai trong DS_XML3 — đối chiếu mô tả lâm sàng.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [86] Mã: CHUYEN_DE_209 ---
-Tên quy tắc: XN Dengue NS1Ag và IgM/IgG đồng thời
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng chỉ định đồng thời cả Test nhanh kháng nguyên NS1 và Kháng thể IgM/IgG trong cùng 1 ngày (Sai phác đồ).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [87] Mã: CHUYEN_DE_215 ---
-Tên quy tắc: Lượt khám ĐTĐ, THA ngoại trú < 3 tuần
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân mạn tính (Huyết áp, Tiểu đường) đi khám lại khi chưa hết thuốc (< 3 tuần) mà không có lý do cấp cứu. (Heuristic XML130: đợt ngoại trú <10 phút, có công khám và ICD gợi ĐTĐ/THA trên XML1 — khoảng cách <3 tuần không suy được từ XML130; đối chiếu lịch tái khám/đơn thuốc.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [88] Mã: CHUYEN_DE_223 ---
-Tên quy tắc: Kháng thể dsDNA và ANA đồng thời
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng chỉ định đồng thời xét nghiệm ANA và Anti-dsDNA. Thông thường cần làm ANA trước làm test sàng lọc, nếu dương tính mới làm chuyên sâu.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [89] Mã: CHUYEN_DE_244 ---
-Tên quy tắc: Lạm dụng Định lượng CRP hs
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Xét nghiệm CRP siêu nhạy (CRP-hs) chỉ định sai quy định tại TT 50/2017 (Chỉ ưu tiên cho đánh giá nguy cơ tim mạch, không dùng tầm soát viêm thông thường). (Heuristic XML130: đợt ngoại trú <10 phút, có XN CRP-hs trong DS_XML3 nhưng không thấy ICD gợi bệnh tim mạch/rối loạn lipid (I10–I11, I20–I25, I50, E78) trên XML1 — đối chiếu nguy cơ tim mạch.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [90] Mã: CHUYEN_DE_257 ---
-Tên quy tắc: Xét nghiệm Phản ứng hòa hợp 22 độ lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng xét nghiệm Phản ứng hòa hợp ở 22 độ trong môi trường nước muối khi không có chỉ định truyền máu đặc thù. (Heuristic XML130: đợt ngoại trú <10 phút, có XN phản ứng hòa hợp/crossmatch gợi 22°/saline trong DS_XML3 nhưng không có dòng DVKT gợi truyền máu/chế phẩm máu — đối chiếu chỉ định truyền.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [91] Mã: CHUYEN_DE_258 ---
-Tên quy tắc: Lạm dụng CT ổ bụng thường quy
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chụp cắt lớp vi tính tầng trên ổ bụng thường quy lạm dụng, không thực hiện theo nguyên tắc bậc thang (Siêu âm/XQ trước). (Heuristic XML130: đợt ngoại trú <10 phút, có CT ổ bụng trong DS_XML3 nhưng không có siêu âm/X-quang ổ bụng cùng đợt — bậc thang trước đó không suy được từ XML.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [92] Mã: CHUYEN_DE_289 ---
-Tên quy tắc: Kháng sinh ngoại trú cấp nhiều đợt
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng cấp kháng sinh ngoại trú nhiều đợt liên tiếp không có bằng chứng vi sinh/nhiễm khuẩn dai dẳng. (Heuristic XML130: đợt ngoại trú <10 phút và có thuốc gợi kháng sinh trong DS_XML2 — proxy một đợt KCB; nhiều đợt liên tiếp cần đối chiếu nhiều MA_LK.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [93] Mã: CHUYEN_DE_294 ---
-Tên quy tắc: Lạm dụng bộ 3 Men gan
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định đồng thời AST, ALT, GGT cho bệnh nhân không có bệnh lý gan mật rõ ràng. (Heuristic XML130: đợt ngoại trú <10 phút, có đủ XN GGT + AST + ALT trên DS_XML3 và không thấy ICD gợi gan/mật (K70–K77, B16–B18, C22, R94) trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [94] Mã: CHUYEN_DE_295 ---
-Tên quy tắc: Tổng phân tích nước tiểu không hợp lý
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định xét nghiệm TPT nước tiểu quá nhiều lần/đợt điều trị mà không có bệnh lý thận-tiết niệu. (Heuristic XML130: đợt ngoại trú <10 phút, có ≥2 dòng TPT nước tiểu trong DS_XML3 và không thấy ICD gợi thận–tiết niệu (N10–N13, N18, N20, N30, N39–N41) trên XML1 — đối chiếu chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [95] Mã: CHUYEN_DE_298 ---
-Tên quy tắc: Tổng phân tích tế bào máu lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Tổng phân tích máu ngoại vi cho các trường hợp không có chỉ định y khoa rõ ràng. (Heuristic XML130: đợt ngoại trú <10 phút và có ≥2 dòng DVKT gợi TPT máu ngoại vi/CBC trong DS_XML3 — chỉ định lâm sàng cần đối chiếu hồ sơ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [96] Mã: CHUYEN_DE_299 ---
-Tên quy tắc: Định lượng Creatinin lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Xét nghiệm Creatinin tần suất cao không đúng Hướng dẫn chẩn đoán điều trị. (Heuristic XML130: đợt ngoại trú <10 phút, có ≥2 dòng XN creatinin trong DS_XML3 và không thấy ICD N18/N19 trên XML1 — theo dõi suy thận cần đối chiếu phác đồ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [97] Mã: CHUYEN_DE_306 ---
-Tên quy tắc: Chụp X-quang số hóa lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng X-quang số hóa thay vì X-quang thường quy để thu giá cao, không phù hợp tình trạng bệnh. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng X-quang gợi số hóa/digital/CR/DR trong DS_XML3 — so với XQ thường quy cần đối chiếu chỉ định và giá.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [98] Mã: CHUYEN_DE_322 ---
-Tên quy tắc: Siêu âm vượt định mức
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Số lượng ca siêu âm/máy/ngày vượt định mức quy định (Bị áp dụng tỷ lệ giảm trừ giá). (Heuristic XML130: đợt ngoại trú <10 phút và ≥5 dòng tên DVKT gợi siêu âm trong DS_XML3 — định mức/máy/ngày cần đối chiếu sổ máy/HIS; có thể dương giả nếu tách nhiều vùng hợp lệ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [99] Mã: CHUYEN_DE_342 ---
-Tên quy tắc: Siêu âm âm đạo quá mức
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng SA đầu dò âm đạo thay vì SA bụng tổng quát. BHXH yêu cầu điều chỉnh về giá SA ổ bụng. (Heuristic XML130: đợt ngoại trú <10 phút và ≥2 dòng DVKT gợi SA âm đạo/đầu dò trong DS_XML3 — có thể dương giả nếu nhiều vùng hợp lệ.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [100] Mã: CHUYEN_DE_357 ---
-Tên quy tắc: Điện tim đồng thời Doppler tim
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng chỉ định Điện tim thường quy cùng lúc với Siêu âm Doppler tim khi không có diễn biến cấp tính.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [101] Mã: CHUYEN_DE_364 ---
-Tên quy tắc: Lạm dụng Sinh hóa máu mổ Phaco
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân mổ Phaco (chỉ gây tê tại chỗ) không có bệnh nền nhưng làm quá nhiều xét nghiệm sinh hóa máu. (Heuristic XML130: đợt ngoại trú <10 phút, có Phaco/mộng mắt và ≥8 dòng DVKT gợi sinh hóa/huyết thanh trong DS_XML3, ICD không gợi bệnh nền như Chuyen_de-024 — đối chiếu chỉ định; tách XN có thể dương giả.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [102] Mã: CHUYEN_DE_371 ---
-Tên quy tắc: Giường ngoại khoa trước mổ kéo dài
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định giường Ngoại khoa trước phẫu thuật quá dài ngày mà không có lý do y khoa (như điều trị nội khoa ổn định trước mổ).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [103] Mã: CHUYEN_DE_374 ---
-Tên quy tắc: Khám lại sau từ 1-2 ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân khám lại quá sớm (1-2 ngày) không phải do cấp cứu hoặc diễn biến bất thường (Lạm dụng công khám).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [104] Mã: CHUYEN_DE_381 ---
-Tên quy tắc: Lạm dụng Nội soi Tai Mũi Họng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định Nội soi TMH không phù hợp với chẩn đoán (Lạm dụng dịch vụ kỹ thuật). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi nội soi trong DS_XML3 — đối chiếu ICD/chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [105] Mã: CHUYEN_DE_385 ---
-Tên quy tắc: Sinh hóa máu / BN mổ Phaco
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân mổ Phaco (chỉ gây tê tại chỗ), sức khỏe bình thường nhưng làm quá nhiều xét nghiệm sinh hóa máu. (Heuristic XML130: đợt ngoại trú <10 phút, có Phaco/mộng mắt và ≥8 dòng DVKT gợi sinh hóa/huyết thanh trong DS_XML3, ICD không gợi bệnh nền như Chuyen_de-364 — trùng một phần logic Chuyen_de-364.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [106] Mã: CHUYEN_DE_390 ---
-Tên quy tắc: Điện tim thường sai chỉ định
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thực hiện Điện tim thường cho các bệnh lý không có chỉ định trong quy trình kỹ thuật. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi điện tim/ECG trong DS_XML3 — đối chiếu ICD/chỉ định.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [107] Mã: CHUYEN_DE_408 ---
-Tên quy tắc: Thời gian trả KQ Cận lâm sàng quá dài
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thời gian chỉ định và thời gian trả kết quả quá dài, không phục vụ mục đích chẩn đoán và điều trị (Ví dụ: Ra viện rồi mới có KQ). (Heuristic XML130: có dòng XML3 có NGAY_KQ ≥ NGAY_YL (đủ 12 ký tự) và chênh ≥ 15 ngày theo DIFF_DAYS — KQ trước y lệnh xem Chuyen_de-261; KQ ngoài khoảng nằm viện: Chuyen_de-268.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [108] Mã: CHUYEN_DE_414 ---
-Tên quy tắc: VTYT vượt hạn mức sử dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Sử dụng và thanh toán VTYT vượt quá hạn mức tối đa cho phép trên 1 ca kỹ thuật.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [109] Mã: CHUYEN_DE_416 ---
-Tên quy tắc: Giường lưu cấp cứu quá ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân nằm giường lưu tại Khoa Khám bệnh/Cấp cứu quá thời gian quy định (thường < 24h) mà không chuyển nội trú.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [110] Mã: CHUYEN_DE_417 ---
-Tên quy tắc: XN Đờm tìm BK lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định xét nghiệm đờm tìm vi khuẩn Lao (BK) khi không có triệu chứng hô hấp/ho kéo dài.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [111] Mã: CHUYEN_DE_434 ---
-Tên quy tắc: Chụp XQ chưa phù hợp bệnh lý
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Đề nghị thanh toán DVKT Chụp X_quang nhưng chưa có triệu chứng lâm sàng/bệnh lý phù hợp để chỉ định. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng DVKT gợi X-quang trong DS_XML3 — đối chiếu ICD/chỉ định lâm sàng.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [112] Mã: CHUYEN_DE_440 ---
-Tên quy tắc: Định lượng Glucose chưa phù hợp chẩn đoán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Đề nghị thanh toán xét nghiệm định lượng Glucose (Đường huyết) lạm dụng, chưa phù hợp chẩn đoán bệnh.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [113] Mã: CHUYEN_DE_457 ---
-Tên quy tắc: Định lượng Cholesterol toàn phần sai CĐ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Định lượng Cholesterol toàn phần cho mục đích khám tổng quát, không có triệu chứng rối loạn chuyển hóa. (Heuristic XML130: đợt ngoại trú <10 phút, có XN cholesterol toàn phần/tổng trong DS_XML3 và ICD chính/kèm không gợi lipid/ĐTĐ/tim mạch theo bộ heuristic — nhiều ICD hợp lệ vẫn có thể âm giả.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [114] Mã: CHUYEN_DE_458 ---
-Tên quy tắc: Định lượng Triglycerid máu sai CĐ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Định lượng Triglycerid máu cho mục đích khám tổng quát, không có triệu chứng lâm sàng rõ ràng. (Heuristic XML130: đợt ngoại trú <10 phút, có XN triglycerid trong DS_XML3 và ICD chính/kèm không gợi lipid/ĐTĐ/tim mạch theo bộ heuristic — cùng giả định với Chuyen_de-457.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [115] Mã: CHUYEN_DE_472 ---
-Tên quy tắc: Thuốc chống huyết khối Nong Stent
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Ca can thiệp mạch vành (Nong Stent) nhưng trong hồ sơ điều trị thiếu y lệnh thuốc chống huyết khối bắt buộc theo phác đồ.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [116] Mã: CHUYEN_DE_482 ---
-Tên quy tắc: Thay băng nhưng không thu tiền khám
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân ngoại trú đến thay băng nhưng hồ sơ không có công khám (Thiếu bước bác sĩ đánh giá vết thương).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [117] Mã: CHUYEN_DE_491 ---
-Tên quy tắc: Xoa bóp điều trị mất ngủ lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Xoa bóp bấm huyệt điều trị mất ngủ kéo dài mà không có đánh giá tâm thần kinh/dùng thuốc.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [118] Mã: CHUYEN_DE_495 ---
-Tên quy tắc: Alpha Chymotrypsin lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng thuốc chống viêm dạng men Alpha Chymotrypsin cho viêm họng/viêm hô hấp thông thường (Ít hiệu quả).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [119] Mã: CHUYEN_DE_496 ---
-Tên quy tắc: Vitamin nhóm B tiêm lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng chỉ định Vitamin nhóm B đường tiêm tại phòng khám ngoại trú (Nên dùng đường uống).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [120] Mã: CHUYEN_DE_507 ---
-Tên quy tắc: Xét nghiệm định kỳ mạn tính < 1 tháng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định lại các xét nghiệm sinh hóa cơ bản < 1 tháng đối với bệnh nhân mạn tính (THA, ĐTĐ) đang ổn định.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [121] Mã: CHUYEN_DE_520 ---
-Tên quy tắc: SA Tim thai lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Siêu âm tim thai chuyên sâu lạm dụng cho thai kỳ bình thường không có yếu tố nguy cơ (chỉ nên SA thai thường).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [122] Mã: CHUYEN_DE_522 ---
-Tên quy tắc: Thuốc bổ não Ginkgo/Piracetam lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Kê đơn thuốc tuần hoàn não/hỗ trợ trí nhớ kéo dài quá mức cần thiết cho bệnh nhân ngoại trú.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [123] Mã: CHUYEN_DE_526 ---
-Tên quy tắc: Giường ICU nhưng không có can thiệp nặng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân nằm giường Hồi sức tích cực (ICU) nhưng không có các can thiệp tương xứng (Thở máy, lọc máu, vận mạch...).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [124] Mã: CHUYEN_DE_528 ---
-Tên quy tắc: Thuốc nhỏ mắt kháng sinh/Corticoid lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng thuốc nhỏ mắt chứa Kháng sinh/Corticoid cho bệnh nhân chỉ đến đo khúc xạ hoặc mỏi mắt.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [125] Mã: CHUYEN_DE_530 ---
-Tên quy tắc: Siêu âm Doppler thai sai tuần tuổi
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Siêu âm Doppler màu thai nhi lạm dụng ở giai đoạn sớm khi không có các yếu tố nguy cơ/chỉ định y khoa.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [126] Mã: CHUYEN_DE_534 ---
-Tên quy tắc: XN Đông máu toàn bộ lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng bộ xét nghiệm đông máu toàn phần cho bệnh nhân khám nội khoa không dùng thuốc chống đông.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [127] Mã: CHUYEN_DE_540 ---
-Tên quy tắc: PT Nội soi không lưu trữ Video/Hình ảnh
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Đề nghị thanh toán Phẫu thuật nội soi nhưng hệ thống PACS/Hồ sơ không có hình ảnh/video chứng minh. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi nội soi trong DS_XML3 — PACS/video cần đối chiếu ngoài XML.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [128] Mã: CHUYEN_DE_543 ---
-Tên quy tắc: Cắt Polyp dạ dày/đại tràng không GPB
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thực hiện thủ thuật cắt Polyp tiêu hóa nhưng không gửi mẫu làm xét nghiệm Giải phẫu bệnh (Sai quy trình).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [129] Mã: CHUYEN_DE_546 ---
-Tên quy tắc: Giường lưu sản khoa sau đẻ thường quá 5 ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Nằm lưu nội trú sau sinh thường quá 5 ngày không có biến chứng sản khoa/nhi khoa.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [130] Mã: CHUYEN_DE_551 ---
-Tên quy tắc: Test Mantoux lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Chỉ định Test Mantoux (Phản ứng lao tố) lạm dụng để tầm soát sức khỏe, không có chỉ định y khoa.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [131] Mã: CHUYEN_DE_554 ---
-Tên quy tắc: Khám > 3 chuyên khoa/ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Bệnh nhân đi khám ngoại trú đăng ký khám quá 3 chuyên khoa trong 1 ngày (Lạm dụng quyền lợi BHYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [132] Mã: CHUYEN_DE_561 ---
-Tên quy tắc: Giường ngoại khoa sau mổ không biên chứng > 15 ngày
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Nằm viện sau phẫu thuật loại 2, 3 quá 15 ngày nhưng bệnh án không ghi nhận biến chứng nhiễm trùng/chậm liền vết mổ.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [133] Mã: CHUYEN_DE_563 ---
-Tên quy tắc: PT Cắt Amidan người lớn lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Cắt Amidan ở người trưởng thành không có chỉ định tuyệt đối (Biến chứng ngưng thở khi ngủ, áp xe quanh Amidan).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [134] Mã: CHUYEN_DE_566 ---
-Tên quy tắc: XN Dengue ngoài mùa dịch lạm dụng
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Lạm dụng Test nhanh Sốt xuất huyết Dengue trong mùa đông/mùa không có dịch và bệnh nhân không có sốt cao đột ngột.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [135] Mã: CHUYEN_DE_571 ---
-Tên quy tắc: Siêu âm ổ bụng sai chẩn đoán
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Siêu âm ổ bụng không phù hợp với chẩn đoán (Nhiễm trùng ngón tay, tháo phương tiện KHX, u mỡ vùng mặt...).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [136] Mã: CHUYEN_DE_580 ---
-Tên quy tắc: Vượt công suất chụp MRI trong quý
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Vượt công suất số ca chụp MRI trong quý theo Thông tư 39/2024/TT-BYT (Sẽ bị áp tỷ lệ thanh toán).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [137] Mã: CHUYEN_DE_582 ---
-Tên quy tắc: Rà soát YHCT/PHCN T7, CN
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thực hiện DVKT YHCT, PHCN vào ngày thứ 7, chủ nhật (Nguy cơ lạm dụng ngày giường và dịch vụ ngoài giờ).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [138] Mã: CHUYEN_DE_591 ---
-Tên quy tắc: Siêu âm âm đạo quá mức cần thiết
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Thống kê thanh toán DVKT siêu âm âm đạo quá mức cần thiết, BHXH sẽ điều chỉnh về giá siêu âm bụng tổng quát.
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [139] Mã: CHUYEN_DE_029 ---
-Tên quy tắc: X-Quang 2 phim nhưng in 1 phim
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: Thanh toán X-quang số hóa 2 phim nhưng thực tế in kết quả trên 01 phim (thu chênh lệch vật tư). (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi X-quang trong DS_XML3 — đối chiếu số phim/giá.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [140] Mã: CHUYEN_DE_043 ---
-Tên quy tắc: Chụp CT sai Quy trình chuyên môn
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: Chụp Cắt lớp vi tính thực hiện không đúng quy trình chuyên môn kỹ thuật tại QĐ 25/QĐ-BYT [1]. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi CT/CLVT trong DS_XML3 — QTKT đầy đủ cần đối chiếu hồ sơ giấy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [141] Mã: CHUYEN_DE_125 ---
-Tên quy tắc: VTYT không công khai/Không có trong PT
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: VTYT thanh toán BHYT nhưng không ghi trong Phiếu công khai dịch vụ/thuốc hàng ngày, không mô tả trong lược đồ PT. (Heuristic XML130: đợt ngoại trú <10 phút, có VTYT có tên trong DS_XML5 và dòng gợi phẫu thuật/thủ thuật trong DS_XML3 — phiếu công khai/lược đồ cần đối chiếu hồ sơ giấy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [142] Mã: CHUYEN_DE_211 ---
-Tên quy tắc: X-Quang 2 tư thế thống kê sai
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: Thanh toán DVKT chụp X-Quang 2 tư thế nhưng thực tế chỉ chụp/in 1 phim (Chênh lệch giá). (Heuristic XML130: đợt ngoại trú <10 phút và tên DVKT gợi X-quang 2 tư thế/2 phim trong DS_XML3 — đối chiếu số phim thực tế.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [143] Mã: CHUYEN_DE_212 ---
-Tên quy tắc: X-Quang/CT không có chữ ký nhận phim
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: Có thanh toán tiền in phim nhưng Bảng kê chi phí không có chữ ký xác nhận đã nhận phim của người bệnh. (Heuristic XML130: đợt ngoại trú <10 phút, có in phim/phí phim và có X-quang hoặc CT trong DS_XML3 — chữ ký nhận phim cần đối chiếu hồ sơ giấy.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [144] Mã: CHUYEN_DE_504 ---
-Tên quy tắc: Không in phim PACS không giảm trừ
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): 🚨 Cảnh báo xuất toán: Bệnh viện đã sử dụng hệ thống PACS không in phim nhựa nhưng không giảm trừ chi phí in phim trong giá DVKT (Công văn 5319/BYT).
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
-
---- [145] Mã: CHUYEN_DE_540 ---
-Tên quy tắc: PT Nội soi không lưu trữ Video/Hình ảnh
-Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⚠️ Cảnh báo lỗi: Đề nghị thanh toán Phẫu thuật nội soi nhưng hệ thống PACS/Hồ sơ không có hình ảnh/video chứng minh. (Heuristic XML130: đợt ngoại trú <10 phút và có dòng tên DVKT gợi nội soi trong DS_XML3 — PACS/video cần đối chiếu ngoài XML.)
-Nguồn nội dung: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx
 
 ──────────────────────────────────────────────────────────────────────────────
 2B — Tắt cứng (DANH_SACH_QUY_TAC_TAT_CUNG): không cho bật lại qua UI.
@@ -795,27 +66,490 @@ Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx
 Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
 Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
 
+--- [5] Mã: XML1-REQ-MA_TTDV ---
+Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
+Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
+
+--- [6] Mã: XML1-UNKNOWN-xsi ---
+Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
+Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
+
+--- [7] Mã: XML3-REQ-MA_PTTT_QT ---
+Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
+Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
+
+--- [8] Mã: THUOC_448 ---
+Tên quy tắc: Rosuvastatin: Kiểm soát liều 24h
+Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [NGUY HIỂM]: Tổng liều Rosuvastatin vượt 40mg/ngày. Nguy cơ cao gây tiêu cơ vân.
+Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx
+
+--- [9] Mã: THUOC_404 ---
+Tên quy tắc: Đơn thuốc mạn tính quá 30 ngày
+Cảnh báo (CANH_BAO / ALERT_MESSAGE): ⛔ [TT 26/2025]: Cảnh báo kê đơn thuốc dài ngày (>30 ngày) cho mã bệnh không thuộc danh mục bệnh dài ngày tại Phụ lục 1 TT 26.
+Nguồn nội dung: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx
+
+--- [10] Mã: TUONGTAC_017 ---
+Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
+Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
+
+--- [11] Mã: TUONGTAC_344 ---
+Tên quy tắc: (không tìm thấy trong seed/hardcoded đã quét — có thể là mẫu BUILTIN hoặc mã chỉ dùng trong map ON/OFF)
+Cảnh báo: (chưa có trong dữ liệu luật đã nạp — kiểm tra màn Quản lý ON/OFF hoặc nguồn Excel)
+
+--- [12] Mã: DVKT-OP-07 ---
+Tên quy tắc: Phân loại PTTT
+Cảnh báo (CANH_BAO / ALERT_MESSAGE): Thông tin phân loại PTTT chưa đúng quy định.
+Nguồn nội dung: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx
+
 ══════════════════════════════════════════════════════════════════════════════
 PHẦN 3 — NHÓM RỦI RO ÂM GIẢ (ĐỊNH TÍNH)
 ══════════════════════════════════════════════════════════════════════════════
 - Giám định chuyên đề: nhiều DIEU_KIEN dùng heuristic tên DVKT/thuốc trên XML3/XML2; thiếu trường hoặc tên không chuẩn → dễ bỏ sót (âm giả). Xem phần đầu file ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx.
 - Quy tắc phụ thuộc hợp đồng BHXH, đăng ký SYT, đa cơ sở, giấy tờ ngoài XML130: thường ở trạng thái placeholder hoặc cần map mở rộng — âm giả khi chỉ nhìn XML.
-- No-code DVKT: kiểm tra phạm vi hành nghề, thiết bị, mapping nhân sự — thiếu danh mục nền tại BV → âm giả.
+- DVKT-OP: kiểm tra phạm vi hành nghề, thiết bị, mapping nhân sự — thiếu danh mục nền tại BV → âm giả.
 
 ══════════════════════════════════════════════════════════════════════════════
 PHẦN 4 — PLACEHOLDER CHUYÊN ĐỀ (REGISTRY)
 ══════════════════════════════════════════════════════════════════════════════
 {
-  "version": "2026-04-11",
-  "generated_note": "Tự động sinh — không sửa tay danh sách ids. Chính sách: mỗi id dưới đây cần lộ trình dữ liệu XML130/XML2/handler; không coi là đã thực chiến chỉ vì TRANG_THAI=ON.",
+  "version": "2026-04-19",
+  "generated_note": "Tự động sinh — không sửa tay danh sách ids. EXIT_AUDIT_BACKLOG = điều kiện cố ý không khớp XML130 cho đến khi có heuristic; CHO_XU_LY_SAU = không phát khi có MA_LK.",
   "source_file": "ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx",
-  "placeholder_count": 0,
-  "rule_ids": []
+  "placeholder_count": 195,
+  "exit_audit_backlog_count": 195,
+  "cho_xu_ly_sau_count": 0,
+  "rule_ids_exit_audit_backlog": [
+    "CHUYEN_DE-196",
+    "CHUYEN_DE-202",
+    "CHUYEN_DE-203",
+    "CHUYEN_DE-204",
+    "CHUYEN_DE-218",
+    "CHUYEN_DE-269",
+    "CHUYEN_DE-272",
+    "CHUYEN_DE-287",
+    "CHUYEN_DE-288",
+    "CHUYEN_DE-293",
+    "CHUYEN_DE-307",
+    "CHUYEN_DE-308",
+    "CHUYEN_DE-309",
+    "CHUYEN_DE-310",
+    "CHUYEN_DE-311",
+    "CHUYEN_DE-312",
+    "CHUYEN_DE-313",
+    "CHUYEN_DE-314",
+    "CHUYEN_DE-315",
+    "CHUYEN_DE-317",
+    "CHUYEN_DE-320",
+    "CHUYEN_DE-325",
+    "CHUYEN_DE-326",
+    "CHUYEN_DE-331",
+    "CHUYEN_DE-350",
+    "CHUYEN_DE-352",
+    "CHUYEN_DE-370",
+    "CHUYEN_DE-371",
+    "CHUYEN_DE-374",
+    "CHUYEN_DE-376",
+    "CHUYEN_DE-377",
+    "CHUYEN_DE-379",
+    "CHUYEN_DE-384",
+    "CHUYEN_DE-389",
+    "CHUYEN_DE-392",
+    "CHUYEN_DE-393",
+    "CHUYEN_DE-394",
+    "CHUYEN_DE-395",
+    "CHUYEN_DE-399",
+    "CHUYEN_DE-401",
+    "CHUYEN_DE-402",
+    "CHUYEN_DE-404",
+    "CHUYEN_DE-405",
+    "CHUYEN_DE-409",
+    "CHUYEN_DE-410",
+    "CHUYEN_DE-412",
+    "CHUYEN_DE-413",
+    "CHUYEN_DE-414",
+    "CHUYEN_DE-415",
+    "CHUYEN_DE-416",
+    "CHUYEN_DE-417",
+    "CHUYEN_DE-419",
+    "CHUYEN_DE-420",
+    "CHUYEN_DE-421",
+    "CHUYEN_DE-422",
+    "CHUYEN_DE-423",
+    "CHUYEN_DE-425",
+    "CHUYEN_DE-426",
+    "CHUYEN_DE-427",
+    "CHUYEN_DE-428",
+    "CHUYEN_DE-429",
+    "CHUYEN_DE-430",
+    "CHUYEN_DE-431",
+    "CHUYEN_DE-432",
+    "CHUYEN_DE-433",
+    "CHUYEN_DE-435",
+    "CHUYEN_DE-436",
+    "CHUYEN_DE-437",
+    "CHUYEN_DE-438",
+    "CHUYEN_DE-439",
+    "CHUYEN_DE-440",
+    "CHUYEN_DE-441",
+    "CHUYEN_DE-443",
+    "CHUYEN_DE-444",
+    "CHUYEN_DE-445",
+    "CHUYEN_DE-446",
+    "CHUYEN_DE-448",
+    "CHUYEN_DE-449",
+    "CHUYEN_DE-450",
+    "CHUYEN_DE-452",
+    "CHUYEN_DE-453",
+    "CHUYEN_DE-454",
+    "CHUYEN_DE-455",
+    "CHUYEN_DE-456",
+    "CHUYEN_DE-459",
+    "CHUYEN_DE-460",
+    "CHUYEN_DE-461",
+    "CHUYEN_DE-463",
+    "CHUYEN_DE-464",
+    "CHUYEN_DE-465",
+    "CHUYEN_DE-466",
+    "CHUYEN_DE-467",
+    "CHUYEN_DE-469",
+    "CHUYEN_DE-470",
+    "CHUYEN_DE-471",
+    "CHUYEN_DE-472",
+    "CHUYEN_DE-474",
+    "CHUYEN_DE-477",
+    "CHUYEN_DE-478",
+    "CHUYEN_DE-479",
+    "CHUYEN_DE-480",
+    "CHUYEN_DE-481",
+    "CHUYEN_DE-482",
+    "CHUYEN_DE-483",
+    "CHUYEN_DE-485",
+    "CHUYEN_DE-486",
+    "CHUYEN_DE-487",
+    "CHUYEN_DE-488",
+    "CHUYEN_DE-489",
+    "CHUYEN_DE-491",
+    "CHUYEN_DE-493",
+    "CHUYEN_DE-494",
+    "CHUYEN_DE-496",
+    "CHUYEN_DE-497",
+    "CHUYEN_DE-498",
+    "CHUYEN_DE-499",
+    "CHUYEN_DE-503",
+    "CHUYEN_DE-504",
+    "CHUYEN_DE-505",
+    "CHUYEN_DE-506",
+    "CHUYEN_DE-507",
+    "CHUYEN_DE-510",
+    "CHUYEN_DE-511",
+    "CHUYEN_DE-512",
+    "CHUYEN_DE-513",
+    "CHUYEN_DE-514",
+    "CHUYEN_DE-515",
+    "CHUYEN_DE-516",
+    "CHUYEN_DE-517",
+    "CHUYEN_DE-518",
+    "CHUYEN_DE-519",
+    "CHUYEN_DE-520",
+    "CHUYEN_DE-521",
+    "CHUYEN_DE-524",
+    "CHUYEN_DE-527",
+    "CHUYEN_DE-528",
+    "CHUYEN_DE-529",
+    "CHUYEN_DE-530",
+    "CHUYEN_DE-531",
+    "CHUYEN_DE-534",
+    "CHUYEN_DE-535",
+    "CHUYEN_DE-537",
+    "CHUYEN_DE-538",
+    "CHUYEN_DE-539",
+    "CHUYEN_DE-541",
+    "CHUYEN_DE-544",
+    "CHUYEN_DE-545",
+    "CHUYEN_DE-546",
+    "CHUYEN_DE-547",
+    "CHUYEN_DE-549",
+    "CHUYEN_DE-550",
+    "CHUYEN_DE-552",
+    "CHUYEN_DE-553",
+    "CHUYEN_DE-554",
+    "CHUYEN_DE-555",
+    "CHUYEN_DE-558",
+    "CHUYEN_DE-559",
+    "CHUYEN_DE-561",
+    "CHUYEN_DE-562",
+    "CHUYEN_DE-565",
+    "CHUYEN_DE-566",
+    "CHUYEN_DE-567",
+    "CHUYEN_DE-568",
+    "CHUYEN_DE-569",
+    "CHUYEN_DE-570",
+    "CHUYEN_DE-573",
+    "CHUYEN_DE-574",
+    "CHUYEN_DE-575",
+    "CHUYEN_DE-576",
+    "CHUYEN_DE-578",
+    "CHUYEN_DE-579",
+    "CHUYEN_DE-580",
+    "CHUYEN_DE-581",
+    "CHUYEN_DE-582",
+    "CHUYEN_DE-583",
+    "CHUYEN_DE-584",
+    "CHUYEN_DE-585",
+    "CHUYEN_DE-586",
+    "CHUYEN_DE-587",
+    "CHUYEN_DE-588",
+    "CHUYEN_DE-589",
+    "CHUYEN_DE-590",
+    "CHUYEN_DE-591",
+    "CHUYEN_DE-592",
+    "CHUYEN_DE-593",
+    "CHUYEN_DE-594",
+    "CHUYEN_DE-595",
+    "CHUYEN_DE-596",
+    "CHUYEN_DE-597",
+    "CHUYEN_DE-598",
+    "CHUYEN_DE-599",
+    "CHUYEN_DE-600",
+    "CHUYEN_DE-601",
+    "CHUYEN_DE-602",
+    "CHUYEN_DE-603"
+  ],
+  "rule_ids_cho_xu_ly_sau": [],
+  "rule_ids_all_placeholder": [
+    "CHUYEN_DE-196",
+    "CHUYEN_DE-202",
+    "CHUYEN_DE-203",
+    "CHUYEN_DE-204",
+    "CHUYEN_DE-218",
+    "CHUYEN_DE-269",
+    "CHUYEN_DE-272",
+    "CHUYEN_DE-287",
+    "CHUYEN_DE-288",
+    "CHUYEN_DE-293",
+    "CHUYEN_DE-307",
+    "CHUYEN_DE-308",
+    "CHUYEN_DE-309",
+    "CHUYEN_DE-310",
+    "CHUYEN_DE-311",
+    "CHUYEN_DE-312",
+    "CHUYEN_DE-313",
+    "CHUYEN_DE-314",
+    "CHUYEN_DE-315",
+    "CHUYEN_DE-317",
+    "CHUYEN_DE-320",
+    "CHUYEN_DE-325",
+    "CHUYEN_DE-326",
+    "CHUYEN_DE-331",
+    "CHUYEN_DE-350",
+    "CHUYEN_DE-352",
+    "CHUYEN_DE-370",
+    "CHUYEN_DE-371",
+    "CHUYEN_DE-374",
+    "CHUYEN_DE-376",
+    "CHUYEN_DE-377",
+    "CHUYEN_DE-379",
+    "CHUYEN_DE-384",
+    "CHUYEN_DE-389",
+    "CHUYEN_DE-392",
+    "CHUYEN_DE-393",
+    "CHUYEN_DE-394",
+    "CHUYEN_DE-395",
+    "CHUYEN_DE-399",
+    "CHUYEN_DE-401",
+    "CHUYEN_DE-402",
+    "CHUYEN_DE-404",
+    "CHUYEN_DE-405",
+    "CHUYEN_DE-409",
+    "CHUYEN_DE-410",
+    "CHUYEN_DE-412",
+    "CHUYEN_DE-413",
+    "CHUYEN_DE-414",
+    "CHUYEN_DE-415",
+    "CHUYEN_DE-416",
+    "CHUYEN_DE-417",
+    "CHUYEN_DE-419",
+    "CHUYEN_DE-420",
+    "CHUYEN_DE-421",
+    "CHUYEN_DE-422",
+    "CHUYEN_DE-423",
+    "CHUYEN_DE-425",
+    "CHUYEN_DE-426",
+    "CHUYEN_DE-427",
+    "CHUYEN_DE-428",
+    "CHUYEN_DE-429",
+    "CHUYEN_DE-430",
+    "CHUYEN_DE-431",
+    "CHUYEN_DE-432",
+    "CHUYEN_DE-433",
+    "CHUYEN_DE-435",
+    "CHUYEN_DE-436",
+    "CHUYEN_DE-437",
+    "CHUYEN_DE-438",
+    "CHUYEN_DE-439",
+    "CHUYEN_DE-440",
+    "CHUYEN_DE-441",
+    "CHUYEN_DE-443",
+    "CHUYEN_DE-444",
+    "CHUYEN_DE-445",
+    "CHUYEN_DE-446",
+    "CHUYEN_DE-448",
+    "CHUYEN_DE-449",
+    "CHUYEN_DE-450",
+    "CHUYEN_DE-452",
+    "CHUYEN_DE-453",
+    "CHUYEN_DE-454",
+    "CHUYEN_DE-455",
+    "CHUYEN_DE-456",
+    "CHUYEN_DE-459",
+    "CHUYEN_DE-460",
+    "CHUYEN_DE-461",
+    "CHUYEN_DE-463",
+    "CHUYEN_DE-464",
+    "CHUYEN_DE-465",
+    "CHUYEN_DE-466",
+    "CHUYEN_DE-467",
+    "CHUYEN_DE-469",
+    "CHUYEN_DE-470",
+    "CHUYEN_DE-471",
+    "CHUYEN_DE-472",
+    "CHUYEN_DE-474",
+    "CHUYEN_DE-477",
+    "CHUYEN_DE-478",
+    "CHUYEN_DE-479",
+    "CHUYEN_DE-480",
+    "CHUYEN_DE-481",
+    "CHUYEN_DE-482",
+    "CHUYEN_DE-483",
+    "CHUYEN_DE-485",
+    "CHUYEN_DE-486",
+    "CHUYEN_DE-487",
+    "CHUYEN_DE-488",
+    "CHUYEN_DE-489",
+    "CHUYEN_DE-491",
+    "CHUYEN_DE-493",
+    "CHUYEN_DE-494",
+    "CHUYEN_DE-496",
+    "CHUYEN_DE-497",
+    "CHUYEN_DE-498",
+    "CHUYEN_DE-499",
+    "CHUYEN_DE-503",
+    "CHUYEN_DE-504",
+    "CHUYEN_DE-505",
+    "CHUYEN_DE-506",
+    "CHUYEN_DE-507",
+    "CHUYEN_DE-510",
+    "CHUYEN_DE-511",
+    "CHUYEN_DE-512",
+    "CHUYEN_DE-513",
+    "CHUYEN_DE-514",
+    "CHUYEN_DE-515",
+    "CHUYEN_DE-516",
+    "CHUYEN_DE-517",
+    "CHUYEN_DE-518",
+    "CHUYEN_DE-519",
+    "CHUYEN_DE-520",
+    "CHUYEN_DE-521",
+    "CHUYEN_DE-524",
+    "CHUYEN_DE-527",
+    "CHUYEN_DE-528",
+    "CHUYEN_DE-529",
+    "CHUYEN_DE-530",
+    "CHUYEN_DE-531",
+    "CHUYEN_DE-534",
+    "CHUYEN_DE-535",
+    "CHUYEN_DE-537",
+    "CHUYEN_DE-538",
+    "CHUYEN_DE-539",
+    "CHUYEN_DE-541",
+    "CHUYEN_DE-544",
+    "CHUYEN_DE-545",
+    "CHUYEN_DE-546",
+    "CHUYEN_DE-547",
+    "CHUYEN_DE-549",
+    "CHUYEN_DE-550",
+    "CHUYEN_DE-552",
+    "CHUYEN_DE-553",
+    "CHUYEN_DE-554",
+    "CHUYEN_DE-555",
+    "CHUYEN_DE-558",
+    "CHUYEN_DE-559",
+    "CHUYEN_DE-561",
+    "CHUYEN_DE-562",
+    "CHUYEN_DE-565",
+    "CHUYEN_DE-566",
+    "CHUYEN_DE-567",
+    "CHUYEN_DE-568",
+    "CHUYEN_DE-569",
+    "CHUYEN_DE-570",
+    "CHUYEN_DE-573",
+    "CHUYEN_DE-574",
+    "CHUYEN_DE-575",
+    "CHUYEN_DE-576",
+    "CHUYEN_DE-578",
+    "CHUYEN_DE-579",
+    "CHUYEN_DE-580",
+    "CHUYEN_DE-581",
+    "CHUYEN_DE-582",
+    "CHUYEN_DE-583",
+    "CHUYEN_DE-584",
+    "CHUYEN_DE-585",
+    "CHUYEN_DE-586",
+    "CHUYEN_DE-587",
+    "CHUYEN_DE-588",
+    "CHUYEN_DE-589",
+    "CHUYEN_DE-590",
+    "CHUYEN_DE-591",
+    "CHUYEN_DE-592",
+    "CHUYEN_DE-593",
+    "CHUYEN_DE-594",
+    "CHUYEN_DE-595",
+    "CHUYEN_DE-596",
+    "CHUYEN_DE-597",
+    "CHUYEN_DE-598",
+    "CHUYEN_DE-599",
+    "CHUYEN_DE-600",
+    "CHUYEN_DE-601",
+    "CHUYEN_DE-602",
+    "CHUYEN_DE-603"
+  ]
 }
 
 ══════════════════════════════════════════════════════════════════════════════
 PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
 ══════════════════════════════════════════════════════════════════════════════
+
+--- LUAT_CDHA — DVKT-OP (toán tử trong mã — DVKT-OP-*) (15 quy tắc) ---
+  DVKT-OP-01 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Chỉ định ICD10 phù hợp
+  DVKT-OP-02 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Chống chỉ định ICD10
+  DVKT-OP-03 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Phạm vi hành nghề
+  DVKT-OP-04 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Máy móc thiết bị
+  DVKT-OP-05 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Giá DVKT
+  DVKT-OP-06 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Hiệu lực DVKT
+  DVKT-OP-07 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: OFF [tắt cứng]
+    Phân loại PTTT
+  DVKT-OP-08 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Ghi chú đặc thù
+  DVKT-OP-09 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Khám và giường bệnh (nội bộ) được phê duyệt
+  DVKT-OP-10 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Thời gian hành nghề bác sỹ
+  DVKT-OP-11 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Danh mục 3 tạm thời chưa thanh toán
+  DVKT-OP-13 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Đối soát tên DVKT theo danh mục
+  DVKT-OP-14 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Danh mục DVKT phải có đơn giá
+  DVKT-OP-15 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: ON [hiệu lực MD]
+    Danh mục DVKT phải có quyết định
+  DVKT-OP-16 | nguồn: ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx | mã: OFF
+    Mã giường dạng cũ (Kxx.xxxx)
 
 --- LUAT_CDHA — DVKT/CĐHA (bảng Excel CDHA_*) (332 quy tắc) ---
   CDHA_01 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
@@ -832,9 +566,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     XML 130: Định dạng kết quả (XML4)
   CDHA_07 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF [tắt cứng]
     XML 130: Chứng chỉ hành nghề BS
-  CDHA_08 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CDHA_08 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     XML 130: Chữ ký số của BS đọc KQ
-  CDHA_09 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CDHA_09 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     XML 130: Chữ ký số Bác sĩ đọc
   CDHA_10 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     X-quang xương và VTYT: Thùng chì
@@ -1212,7 +946,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [XML 130] Mã máy và Danh mục phê duyệt
   CDHA_197 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [XML 130] Mã hóa loại thuốc cản quang
-  CDHA_198 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CDHA_198 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [XML 130] Đối soát mã máy theo Khoa
   CDHA_199 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: ON [hiệu lực MD]
     [XML 130] Đối soát mã máy MRI (Tesla)
@@ -1220,7 +954,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [XML 130] Đối soát BS chỉ định
   CDHA_201 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [XML 130] Định dạng giá trị eGFR
-  CDHA_202 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: ON [mặc định OFF]
+  CDHA_202 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: ON [hiệu lực MD]
     [XML 130] Chứng chỉ hành nghề BS đọc KQ
   CDHA_203 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [Vật tư] CT & Bơm tiêm điện
@@ -1288,7 +1022,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [Người hành nghề] KTV thực hiện X-quang
   CDHA_235 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [Người hành nghề] KTV thực hiện đo loãng xương
-  CDHA_236 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CDHA_236 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [Người hành nghề] KTV ký XML 130 (XML3)
   CDHA_237 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: OFF
     [Người hành nghề] KTV ký thực hiện CT
@@ -1483,84 +1217,46 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   CDHA_332 | nguồn: ma_nguon/tien_ich/luat_cdha_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Bức xạ] Trùng lặp X-quang cùng vị trí
 
---- LUAT_CDHA — Giám định chuyên đề (Chuyen_de_* / CHUYEN_DE_*) (603 quy tắc) ---
+--- LUAT_CDHA — Giám định chuyên đề (Chuyen_de_* / CHUYEN_DE_*) (581 quy tắc) ---
   Chuyen_de_001 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chi phí hạt vi cầu/hóa chất nút mạch u gan
   Chuyen_de_002 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Bơm xi măng thân đốt sống sai QTCM
-  Chuyen_de_003 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_003 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai giá nhóm PT Xương/Phần mềm
-  Chuyen_de_004 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá PT cắt u lành phần mềm
   Chuyen_de_005 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai giá PT vết thương phần mềm da đầu
-  Chuyen_de_006 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá Thủ thuật đồng thời với PT
-  Chuyen_de_007 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    BS YHCT chỉ định PHCN chưa đủ điều kiện
-  Chuyen_de_008 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Bác sĩ trùng thời gian thực hiện KCB/PTTT
-  Chuyen_de_009 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Áp sai ngày giường Hồi sức cấp cứu (HSCC)
-  Chuyen_de_010 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Chỉ định MRI chưa đủ điều kiện
-  Chuyen_de_011 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_011 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định PT kết hợp xương đòn chưa phù hợp
-  Chuyen_de_012 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_012 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định siêu âm đầu dò chưa phù hợp
-  Chuyen_de_013 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Sai quy trình XN cơ bản cho BN lọc máu
-  Chuyen_de_014 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_014 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định XN Mô bệnh học ruột thừa không phù hợp
   Chuyen_de_015 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định ProBNP khi chưa có Điện tâm đồ
   Chuyen_de_016 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tập vận động có trợ giúp sai QTCM
-  Chuyen_de_017 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    BS hành nghề trùng thời gian (T2-T7)
-  Chuyen_de_018 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Một BS nội soi đồng thời 2 BN
-  Chuyen_de_019 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Thanh toán sai 1/2 ngày giường chuyển khoa
-  Chuyen_de_020 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_020 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vượt công suất định mức máy MRI
-  Chuyen_de_021 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    BS gây mê > 2 ca cùng lúc
   Chuyen_de_022 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vật tư Bộ dụng cụ bơm xi măng sai ĐK
   Chuyen_de_023 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Chỉ định thuốc Tiểu đường Off-label
-  Chuyen_de_024 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF [mặc định OFF]
+    Chỉ định thuốc Tiểu đường Off-label (gộp phạm vi CV266 TH45 / R73)
+  Chuyen_de_024 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF
     XN thường quy sai quy định trước mổ Phaco
   Chuyen_de_025 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Cắt Amidan đồng thời PT chỉnh hình màn hầu
   Chuyen_de_026 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai giá Bơm rửa / Bơm thông lệ đạo
-  Chuyen_de_027 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Vượt định mức ca Chụp CLVT (CT-Scanner)
-  Chuyen_de_028 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá PT Tuyến tiền liệt
-  Chuyen_de_029 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    X-Quang 2 phim nhưng in 1 phim
-  Chuyen_de_030 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Tính sai giá giường nằm ghép
-  Chuyen_de_031 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_031 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai giá giường ICU vs HSCC
-  Chuyen_de_032 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá PT mộng mắt
-  Chuyen_de_033 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp giá tháo nẹp vít RHM cho chuyên khoa khác
   Chuyen_de_034 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định nhóm máu ABO cho chế phẩm máu sai giá
   Chuyen_de_035 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT Kết hợp xương (KHX) không dùng C-ARM
-  Chuyen_de_036 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá Siêu âm
-  Chuyen_de_037 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Chỉ định Siêu âm Doppler mạch máu sai ĐK
-  Chuyen_de_038 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_038 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định Siêu âm tim sai QTKT
-  Chuyen_de_039 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_039 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định XN HBsAg chưa phù hợp
   Chuyen_de_040 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     01 Ê-kíp chọc tháo dịch màng phổi 02 BN
@@ -1568,72 +1264,40 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Lạm dụng CT sọ não không cản quang
   Chuyen_de_042 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     CT ổ bụng khảo sát mạch sai chỉ định
-  Chuyen_de_043 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Chụp CT sai Quy trình chuyên môn
-  Chuyen_de_044 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Chụp đáy mắt không huỳnh quang sai CĐ
-  Chuyen_de_045 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Nút mạch u gan sai Quy trình chuyên môn
-  Chuyen_de_046 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Một Bác sĩ khám đồng thời 02 BN
-  Chuyen_de_047 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_047 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám YHCT không đúng quy định
-  Chuyen_de_048 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Chỉ định PHCN sai hướng dẫn/quy trình
-  Chuyen_de_049 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Trùng thời gian KCB tại 02 cơ sở y tế
-  Chuyen_de_050 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Phát sinh chi phí trong ngày nghỉ/ốm
-  Chuyen_de_051 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Bác sĩ chưa đăng ký hành nghề với SYT
   Chuyen_de_052 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Cấp trùng đơn thuốc/hoạt chất
   Chuyen_de_053 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai PT cắt u lành (<10cm) cho Áp xe/Nang
   Chuyen_de_054 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     DVKT chưa được BYT/SYT phê duyệt
-  Chuyen_de_055 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_055 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp CT không đủ điều kiện thanh toán
   Chuyen_de_056 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thực tế làm DVKT cao hơn nhưng chưa được PD
-  Chuyen_de_057 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Bác sĩ chỉ định tự đọc và ký kết quả XQ
-  Chuyen_de_058 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Thiếu thông số quy trình Cứu (YHCT)
   Chuyen_de_059 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thiếu thông số Laser công suất thấp
+    Thiếu thông số Laser CS thấp nội mạch (đúng tên DVKT)
   Chuyen_de_060 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kéo giãn cột sống sai quy trình
-  Chuyen_de_061 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thiếu thông số Sóng ngắn/Điện xung/Siêu âm
   Chuyen_de_062 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đóng cuống răng sai quy định/thiếu HS
   Chuyen_de_063 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     BS mổ 2 người cùng lúc / Lệch giờ GMHS
   Chuyen_de_064 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định Đổ xi măng cột sống sai ĐK
-  Chuyen_de_065 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thanh toán trùng DVKT Gây mê khác
   Chuyen_de_066 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhổ răng vĩnh viễn sai chỉ định (viêm cấp)
-  Chuyen_de_067 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    BS YHCT chưa bổ sung CCHN khám PHCN
-  Chuyen_de_068 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    DVKT PHCN thiếu nhân lực đủ điều kiện
   Chuyen_de_069 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Điều dưỡng hạng IV thực hiện PHCN
   Chuyen_de_070 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Rửa cùng đồ đồng thời với PT Phaco/Mộng
   Chuyen_de_071 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Rút nẹp vít ngoài mặt áp giá RHM
-  Chuyen_de_072 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    01 BS Siêu âm cho 2-3 BN cùng lúc
-  Chuyen_de_073 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Điện xung/SA điều trị thiếu thông số
   Chuyen_de_074 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định Siêu âm tim sai QĐ 1857 (Suy tim)
   Chuyen_de_075 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Kết quả Doppler mạch máu định tính, thiếu số liệu
+    Doppler: XML4 MO_TA thiếu thông số định lượng
   Chuyen_de_076 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng Siêu âm đầu dò đồng thời SA Ổ bụng
   Chuyen_de_077 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1642,44 +1306,26 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Tập kiểu thở cho trẻ < 5 tuổi sai quy định
   Chuyen_de_079 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thiếu thông số kỹ thuật toàn diện nhóm PHCN
-  Chuyen_de_080 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Chạy Thận nhân tạo không có Bác sĩ
   Chuyen_de_081 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp giá Phẫu thuật Gây mê cho ca Gây tê
   Chuyen_de_082 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF
     Có thanh toán DVKT nhưng thiếu Y lệnh
-  Chuyen_de_083 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_083 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thủy châm thiếu nhân lực đủ điều kiện
   Chuyen_de_084 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Trám bít hố rãnh bằng GiC sai quy trình
-  Chuyen_de_085 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Xét nghiệm định kỳ Thận nhân tạo sai tần suất
   Chuyen_de_086 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá xét nghiệm Vi khuẩn
+    Nuôi cấy định danh ×2 + nhuộm soi — không TT nhuộm soi
   Chuyen_de_087 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định Khí máu động mạch sai quy định
   Chuyen_de_088 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định/Ghi chép YHCT, PHCN sai QTCM
-  Chuyen_de_089 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Hành nghề trùng thời gian giữa các BV
   Chuyen_de_090 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định chiếu đèn vàng da sai chỉ định
-  Chuyen_de_091 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Giường bệnh không đủ điều kiện thanh toán
-  Chuyen_de_092 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Khám chữa bệnh ngoài giờ đăng ký hành nghề
   Chuyen_de_093 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai mốc thời gian hiệu lực giá TT 22
   Chuyen_de_094 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     KCB trái với nhiệm vụ được phân công
-  Chuyen_de_095 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF [mặc định OFF]
-    Bảng kê chi phí KCB lập sai quy định
-  Chuyen_de_096 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    KCB ngày nghỉ lễ không có trong Hợp đồng
-  Chuyen_de_097 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Nội soi TMH sai chỉ định lâm sàng
-  Chuyen_de_098 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Nội soi tiêu hóa sai quy trình chuyên môn
   Chuyen_de_099 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT ghép xương cột sống cổ sai QTCM
   Chuyen_de_100 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1698,16 +1344,12 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Diosmin sai chỉ định (Không Suy van TM/Trĩ)
   Chuyen_de_107 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Fucidin H sai chỉ định
-  Chuyen_de_108 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Chống chỉ định Levofloxacin cho trẻ < 18 tuổi
   Chuyen_de_109 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Montelukast sai chỉ định
   Chuyen_de_110 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhũ dịch Lipid sai chỉ định
   Chuyen_de_111 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Sulpirid/Olangim kê đơn sai chuyên khoa
-  Chuyen_de_112 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Thuốc Tiểu đường sai chẩn đoán
   Chuyen_de_113 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chống chỉ định Fleming (Trẻ <12t hoặc <40kg)
   Chuyen_de_114 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1720,19 +1362,15 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Chống chỉ định Trimafort/Pasigel (Suy thận)
   Chuyen_de_118 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tách thu riêng Vitamin K1 trong cơ cấu giá đẻ
-  Chuyen_de_119 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Tính công khám ngoại trú tại khoa lâm sàng
   Chuyen_de_120 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     BS không được phân công khám Nội tiết
-  Chuyen_de_121 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_121 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Ngày giường HSCC vượt chỉ tiêu phân bổ
   Chuyen_de_122 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     BS khám ICU chưa được đào tạo HSTC
   Chuyen_de_123 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tính tiền giường Khoa GMHS sai quy định
-  Chuyen_de_124 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Giường thực kê vượt giường kế hoạch
-  Chuyen_de_125 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_125 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     VTYT không công khai/Không có trong PT
   Chuyen_de_126 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vật tư y tế không thanh toán riêng
@@ -1744,8 +1382,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     VTYT ngoài phạm vi TT BHYT
   Chuyen_de_130 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     VTYT thủy tinh thể nhân tạo sai QĐ 7328
-  Chuyen_de_131 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    XN gửi cơ sở y tế khác sai quy định
   Chuyen_de_132 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kháng sinh đồ khi cấy âm tính
   Chuyen_de_133 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1758,12 +1394,10 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Hóa chất XN nước tiểu mua sắm sai QĐ
   Chuyen_de_137 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Khí máu tại ICU thiếu giám sát CLXN
-  Chuyen_de_138 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_138 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng Xét nghiệm miễn dịch
-  Chuyen_de_139 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_139 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhuộm HE bệnh phẩm ruột thừa lạm dụng
-  Chuyen_de_140 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Nhuộm PAS đồng thời Mô bệnh học thường quy
   Chuyen_de_141 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nuôi cấy vi khuẩn tự động không xuất chai cấy
   Chuyen_de_142 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1782,9 +1416,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Soi đáy mắt trực tiếp thiếu cơ sở KH
   Chuyen_de_149 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     KCB trước thời điểm đăng tải SYT/BHXH
-  Chuyen_de_150 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+  Chuyen_de_150 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF
     Khám kèm siêu âm — thời gian đợt KCB rất ngắn (<10 phút)
-  Chuyen_de_151 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_151 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường Khoa Nhi vượt thực kê đã thống nhất
   Chuyen_de_152 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giác hơi thiếu chỉ định Kinh mạch
@@ -1802,8 +1436,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Sulfadiazine bạc bôi vết thương sai CĐ
   Chuyen_de_159 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Levofloxacin (Volfacine/Levodhg) cho TE
-  Chuyen_de_160 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thu trùng Công khám TMH và Nội soi TMH
   Chuyen_de_161 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tính 2 lần giá XN nuôi cấy lấy máu cùng lúc
   Chuyen_de_162 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1814,25 +1446,25 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Áp giá sai phân vùng PT gân gấp bàn tay
   Chuyen_de_165 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thu rời Fortrans trong DVKT Nội soi/PT đại tràng
-  Chuyen_de_166 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_166 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vượt công suất giường bệnh
   Chuyen_de_167 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thận nhân tạo dưới 4 giờ
   Chuyen_de_168 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thời gian đợt khám ngoại trú rất ngắn (<10 phút)
-  Chuyen_de_169 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_169 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng XN Tuyến giáp (FT3, FT4, TSH)
   Chuyen_de_170 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Điện não đồ sai chỉ định
   Chuyen_de_171 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng TRAb sai chỉ định
-  Chuyen_de_172 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_172 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Troponin Ths sai chỉ định
   Chuyen_de_173 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Cortisol sai chỉ định
   Chuyen_de_174 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Sốt xuất huyết (Dengue) lạm dụng
-  Chuyen_de_175 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_175 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Ferritin lạm dụng
   Chuyen_de_176 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng Tumor Marker CA 19-9
@@ -1842,16 +1474,12 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Lạm dụng Tumor Marker AFP
   Chuyen_de_179 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng Tumor Marker Cyfra 21-1
-  Chuyen_de_180 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_180 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng HDL-C, LDL-C lạm dụng
-  Chuyen_de_181 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Lạm dụng Tumor Marker CA 125
-  Chuyen_de_182 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_182 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo hoạt độ GGT lạm dụng
   Chuyen_de_183 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo hoạt độ Amylase sai chỉ định
-  Chuyen_de_184 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Trùng/tách Siêu âm tuyến giáp và vùng cổ
   Chuyen_de_185 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc Nimodipin dạng tiêm/uống sai CĐ
   Chuyen_de_186 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1860,11 +1488,11 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Immune Globulin sai chỉ định/tỷ lệ
   Chuyen_de_188 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tacrolimus sai chỉ định
-  Chuyen_de_189 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_189 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Bộ VTYT thanh toán vượt định mức
   Chuyen_de_190 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tính sai giá giường bệnh không nằm ghép
-  Chuyen_de_191 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_191 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lấy nút biểu bì ống tai ngoài sai quy trình
   Chuyen_de_192 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Hút đờm trong quy trình DVKT khác
@@ -1880,8 +1508,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Vật tư y tế của BN ngoại trú thu sai
   Chuyen_de_198 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tách thu Làm thuốc tai và Lấy nút biểu bì
-  Chuyen_de_199 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thuốc Oxytocin thanh toán rời trong ca đẻ
   Chuyen_de_200 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường băng ca, giường gấp thu nguyên giá
   Chuyen_de_201 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1894,25 +1520,23 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Điều dưỡng/Y tá ra y lệnh KCB
   Chuyen_de_205 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Phẫu thuật gây tê thu giá gây mê
-  Chuyen_de_206 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Thanh toán VTYT đã kết cấu trong DVKT
   Chuyen_de_207 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc cản quang/từ trong MRI, CT có thuốc
   Chuyen_de_208 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xét nghiệm LDL nội suy (Tính toán)
-  Chuyen_de_209 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_209 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Dengue NS1Ag và IgM/IgG đồng thời
   Chuyen_de_210 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thu tiền khám của BN giường ban ngày
-  Chuyen_de_211 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_211 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     X-Quang 2 tư thế thống kê sai
-  Chuyen_de_212 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_212 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     X-Quang/CT không có chữ ký nhận phim
   Chuyen_de_213 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc Carbetocin/Oxytocin trong ca đẻ
   Chuyen_de_214 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Hào châm thực hiện < 25 phút
-  Chuyen_de_215 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_215 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lượt khám ĐTĐ, THA ngoại trú < 3 tuần
   Chuyen_de_216 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Ondansetron sai chỉ định
@@ -1928,7 +1552,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Định lượng PIVKA sai quy định
   Chuyen_de_222 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Mycophenolate sai chỉ định
-  Chuyen_de_223 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_223 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kháng thể dsDNA và ANA đồng thời
   Chuyen_de_224 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Hút màng phổi áp lực âm sai chỉ định
@@ -1936,8 +1560,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thuốc Lucentis sử dụng tần suất cao
   Chuyen_de_226 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Zoledronic acid sử dụng tần suất cao
-  Chuyen_de_227 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    HCV đo tải lượng tần suất cao
   Chuyen_de_228 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Calci toàn phần đồng thời Calci ion hóa
   Chuyen_de_229 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1970,7 +1592,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     SA Doppler ĐM thận đồng thời SA ổ bụng
   Chuyen_de_243 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp XQ Blondeau + Hirtz tách rời
-  Chuyen_de_244 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_244 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng Định lượng CRP hs
   Chuyen_de_245 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp CT 64-128 dãy sai điều kiện
@@ -1978,10 +1600,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Định lượng Procalcitonin sai VBHN 17
   Chuyen_de_247 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thay băng vết mổ 15-30cm trong cơ cấu
-  Chuyen_de_248 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Tiền khám bệnh trong chạy thận nhân tạo
-  Chuyen_de_249 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Meloxicam/Loratadin sử dụng quá liều
   Chuyen_de_250 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Điện châm thực hiện sai thời gian
   Chuyen_de_251 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -1996,9 +1614,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Tinh bột ester hóa sai Thông tư 17
   Chuyen_de_256 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Truyền hóa chất nội trú áp giá ngoại trú
-  Chuyen_de_257 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_257 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xét nghiệm Phản ứng hòa hợp 22 độ lạm dụng
-  Chuyen_de_258 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_258 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng CT ổ bụng thường quy
   Chuyen_de_259 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Phẫu thuật chuyển vạt sai quy trình
@@ -2024,8 +1642,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Người ký hồ sơ không phải là Bác sĩ
   Chuyen_de_270 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhổ răng/Chữa tủy không lập Hồ sơ bệnh án
-  Chuyen_de_271 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Người đọc X-Quang sai thẩm quyền Nghị định 96
   Chuyen_de_272 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF
     Trưởng khoa/Phụ trách ICU sai chứng chỉ
   Chuyen_de_273 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2036,8 +1652,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Ngâm/Xông thuốc YHCT thiếu hóa đơn mua liệu
   Chuyen_de_276 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT NS viêm phúc mạc ruột thừa chưa có QTKT
-  Chuyen_de_277 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Bó thuốc/Đặt thuốc YHCT thiếu trích dẫn KH
   Chuyen_de_278 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN AFB (Lao) tính tiền BHYT sai nguồn
   Chuyen_de_279 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2060,7 +1674,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     DVKT sử dụng giá cũ cao hơn giá mới
   Chuyen_de_288 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: OFF
     Dịch vụ ngoài danh mục tương đương
-  Chuyen_de_289 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_289 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kháng sinh ngoại trú cấp nhiều đợt
   Chuyen_de_290 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Nhóm máu ABO lạm dụng
@@ -2070,17 +1684,15 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Định lượng Pro-GRP sai chỉ định
   Chuyen_de_293 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường nội trú chỉ dùng thuốc đơn giản
-  Chuyen_de_294 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_294 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng bộ 3 Men gan
-  Chuyen_de_295 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_295 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tổng phân tích nước tiểu không hợp lý
-  Chuyen_de_296 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    CLS gửi ngoài sai hợp đồng
   Chuyen_de_297 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tiền khám ở BN lĩnh thuốc theo hẹn
-  Chuyen_de_298 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_298 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tổng phân tích tế bào máu lạm dụng
-  Chuyen_de_299 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_299 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Creatinin lạm dụng
   Chuyen_de_300 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     HBsAg test nhanh sai chỉ định
@@ -2088,13 +1700,11 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     HCV Ab test nhanh sai chỉ định
   Chuyen_de_302 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     HCV realtime sai khoảng cách
-  Chuyen_de_303 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    proBNP (NT-proBNP) lạm dụng
   Chuyen_de_304 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đặt NKQ/Mở KQ thu kèm Hút đờm
   Chuyen_de_305 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng CA 15-3 sai chỉ định
-  Chuyen_de_306 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_306 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp X-quang số hóa lạm dụng
   Chuyen_de_307 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     KCB kỳ nghỉ Tết không cấp cứu
@@ -2126,7 +1736,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Kê đơn trùng lặp (chưa hết đã kê tiếp)
   Chuyen_de_321 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chỉ định CT chưa phù hợp ICD 10
-  Chuyen_de_322 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_322 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm vượt định mức
   Chuyen_de_323 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Lạm dụng thanh toán Kim luồn
@@ -2142,8 +1752,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Nội soi Đại trực tràng + Gây mê khác
   Chuyen_de_329 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhuộm PAS + Mô bệnh học
-  Chuyen_de_330 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Điện châm kim ngắn thu giá kim dài
   Chuyen_de_331 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Bác sĩ đang đi công tác/ngoại tỉnh ra y lệnh
   Chuyen_de_332 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2166,7 +1774,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Vedanal Fort sai chống chỉ định
   Chuyen_de_341 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Dalekine (Valproat) sai HDSD
-  Chuyen_de_342 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_342 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm âm đạo quá mức
   Chuyen_de_343 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chuyển 2 khoa trong ngày thu nguyên giá
@@ -2196,22 +1804,16 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Rheumapain-F chống chỉ định Loét DD
   Chuyen_de_356 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     KSK/KHHGĐ thu BHYT
-  Chuyen_de_357 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_357 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Điện tim đồng thời Doppler tim
   Chuyen_de_358 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc ho OPC chống chỉ định ĐTĐ
-  Chuyen_de_359 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Áp sai giá NS Mũi Xoang
   Chuyen_de_360 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Bó thuốc sai quy định YHCT
   Chuyen_de_361 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Agilecox chống chỉ định (Gan/Thận)
   Chuyen_de_362 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Celecoxib chống chỉ định (Mạch vành)
-  Chuyen_de_363 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Siêu âm mắt + Đo công suất TTT
-  Chuyen_de_364 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Lạm dụng Sinh hóa máu mổ Phaco
   Chuyen_de_365 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám + Lấy dị vật tai
   Chuyen_de_366 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2224,13 +1826,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Vật tư y tế không đi kèm DVKT
   Chuyen_de_370 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     CCHN chưa đăng ký tại cơ sở KCB
-  Chuyen_de_371 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_371 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường ngoại khoa trước mổ kéo dài
   Chuyen_de_372 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc Midazolam trọn gói Đặt NKQ
   Chuyen_de_373 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vitamin L trong cơ cấu gói sanh
-  Chuyen_de_374 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_374 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám lại sau từ 1-2 ngày
   Chuyen_de_375 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thời gian Y lệnh sau thời gian thực hiện
@@ -2244,15 +1846,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Khám bệnh không đúng chức danh nghề nghiệp
   Chuyen_de_380 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     SA Doppler mạch máu OB + SA Ổ bụng
-  Chuyen_de_381 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Lạm dụng Nội soi Tai Mũi Họng
   Chuyen_de_382 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Pro-BNP sai chỉ định
   Chuyen_de_383 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Soi phân HC/BC + Soi phân tìm KST
   Chuyen_de_384 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Sai niên độ quyết toán
-  Chuyen_de_385 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_385 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Sinh hóa máu / BN mổ Phaco
   Chuyen_de_386 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nhổ răng vĩnh viễn sai chỉ định
@@ -2262,8 +1862,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Đặt ống thông dạ dày đồng thời PT/TT
   Chuyen_de_389 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp sai giá NS thai ngoài tử cung
-  Chuyen_de_390 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Điện tim thường sai chỉ định
   Chuyen_de_391 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo CS thủy tinh thể + Siêu âm mắt
   Chuyen_de_392 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2298,7 +1896,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Lactat + Khí máu trên cùng 1 máy
   Chuyen_de_407 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     SA Tuyến giáp + SA Hạch vùng cổ
-  Chuyen_de_408 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_408 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thời gian trả KQ Cận lâm sàng quá dài
   Chuyen_de_409 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thay băng 15-30cm nhiễm trùng sai QĐ
@@ -2310,13 +1908,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thuốc trùng liều giữa 2 đợt KCB
   Chuyen_de_413 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     1 Bệnh nhân có 2 thẻ BHYT
-  Chuyen_de_414 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_414 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     VTYT vượt hạn mức sử dụng
   Chuyen_de_415 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tính tiền công khám sau khi ra viện
-  Chuyen_de_416 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_416 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường lưu cấp cứu quá ngày
-  Chuyen_de_417 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_417 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Đờm tìm BK lạm dụng
   Chuyen_de_418 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Phẫu thuật Laser mắt sai chỉ định
@@ -2350,7 +1948,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thay băng <15cm ngoài danh mục BV
   Chuyen_de_433 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     BS Đa khoa y lệnh thuốc Tâm thần
-  Chuyen_de_434 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_434 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp XQ chưa phù hợp bệnh lý
   Chuyen_de_435 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT/Bó bột chưa ban hành Quy trình DVKT
@@ -2362,7 +1960,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Máy XN Nước tiểu không có trong Phụ lục 3
   Chuyen_de_439 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Người đọc XN không có trong Phụ lục NVYT
-  Chuyen_de_440 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_440 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Glucose chưa phù hợp chẩn đoán
   Chuyen_de_441 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thẩm tách siêu lọc máu (HDF) sai điều kiện
@@ -2384,8 +1982,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Bác sĩ KCB sai phạm vi chuyên khoa
   Chuyen_de_450 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Hút áp xe phần mềm do BS sai quy định
-  Chuyen_de_451 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Nội soi TMH trước thời gian Khám TMH
   Chuyen_de_452 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thanh toán Sắc thuốc thang sai quy định
   Chuyen_de_453 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2396,9 +1992,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     DVKT YHCT cùng NVYT > 2 BN
   Chuyen_de_456 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     BN đang điều trị nội trú vẫn KCB ngoại trú
-  Chuyen_de_457 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_457 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Cholesterol toàn phần sai CĐ
-  Chuyen_de_458 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_458 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Định lượng Triglycerid máu sai CĐ
   Chuyen_de_459 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường băng ca không thu 50%
@@ -2406,8 +2002,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Tiền khám sai phân công bàn khám
   Chuyen_de_461 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đặt nội khí quản 2 nòng sai quy định
-  Chuyen_de_462 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
-    Chụp CT mạch vành lạm dụng
   Chuyen_de_463 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc bị thu hồi Giấy ĐK lưu hành
   Chuyen_de_464 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2426,7 +2020,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Cắt hẹp bao quy đầu thẩm mỹ
   Chuyen_de_471 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tiêm khớp do BS sai chuyên khoa
-  Chuyen_de_472 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_472 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc chống huyết khối Nong Stent
   Chuyen_de_473 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám bệnh + NS lấy dị vật
@@ -2446,7 +2040,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Chỉ định CLS < 5 phút trước ra viện
   Chuyen_de_481 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Y lệnh Công khám sau y lệnh khác
-  Chuyen_de_482 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_482 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thay băng nhưng không thu tiền khám
   Chuyen_de_483 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm tim cản âm lạm dụng
@@ -2464,7 +2058,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Xoa bóp liệt nửa người sai ICD
   Chuyen_de_490 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xoa bóp trẻ bại não sai độ tuổi
-  Chuyen_de_491 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_491 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xoa bóp điều trị mất ngủ lạm dụng
   Chuyen_de_492 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xoa bóp dây VII + Điện châm cùng lúc
@@ -2472,9 +2066,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     TT Tiền giường cho BN Ngoại trú
   Chuyen_de_494 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Colchicin chống chỉ định suy thận
-  Chuyen_de_495 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Alpha Chymotrypsin lạm dụng
-  Chuyen_de_496 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_495 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Alphachymotrypsin không đúng điều kiện TT 20/2022 (CV266 TH32)
+  Chuyen_de_496 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vitamin nhóm B tiêm lạm dụng
   Chuyen_de_497 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Truyền dịch ngoại trú sai chỉ định
@@ -2490,13 +2084,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Beta-hCG cho BN Nam sai chỉ định
   Chuyen_de_503 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nằm ghép nhưng thu tỷ lệ 100%
-  Chuyen_de_504 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_504 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Không in phim PACS không giảm trừ
   Chuyen_de_505 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chuyển tuyến sai quy định NĐ 146
   Chuyen_de_506 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám bệnh theo đoàn thu BHYT
-  Chuyen_de_507 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_507 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Xét nghiệm định kỳ mạn tính < 1 tháng
   Chuyen_de_508 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Test HP hơi thở lạm dụng
@@ -2522,27 +2116,27 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     HCV tải lượng thanh toán sai DM
   Chuyen_de_519 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo mật độ xương DXA < 6 tháng
-  Chuyen_de_520 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_520 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     SA Tim thai lạm dụng
   Chuyen_de_521 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Dao mổ Phaco/Chất nhầy thanh toán riêng
-  Chuyen_de_522 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
-    Thuốc bổ não Ginkgo/Piracetam lạm dụng
+  Chuyen_de_522 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Glucosamin không đúng điều kiện TT 20/2022 (CV266 TH20)
   Chuyen_de_523 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nội soi gây mê thiếu khám tiền mê
   Chuyen_de_524 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thay băng bỏng sai diện tích
   Chuyen_de_525 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chụp XQ Sọ mặt/TMH tách rời
-  Chuyen_de_526 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_526 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường ICU nhưng không có can thiệp nặng
   Chuyen_de_527 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám Nhi do BS hệ Ngoại
-  Chuyen_de_528 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_528 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc nhỏ mắt kháng sinh/Corticoid lạm dụng
   Chuyen_de_529 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Cắt trĩ bằng PP Longo sai chỉ định
-  Chuyen_de_530 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_530 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm Doppler thai sai tuần tuổi
   Chuyen_de_531 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Không có Test lẩy da trước tiêm Kháng sinh
@@ -2550,7 +2144,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Truyền máu không làm XN hòa hợp
   Chuyen_de_533 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Phẫu thuật KHX không có nẹp vít
-  Chuyen_de_534 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_534 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Đông máu toàn bộ lạm dụng
   Chuyen_de_535 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tiêm Botulinum sai chỉ định BHYT
@@ -2562,19 +2156,19 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thu tiền khám Cấp cứu không lập HSBA
   Chuyen_de_539 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Febuxostat sai chỉ định bước 1
-  Chuyen_de_540 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_540 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT Nội soi không lưu trữ Video/Hình ảnh
   Chuyen_de_541 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kéo giãn cột sống > 30 ngày/đợt
   Chuyen_de_542 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm thai 4D thu BHYT
-  Chuyen_de_543 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_543 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Cắt Polyp dạ dày/đại tràng không GPB
   Chuyen_de_544 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc Sốt rét sai chỉ định
   Chuyen_de_545 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Nuôi cấy VK Kỵ khí sai bệnh phẩm
-  Chuyen_de_546 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_546 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường lưu sản khoa sau đẻ thường quá 5 ngày
   Chuyen_de_547 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thở Oxy nhưng không theo dõi SpO2
@@ -2584,13 +2178,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Áp sai giá PT Cắt tuyến giáp
   Chuyen_de_550 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đẩy thuốc Viện phí vào cổng BHYT
-  Chuyen_de_551 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_551 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Test Mantoux lạm dụng
   Chuyen_de_552 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Sử dụng VTYT ngoài kết quả thầu
   Chuyen_de_553 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Áp giá PT có máy XQ C-Arm nhưng BV không có máy
-  Chuyen_de_554 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_554 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám > 3 chuyên khoa/ngày
   Chuyen_de_555 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vitamin B12 liều cao sai CĐ
@@ -2604,17 +2198,17 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Đinh Schanz/Khung cố định ngoài vượt số lượng
   Chuyen_de_560 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Điện giải đồ (Na, K, Cl) tách riêng
-  Chuyen_de_561 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_561 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường ngoại khoa sau mổ không biên chứng > 15 ngày
   Chuyen_de_562 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tiêm Corticoid nội khớp sai khoảng cách
-  Chuyen_de_563 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_563 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     PT Cắt Amidan người lớn lạm dụng
   Chuyen_de_564 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo CNHH cho trẻ em < 5 tuổi
   Chuyen_de_565 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Thuốc dạng hít (Seretide/Symbicort) sai ĐK
-  Chuyen_de_566 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_566 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     XN Dengue ngoài mùa dịch lạm dụng
   Chuyen_de_567 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Tháo nẹp vít xương chưa đủ thời gian
@@ -2624,7 +2218,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     NVYT đi KCB nhưng vẫn ra y lệnh
   Chuyen_de_570 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đặt sonde dạ dày kết cấu trong PT
-  Chuyen_de_571 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_571 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm ổ bụng sai chẩn đoán
   Chuyen_de_572 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Đo CS TTT bằng SA đồng thời thu SA mắt
@@ -2642,11 +2236,11 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Nhân lực thực hiện sai phạm vi
   Chuyen_de_579 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường vượt 10% công suất phê duyệt
-  Chuyen_de_580 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_580 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vượt công suất chụp MRI trong quý
   Chuyen_de_581 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Vượt định mức Xoa bóp bấm huyệt
-  Chuyen_de_582 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_582 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Rà soát YHCT/PHCN T7, CN
   Chuyen_de_583 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Trắc nghiệm giấc ngủ PSQI sai QĐ
@@ -2664,7 +2258,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Eperison (Ryzonal) chống chỉ định TE < 18 tuổi
   Chuyen_de_590 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Hoastex chống chỉ định Đái tháo đường
-  Chuyen_de_591 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [mặc định OFF]
+  Chuyen_de_591 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Siêu âm âm đạo quá mức cần thiết
   Chuyen_de_592 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Bệnh kéo dài ngày điều trị nội trú chưa hợp lý
@@ -2690,40 +2284,102 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Kipel Film coa tabs 10 mg không đúng HDSD
   Chuyen_de_603 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
     Betriol sai chẩn đoán/chống chỉ định
-
---- LUAT_CDHA — No-code DVKT (DVKT-OP-*) (16 quy tắc) ---
-  DVKT-OP-01 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Chỉ định ICD10 phù hợp
-  DVKT-OP-02 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Chống chỉ định ICD10
-  DVKT-OP-03 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Phạm vi hành nghề
-  DVKT-OP-04 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Máy móc thiết bị
-  DVKT-OP-05 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Giá DVKT
-  DVKT-OP-06 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Hiệu lực DVKT
-  DVKT-OP-07 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Phân loại PTTT
-  DVKT-OP-08 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Ghi chú đặc thù
-  DVKT-OP-09 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Danh mục nội bộ được phê duyệt
-  DVKT-OP-10 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Thời gian hành nghề bác sỹ
-  DVKT-OP-11 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Danh mục 3 tạm thời chưa thanh toán
-  DVKT-OP-12 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [mặc định OFF]
-    Mapping người hành nghề theo DVKT
-  DVKT-OP-13 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Đối soát tên DVKT theo danh mục
-  DVKT-OP-14 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Danh mục DVKT phải có đơn giá
-  DVKT-OP-15 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: ON [hiệu lực MD]
-    Danh mục DVKT phải có quyết định
-  DVKT-OP-16 | nguồn: ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx | mã: OFF
-    Mã giường dạng cũ (Kxx.xxxx)
+  Chuyen_de_604 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Vi khuẩn nhuộm soi đồng thời nuôi cấy định danh (CV266 KT01.4)
+  Chuyen_de_605 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Nội soi TQ–dạ dày–tá tràng chẩn đoán đồng thời nội soi can thiệp DD–tá tràng (CV266 KT01.18)
+  Chuyen_de_606 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Nội soi đại/trực tràng chẩn đoán đồng thời nội soi can thiệp đại/trực tràng (CV266 KT01.19)
+  Chuyen_de_607 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    BNP vs NT‑proBNP sai nhánh suy thận / suy tim (CV266 KT37)
+  Chuyen_de_608 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Nhiều phẫu thuật cùng đợt — rà tỷ lệ PT thứ 2+ (50%/80%, CV266 KT08)
+  Chuyen_de_609 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    DVKT chỉ ngoại trú nhưng tách thu kèm tiền giường nội trú (CV266 KT144)
+  Chuyen_de_610 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    CT mã «có cản quang» nhưng không có thuốc cản quang trên XML2 (CV266 KT183)
+  Chuyen_de_611 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Thay băng vết mổ 15–30 cm từ lần 4+ sau mổ lấy thai nội trú (CV266 KT105)
+  Chuyen_de_612 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Làm lại tầng sinh môn / thành âm đạo tách thu cùng đẻ thường–đẻ khó (CV266 KT189_5)
+  Chuyen_de_613 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tiêm khớp tách thu cùng hút dịch khớp cùng vị trí (CV266 KT189_8)
+  Chuyen_de_614 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Cắt u buồng trứng / cắt phần phụ mở bụng tách thu sau cắt tử cung hoàn toàn (CV266 KT189_9)
+  Chuyen_de_615 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Monitoring tim thai / cơn co tử cung >1 lần/ngày trong đẻ–mổ đẻ (CV266 KT193)
+  Chuyen_de_616 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Siêu âm ổ bụng đồng thời siêu âm hệ tiết niệu hoặc tử cung phần phụ (CV266 KT217)
+  Chuyen_de_617 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Số ngày giường nội trú không đúng quy định (CV266 KT221)
+  Chuyen_de_618 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Siêu âm tách thu cùng sinh thiết / tiêm khớp dưới hướng dẫn SA (CV266 KT95)
+  Chuyen_de_619 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tiền khám / công khám nội trú tại khoa Cấp cứu không đúng quy định (CV266 KT223)
+  Chuyen_de_620 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Dung dịch dinh dưỡng túi 3 ngăn (TPN) không đúng tờ HDSD / chống chỉ định (CV266 KT63)
+  Chuyen_de_621 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tách thu enoxaparin/heparin kèm chạy thận nhân tạo (CV266 KT102)
+  Chuyen_de_622 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Oxy liệu pháp tách thu đồng thời thở máy (CV266 KT219)
+  Chuyen_de_623 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tenofovir alafenamide (TAF) không đúng chỉ định viêm gan B (CV266 TH107)
+  Chuyen_de_624 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Calci bổ sung (Caldihasan…) chống chỉ định sỏi tiết niệu (CV266 TH98)
+  Chuyen_de_625 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Peptid não (Cerebrolysin/Cortexin…) không đúng chỉ định TT 20/2022 (CV266 TH01)
+  Chuyen_de_626 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Amoxicillin + sulbactam không đúng chỉ định nhiễm khuẩn hô hấp (CV266 TH06)
+  Chuyen_de_627 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Galantamin không đúng chỉ định sa sút trí tuệ (CV266 TH08)
+  Chuyen_de_628 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Acid alpha-lipoic / thioctic không đúng chỉ định (CV266 TH15)
+  Chuyen_de_629 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Piracetam không đúng chỉ định (CV266 TH48)
+  Chuyen_de_630 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    PPI (omeprazol/esomeprazol/pantoprazol…) không đúng chỉ định TT 37/2024 (CV266 TH72)
+  Chuyen_de_631 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Diclofenac chống chỉ định tim mạch / thiếu máu cục bộ (CV266 TH97)
+  Chuyen_de_632 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Alfuzosin / Xatral không đúng chỉ định tăng sinh lành tính tuyến tiền liệt (CV266 TH04)
+  Chuyen_de_633 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Diacerein chống chỉ định tuyệt đối / trẻ em / thai sản (CV266 TH21)
+  Chuyen_de_634 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Moxifloxacin chống chỉ định thai kỳ / sản khoa (CV266 TH28)
+  Chuyen_de_635 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Famotidine không đúng chỉ định (CV266 TH34)
+  Chuyen_de_636 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Cao Đông y toàn phần (quả bơ/đậu nành) không đúng chỉ định thoái hóa khớp (CV266 TH51)
+  Chuyen_de_637 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Ngưu nhĩ phong / La liễu không đúng chỉ định viêm đại tràng mạn (CV266 TH52)
+  Chuyen_de_638 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tioga / Phalintop không đúng chỉ định tuần hoàn não / mạch ngoại viên (CV266 TH90+TH91)
+  Chuyen_de_639 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Vinpocetin / Ginkgo biloba không đúng chỉ định (CV266 TH14+TH19)
+  Chuyen_de_640 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Ivabradin / Procoralan không đúng chỉ định đau thắt ngực ổn định / suy tim (CV266 TH85)
+  Chuyen_de_641 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Neutrivit / Savi 3B không đúng chỉ định dinh dưỡng ung thư (CV266 TH81)
+  Chuyen_de_642 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Acid zoledronic ngoài chỉ định loãng xương / di căn xương (CV266 TH88)
+  Chuyen_de_643 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Levofloxacin chống chỉ định thai kỳ / sản khoa (CV266 TH42)
+  Chuyen_de_645 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Magnesi hydroxyd kháng acid khi suy thận mạn / giai đoạn cuối (CV266 TH60)
+  Chuyen_de_646 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Aminoleban / BCAA gan không đúng chỉ định bệnh gan (CV266 TH62)
+  Chuyen_de_647 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Silymarin không đúng chỉ định bệnh gan mạn (CV266 TH65)
+  Chuyen_de_648 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Bidilucil không đúng chỉ định gan / viêm gan (CV266 TH73)
+  Chuyen_de_649 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Tadalafil / Tadimax không đúng chỉ định LUTS/BPH, rối loạn cương, tăng áp phổi (CV266 TH75)
+  Chuyen_de_650 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Melanov-M / phối hợp làm sáng da không đúng chỉ định nám / tăng sắc tố (CV266 TH77)
+  Chuyen_de_651 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Lysin + khoáng chất / vi chất không đúng chỉ định suy dinh dưỡng / hậu phẫu (CV266 TH84)
+  Chuyen_de_652 | nguồn: ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx | mã: ON [hiệu lực MD]
+    Magnesi hydroxyd kèm ICD hô hấp trên (J00–J06) nhưng không ICD kháng acid (CV266 TH60)
 
 --- LUAT_CONG_KHAM — Công khám (CK_*) (57 quy tắc) ---
   CK_01 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
@@ -2770,15 +2426,15 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Công khám tại buồng lưu nhóm khám/điều trị ngoại trú
   CK_22 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khoảng cách 2 lần khám < 15 phút
-  CK_23 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_23 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Công khám vượt định mức 2.000.000đ/năm
   CK_24 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Chẩn đoán ICD-10 không đặc hiệu
-  CK_25 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_25 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     CCHN bác sĩ Nhi khoa khám người lớn
-  CK_26 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_26 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Khám bệnh mạn tính quá 12 lần/năm
-  CK_27 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_27 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Công khám bệnh án mạn tính
   CK_28 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám và điều trị vật lý trị liệu
@@ -2796,11 +2452,11 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thiếu chữ ký số trên hồ sơ khám
   CK_35 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Công khám của BS chưa có CCHN
-  CK_36 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_36 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     CCHN bác sĩ không phù hợp khoa
   CK_37 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám bệnh cho đối tượng Quân đội
-  CK_38 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_38 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Khám chuyên khoa tại khoa không tương ứng
   CK_39 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám Sức khỏe (Điều 23 Luật BHYT)
@@ -2816,7 +2472,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Khám Sản/Phụ khoa cho Nam giới
   CK_45 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám bệnh tại trạm vệ tinh
-  CK_46 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_46 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Khám bệnh vượt tuyến kỹ thuật
   CK_47 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Công khám của BS đang nghỉ phép
@@ -2824,9 +2480,9 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Khám chuyên khoa và Bác sĩ Gia đình
   CK_49 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám bệnh cho người bệnh có thẻ khóa
-  CK_51 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_51 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Bác sĩ khám vượt quá 02 cơ sở/ngày
-  CK_52 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF [mặc định OFF]
+  CK_52 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: OFF
     Trùng lặp công khám cùng giờ
   CK_53 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Trần thanh toán 200% công khám
@@ -2841,7 +2497,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   CK_58 | nguồn: ma_nguon/tien_ich/luat_cong_kham_hardcoded.jsx | mã: ON [hiệu lực MD]
     Khám nhiều chuyên khoa cùng Khoa
 
---- LUAT_DU_LIEU — Cấu trúc / luật dữ liệu (XML_*, STRUCT_*) (114 quy tắc) ---
+--- LUAT_DU_LIEU — Cấu trúc / luật dữ liệu (XML_*, STRUCT_*) (115 quy tắc) ---
   CDSS_CM_01 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
     CDSS Chuyên môn — Có mã ICD trên XML1 trùng kho phác đồ (chỉ kiểm tra tồn tại khóa ICD, không đối chiếu nội dung các cột phác đồ)
   CDSS_CM_02 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: OFF
@@ -2931,7 +2587,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   XML_50 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
     Lệch thông tin báo cáo Thuốc
   XML_53 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
-    Lệch tiền Thuốc (T_THUOC)
+    Lệch T_THUOC (XML1) vs tổng tiền BHYT chi tiết thuốc XML2
   XML_54 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
     Lệch tiền VTYT (T_VTYT)
   XML_55 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
@@ -3070,11 +2726,13 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     XML3 thiếu MA_LK
   XML_142 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
     Y lệnh trước khi vào viện
+  XML_143 | nguồn: ma_nguon/tien_ich/du_lieu_luat_du_lieu_muc1.jsx | mã: ON [hiệu lực MD]
+    Thành tiền BHYT không cao hơn thành tiền BV (chi tiết)
 
 --- LUAT_GIUONG — Giường (GB_*) (77 quy tắc) ---
   GB_01 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường điều trị nội trú (mã 03/09) cho chẩn đoán nhẹ
-  GB_02 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_02 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     Giường điều trị nội trú (mã 03/09) và mã bệnh nhẹ
   GB_03 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Khám/điều trị ngoại trú] Giường lưu và Chẩn đoán
@@ -3126,7 +2784,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [Quản trị] Giường lưu nhóm khám/điều trị ngoại trú < 4h
   GB_27 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường Sản và Mã BN con liên kết
-  GB_28 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_28 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Sản khoa] Giường con nằm cùng mẹ
   GB_29 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường và Dinh dưỡng tĩnh mạch
@@ -3138,7 +2796,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Giường và Thay băng mổ
   GB_33 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Vật tư] Giường ICU và Bơm tiêm điện
-  GB_34 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_34 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Hồi sức] Giường ICU và Máy thở
   GB_35 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường Hồi sức và Vật tư (XML5)
@@ -3182,7 +2840,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [Đơn giá] Giường nằm ghép 3 người
   GB_55 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Đơn giá] Giường nằm ghép 2 người
-  GB_56 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_56 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     Giường và Đơn giá giường ghép 2
   GB_57 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     Giường nội trú ban ngày (mã 04) và Mã giường BHYT
@@ -3196,7 +2854,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Giường nội trú vào và ra cùng ngày
   GB_62 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Định mức] Vượt tổng ngày nằm viện
-  GB_63 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_63 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Trùng lặp] Nhiều giường trong 1 ngày
   GB_64 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Pháp lý] CCHN Bác sĩ điều trị
@@ -3204,15 +2862,15 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [Khám/điều trị ngoại trú] Giường lưu quá 24 giờ
   GB_66 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Hồi sức] Giường ICU và Y lệnh thuốc
-  GB_67 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_67 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Logic] Ngày vào muộn hơn ngày mổ
-  GB_68 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_68 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     Giường và Thời gian phẫu thuật
   GB_69 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường ngoại và ICD nội khoa
   GB_70 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Tâm thần] Giường và ICD-10 mã F
-  GB_71 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_71 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     Chuyển khoa và Tính ngày giường
   GB_72 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Loại hình KCB] Giường nội trú vs Khám/điều trị ngoại trú
@@ -3222,12 +2880,12 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Giường nội trú ban ngày (mã 04) và Suất ăn BHYT
   GB_75 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     [Thời gian] Nằm viện dưới 4 giờ
-  GB_76 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF [mặc định OFF]
+  GB_76 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: OFF
     [Thời gian] Nằm viện tối thiểu 4 giờ
   GB_77 | nguồn: ma_nguon/tien_ich/luat_giuong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giường Ung thư và Hóa trị
 
---- LUAT_HANH_CHINH — Hành chính (HC-*) (248 quy tắc) ---
+--- LUAT_HANH_CHINH — Hành chính (HC-*) (251 quy tắc) ---
   HC_01 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
     Ưu tiên mã R (Triệu chứng)
   HC_02 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
@@ -3273,11 +2931,11 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   HC_22 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
     Thẻ hết hạn khi đang điều trị
   HC_23 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
-    Nhóm Quân nhân/Công an (QN, CA)
+    Nhóm Quân nhân/Công an (QN, CA, CY)
   HC_24 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
     Nhóm Hộ nghèo/Dân tộc (HN, DT)
   HC_25 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
-    Nhóm Hộ cận nghèo (CN)
+    Thẻ CN (hộ cận nghèo) — mức 100% phạm vi (CV 38/BYT-BH; NQ 261/2025)
   HC_26 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: OFF
     Chuyển tuyến cấp cứu (NĐ 188)
   HC_27 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: OFF
@@ -3724,9 +3382,15 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Validate tháng/ngày trong chuỗi ngày QĐ 130
   HC_248 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
     Validate giờ/phút trong trường ngày QĐ 130
+  HC_249 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
+    Cấp cứu: ICD và lý do/tình trạng theo danh mục ICD-10 cấp cứu (Nhi NH** / Người lớn NL**)
+  HC_250 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
+    Thẻ BHYT: 2 ký tự đầu không khớp nhóm theo ký hiệu số thứ 3 (nghi ngờ sai thẻ/khai báo)
+  HC_251 | nguồn: ma_nguon/tien_ich/du_lieu_luat_hanh_chinh_muc2.jsx | mã: ON [hiệu lực MD]
+    Người cao tuổi LH (trợ cấp hưu trí XH) — tỷ lệ phạm vi theo thẻ (NQ 261/2025; CV 38/BYT-BH)
 
 --- LUAT_HOP_DONG — Hợp đồng (HD_*) (22 quy tắc) ---
-  HD_01 | nguồn: ma_nguon/tien_ich/luat_hop_dong_hardcoded.jsx | mã: ON [mặc định OFF]
+  HD_01 | nguồn: ma_nguon/tien_ich/luat_hop_dong_hardcoded.jsx | mã: ON [hiệu lực MD]
     Giờ tiếp đón ngoại trú sai quy định
   HD_03 | nguồn: ma_nguon/tien_ich/luat_hop_dong_hardcoded.jsx | mã: OFF
     Khám bệnh ngày Chủ nhật
@@ -3774,33 +3438,33 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
 --- LUAT_NHAN_SU — Nhân sự (NS_*) (15 quy tắc) ---
   NS_01 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: ON [hiệu lực MD]
     Kiểm tra trùng mã liên kết (MA_LK)
-  NS_02 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_02 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Kiểm tra nhân sự có trong DM đăng ký hành nghề
-  NS_03 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_03 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     BS Y khoa - Phạm vi hành nghề (PL V, TT 32)
-  NS_04 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_04 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     BS YHCT - Phạm vi hành nghề (PL VI, TT 32)
-  NS_05 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_05 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     BS RHM - Phạm vi hành nghề (PL VIII, TT 32)
-  NS_06 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_06 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     BS Chuyên khoa - Phạm vi hành nghề (PL IX, TT 32)
-  NS_07 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_07 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Điều dưỡng - Phạm vi hành nghề (PL XII, TT 32)
-  NS_08 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_08 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Hộ sinh - Phạm vi hành nghề (PL XIII, TT 32)
-  NS_09 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_09 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Kiểm tra phân cấp kỹ thuật theo vị trí chuyên môn
   NS_10 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: ON [hiệu lực MD]
     BS "Phân thân" - Trùng thời gian thực hiện DVKT
-  NS_11 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_11 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Kê thuốc đặc trị - BS không có quyền kê
-  NS_12 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_12 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     CCHN hết hạn hoặc bị thu hồi
-  NS_13 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_13 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     DVKT ngoài DMDC BHYT hoặc ngoài phạm vi CSKCB
-  NS_14 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_14 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     BS chỉ định ≠ BS thực hiện - Thiếu y lệnh
-  NS_15 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF [mặc định OFF]
+  NS_15 | nguồn: ma_nguon/tien_ich/luat_nhan_su_hardcoded.jsx | mã: OFF
     Nhân sự không đăng ký tại CSKCB hiện tại
 
 --- LUAT_PTTT — PTTT seed (CLN-PTTT / liên quan) (2320 quy tắc) ---
@@ -6160,7 +5824,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thực hiện - Bơm thông lệ đạo (03.1685.0854)
   DVKT_1601 | nguồn: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx | mã: ON [hiệu lực MD]
     Thanh toán - Bơm thông lệ đạo (03.1685.0854)
-  DVKT_1602 | nguồn: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx | mã: ON [mặc định OFF]
+  DVKT_1602 | nguồn: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx | mã: ON [hiệu lực MD]
     Chỉ định - SA Doppler ĐM, TM chi dưới (18.0045.0004)
   DVKT_1603 | nguồn: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx | mã: ON [hiệu lực MD]
     Chống chỉ định - SA Doppler ĐM, TM chi dưới (18.0045.0004)
@@ -8445,7 +8109,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   DVKT_2744 | nguồn: ma_nguon/tien_ich/du_lieu_luat_pttt_muc11.jsx | mã: ON [hiệu lực MD]
     Chỉ định - Tháo khớp gối [Gói] (03.3755.0534_GT)
 
---- LUAT_THUOC — Thuốc seed (THUOC_*) (538 quy tắc) ---
+--- LUAT_THUOC — Thuốc seed (THUOC_*) (536 quy tắc) ---
   THUOC_01 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Acetyl leucin] Cảnh báo liều tối đa
   THUOC_02 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
@@ -8640,7 +8304,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     [Cefpodoxim] Kiểm tra tần suất
   THUOC_97 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Celecoxib] Chống chỉ định lâm sàng
-  THUOC_98 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [mặc định OFF]
+  THUOC_98 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Celecoxib] Kiểm tra Chỉ định ICD-10
   THUOC_99 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Celecoxib] Liều tối đa/24h
@@ -8685,7 +8349,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   THUOC_119 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Desloratadin] Kiểm tra tần suất
   THUOC_120 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
-    [Dexamethason + Neomycin + Polymyxin]
+    [Mepoly] ICD chỉ định thanh toán (TT)
   THUOC_121 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Dexamethason + Neomycin + Polymyxin]
   THUOC_122 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
@@ -9107,7 +8771,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   THUOC_330 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Rosuvastatin] Kiểm tra tần suất
   THUOC_331 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
-    [Rotundin Kiểm tra Chỉ định ICD-10
+    [Rotundin] Kiểm tra Chỉ định ICD-10
   THUOC_332 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     [Rotundin] Cảnh báo liều tối đa/24h
   THUOC_333 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
@@ -9244,7 +8908,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Domperidon viên: độ tuổi + trần 30 mg/ngày
   THUOC_399 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Đơn thuốc \
-  THUOC_400 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: OFF [mặc định OFF]
+  THUOC_400 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: OFF
     Đơn thuốc điện tử sai định dạng mã
   THUOC_401 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Đơn thuốc mạn tính - Đổi thuốc
@@ -9252,7 +8916,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Đơn thuốc mạn tính < 30 ngày
   THUOC_403 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Đơn thuốc mạn tính khác tỉnh
-  THUOC_404 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
+  THUOC_404 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: OFF [tắt cứng]
     Đơn thuốc mạn tính quá 30 ngày
   THUOC_405 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Đơn thuốc mạn tính sai danh mục
@@ -9294,8 +8958,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Kê đơn không có định danh cơ sở
   THUOC_424 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Kê đơn không có Mã bác sĩ
-  THUOC_425 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
-    Kê đơn không trùng khớp khoa
   THUOC_426 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Kê đơn thay thế (Biosimilar)
   THUOC_427 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
@@ -9338,7 +9000,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Phối hợp 2 loại PPI
   THUOC_447 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     PPI dự phòng loét sai chỉ định
-  THUOC_448 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
+  THUOC_448 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: OFF [tắt cứng]
     Rosuvastatin: Kiểm soát liều 24h
   THUOC_449 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Rosuvastatin: Nhất quán Y lệnh
@@ -9358,8 +9020,6 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
     Thay thế thuốc sinh phẩm
   THUOC_457 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Thiếu cấu trúc liều dùng XML2
-  THUOC_458 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
-    Thuốc Botulinum Toxin (Botox)
   THUOC_459 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Thuốc bổ não cho BN chấn thương
   THUOC_460 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
@@ -9521,7 +9181,7 @@ PHẦN 5 — CHI TIẾT THEO NHÓM (TỪNG MÃ)
   THUOC_538 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
     Lỗi kế toán: Tổng tiền lệch quá 5 đồng so với tổng các nguồn thanh toán
   THUOC_539 | nguồn: ma_nguon/tien_ich/du_lieu_luat_thuoc_muc8.jsx | mã: ON [hiệu lực MD]
-    [XUẤT TOÁN]: Desloratadin
+    [XUẤT TOÁN]: Desloratadin (Sosallergy/Setbozi) — chỉ định ICD TT
 
 ══════════════════════════════════════════════════════════════════════════════
 HẾT BÁO CÁO

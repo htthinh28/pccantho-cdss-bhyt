@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T07:14:13.528Z",
+  "generatedAt": "2026-04-23T11:52:08.862Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -29,43 +29,72 @@
       "id": "md:Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md",
       "relPath": "Bai_tap_phat_trien_ky_nang_giam_dinh_AI.html",
       "title": "Bài tập phát triển kỹ năng giám định cho AI",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ban_ghi_kiem_thu_CHUYEN_DE_XML130_20260413.md",
       "relPath": "Ban_ghi_kiem_thu_CHUYEN_DE_XML130_20260413.html",
       "title": "Bản ghi kiểm thử — CHUYEN_DE XML130 (batch 39–40)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "hanh_chinh",
+        "xml_chuyen_de",
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:Ban_ghi_rasoat_quy_tac_audit_predeploy_2026-04-09.md",
       "relPath": "Ban_ghi_rasoat_quy_tac_audit_predeploy_2026-04-09.html",
       "title": "Bản ghi rà soát quy tắc audit BHYT — trước deploy production",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:Bang_neo_phien_huan_luyen_dvkt_va_engine.md",
       "relPath": "Bang_neo_phien_huan_luyen_dvkt_va_engine.html",
       "title": "Bảng neo — phiên huấn luyện DVKT ↔ engine (repo)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "bang_neo",
+        "ai_huan_luyen",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Bang_neo_phien_huan_luyen_thuoc_va_engine.md",
       "relPath": "Bang_neo_phien_huan_luyen_thuoc_va_engine.html",
       "title": "Bảng neo — phiên huấn luyện thuốc ↔ engine (repo)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "bang_neo",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Bang_neo_phien_huan_luyen_vtyt_va_engine.md",
       "relPath": "Bang_neo_phien_huan_luyen_vtyt_va_engine.html",
       "title": "Bảng neo — phiên huấn luyện VTYT ↔ engine (repo)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "bang_neo",
+        "ai_huan_luyen",
+        "vtyt"
+      ]
     },
     {
       "id": "txt:Bao_cao_thuc_trang_quy_tac_he_thong.txt",
       "relPath": "Bao_cao_thuc_trang_quy_tac_he_thong.txt",
       "title": "Bao cao thuc trang quy tac he thong",
-      "nguon": "text"
+      "nguon": "text",
+      "tags": [
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:Bat_dau_test_10_ca_chi_tiet.md",
@@ -83,175 +112,316 @@
       "id": "md:Ca_huan_luyen_mau_000308_DVKT_2587_2588_PTTT_goi_thuoc.md",
       "relPath": "Ca_huan_luyen_mau_000308_DVKT_2587_2588_PTTT_goi_thuoc.html",
       "title": "CA HUẤN LUYỆN MẪU 000308 — DVKT_2587 & DVKT_2588 — GÓI PTTT VÀ THUỐC TÊ/MÊ (XML2)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc",
+        "dvkt",
+        "pttt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000308_THUOC_391_sai_lech_so_luong_y_lenh.md",
       "relPath": "Ca_huan_luyen_mau_000308_THUOC_391_sai_lech_so_luong_y_lenh.html",
       "title": "CA HUẤN LUYỆN MẪU 000308 — THUOC_391 — SAI LỆCH SỐ LƯỢNG CẤP PHÁT VỚI Y LỆNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000339_Biofazolin_du_phong_phu_khoa.md",
       "relPath": "Ca_huan_luyen_mau_000339_Biofazolin_du_phong_phu_khoa.html",
       "title": "CA HUẤN LUYỆN MẪU 000339 - BIOFAZOLIN DỰ PHÒNG PHỤ KHOA",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000339_Mekoferrat_sai_chan_doan.md",
       "relPath": "Ca_huan_luyen_mau_000339_Mekoferrat_sai_chan_doan.html",
       "title": "CA HUẤN LUYỆN MẪU: THANH TOÁN MEKOFERRAT-B9 SAI CHẨN ĐOÁN",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000375_DVKT_OP_09_danh_muc_noibo.md",
       "relPath": "Ca_huan_luyen_mau_000375_DVKT_OP_09_danh_muc_noibo.html",
       "title": "CA HUẤN LUYỆN MẪU 000375 — DVKT-OP-09 — DANH MỤC NỘI BỘ (CHECK_INTERNAL_APPROVAL)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000434_THUOC_417_DOMUVAR.md",
       "relPath": "Ca_huan_luyen_mau_000434_THUOC_417_DOMUVAR.html",
       "title": "CA HUẤN LUYỆN MẪU 000434 - THUOC_417 - DOMUVAR",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000502_CDHA_164_MRI_noitru.md",
       "relPath": "Ca_huan_luyen_mau_000502_CDHA_164_MRI_noitru.html",
       "title": "CA HUẤN LUYỆN MẪU 000502 — CDHA_164 — MRI VÀ THỜI GIAN CHỜ NỘI TRÚ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000538_CDHA_101_ma_may_XQ.md",
       "relPath": "Ca_huan_luyen_mau_000538_CDHA_101_ma_may_XQ.html",
       "title": "CA HUẤN LUYỆN MẪU 000538 — CDHA_101 — MÃ MÁY THIẾT BỊ (MA_MAY) TRÊN DỊCH VỤ CĐHA",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000573_THUOC_391_Dafodin_giuong_PT.md",
       "relPath": "Ca_huan_luyen_mau_000573_THUOC_391_Dafodin_giuong_PT.html",
       "title": "CA HUẤN LUYỆN MẪU 000573 — THUOC_391 — DAFODIN TRONG HỒ SƠ NỘI TRÚ (GIƯỜNG + DVKT)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000589_Cefotaxime_dieu_tri_tiem.md",
       "relPath": "Ca_huan_luyen_mau_000589_Cefotaxime_dieu_tri_tiem.html",
       "title": "CA HUẤN LUYỆN MẪU 000589 - CEFOTAXIME ĐIỀU TRỊ TIÊM VÀ LỖI CHUẨN HÓA ĐƠN VỊ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000589_DM_THUOC_03_danh_muc_noibo_snapshot.md",
       "relPath": "Ca_huan_luyen_mau_000589_DM_THUOC_03_danh_muc_noibo_snapshot.html",
       "title": "CA HUẤN LUYỆN MẪU 000589 — DM-THUOC-03 — THUỐC CHƯA XÁC MINH TRONG DANH MỤC NỘI BỘ (SNAPSHOT)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000589_Loi_hanh_chinh_chenh_tien.md",
       "relPath": "Ca_huan_luyen_mau_000589_Loi_hanh_chinh_chenh_tien.html",
       "title": "CA HUẤN LUYỆN: LỖI HÀNH CHÍNH - CHÊNH LỆCH TỔNG TIỀN",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_000589_nhieu_nhom_thuoc_mot_ho_so.md",
       "relPath": "Ca_huan_luyen_mau_000589_nhieu_nhom_thuoc_mot_ho_so.html",
       "title": "CA HUẤN LUYỆN MẪU 000589 — MỘT HỒ SƠ, NHIỀU NHÓM THUỐC (DANH MỤC BV)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_403244_ICD10_phan_nhom_chuyen_mon.md",
       "relPath": "Ca_huan_luyen_mau_403244_ICD10_phan_nhom_chuyen_mon.html",
       "title": "CA HUẤN LUYỆN MẪU 403244 - ICD10 PHÂN NHÓM CHUYÊN MÔN TỪ BỆNH CHÍNH VÀ BỆNH KÈM",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_403244_PTTT_noi_soi_gay_me.md",
       "relPath": "Ca_huan_luyen_mau_403244_PTTT_noi_soi_gay_me.html",
       "title": "CA HUẤN LUYỆN MẪU 403244 - PTTT - NỘI SOI ĐẠI TRỰC TRÀNG GÂY MÊ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "pttt"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_403244_Vi_pham_phap_ly_BHYT.md",
       "relPath": "Ca_huan_luyen_mau_403244_Vi_pham_phap_ly_BHYT.html",
       "title": "CA HUẤN LUYỆN: VI PHẠM QUYẾT ĐỊNH 188/2025 VỀ THANH TOÁN BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_403521_Cefazolin_du_phong_san_khoa.md",
       "relPath": "Ca_huan_luyen_mau_403521_Cefazolin_du_phong_san_khoa.html",
       "title": "CA HUẤN LUYỆN MẪU 403521 - CEFAZOLIN DỰ PHÒNG SẢN KHOA",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_403538_THUOC_345_MOGASTIC.md",
       "relPath": "Ca_huan_luyen_mau_403538_THUOC_345_MOGASTIC.html",
       "title": "CA HUẤN LUYỆN MẪU 403538 - THUOC_345 - MOGASTIC 80",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_ER26000392_THUOC_374_Magnesi_ICD_va_chong_lop.md",
       "relPath": "Ca_huan_luyen_mau_ER26000392_THUOC_374_Magnesi_ICD_va_chong_lop.html",
       "title": "CA HUẤN LUYỆN MẪU ER26000392 — THUOC_374 (MAGNESI B6) — ICD, CẤP DƯ, INN VÀ CHỒNG LỚP",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_IP26000139_DOMUVAR_THUOC_63_va_THUOC_417_noi_tru.md",
       "relPath": "Ca_huan_luyen_mau_IP26000139_DOMUVAR_THUOC_63_va_THUOC_417_noi_tru.html",
       "title": "CA HUẤN LUYỆN MẪU IP26000139 — THUOC_63 (DOMUVAR) + THUOC_417 HÀNG LOẠT — NỘI TRÚ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_OP26000282_I10_tang_huyet_ap.md",
       "relPath": "Ca_huan_luyen_mau_OP26000282_I10_tang_huyet_ap.html",
       "title": "CA HUAN LUYEN MAU OP26000282 - NHOM I10 TANG HUYET AP",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_OP26000908_Amoxiclav_dieu_tri_uong.md",
       "relPath": "Ca_huan_luyen_mau_OP26000908_Amoxiclav_dieu_tri_uong.html",
       "title": "CA HUẤN LUYỆN MẪU OP26000908 - AMOXICLAV ĐIỀU TRỊ UỐNG VÀ NGUY CƠ RULE QUÁ HẸP",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_OP26000908_Loi_an_toan_lieu_cao.md",
       "relPath": "Ca_huan_luyen_mau_OP26000908_Loi_an_toan_lieu_cao.html",
       "title": "CA HUẤN LUYỆN: LỖI AN TOÀN - LIỀU KHÁNG SINH QUẢL CAO",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_OP26000908_THUOC_267_Medlon_Methylprednisolon_ICD.md",
       "relPath": "Ca_huan_luyen_mau_OP26000908_THUOC_267_Medlon_Methylprednisolon_ICD.html",
       "title": "CA HUẤN LUYỆN MẪU OP26000908 — THUOC_267 — METHYLPREDNISOLON VÀ CỔNG ICD",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_OP26001050_Ciprofloxacin_ngoai_tru.md",
       "relPath": "Ca_huan_luyen_mau_OP26001050_Ciprofloxacin_ngoai_tru.html",
       "title": "CA HUAN LUYEN MAU OP26001050 - CIPROFLOXACIN NGOAI TRU VA CUM LOI KE DON/GIA",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_TRAINHL03_THUOC_418_CLN_THUOC_04.md",
       "relPath": "Ca_huan_luyen_mau_TRAINHL03_THUOC_418_CLN_THUOC_04.html",
       "title": "Ca huấn luyện mẫu — TRAINHL03: THUOC_418 và CLN-THUOC-04",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Ca_huan_luyen_mau_TRAINHL419_THUOC_419.md",
       "relPath": "Ca_huan_luyen_mau_TRAINHL419_THUOC_419.html",
       "title": "Ca huấn luyện mẫu — TRAINHL419: THUOC_419 (hạng BV vs danh mục thuốc)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ca_mau",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:CDSS_mapping_ICD_DM_thuoc_DVKT_nang_cap.md",
       "relPath": "CDSS_mapping_ICD_DM_thuoc_DVKT_nang_cap.html",
       "title": "CDSS — Mapping ICD ↔ danh mục thuốc / DVKT BV (nâng cấp, tách biệt)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "thuoc",
+        "dvkt",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Checklist_TT12_2026_Dieu10_khoan1_map_XML130.md",
       "relPath": "Checklist_TT12_2026_Dieu10_khoan1_map_XML130.html",
       "title": "Checklist: TT 12/2026/TT-BTC — Điều 10 khoản 1 → trường dữ liệu XML 130 (tham chiếu)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "hanh_chinh",
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "md:Chi_muc_Luat_BHYT_Rule_Giam_dinh.md",
@@ -263,19 +433,31 @@
       "id": "md:Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.md",
       "relPath": "Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.html",
       "title": "Chuẩn hóa kiến thức giám định dịch vụ kỹ thuật (DVKT) cho AI",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "dvkt"
+      ]
     },
     {
       "id": "md:Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.md",
       "relPath": "Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.html",
       "title": "Chuẩn hóa kiến thức giám định vật tư y tế (VTYT) cho AI",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "vtyt",
+        "the_tri_thuc"
+      ]
     },
     {
       "id": "md:Cong_van_266_TTKS_chuyen_de_loi_giam_dinh_BHXH.md",
       "relPath": "Cong_van_266_TTKS_chuyen_de_loi_giam_dinh_BHXH.html",
       "title": "Công văn 266 (chuyên đề) — lỗi giám định / từ chối thanh toán BHXH–BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "docx:Dac_ta_he_thong_CDSS_BHYT_20260405.docx",
@@ -335,151 +517,242 @@
       "id": "md:Goi_du_lieu_huan_luyen_AI_thuc_chien.md",
       "relPath": "Goi_du_lieu_huan_luyen_AI_thuc_chien.html",
       "title": "GÓI DỮ LIỆU HUẤN LUYỆN AI — THỰC CHIẾN (CDSS BHYT)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_02_THUOC_391_Cursor_OpenClaw.md",
       "relPath": "Huan_luyen_phien_02_THUOC_391_Cursor_OpenClaw.html",
       "title": "Phiên huấn luyện 02 — THUOC_391 (Cursor + OpenClaw)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_03_THUOC_418_CLN_THUOC_04.md",
       "relPath": "Huan_luyen_phien_03_THUOC_418_CLN_THUOC_04.html",
       "title": "Phiên huấn luyện 03 — Đơn thuốc ngoại trú >30 ngày: THUOC_418 vs CLN-THUOC-04",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_04_THUOC_419_hang_BV.md",
       "relPath": "Huan_luyen_phien_04_THUOC_419_hang_BV.html",
       "title": "Phiên huấn luyện 04 — THUOC_419: Hạng bệnh viện vs danh mục thuốc",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_05_THUOC_416_vs_417_Cursor_OpenClaw.md",
       "relPath": "Huan_luyen_phien_05_THUOC_416_vs_417_Cursor_OpenClaw.html",
       "title": "Phiên huấn luyện 05 — THUOC_416 vs THUOC_417: hai “cấp dư” trong seed",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_CDSS_chuyen_mon_FileMau_v4.md",
       "relPath": "Huan_luyen_phien_CDSS_chuyen_mon_FileMau_v4.html",
       "title": "Phiên huấn luyện AI — CDSS phác đồ Chuyên môn (FileMau v4)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_DVKT_VBHN17_Cursor.md",
       "relPath": "Huan_luyen_phien_DVKT_VBHN17_Cursor.html",
       "title": "Phiên huấn luyện — Giám định DVKT theo 17/VBHN-BYT (Cursor — đủ nội dung tri thức)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "dvkt",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_hanh_chinh_BHYT_bat_buoc_Cursor.md",
       "relPath": "Huan_luyen_phien_hanh_chinh_BHYT_bat_buoc_Cursor.html",
       "title": "Phiên huấn luyện — Quy định hành chính bắt buộc trong KCB BHYT (Cursor)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:Huan_luyen_phien_VTYT_du_phong_Cursor.md",
       "relPath": "Huan_luyen_phien_VTYT_du_phong_Cursor.html",
       "title": "Huấn luyện VTYT cho AI — phiên dự phòng (chưa có fixture audit trong repo)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "vtyt",
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:HUONG_DAN_AI_CHAY_KIEM_THU.md",
       "relPath": "HUONG_DAN_AI_CHAY_KIEM_THU.html",
       "title": "Hướng dẫn AI / kỹ thuật viên — chạy kiểm thử repo CDSS BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:Huong_dan_chay_test_AI_chi_tiet.md",
       "relPath": "Huong_dan_chay_test_AI_chi_tiet.html",
       "title": "HƯỚNG DẪN CHI TIẾT: CHẠY TEST AI GIÁM ĐỊNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_chay_thu_AI_va_danh_gia.md",
       "relPath": "Huong_dan_chay_thu_AI_va_danh_gia.html",
       "title": "HƯỚNG DẪN: CHẠY THỬ AI TRÊN CA HỒ SƠ THẬT & ĐÁNH GIÁ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_cho_nguoi_khong_chuyen_CNTT.md",
       "relPath": "Huong_dan_cho_nguoi_khong_chuyen_CNTT.html",
       "title": "Hướng dẫn sử dụng CDSS BHYT cho người không chuyên công nghệ thông tin",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:HUONG_DAN_CONG_TAC_VA_CAI_DAT_MAY_MOI.md",
       "relPath": "HUONG_DAN_CONG_TAC_VA_CAI_DAT_MAY_MOI.html",
       "title": "📦 Hướng Dẫn Đóng Gói & Cài Đặt Ứng Dụng AI CDSS BHYT Trên Máy Khác",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:HUONG_DAN_DONG_GOI_NHANH.md",
       "relPath": "HUONG_DAN_DONG_GOI_NHANH.html",
       "title": "📦 HƯỚNG DẪN ĐÓNG GÓI ỨNG DỤNG",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_dung_AI_CDSS_BHYT.md",
       "relPath": "Huong_dan_dung_AI_CDSS_BHYT.html",
       "title": "HƯỚNG DẪN DÙNG AI CDSS BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.md",
       "relPath": "Huong_dan_huan_luyen_audit_thuc_chien_va_phac_do_CDSS.html",
       "title": "HƯỚNG DẪN: HUẤN LUYỆN AI THỰC CHIẾN — BÁO CÁO VI PHẠM + HỒ SƠ `ip` + PHÁC ĐỒ CDSS",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "icd_chuyen_mon",
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:HUONG_DAN_LAM_VIEC_ONLINE_GITHUB.md",
       "relPath": "HUONG_DAN_LAM_VIEC_ONLINE_GITHUB.html",
       "title": "🌐 Hướng Dẫn Làm Việc Nhóm Online với GitHub",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "txt:HUONG_DAN_NANG_CAP_OFFLINE.txt",
       "relPath": "HUONG_DAN_NANG_CAP_OFFLINE.txt",
       "title": "HUONG DAN NANG CAP OFFLINE",
-      "nguon": "text"
+      "nguon": "text",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "docx:Huong_dan_su_dung_CDSS_BHYT_20260405.docx",
       "relPath": "Huong_dan_su_dung_CDSS_BHYT_20260405.docx",
       "title": "HƯỚNG DẪN SỬ DỤNG CHI TIẾT CDSS BHYT (Word)",
-      "nguon": "docx"
+      "nguon": "docx",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_su_dung_CDSS_BHYT_20260405.md",
       "relPath": "Huong_dan_su_dung_CDSS_BHYT_20260405.html",
       "title": "HƯỚNG DẪN SỬ DỤNG CHI TIẾT CDSS BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Huong_dan_tai_nguyen_XML_thuc_chien_AI.md",
       "relPath": "Huong_dan_tai_nguyen_XML_thuc_chien_AI.html",
       "title": "HƯỚNG DẪN: DÙNG XML THỰC TRONG `tai_nguyen/` CHO HUẤN LUYỆN AI THỰC CHIẾN",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "cau_truc_xml",
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "md:Huong_dan_truy_cap_ung_dung_tren_mang_noi_bo.md",
       "relPath": "Huong_dan_truy_cap_ung_dung_tren_mang_noi_bo.html",
       "title": "🌐 Hướng Dẫn Truy Cập Ứng Dụng AI CDSS BHYT Qua Mạng Nội Bộ",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Khung_chat_luong_giam_dinh_DVKT_VBHN17.md",
       "relPath": "Khung_chat_luong_giam_dinh_DVKT_VBHN17.html",
       "title": "Khung chất lượng giám định DVKT, chuyên đề và VBHN 17",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "dvkt"
+      ]
     },
     {
       "id": "md:Kiem_soat_placeholder_CHUYEN_DE_XML130.md",
       "relPath": "Kiem_soat_placeholder_CHUYEN_DE_XML130.html",
       "title": "Kiểm soát quy tắc placeholder CHUYEN_DE (XML130)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "hanh_chinh",
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "md:Ky_nang_cot_loi_giam_dinh_AI_BHYT.md",
@@ -491,19 +764,31 @@
       "id": "md:Lo_trinh_huan_luyen_AI_giam_dinh_BHYT.md",
       "relPath": "Lo_trinh_huan_luyen_AI_giam_dinh_BHYT.html",
       "title": "LỘ TRÌNH HUẤN LUYỆN AI GIÁM ĐỊNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Lo_trinh_viet_lai_CHUYEN_DE_theo_XML130.md",
       "relPath": "Lo_trinh_viet_lai_CHUYEN_DE_theo_XML130.html",
       "title": "Lộ trình viết lại toàn bộ CHUYEN_DE theo XML1 / XML3 (QĐ 130)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen",
+        "hanh_chinh",
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "md:Mau_the_tri_thuc_giam_dinh_BHYT.md",
       "relPath": "Mau_the_tri_thuc_giam_dinh_BHYT.html",
       "title": "MẪU THẺ TRI THỨC GIÁM ĐỊNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Phien_lam_viec_chung_Cursor_va_OpenClaw.md",
@@ -521,7 +806,10 @@
       "id": "md:Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.md",
       "relPath": "Phuong_an_trien_khai_Phac_do_Chuyen_mon_CLS_kiem_soat_chuoi.html",
       "title": "Phương án triển khai: Kiểm soát phác đồ chuyên môn theo chuỗi lâm sàng — cận lâm sàng — chỉ định",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:Prompt_mau_chuan_hoa_BHYT_Cursor_OpenClaw.md",
@@ -539,7 +827,10 @@
       "id": "md:Quy_tac_kiem_soat_va_giam_dinh_loi_hanh_chinh_KCB_BHYT.md",
       "relPath": "Quy_tac_kiem_soat_va_giam_dinh_loi_hanh_chinh_KCB_BHYT.html",
       "title": "QUY TẮC KIỂM SOÁT VÀ GIÁM ĐỊNH CÁC LỖI HÀNH CHÍNH TRONG KHÁM CHỮA BỆNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:Quy_trinh_lam_viec_Cursor_OpenClaw_AI_giam_dinh_BHYT.md",
@@ -551,7 +842,10 @@
       "id": "md:Quy_trinh_prompt_huan_luyen_AI_BHYT.md",
       "relPath": "Quy_trinh_prompt_huan_luyen_AI_BHYT.html",
       "title": "QUY TRÌNH PROMPT HUẤN LUYỆN AI BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:Ra_soat_ca_khang_sinh_tu_XML_thuc_20260405.md",
@@ -569,259 +863,480 @@
       "id": "md:Sprint_60p_huan_luyen_giam_dinh_thuoc_Cursor_OpenClaw.md",
       "relPath": "Sprint_60p_huan_luyen_giam_dinh_thuoc_Cursor_OpenClaw.html",
       "title": "Sprint 60 phút — Một vòng huấn luyện giám định thuốc (Cursor + OpenClaw)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.md",
       "relPath": "The_tri_thuc_chi_muc_giam_dinh_thuoc_engine_AI.html",
       "title": "CHỈ MỤC ENGINE: GIÁM ĐỊNH THUỐC (MÃ NGUỒN + LUỒNG CẢNH BÁO)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.md",
       "relPath": "The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.html",
       "title": "THẺ TRI THỨC: CÔNG VĂN 38/BYT-BH — CHUYỂN MÃ QUYỀN LỢI THẺ BHYT (CN, LH) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT01_18_noi_soi_dd_ta_trang_AI.md",
       "relPath": "The_tri_thuc_CV266_KT01_18_noi_soi_dd_ta_trang_AI.html",
       "title": "THẺ TRI THỨC: KT01.18 — NỘI SOI DẠ DÀY TÁ TRÀNG (CHẨN ĐOÁN vs CAN THIỆP, CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT01_19_noi_soi_dai_trang_AI.md",
       "relPath": "The_tri_thuc_CV266_KT01_19_noi_soi_dai_trang_AI.html",
       "title": "THẺ TRI THỨC: KT01.19 — NỘI SOI ĐẠI TRÀNG / TRỰC TRÀNG (CHẨN ĐOÁN vs CAN THIỆP, CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT01_4_VK_nhuom_soi_AI.md",
       "relPath": "The_tri_thuc_CV266_KT01_4_VK_nhuom_soi_AI.html",
       "title": "THẺ TRI THỨC: KT01.4 — VI KHUẨN NHUỘM SOI vs NUÔI CẤY ĐỊNH DANH (CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT08_PT_ty_le_AI.md",
       "relPath": "The_tri_thuc_CV266_KT08_PT_ty_le_AI.html",
       "title": "THẺ TRI THỨC: KT08 — TỶ LỆ PHẪU THUẬT THỨ 2+ TRONG CÙNG MỘT LẦN MỔ (CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT105_thay_bang_vet_mo_15_30_AI.md",
       "relPath": "The_tri_thuc_CV266_KT105_thay_bang_vet_mo_15_30_AI.html",
       "title": "THẺ TRI THỨC: KT105 — THAY BĂNG VẾT MỔ 15–30 CM SAU MỔ LẤY THAI (NỘI TRÚ, TỐI ĐA 3 LẦN) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT144_DVKT_khong_TT_noi_tru_AI.md",
       "relPath": "The_tri_thuc_CV266_KT144_DVKT_khong_TT_noi_tru_AI.html",
       "title": "THẺ TRI THỨC: KT144 — DVKT CHỈ NGOẠI TRÚ, KHÔNG TÁCH THU KÈM TIỀN GIƯỜNG NỘI TRÚ (CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT183_CT_can_quang_AI.md",
       "relPath": "The_tri_thuc_CV266_KT183_CT_can_quang_AI.html",
       "title": "THẺ TRI THỨC: KT183 — CT/CLVT MÃ «CÓ CẢN QUANG» NHƯNG KHÔNG CÓ THUỐC CẢN QUANG (CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_CV266_KT37_ProBNP_BNP_AI.md",
       "relPath": "The_tri_thuc_CV266_KT37_ProBNP_BNP_AI.html",
       "title": "THẺ TRI THỨC: KT37 — BNP vs NT‑PROBNP (THEO SUY THẬN / SUY TIM, CV266) CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cv266"
+      ]
     },
     {
       "id": "md:The_tri_thuc_da_dang_nhom_thuoc_dan_muc_BV_AI.md",
       "relPath": "The_tri_thuc_da_dang_nhom_thuoc_dan_muc_BV_AI.html",
       "title": "THẺ TRI THỨC: ĐA DẠNG NHÓM THUỐC DANH MỤC BỆNH VIỆN (HUẤN LUYỆN AI)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.md",
       "relPath": "The_tri_thuc_Danh_muc_1_DVKT_dieu_kien_ty_le_gia_VBHN17_AI.html",
       "title": "THẺ TRI THỨC CHI TIẾT: DANH MỤC 1 — DVKT CÓ QUY ĐỊNH CỤ THỂ ĐIỀU KIỆN, TỶ LỆ VÀ MỨC GIÁ THANH TOÁN (17/VBHN-BYT)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_Danh_muc_2_DVKT_dieu_kien_thanh_toan_VBHN17_AI.md",
       "relPath": "The_tri_thuc_Danh_muc_2_DVKT_dieu_kien_thanh_toan_VBHN17_AI.html",
       "title": "THẺ TRI THỨC CHI TIẾT: DANH MỤC 2 — DVKT CÓ QUY ĐỊNH CỤ THỂ ĐIỀU KIỆN THANH TOÁN (17/VBHN-BYT)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_doi_chieu_177_04032026_bao_cao_vs_xml_AI.md",
       "relPath": "The_tri_thuc_doi_chieu_177_04032026_bao_cao_vs_xml_AI.html",
       "title": "Thẻ tri thức — Đối chiếu báo cáo vi phạm vs hồ sơ XML (gói 177, 04/03/2026)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "kiem_thu_quy_tac",
+        "xml_chuyen_de"
+      ]
     },
     {
       "id": "md:The_tri_thuc_giam_dinh_DVKT_VBHN_17_BYT.md",
       "relPath": "The_tri_thuc_giam_dinh_DVKT_VBHN_17_BYT.html",
       "title": "THẺ TRI THỨC: GIÁM ĐỊNH DỊCH VỤ KỸ THUẬT (DVKT) THEO 17/VBHN-BYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_giam_dinh_thuoc_DM_builtin_va_doi_chieu_tien_AI.md",
       "relPath": "The_tri_thuc_giam_dinh_thuoc_DM_builtin_va_doi_chieu_tien_AI.html",
       "title": "THẺ TRI THỨC: GIÁM ĐỊNH THUỐC — DANH MỤC NỘI BỘ (DM-THUOC) VÀ ĐỐI CHIẾU TIỀN",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_hop_dong_KCB_BHYT_BV_Phuong_Chau_2026.md",
       "relPath": "The_tri_thuc_hop_dong_KCB_BHYT_BV_Phuong_Chau_2026.html",
       "title": "Hợp đồng khám chữa bệnh BHYT — BV Quốc tế Phương Châu (mẫu tham chiếu 2026)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_kiem_soat_loi_dvkt_VBHN17_AI.md",
       "relPath": "The_tri_thuc_kiem_soat_loi_dvkt_VBHN17_AI.html",
       "title": "THẺ TRI THỨC: KIỂM SOÁT LỖI DỊCH VỤ KỸ THUẬT (DVKT) THEO 17/VBHN-BYT — CHO AI GIÁM ĐỊNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_kiem_soat_loi_the_BHYT_va_quyen_loi_NB_AI.md",
       "relPath": "The_tri_thuc_kiem_soat_loi_the_BHYT_va_quyen_loi_NB_AI.html",
       "title": "THẺ TRI THỨC: KIỂM SOÁT LỖI THẺ BHYT VÀ QUYỀN LỢI NGƯỜI BỆNH — CHO AI GIÁM ĐỊNH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:The_tri_thuc_kiem_soat_sai_thuoc_AI.md",
       "relPath": "The_tri_thuc_kiem_soat_sai_thuoc_AI.html",
       "title": "THẺ TRI THỨC: KIỂM SOÁT “SAI THUỐC” CHO AI GIÁM ĐỊNH BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_luan_van_Ho_Tan_Thinh_BHYT_Soc_Trang_2018_2019.md",
       "relPath": "The_tri_thuc_luan_van_Ho_Tan_Thinh_BHYT_Soc_Trang_2018_2019.html",
       "title": "Thẻ tri thức: Luận văn chuyên khoa cấp II — chi phí thanh toán BHYT (Sóc Trăng 2018–2019)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_hanh_chinh_BHYT.md",
       "relPath": "The_tri_thuc_mau_hanh_chinh_BHYT.html",
       "title": "THẺ TRI THỨC: HÀNH CHÍNH BHYT VÀ QUY TRÌNH THANH TOÁN",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_luat_BHYT_2008_2024.md",
       "relPath": "The_tri_thuc_mau_luat_BHYT_2008_2024.html",
       "title": "THẺ TRI THỨC: LUẬT BHYT 2008-2024 (TIẾN HÓA PHÁP LÝ)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_luat_BHYT_2008_2025.md",
       "relPath": "The_tri_thuc_mau_luat_BHYT_2008_2025.html",
       "title": "THẺ TRI THỨC: LUẬT BẢO HIỂM Y TẾ VÀ NGHỊ ĐỊNH TRIỂN KHAI (2008-2025)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_Nghi_Dinh_188_2025.md",
       "relPath": "The_tri_thuc_mau_Nghi_Dinh_188_2025.html",
       "title": "THẺ TRI THỨC: NGHỊ ĐỊNH 188/2025 - QUY TRÌNH GIÁM ĐỊNH & PHÂN LOẠI LỖI BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_chuyen_mon_I10_tang_huyet_ap_dot1.md",
       "relPath": "The_tri_thuc_mau_nhom_chuyen_mon_I10_tang_huyet_ap_dot1.html",
       "title": "THE TRI THUC MAU NHOM CHUYEN MON I10 - TANG HUYET AP (DOT 1)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_chuyen_mon_icd10_dot1.md",
       "relPath": "The_tri_thuc_mau_nhom_chuyen_mon_icd10_dot1.html",
       "title": "THẺ TRI THỨC MẪU NHÓM CHUYÊN MÔN ICD10 ĐỢT 1",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_pttt_dot1.md",
       "relPath": "The_tri_thuc_mau_nhom_pttt_dot1.html",
       "title": "THẺ TRI THỨC MẪU NHÓM PTTT ĐỢT 1",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "pttt"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_thuoc_dot1.md",
       "relPath": "The_tri_thuc_mau_nhom_thuoc_dot1.html",
       "title": "THẺ TRI THỨC MẪU NHÓM THUỐC ĐỢT 1",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_thuoc_dot2.md",
       "relPath": "The_tri_thuc_mau_nhom_thuoc_dot2.html",
       "title": "THẺ TRI THỨC MẪU NHÓM THUỐC ĐỢT 2",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_thuoc_dot3_tim_mach.md",
       "relPath": "The_tri_thuc_mau_nhom_thuoc_dot3_tim_mach.html",
       "title": "THẺ TRI THỨC MẪU NHÓM THUỐC ĐỢT 3 - TIM MẠCH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_thuoc_dot4_khang_sinh.md",
       "relPath": "The_tri_thuc_mau_nhom_thuoc_dot4_khang_sinh.html",
       "title": "THẺ TRI THỨC MẪU NHÓM THUỐC ĐỢT 4 - KHÁNG SINH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_nhom_thuoc_dot5_ngoai_tru_ke_don_va_gia.md",
       "relPath": "The_tri_thuc_mau_nhom_thuoc_dot5_ngoai_tru_ke_don_va_gia.html",
       "title": "THE TRI THUC MAU NHOM THUOC DOT 5 - NGOAI TRU KE DON VA GIA THUOC",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "md:The_tri_thuc_mau_thanh_toan_thuoc_BHYT.md",
       "relPath": "The_tri_thuc_mau_thanh_toan_thuoc_BHYT.html",
       "title": "THẺ TRI THỨC MẪU: THANH TOÁN THUỐC BHYT",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "thuoc"
+      ]
     },
     {
       "id": "html:The_tri_thuc_phac_do_CDSS_chuyen_mon_giam_dinh_BHYT.html",
       "relPath": "The_tri_thuc_phac_do_CDSS_chuyen_mon_giam_dinh_BHYT.html",
       "title": "The tri thuc phac do CDSS chuyen mon giam dinh BHYT",
-      "nguon": "html"
+      "nguon": "html",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.md",
       "relPath": "The_tri_thuc_phac_do_CDSS_chuyen_mon_ICD10_AI.html",
       "title": "THẺ TRI THỨC: PHÁC ĐỒ CDSS CHUYÊN MÔN ↔ MÃ ICD-10 (HUẤN LUYỆN AI)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
     },
     {
       "id": "md:The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.md",
       "relPath": "The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.html",
       "title": "Thẻ tri thức — Phân loại vi phạm cấu trúc dữ liệu XML (dashboard QPS)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "cau_truc_xml",
+        "xml_chuyen_de",
+        "kiem_thu_quy_tac"
+      ]
     },
     {
       "id": "md:The_tri_thuc_phap_ly_quan_ly_su_dung_khang_sinh.md",
       "relPath": "The_tri_thuc_phap_ly_quan_ly_su_dung_khang_sinh.html",
       "title": "THẺ TRI THỨC PHÁP LÝ VỀ QUẢN LÝ SỬ DỤNG KHÁNG SINH",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly"
+      ]
     },
     {
       "id": "md:The_tri_thuc_quy_dinh_CLVT_BVPCST_2025_giam_dinh_AI.md",
       "relPath": "The_tri_thuc_quy_dinh_CLVT_BVPCST_2025_giam_dinh_AI.html",
       "title": "THẺ TRI THỨC: QUY ĐỊNH CHỤP CẮT LỚP VI TÍNH (CLVT) — BV QUỐC TẾ PHƯƠNG CHÂU SÓC TRĂNG (2025) — PHỤC VỤ GIÁM ĐỊNH / AI",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "phap_ly",
+        "dvkt"
+      ]
     },
     {
       "id": "md:The_tri_thuc_tuong_tac_thuoc_XML2_AI.md",
       "relPath": "The_tri_thuc_tuong_tac_thuoc_XML2_AI.html",
       "title": "THẺ TRI THỨC: TƯƠNG TÁC THUỐC (XML2 — CÙNG ĐỢT, ĐỒNG THỜI A VÀ B)",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "tuong_tac_thuoc",
+        "thuoc"
+      ]
     },
     {
       "id": "md:Thuc_chien_tong_hop_xml2_ip_AI.md",
       "relPath": "Thuc_chien_tong_hop_xml2_ip_AI.html",
       "title": "THỰC CHIẾN: TỔNG HỢP KỸ NĂNG VỚI `tai_nguyen/xml2_ip`",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "thuoc",
+        "cau_truc_xml"
+      ]
     },
     {
       "id": "md:Tri_thuc_AI_CHUYEN_DE_XML130_thuc_chien.md",
       "relPath": "Tri_thuc_AI_CHUYEN_DE_XML130_thuc_chien.html",
       "title": "Tri thức AI & triển khai thực chiến — CHUYEN_DE theo XML130",
-      "nguon": "markdown"
+      "nguon": "markdown",
+      "tags": [
+        "hanh_chinh",
+        "xml_chuyen_de"
+      ]
     }
   ]
 }

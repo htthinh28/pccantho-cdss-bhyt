@@ -20,7 +20,7 @@ import {
 import { capNhatDanhMuc } from '../ma_nguon/tien_ich/kho_du_lieu.jsx';
 import { damBaoSeedLuatPtttMuc11 } from '../ma_nguon/tien_ich/seed_luat_pttt_muc11.jsx';
 import { damBaoSeedLuatThuocMuc8 } from '../ma_nguon/tien_ich/seed_luat_thuoc_muc8.jsx';
-import { xuLyFileXML130 } from '../ma_nguon/tien_ich/xml_helper.jsx';
+import { xuLyFileXML130Va4210 } from '../ma_nguon/tien_ich/xml_helper.jsx';
 
 const SEED_DATASETS = [
   { dataKey: 'DANH_MUC_ICD10', columnsKey: 'COLS_DANH_MUC_ICD10', rows: DANH_MUC_ICD10, columns: COT_DANH_MUC_ICD10 },
@@ -129,7 +129,7 @@ const locCanhBaoTuongTac = (warnings) => (Array.isArray(warnings) ? warnings : [
 
 const parseClaimXml130 = (claimPath) => {
   const raw = fs.readFileSync(claimPath, 'utf8');
-  const danhSachHoSo = xuLyFileXML130(raw);
+  const danhSachHoSo = xuLyFileXML130Va4210(raw);
   if (!Array.isArray(danhSachHoSo) || danhSachHoSo.length === 0) {
     return {
       XML1: [],

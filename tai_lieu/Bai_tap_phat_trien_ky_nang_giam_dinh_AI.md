@@ -40,7 +40,7 @@
 
 **Tình huống:** Người mới hỏi “hai mã đều là DVKT trên XML3, có gì khác?”
 
-**Yêu cầu:** Phân biệt **nguồn** (`rule_engine_dvkt_no_code` + operator `CHECK_INTERNAL_APPROVAL` vs seed PTTT `du_lieu_luat_pttt_muc11.jsx`) và **dạng mã** (`DVKT-OP-xx` có dấu gạch ngang vs `DVKT_` số).
+**Yêu cầu:** Phân biệt **nguồn** (`dvkt_op_giam_dinh` + operator `CHECK_INTERNAL_APPROVAL` vs seed PTTT `du_lieu_luat_pttt_muc11.jsx`) và **dạng mã** (`DVKT-OP-xx` có dấu gạch ngang vs `DVKT_` số).
 
 **Gợi ý:** [Bang_neo_phien_huan_luyen_dvkt_va_engine.md](./Bang_neo_phien_huan_luyen_dvkt_va_engine.md).
 

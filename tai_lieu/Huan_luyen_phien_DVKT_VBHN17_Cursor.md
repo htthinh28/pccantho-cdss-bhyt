@@ -84,7 +84,7 @@
 | Tệp / thành phần | Vai trò (một dòng) | Vì sao giám định viên / AI cần biết |
 |------------------|-------------------|--------------------------------------|
 | `ma_nguon/tien_ich/luat_cdha_hardcoded.jsx` + seed DVKT | Rule **mẫu** nhóm DVKT/CĐHA | Ví dụ mã `DVKT_*` / `CDHA_*` gắn điều kiện cụ thể |
-| `ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx` | Engine DVKT **no-code**, **`VBHN_17_META`** | Giải thích cảnh báo bám **metadata VBHN 17**; không coi đủ thay Phụ lục |
+| `ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx` | Engine DVKT **no-code**, **`VBHN_17_META`** | Giải thích cảnh báo bám **metadata VBHN 17**; không coi đủ thay Phụ lục |
 | `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` | **`CO_SO_PHAP_LY_DVKT`**, **`VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17`** | Chuỗi **cơ sở pháp lý** hiển thị cho người đọc — AI học **trích dẫn đúng tầng** |
 | `ma_nguon/man_hinh/quan_ly_xml3.jsx` | Xem/sửa **XML3** | Liên hệ trường thực tế với `MA_DICH_VU`, giá, tỷ lệ |
 | `ma_nguon/quy_tac/quyluat_cautrucdulieu/xml3.jsx` | **Cột chuẩn** XML3 | Tránh hiểu sai tên trường khi đọc cảnh báo |
@@ -107,7 +107,7 @@ Khi cần **xác nhận hành vi engine** (khác với đọc văn bản pháp l
 
 ## G. Biên bản phiên (tối đa 6 câu)
 
-Phiên huấn luyện **DVKT / 17/VBHN-BYT** đã củng cố **lớp kiểm tra theo từng Điều**, phân biệt **Danh mục 1–3**, và phân tầng **XML được hỗ trợ tự động** với **giám định chủ động**. Đã nhấn mạnh **mốc HL TT 39/2024 (01/01/2025)** và **một lượt KCB** (khoản 7 Điều 4). Neo mã nguồn **`rule_engine_dvkt_no_code.jsx`** / **`dong_co_giam_dinh.jsx`** giúp AI giải thích **cơ sở pháp lý** không tách rời engine. Việc tiếp: **giám định viên** đối chiếu **Phụ lục Excel BYT + HĐ KCB** tại thời điểm hồ sơ; kỹ thuật chỉ chạy **QA & chỉnh rule** khi có yêu cầu và diff rõ.
+Phiên huấn luyện **DVKT / 17/VBHN-BYT** đã củng cố **lớp kiểm tra theo từng Điều**, phân biệt **Danh mục 1–3**, và phân tầng **XML được hỗ trợ tự động** với **giám định chủ động**. Đã nhấn mạnh **mốc HL TT 39/2024 (01/01/2025)** và **một lượt KCB** (khoản 7 Điều 4). Neo mã nguồn **`dvkt_op_giam_dinh.jsx`** / **`dong_co_giam_dinh.jsx`** giúp AI giải thích **cơ sở pháp lý** không tách rời engine. Việc tiếp: **giám định viên** đối chiếu **Phụ lục Excel BYT + HĐ KCB** tại thời điểm hồ sơ; kỹ thuật chỉ chạy **QA & chỉnh rule** khi có yêu cầu và diff rõ.
 
 ---
 

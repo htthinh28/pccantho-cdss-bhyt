@@ -13,6 +13,8 @@ import appConfig from '../../app.json';
 import {
   validateHoSo as validateHoSoXmlHelper,
   xuLyFileXML130 as xuLyFileXML130XmlHelper,
+  xuLyFileXML4210 as xuLyFileXML4210XmlHelper,
+  xuLyFileXML130Va4210 as xuLyFileXML130Va4210XmlHelper,
 } from '../tien_ich/xml_helper.jsx';
 
 const DEFAULT_TIMEOUT_MS = 15000;
@@ -165,7 +167,7 @@ const parseHoSoFromPayload = (payload) => {
 
   const xmlTongHop = xmlRaw || buildFileHoSoEnvelope(payload);
   if (xmlTongHop) {
-    const dsHoSo = xuLyFileXML130XmlHelper(xmlTongHop);
+    const dsHoSo = xuLyFileXML130Va4210XmlHelper(xmlTongHop);
     if (Array.isArray(dsHoSo) && dsHoSo.length > 0) {
       return {
         hoSo: dsHoSo[0],
@@ -742,7 +744,7 @@ class HisConnector {
         return { success: false, message: 'Không tìm thấy dữ liệu hồ sơ XML 130.' };
       }
 
-      const danhSachHoSo = xuLyFileXML130XmlHelper(rawXml);
+      const danhSachHoSo = xuLyFileXML130Va4210XmlHelper(rawXml);
       if (!danhSachHoSo || danhSachHoSo.length === 0) {
         return { success: false, message: 'Không thể phân tích dữ liệu XML 130 từ HIS.' };
       }
@@ -760,6 +762,8 @@ class HisConnector {
 }
 
 export const xuLyFileXML130 = (...args) => xuLyFileXML130XmlHelper(...args);
+export const xuLyFileXML4210 = (...args) => xuLyFileXML4210XmlHelper(...args);
+export const xuLyFileXML130Va4210 = (...args) => xuLyFileXML130Va4210XmlHelper(...args);
 export const validateHoSo = (...args) => validateHoSoXmlHelper(...args);
 export const phanTichSuKienRealtimeHIS = (rawPayload) => normalizeRealtimeEvent(rawPayload);
 export const HisAPI = new HisConnector();

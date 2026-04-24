@@ -467,7 +467,7 @@ Mục này tóm tắt nội dung **liên quan trực tiếp tới giám định 
 
 **Hiệu lực (Điều 17):** Thông tư có hiệu lực **kể từ ngày ký**; **biểu mẫu** tại một số điều và **danh mục** Điều 7, 8 **áp dụng từ 01/04/2026** — khi lập rule hoặc huấn luyện AI cần xác nhận lại ngày áp dụng trên bản Công báo nếu có chỉnh sửa.
 
-**Checklist map XML:** `tai_lieu/Checklist_TT12_2026_Dieu10_khoan1_map_XML130.md` (Điều 10 khoản 1 → XML1–6). **Chuỗi căn cứ đầy đủ** (Điều 10 khoản 1 đủ điểm a–m và Điều 13 khoản 1–3): `ma_nguon/tien_ich/co_so_phap_ly_tt12_2026.jsx`; dùng trong `dong_co_giam_dinh.jsx` và (qua `resolveLegalBasis`) trong `rule_engine_dvkt_no_code.jsx`.
+**Checklist map XML:** `tai_lieu/Checklist_TT12_2026_Dieu10_khoan1_map_XML130.md` (Điều 10 khoản 1 → XML1–6). **Chuỗi căn cứ đầy đủ** (Điều 10 khoản 1 đủ điểm a–m và Điều 13 khoản 1–3): `ma_nguon/tien_ich/co_so_phap_ly_tt12_2026.jsx`; dùng trong `dong_co_giam_dinh.jsx` và (qua `resolveLegalBasis`) trong `dvkt_op_giam_dinh.jsx`.
 
 ### 11.3. Quyết định 3618/QĐ-BHXH (BHXH Việt Nam, 12/12/2022)
 
@@ -515,9 +515,9 @@ Mục này tóm tắt nội dung **liên quan trực tiếp tới giám định 
 3. **[Thông tư 13/2020/TT-BYT](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-13-2020-TT-BYT-sua-doi-Thong-tu-35-2016-TT-BYT-thanh-toan-dich-vu-ky-thuat-y-te-445839.aspx)** — một lớp sửa đổi **TT 35/2016** (đọc kết hợp với VBHN 17 và TT 39).
 4. **Thông tư 35/2016/TT-BYT** (gốc) — khung danh mục **Danh mục 1** (điều kiện + tỷ lệ + giá) và **Danh mục 2** (điều kiện); các **phụ lục** thay đổi theo từng lần sửa.
 
-**Ý nghĩa cho CDSS:** Rule DVKT trong `rule_engine_dvkt_no_code.jsx` và danh mục nội bộ **M05** cần **ăn khớp** điều kiện/ghi chú trong văn bản trên; khi giải thích `co_so_phap_ly`, nên dẫn **VBHN 17 + TT 39/2024** (với hồ sơ từ **01/01/2025** trở đi cho các điểm chỉ áp dụng sau ngày đó).
+**Ý nghĩa cho CDSS:** Rule DVKT trong `dvkt_op_giam_dinh.jsx` và danh mục nội bộ **M05** cần **ăn khớp** điều kiện/ghi chú trong văn bản trên; khi giải thích `co_so_phap_ly`, nên dẫn **VBHN 17 + TT 39/2024** (với hồ sơ từ **01/01/2025** trở đi cho các điểm chỉ áp dụng sau ngày đó).
 
-**Mã nguồn:** `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17` trong `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` (chuỗi `CO_SO_PHAP_LY_DVKT`); `VBHN_17_META` trong `rule_engine_dvkt_no_code.jsx` — cùng nội dung tóm tắt chuỗi **17/VBHN + TT 35** (sửa **TT 13**, **TT 39**).
+**Mã nguồn:** `VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_17` trong `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` (chuỗi `CO_SO_PHAP_LY_DVKT`); `VBHN_17_META` trong `dvkt_op_giam_dinh.jsx` — cùng nội dung tóm tắt chuỗi **17/VBHN + TT 35** (sửa **TT 13**, **TT 39**).
 
 **Huấn luyện AI trong repo (bổ sung cho mục này):** kỹ năng chung + bài tập [Ky_nang_cot_loi_giam_dinh_AI_BHYT.md](./Ky_nang_cot_loi_giam_dinh_AI_BHYT.md), [Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md](./Bai_tap_phat_trien_ky_nang_giam_dinh_AI.md); chuẩn hóa suy luận DVKT [Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.md](./Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.md); thẻ tri thức gộp [The_tri_thuc_giam_dinh_DVKT_VBHN_17_BYT.md](./The_tri_thuc_giam_dinh_DVKT_VBHN_17_BYT.md); phiên có bảng Điều + **lộ trình ca** [Huan_luyen_phien_DVKT_VBHN17_Cursor.md](./Huan_luyen_phien_DVKT_VBHN17_Cursor.md) (mục **I**); neo mã ↔ ca [Bang_neo_phien_huan_luyen_dvkt_va_engine.md](./Bang_neo_phien_huan_luyen_dvkt_va_engine.md).
 
@@ -533,7 +533,7 @@ Mục này tóm tắt nội dung **liên quan trực tiếp tới giám định 
 2. **[Thông tư 04/2017/TT-BYT](https://thuvienphapluat.vn/van-ban/Bao-hiem/Thong-tu-04-2017-TT-BYT-Danh-muc-ty-le-dieu-kien-thanh-toan-vat-tu-y-te-nguoi-tham-gia-bao-hiem-y-te-290390.aspx)** — **khung gốc**: danh mục, tỷ lệ và điều kiện thanh toán VTYT; các thông tư sửa đổi sau đó được **tổng hợp** trong VBHN 14 (và trước đó trong VBHN 06).
 3. **[06/VBHN-BYT năm 2018](https://thuvienphapluat.vn/van-ban/Bao-hiem/Van-ban-hop-nhat-06-VBHN-BYT-2018-danh-muc-va-ty-le-dieu-kien-thanh-toan-doi-voi-vat-tu-y-te-382481.aspx)** — bản hợp nhất **cũ**; dùng khi cần đối chiếu hồ sơ theo **thời điểm** hoặc giải thích lịch sử quy định.
 
-**Giao thoa với DVKT / ngày giường:** Một phần vật tư tiêu hao **đã kết cấu trong giá ngày giường** hoặc trong **giá DVKT** thì **không tách thanh toán trùng** — xem **Điều 4a Thông tư 39/2024/TT-BYT** (sửa **TT 35/2016**) và quy tắc nội bộ “DVKT đã bao gồm vật tư” trong `rule_engine_dvkt_no_code.jsx`.
+**Giao thoa với DVKT / ngày giường:** Một phần vật tư tiêu hao **đã kết cấu trong giá ngày giường** hoặc trong **giá DVKT** thì **không tách thanh toán trùng** — xem **Điều 4a Thông tư 39/2024/TT-BYT** (sửa **TT 35/2016**) và quy tắc nội bộ “DVKT đã bao gồm vật tư” trong `dvkt_op_giam_dinh.jsx`.
 
 **Ý nghĩa cho CDSS:** Danh mục **PL8 / DM_VTYT** trong seed (khi có) cần **khớp** danh mục và điều kiện BYT; **riêng triển khai repo hiện tại** **chưa** có bộ **rule seed thanh toán VTYT** (`DM-VTYT-*`) tương tự DVKT/thuốc — giải thích từ chối/thanh toán theo từng mã vật tư chủ yếu dựa **văn bản pháp lý + nghiệp vụ**, và các rule **cấu trúc XML / DVKT kết cấu vật tư / hành chính** có trong mã (chi tiết: [Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.md](./Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.md) §**0**). Khi cần dẫn điều kiện thanh toán, ưu tiên **14/VBHN-BYT 2025** (và TT sửa đổi sau VBHN nếu có).
 

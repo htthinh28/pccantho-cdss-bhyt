@@ -169,7 +169,7 @@ Trách nhiệm:
 Thành phần chính:
 
 - `dong_co_giam_dinh.jsx`.
-- `rule_engine_dvkt_no_code.jsx`.
+- `dvkt_op_giam_dinh.jsx`.
 - Các file seed luật dữ liệu và luật chuyên đề.
 - Các module hardcoded theo lĩnh vực.
 
@@ -508,7 +508,7 @@ Ngoài ra, engine built-in (`dong_co_giam_dinh.jsx`) có thể sinh cảnh báo 
 
 - Từ lớp hậu xử lý của engine, cảnh báo XML3 được phép gắn thêm metadata mô tả nguồn rule mà không làm đổi thứ tự chạy hoặc điều kiện đánh giá.
 - Các trường metadata chuẩn hóa đầu ra gồm:
-	- `namespace_quy_tac`: nhóm logic nguồn của rule, ví dụ `DVKT_NO_CODE`, `CDHA_HARDCODED`, `PTTT_BUILTIN`, `GIAM_DINH_CHUYEN_DE`.
+	- `namespace_quy_tac`: nhóm logic nguồn của rule, ví dụ `DVKT_OP`, `CDHA_HARDCODED`, `PTTT_BUILTIN`, `GIAM_DINH_CHUYEN_DE`.
 	- `nguon_quy_tac`: module sinh rule/cảnh báo.
 	- `luong_giai_trinh`: mô tả ngắn đường đi đánh giá để phục vụ UI, báo cáo hoặc audit.
 	- `tab_quan_tri_goi_y`: tab quản trị rule gần nhất có liên quan khi cần truy vết.

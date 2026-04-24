@@ -13,7 +13,7 @@
 **Hệ quả cho AI:**
 
 - **Không** giả định “engine đã tra Phụ lục VTYT giống thuốc/DVKT” — tra cứu **điều kiện thanh toán** theo văn bản **11.6 / VBHN 14** là việc **người + tài liệu BYT**, không phải output đầy đủ từ rule seed trong repo.  
-- Phần **có trong code** liên quan VTYT chủ yếu là: **cấu trúc XML3** (`MA_VAT_TU`, `GOI_VTYT`…), **đối chiếu tổng tiền** (`CLN-CHI-02` / `T_VTYT` — xem §3), **liên kết vật tư với DVKT** trong `rule_engine_dvkt_no_code.jsx` (ví dụ khi DVKT đã bao gồm vật tư), và các rule **hardcoded / chuyên đề / CDHA** có chữ “VTYT” — mỗi nhóm cần đọc **trạng thái ON/OFF** và **điều kiện** riêng.  
+- Phần **có trong code** liên quan VTYT chủ yếu là: **cấu trúc XML3** (`MA_VAT_TU`, `GOI_VTYT`…), **đối chiếu tổng tiền** (`CLN-CHI-02` / `T_VTYT` — xem §3), **liên kết vật tư với DVKT** trong `dvkt_op_giam_dinh.jsx` (ví dụ khi DVKT đã bao gồm vật tư), và các rule **hardcoded / chuyên đề / CDHA** có chữ “VTYT” — mỗi nhóm cần đọc **trạng thái ON/OFF** và **điều kiện** riêng.  
 - **Danh mục PL8 / `DM_VTYT`** trong luồng load BYT 7603 **không** đồng nghĩa đã có **tập rule giám định VTYT** tương ứng trong seed.  
 - **Lộ trình khi bổ sung CSDL:** [Huan_luyen_phien_VTYT_du_phong_Cursor.md](./Huan_luyen_phien_VTYT_du_phong_Cursor.md) mục **4.2**.
 
@@ -23,7 +23,7 @@
 
 - Neo cảnh báo / giải thích với **`VAN_BAN_HANH_CHINH_HIEN_HANH.VBHN_VTYT`** và **`CO_SO_PHAP_LY_VTYT`** trong `ma_nguon/tien_ich/dong_co_giam_dinh.jsx` (cùng chuỗi NĐ 188, QĐ 3618, TT 12/2026 Điều 10 như DVKT/thuốc khi gắn `co_so_phap_ly`).
 - Phân tầng: điều kiện **tra được trên XML/mã** (QĐ 130, XML3 `MA_VAT_TU`, `TYLE_TT`…) vs **chủ động / hồ sơ giấy** (hợp lý lâm sàng, thầu, kho).
-- Tránh nhầm **ba nhóm** trong thực tế engine: (1) dòng **chỉ có `MA_VAT_TU`** trên XML3 — VTYT theo TT 04 / VBHN 14; (2) **DVKT** (`MA_DICH_VU`) có **ghi chú danh mục** “đã/không kết cấu vật tư” — xử lý trong `rule_engine_dvkt_no_code.jsx` (toán tử liên quan vật tư); (3) rule **chuyên đề / JCI** trong `luat_giam_dinh_chuyen_de_hardcoded.jsx` — nhiều mệnh đề mang tính **minh họa nghiệp vụ**, không đồng nghĩa mọi điều kiện đã được nối đủ biến XML trong một lần chạy.
+- Tránh nhầm **ba nhóm** trong thực tế engine: (1) dòng **chỉ có `MA_VAT_TU`** trên XML3 — VTYT theo TT 04 / VBHN 14; (2) **DVKT** (`MA_DICH_VU`) có **ghi chú danh mục** “đã/không kết cấu vật tư” — xử lý trong `dvkt_op_giam_dinh.jsx` (toán tử liên quan vật tư); (3) rule **chuyên đề / JCI** trong `luat_giam_dinh_chuyen_de_hardcoded.jsx` — nhiều mệnh đề mang tính **minh họa nghiệp vụ**, không đồng nghĩa mọi điều kiện đã được nối đủ biến XML trong một lần chạy.
 
 ---
 
@@ -34,7 +34,7 @@
 | **P1** | **Thời điểm áp danh mục** — VBHN 14 (2025) thay thế cách đọc VBHN 06 (2018) cho hồ sơ **mới**; hồ sơ cũ có thể cần **mốc thời điểm** | Trước khi chốt điều kiện thanh toán, hỏi: **ngày vào / ngày ra / ngày y lệnh** thuộc khung nào. |
 | **P2** | **Danh mục + cột điều kiện** (TT 04 gốc; bảng trong VBHN 14) | Có `MA_VAT_TU` **chưa đủ** — cần **dòng điều kiện** (chỉ định, tuyến, đối tượng, ghi chú…) đúng Phụ lục **tại thời điểm**. |
 | **P3** | **Engine ⊂ toàn bộ Phụ lục** — và trong repo **chưa có** seed `DM-VTYT-*` | Không có “một phần” để mở rộng: **hiện không có** luật động VTYT trong CSDL; mọi áp dụng VBHN 14 chi tiết là **ngoài engine** (xem **§0**). |
-| **P4** | **Không thu trùng** với DVKT / ngày giường / công khám khi đã **kết cấu giá** | Khi đồng thời có DVKT và dòng `MA_VAT_TU`, hỏi: vật tư đã nằm trong **giá gói DVKT** hoặc **công khám** chưa? (Tinh thần **Điều 4a TT 39/2024** sửa TT 35 — đã neo ở mục 11.5–11.6 mau_luat; trong code: `checkGhiChu` / liên kết `MA_VAT_TU` với dòng DVKT trong `rule_engine_dvkt_no_code.jsx`). |
+| **P4** | **Không thu trùng** với DVKT / ngày giường / công khám khi đã **kết cấu giá** | Khi đồng thời có DVKT và dòng `MA_VAT_TU`, hỏi: vật tư đã nằm trong **giá gói DVKT** hoặc **công khám** chưa? (Tinh thần **Điều 4a TT 39/2024** sửa TT 35 — đã neo ở mục 11.5–11.6 mau_luat; trong code: `checkGhiChu` / liên kết `MA_VAT_TU` với dòng DVKT trong `dvkt_op_giam_dinh.jsx`). |
 | **P5** | **Kết luận pháp lý cuối** thuộc cơ quan có thẩm quyền / BHXH | AI chỉ **hỗ trợ** đối chiếu dữ liệu và chỉ ra **căn cứ tra được**. |
 
 ---
@@ -57,7 +57,7 @@ Trong `dong_co_giam_dinh.jsx`, hàm `giamDinhTongChiPhi`:
 | **Prefix `DM-VTYT-`** | `CO_SO_PHAP_LY_THEO_PREFIX_MA_LUAT` → `CO_SO_PHAP_LY_VTYT` | **Chỉ** chuẩn bị **căn cứ pháp lý** nếu sau này có rule mang tiền tố này — **hiện không có** rule seed tương ứng trong repo (**§0**). |
 | **Danh mục hệ thống** | `DM_VTYT`, `PL8_VTYT` (BYT 7603 PL8), `MAP_VTYT_BV` | Load trong `dong_co_giam_dinh.jsx`; **không** đồng nghĩa đã có **tập quy tắc giám định thanh toán VTYT** trong seed. |
 | **XML3 (QĐ 130)** | `MA_VAT_TU`, `TEN_VAT_TU`, `GOI_VTYT`, `TYLE_TT` / `TYLE_TT_BH`, `DON_GIA`, `TT_THAU`, `MA_HIEU_SP`… | Schema: `ma_nguon/quy_tac/quyluat_cautrucdulieu/xml3.jsx`. |
-| **Nhận dòng VTYT cho engine DVKT no-code** | `extractVtytLines` trong `rule_engine_dvkt_no_code.jsx` | Dùng cho kiểm tra **vật tư đi kèm / trùng gói** với DVKT (ví dụ `checkGhiChu`). |
+| **Nhận dòng VTYT cho engine DVKT no-code** | `extractVtytLines` trong `dvkt_op_giam_dinh.jsx` | Dùng cho kiểm tra **vật tư đi kèm / trùng gói** với DVKT (ví dụ `checkGhiChu`). |
 | **Công khám / giường / XML5** | `CK_15` (vật tư thay thế — XML5 `MA_VTYT`), `GB_35` (ICU + VTYT) | Hardcoded; điều kiện theo từng file luật. |
 | **Chuyên đề** | `Chuyen_de_126`, `281`, `206`… — `loai_dv == 'VTYT'` | Thư viện **mẫu** nghiệp vụ; tra `TRANG_THAI` và luồng gọi thực tế trước khi coi là “đang chạy trên mọi hồ sơ”. |
 
@@ -96,7 +96,7 @@ Trong `dong_co_giam_dinh.jsx`, hàm `giamDinhTongChiPhi`:
 | [Bang_neo_phien_huan_luyen_vtyt_va_engine.md](./Bang_neo_phien_huan_luyen_vtyt_va_engine.md) | Neo mã ↔ tri thức (VTYT + nhánh liên quan hiện có) |
 | [Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.md](./Chuan_hoa_kien_thuc_AI_giam_dinh_DVKT.md) | Gói DVKT — **kết cấu vật tư** trùng / không trùng |
 
-**Mã nguồn tham chiếu nhanh:** `dong_co_giam_dinh.jsx` (`VBHN_VTYT`, `CO_SO_PHAP_LY_VTYT`, `giamDinhTongChiPhi`); `rule_engine_dvkt_no_code.jsx` (`extractVtytLines`, `checkGhiChu`); `du_lieu_luat_du_lieu_muc1.jsx` (`XML_54`); `quyluat_cautrucdulieu/xml3.jsx`.
+**Mã nguồn tham chiếu nhanh:** `dong_co_giam_dinh.jsx` (`VBHN_VTYT`, `CO_SO_PHAP_LY_VTYT`, `giamDinhTongChiPhi`); `dvkt_op_giam_dinh.jsx` (`extractVtytLines`, `checkGhiChu`); `du_lieu_luat_du_lieu_muc1.jsx` (`XML_54`); `quyluat_cautrucdulieu/xml3.jsx`.
 
 ---
 

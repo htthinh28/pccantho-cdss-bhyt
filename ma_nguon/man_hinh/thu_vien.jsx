@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
+import taiLieuTagCatalog from '../tien_ich/tai_lieu_tag_catalog.json';
 import { layGocUrlTaiLieu, taoUrlMoTaiLieu } from '../tien_ich/tai_lieu_url';
 import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import ThuVienPanelTraCuuQuyTac from './thu_vien_panel_tra_cuu_quy_tac';
@@ -49,7 +50,9 @@ const chuanHoaTimKiem = (s) =>
     .trim();
 
 const gopTruongTim = (it) =>
-  [it.title, it.relPath, it.id, it.nguon || ''].map((x) => chuanHoaTimKiem(x)).join(' ');
+  [it.title, it.relPath, it.id, it.nguon || '', ...(Array.isArray(it.tags) ? it.tags : [])]
+    .map((x) => chuanHoaTimKiem(x))
+    .join(' ');
 
 const locTheoTuKhoa = (items, tuKhoa) => {
   const q = chuanHoaTimKiem(tuKhoa);
@@ -58,6 +61,11 @@ const locTheoTuKhoa = (items, tuKhoa) => {
     const s = gopTruongTim(it);
     return s.includes(q) || q.split(/\s+/).filter(Boolean).every((t) => s.includes(t));
   });
+};
+
+const locTheoThe = (items, tagId) => {
+  if (!tagId) return items;
+  return items.filter((it) => Array.isArray(it.tags) && it.tags.includes(tagId));
 };
 
 const sapXepTheoABC = (items) =>
@@ -78,6 +86,8 @@ const ManHinhThuVien = ({ navigation }) => {
   /** 'TAI_LIEU' | 'QUY_TAC' */
   const [cheDo, setCheDo] = useState('TAI_LIEU');
   const [tuKhoa, setTuKhoa] = useState('');
+  /** Lọc theo thẻ tri thức / nghiệp vụ (đồng bộ với manifest + trợ lý AI). */
+  const [theLocThe, setTheLocThe] = useState(null);
   const [taiLieuDangXem, setTaiLieuDangXem] = useState(null);
   const [noiDungText, setNoiDungText] = useState('');
   const [dangTaiText, setDangTaiText] = useState(false);
@@ -92,8 +102,16 @@ const ManHinhThuVien = ({ navigation }) => {
 
   const itemsSAPXep = useMemo(() => sapXepTheoABC(items), [items]);
   const itemsHienThi = useMemo(
-    () => locTheoTuKhoa(itemsSAPXep, tuKhoa),
-    [itemsSAPXep, tuKhoa],
+    () => locTheoThe(locTheoTuKhoa(itemsSAPXep, tuKhoa), theLocThe),
+    [itemsSAPXep, tuKhoa, theLocThe],
+  );
+
+  const nhanTheTheoId = useCallback(
+    (id) => {
+      const row = (taiLieuTagCatalog.catalog || []).find((c) => c.id === id);
+      return row?.label || id;
+    },
+    [],
   );
 
   useEffect(() => {
@@ -169,11 +187,13 @@ const ManHinhThuVien = ({ navigation }) => {
         thu_muc: folder,
         duong_dan: it.relPath,
         nguon: it.nguon || '',
+        the: Array.isArray(it.tags) ? it.tags.map((tid) => nhanTheTheoId(tid)).join('; ') : '',
       };
     });
     const columns = [
       { key: 'id', label: 'Mã' },
       { key: 'tieu_de', label: 'Tiêu đề' },
+      { key: 'the', label: 'Thẻ' },
       { key: 'thu_muc', label: 'Thư mục' },
       { key: 'duong_dan', label: 'Đường dẫn (mở)' },
       { key: 'nguon', label: 'Nguồn' },
@@ -185,7 +205,7 @@ const ManHinhThuVien = ({ navigation }) => {
       [{ sheetName: 'Tai_lieu', columns, rows, exportNote }],
       'Thư viện tài liệu (danh mục manifest)',
     );
-  }, [items]);
+  }, [items, nhanTheTheoId]);
 
   const urlDangXem = taiLieuDangXem
     ? taoUrlMoTaiLieu(taiLieuDangXem.relPath)
@@ -204,8 +224,8 @@ const ManHinhThuVien = ({ navigation }) => {
           <Text style={styles.txt_cho_tieu_de}>Chọn một mục bên mục lục</Text>
           <Text style={styles.txt_cho_phu}>
             Tài liệu trong thư mục <Text style={styles.lead_mono}>tai_lieu/</Text>. Danh sách sắp theo tên (A–Z). Dùng ô
-            tìm kiếm để lọc theo từ khóa (bỏ qua dấu). Sau khi thêm file, chạy{' '}
-            <Text style={styles.lead_mono}>npm run tai_lieu:prepare</Text> rồi tải lại ứng dụng.
+            tìm kiếm và <Text style={styles.lead_mono}>thẻ</Text> để lọc (đồng bộ với trợ lý tri thức). Sau khi thêm file,
+            chạy <Text style={styles.lead_mono}>npm run tai_lieu:prepare</Text> rồi tải lại ứng dụng.
           </Text>
         </View>
       );
@@ -332,6 +352,36 @@ const ManHinhThuVien = ({ navigation }) => {
           autoCapitalize="none"
           {...(Platform.OS === 'ios' ? { clearButtonMode: 'while-editing' } : {})}
         />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.thanh_the_loc}
+          contentContainerStyle={styles.thanh_the_loc_content}
+          keyboardShouldPersistTaps="handled"
+        >
+          <TouchableOpacity
+            style={[styles.chip_the, !theLocThe && styles.chip_the_active]}
+            onPress={() => setTheLocThe(null)}
+            activeOpacity={0.85}
+          >
+            <Text style={!theLocThe ? styles.chip_the_txt_active : styles.chip_the_txt}>Tất cả</Text>
+          </TouchableOpacity>
+          {(taiLieuTagCatalog.catalog || []).map((c) => {
+            const on = theLocThe === c.id;
+            return (
+              <TouchableOpacity
+                key={c.id}
+                style={[styles.chip_the, on && styles.chip_the_active]}
+                onPress={() => setTheLocThe((v) => (v === c.id ? null : c.id))}
+                activeOpacity={0.85}
+              >
+                <Text style={on ? styles.chip_the_txt_active : styles.chip_the_txt} numberOfLines={1}>
+                  {c.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
         <Text style={styles.dem_muc}>
           {itemsHienThi.length === itemsSAPXep.length
             ? `${itemsSAPXep.length} tài liệu`
@@ -368,6 +418,11 @@ const ManHinhThuVien = ({ navigation }) => {
                   {it.nguon === 'markdown' ? ' · MD→HTML' : ''}
                   {it.nguon === 'text' ? ' · TXT' : ''}
                 </Text>
+                {Array.isArray(it.tags) && it.tags.length ? (
+                  <Text style={styles.muc_the} numberOfLines={2}>
+                    {it.tags.map((tid) => nhanTheTheoId(tid)).join(' · ')}
+                  </Text>
+                ) : null}
               </TouchableOpacity>
             );
           })}
@@ -603,6 +658,23 @@ const styles = StyleSheet.create({
     fontFamily: CD.font.family,
     marginBottom: 6,
   },
+  thanh_the_loc: { flexGrow: 0, marginBottom: 6, maxHeight: 40 },
+  thanh_the_loc_content: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 2 },
+  chip_the: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    backgroundColor: CD.bg.glass_input,
+    flexShrink: 0,
+  },
+  chip_the_active: {
+    backgroundColor: CD.brand.mauNhat,
+    borderColor: CD.border.accent,
+  },
+  chip_the_txt: { fontSize: 11, color: CD.text.secondary, fontWeight: '600', fontFamily: CD.font.family },
+  chip_the_txt_active: { fontSize: 11, color: CD.brand.mauDam, fontWeight: '800', fontFamily: CD.font.family },
   dem_muc: { color: CD.text.muted, fontSize: 11, fontFamily: CD.font.family },
   sidebar_scroll: { flex: 1, minHeight: 0 },
   sidebar_scroll_content: { padding: 8, paddingBottom: 20 },
@@ -621,6 +693,14 @@ const styles = StyleSheet.create({
   muc_tieu_de: { color: CD.text.primary, fontSize: 14, fontWeight: '700', fontFamily: CD.font.family },
   muc_tieu_de_active: { color: CD.brand.mauDam },
   muc_meta: { color: CD.text.muted, fontSize: 10, fontFamily: CD.font.mono, marginTop: 4 },
+  muc_the: {
+    color: CD.brand.mauDam,
+    fontSize: 10,
+    fontFamily: CD.font.family,
+    marginTop: 4,
+    opacity: 0.92,
+    lineHeight: 14,
+  },
   empty_sidebar: { padding: 16, alignItems: 'center' },
   empty_sidebar_txt: { color: CD.text.secondary, textAlign: 'center', lineHeight: 20, fontSize: 13 },
   panel_phai: { flex: 1, minWidth: 0, minHeight: 0, backgroundColor: 'transparent' },

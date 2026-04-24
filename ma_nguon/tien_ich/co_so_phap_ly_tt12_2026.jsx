@@ -1,6 +1,6 @@
 /**
  * Trích dẫn ngắn — hiển thị trên báo cáo lỗi (không nhét full text Điều 10/13).
- * Dùng trong dong_co_giam_dinh (co_so_phap_ly) và resolveLegalBasis (rule_engine_dvkt_no_code).
+ * Dùng trong dong_co_giam_dinh (co_so_phap_ly) và resolveLegalBasis (dvkt_op_giam_dinh.jsx).
  */
 export const CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13 =
   'TT 12/2026/TT-BTC: Điều 10 khoản 1; Điều 13 khoản 1–3';

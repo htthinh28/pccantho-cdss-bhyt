@@ -1,6 +1,6 @@
 /**
  * CẤU TRÚC DỮ LIỆU XML1: CHỈ TIÊU TỔNG HỢP KHÁM BỆNH, CHỮA BỆNH
- * Căn cứ: QĐ 3176/QĐ-BYT (2024), sửa đổi QĐ 4750/QĐ-BYT và QĐ 130/QĐ-BYT
+ * Căn cứ: QĐ 3176/QĐ-BYT (2024), sửa đổi QĐ 4750/QĐ-BYT và QĐ 130/QĐ-BYT; đọc bổ sung QĐ 4210 + CV 7464/BYT-BH được chuẩn hóa về cùng trường xml1.
  */
 
 export const DANH_SACH_COT_XML1 = [

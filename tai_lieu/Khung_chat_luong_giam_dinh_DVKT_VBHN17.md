@@ -13,7 +13,7 @@ Ngày: 11/04/2026
 
 | Lớp | Nguồn chính | Đối chiếu thực chiến | Ghi chú |
 |-----|-------------|----------------------|---------|
-| **A. Engine DVKT no-code** | `rule_engine_dvkt_no_code.jsx`, bảng `CDSS_DATA_LUAT_CDHA`, danh mục `DANH_MUC_DVKT_M05`, thiết bị M06 | Cao — dùng `MA_DICH_VU` / XML3, DM nội bộ | Đây là lớp ưu tiên cho “đúng mã DVKT + đúng điều kiện VBHN”. |
+| **A. Engine DVKT no-code** | `dvkt_op_giam_dinh.jsx`, bảng `CDSS_DATA_LUAT_CDHA`, danh mục `DANH_MUC_DVKT_M05`, thiết bị M06 | Cao — dùng `MA_DICH_VU` / XML3, DM nội bộ | Đây là lớp ưu tiên cho “đúng mã DVKT + đúng điều kiện VBHN”. |
 | **B. Seed PTTT mức 11 (`DVKT_*`)** | `du_lieu_luat_pttt_muc11.jsx` | Trung bình–cao nếu `DIEU_KIEN` chỉ dùng biến XML đã chuẩn hóa | Đã **gỡ hàng loạt** quy tắc dạng **Thực hiện - …** kết hợp `COUNT_IF(DS_XML5, …)` vì dễ FP khi XML5 không phản ánh đủ chứng cứ thực hiện. Các nhóm **Chỉ định / Thanh toán / …** vẫn có thể dùng `COUNT_IF(DS_XML5, …)` khi nghiệp vụ và dữ liệu thống nhất. |
 | **C. Giám định chuyên đề (`CHUYEN_DE_*`)** | `luat_giam_dinh_chuyen_de_hardcoded.jsx` | Thấp nếu giữ nguyên DSL gốc (`ma_dvkt`, `includes(`, hàm giả lập…) | Nhiều điều kiện **không** tương thích trực tiếp với biến `XML*` trong `dong_co_giam_dinh.jsx`. Phần lớn mã được **mặc định OFF** qua `DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF` trong `quy_tac_on_off_noi_bo.jsx` để tránh “cảnh báo giả”. Nâng cấp đúng nghĩa = viết lại `DIEU_KIEN` theo `XML3`/`XML1` hoặc operator engine DVKT. |
 

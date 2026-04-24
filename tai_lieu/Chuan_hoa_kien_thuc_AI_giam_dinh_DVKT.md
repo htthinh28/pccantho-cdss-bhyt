@@ -46,7 +46,7 @@
 |----------------|--------------------|-------------------|
 | `DVKT_` + số | `du_lieu_luat_pttt_muc11.jsx` (+ `dong_co_giam_dinh.jsx`) | Gói PT/TT, ICD, thuốc kèm gói — điều kiện seed theo dòng |
 | `CDHA_` + số | `luat_cdha_hardcoded.jsx` | CĐHA, XN, máy, MRI, JCI… — tập trung **XML3/XML4** và thiết bị |
-| `DVKT-OP-` + số | `rule_engine_dvkt_no_code.jsx` (`DEFAULT_DVKT_RULES`, operator) | Toán tử **CHECK_*** trên danh mục M05 nội bộ, giá, ICD mapping, … |
+| `DVKT-OP-` + số | `dvkt_op_giam_dinh.jsx` (`DEFAULT_DVKT_RULES`, operator) | Toán tử **CHECK_*** trên danh mục M05 nội bộ, giá, ICD mapping, … |
 
 Chi tiết ca mẫu: [Bang_neo_phien_huan_luyen_dvkt_va_engine.md](./Bang_neo_phien_huan_luyen_dvkt_va_engine.md).
 

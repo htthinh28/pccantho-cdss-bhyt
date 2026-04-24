@@ -1223,7 +1223,7 @@ export const taiDuLieuRuleEngineTuFirebase = async (options = {}) => {
   const opts = typeof options === 'object' && options !== null ? options : {};
   const {
     actor_email = '',
-    source = 'rule_engine_pull',
+    source = 'dvkt_op_pull',
     ghi_audit = false,
   } = opts;
 
@@ -1255,7 +1255,7 @@ export const taiDuLieuRuleEngineTuFirebase = async (options = {}) => {
 
   if (ghi_audit && result.ok) {
     await ghiNhatKyAuditConfigSync({
-      action: 'pull_rule_engine_tables',
+      action: 'pull_dvkt_op_tables',
       actor_email: String(actor_email || ''),
       source: String(source || ''),
       dataset_summary: details.map((d) => ({

@@ -1,6 +1,6 @@
 /**
- * TỆP LÕI: HỆ QUẢN TRỊ QUY TẮC BHYT ĐỘNG (NO-CODE RULE ENGINE CMS)
- * Chức năng: Quản lý 11 tệp luật BHYT dưới dạng Bảng dữ liệu động.
+ * TỆP LÕI: HỆ QUẢN TRỊ QUY TẮC GIÁM ĐỊNH BHYT (CDSS) — BẢNG ĐỘNG
+ * Chức năng: Quản lý 11 tệp luật BHYT dưới dạng bảng dữ liệu động (cột/tùy biến).
  * Đột phá UX: Bảng tự động giãn Full màn hình, hỗ trợ SẮP XẾP (SORT) linh hoạt.
  * Tính năng MỚI: 
  * 1. Auto-Save - Hệ thống tự động ghi nhớ sau mỗi lần nhập (Không sợ F5).
@@ -484,7 +484,7 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
     setData(sortedData);
   };
 
-  // --- CÁC HÀM NO-CODE (TÙY BIẾN CỘT VÀ DÒNG) ---
+  // --- CÁC HÀM TÙY BIẾN CỘT VÀ DÒNG ---
   const handleAddColumn = () => {
     if (!newColumnName) return alert("Vui lòng nhập tên trường (cột) mới!");
     const colName = newColumnName.trim().toUpperCase().replace(/ /g, '_');
@@ -682,7 +682,12 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
         <TouchableOpacity onPress={() => quayLaiAnToan(navigation, 'TongQuan')} style={styles.nut_quay_lai}>
           <Text style={styles.chu_nut_header}>⬅ TRỞ VỀ</Text>
         </TouchableOpacity>
-        <Text style={styles.chu_tieu_de}>⚙️ HỆ QUẢN TRỊ QUY TẮC BHYT ĐỘNG (NO-CODE)</Text>
+        <View style={styles.khoi_tieu_de_giua}>
+          <Text style={styles.chu_tieu_de}>⚙️ QUY TẮC GIÁM ĐỊNH BHYT (CDSS)</Text>
+          <Text style={styles.chu_tieu_de_phu}>
+            Cấu hình bảng động — đầu vào XML: QĐ 130/3176 (ưu tiên); bổ sung chuẩn hóa QĐ 4210 + CV 7464/BYT-BH khi nhập file.
+          </Text>
+        </View>
         <TouchableOpacity
           onPress={() => dieuHuongMoTabMoi(navigation, 'QuanLyQuyTacOnOff')}
           style={styles.nut_quy_tac_on_off}
@@ -929,7 +934,18 @@ const styles = StyleSheet.create({
   },
   chu_nut_header: { color: CD.text.primary, fontWeight: 'bold', fontSize: 20, fontFamily: CD.font.family },
   chu_nut_quy_tac_on_off: { color: CD.text.primary, fontWeight: '700', fontSize: 16, fontFamily: CD.font.family },
-  chu_tieu_de: { fontSize: 26, color: CD.text.primary, fontWeight: 'bold', fontFamily: CD.font.family },
+  khoi_tieu_de_giua: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
+  chu_tieu_de: { fontSize: 26, color: CD.text.primary, fontWeight: 'bold', fontFamily: CD.font.family, textAlign: 'center' },
+  chu_tieu_de_phu: {
+    fontSize: 13,
+    color: CD.text.primary,
+    opacity: 0.92,
+    marginTop: 6,
+    textAlign: 'center',
+    fontFamily: CD.font.family,
+    maxWidth: 720,
+    alignSelf: 'center',
+  },
   khung_chuc_nang: { flex: 1, minHeight: 0, minWidth: 0 },
   khung_chinh_luat: {
     flex: 1,

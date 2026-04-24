@@ -22,7 +22,7 @@ import { xuatExcelBaoCao } from '../dich_vu/bao_cao_xuat_file';
 import { layTatCaHoSoTuKho, luuHoSoVaoKho, xoaHoSoKhoiKho } from '../tien_ich/kho_du_lieu';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
-import { xuLyFileXML130 } from '../tien_ich/xml_helper';
+import { xuLyFileXML130Va4210 } from '../tien_ich/xml_helper';
 
 // --- HÀM HỖ TRỢ HIỂN THỊ HỘP THOẠI TRÊN CẢ WEB & MOBILE ---
 const safeConfirm = (title, message, onConfirm) => {
@@ -224,7 +224,7 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
       } else {
         raw = await FileSystem.readAsStringAsync(uri);
       }
-      const ds = xuLyFileXML130(raw);
+      const ds = xuLyFileXML130Va4210(raw);
       if (!Array.isArray(ds) || ds.length === 0) {
         safeAlert('Lỗi', 'Không trích được hồ sơ. Cần file XML đúng định dạng gói 130 (QĐ 3176).');
         return;

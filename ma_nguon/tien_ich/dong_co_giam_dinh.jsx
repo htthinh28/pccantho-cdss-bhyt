@@ -9,7 +9,7 @@
  * - [LAYER 2] Đối soát Danh mục Bệnh viện 2 giai đoạn (BV -> BYT)
  * - [LAYER 3] Kiểm tra giá trúng thầu, số lượng hợp lý
  * - [LAYER 4] Kiểm tra lâm sàng: thuốc, CDHA, giường, PTTT, chuyển tuyến, tổng chi
- * - [LAYER 5] Luật động NoCode (SQL NLP parser - giữ nguyên từ V14)
+ * - [LAYER 5] Luật động theo tab + DVKT-OP (`dvkt_op_giam_dinh.jsx` — toán tử cố định trong mã)
  * - Lọc trùng lặp + sắp xếp theo mức độ cuối pipeline
  * ============================================================================
  */
@@ -47,8 +47,9 @@ import { damBaoSeedLuatDuLieuMuc1 } from './seed_luat_du_lieu_muc1';
 import { damBaoSeedLuatHanhChinhMuc2 } from './seed_luat_hanh_chinh_muc2';
 import { damBaoSeedLuatPtttMuc11 } from './seed_luat_pttt_muc11';
 import { damBaoSeedLuatThuocMuc8 } from './seed_luat_thuoc_muc8';
-import { viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_cap_cuu';
+import { laCapCuuTheoXml1, viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_cap_cuu';
 import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
+import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
 
 // ============================================================
 // [PHẦN 1] CACHE VÀ HÀM TIỆN ÍCH CƠ BẢN
@@ -633,7 +634,6 @@ export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => 
 
     const nsMap = {
         DVKT_OP: 'L5',
-        DVKT_NO_CODE: 'L5',
         HANH_CHINH_BUILTIN: 'L1',
         HANH_CHINH_HARDCODED: 'L1',
         THUOC_DANH_MUC_BUILTIN: 'L23',
@@ -1017,11 +1017,18 @@ const prepareData = (obj) => {
     if (!IS_EMPTY(result.GIOI_TINH) && IS_EMPTY(result.MA_GIOI_TINH)) {
         result.MA_GIOI_TINH = result.GIOI_TINH;
     }
-    if (!IS_EMPTY(result.LY_DO_VV) && IS_EMPTY(result.MA_LY_DO_VV)) {
-        result.MA_LY_DO_VV = result.LY_DO_VV;
-    }
     if (!IS_EMPTY(result.MA_LY_DO_VNT) && IS_EMPTY(result.MA_LY_DO_VVIEN)) {
         result.MA_LY_DO_VVIEN = result.MA_LY_DO_VNT;
+    }
+    // QĐ 130: MA_LYDO_VVIEN / MA_LY_DO_VVIEN là mã chuẩn; MA_LY_DO_VV dùng trong nhiều luật DSL — ưu tiên đồng bộ từ đây trước LY_DO_VV (có thể là mô tả).
+    if (IS_EMPTY(result.MA_LY_DO_VV) && !IS_EMPTY(result.MA_LYDO_VVIEN)) {
+        result.MA_LY_DO_VV = String(result.MA_LYDO_VVIEN).trim();
+    }
+    if (IS_EMPTY(result.MA_LY_DO_VV) && !IS_EMPTY(result.MA_LY_DO_VVIEN)) {
+        result.MA_LY_DO_VV = String(result.MA_LY_DO_VVIEN).trim();
+    }
+    if (!IS_EMPTY(result.LY_DO_VV) && IS_EMPTY(result.MA_LY_DO_VV)) {
+        result.MA_LY_DO_VV = result.LY_DO_VV;
     }
     if (!IS_EMPTY(result.TEN_DICH_VU) && IS_EMPTY(result.TEN_DV)) {
         result.TEN_DV = result.TEN_DICH_VU;
@@ -4372,7 +4379,7 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
         return (ruleMeta, contextRuleDong, danhMucHeThong) => {
             const currentEntry = contextRuleDong?.currentEntry;
             const batchContext = contextRuleDong?.batchContext;
-            if (!currentEntry?.maBN || UPPER(currentEntry?.xml1?.MA_LY_DO_VV) === '1') return [];
+            if (!currentEntry?.maBN || laCapCuuTheoXml1(currentEntry?.xml1)) return [];
             const sameDayVisits = (batchContext?.claimsByPatient?.get(currentEntry.maBN) || []).filter((entry) => entry.dayKey && entry.dayKey === currentEntry.dayKey);
             if (sameDayVisits.length <= 1) return [];
             const dmKham = taoTapDanhMucTuMang(danhMucHeThong?.DM_KHAM);
@@ -4440,7 +4447,7 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
         return (ruleMeta, contextRuleDong, danhMucHeThong) => {
             const currentEntry = contextRuleDong?.currentEntry;
             const batchContext = contextRuleDong?.batchContext;
-            if (!currentEntry?.maBN || UPPER(currentEntry?.xml1?.MA_LY_DO_VV) !== '1') return [];
+            if (!currentEntry?.maBN || !laCapCuuTheoXml1(currentEntry?.xml1)) return [];
             const sameDayVisits = (batchContext?.claimsByPatient?.get(currentEntry.maBN) || []).filter((entry) => entry.dayKey && entry.dayKey === currentEntry.dayKey);
             if (sameDayVisits.length <= 1) return [];
             const dmKham = taoTapDanhMucTuMang(danhMucHeThong?.DM_KHAM);
@@ -4917,7 +4924,15 @@ const taiRuleDongTheoTabId = async (tabId) => {
         if (rowsQuanTri.length > 0) return rowsQuanTri;
         return layDanhSachLuatHopDongHardcoded().map(chuanHoaRuleDong);
     }
-    return normalizeRuleList(await fetchChunkedData(`CDSS_DATA_${tabId}`)).map(chuanHoaRuleDong);
+    if (normalizedTabId === 'LUAT_PTTT' || normalizedTabId === 'PTTT') {
+        const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_PTTT', 'PTTT']);
+        const nguon = rowsQuanTri.length > 0
+            ? rowsQuanTri
+            : normalizeRuleList(await fetchChunkedData(`CDSS_DATA_${normalizedTabId}`));
+        return hopNhatQuyTacTrungTheoDoiTuong(nguon, () => 'LUAT_PTTT').map(chuanHoaRuleDong);
+    }
+    const rawFallback = normalizeRuleList(await fetchChunkedData(`CDSS_DATA_${tabId}`));
+    return hopNhatQuyTacTrungTheoDoiTuong(rawFallback, () => normalizedTabId).map(chuanHoaRuleDong);
 };
 
 const inferTargetTableFromCondition = (conditionStr) => {
@@ -5401,7 +5416,7 @@ const evaluateRule = (rule, contextRuleDong, danhMucHeThong) => {
 // ============================================================
 
 /**
- * V3 API — backward compatible (chỉ chạy luật động NoCode).
+ * V3 API — backward compatible (luật động theo tab + DVKT-OP).
  */
 export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
     if (!hoSo) return [];
@@ -5439,7 +5454,7 @@ export const chayBoMayGiamDinhV3 = async (hoSo, options = {}) => {
                 danhSachCanhBao = danhSachCanhBao.concat(dsLoiDvkt);
             }
         } catch (dvktError) {
-            console.error('[CDSS Engine V3] Lỗi bộ máy DVKT no-code:', dvktError);
+            console.error('[CDSS Engine V3] Lỗi DVKT-OP (dvkt_op_giam_dinh):', dvktError);
         }
 
         for (const tabId of danhSachTabIds) {
@@ -5611,7 +5626,7 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     allLỗi = allLỗi.concat(giamDinhChatCheoDaBien(hoSo));
     allLỗi = allLỗi.concat(giamDinhIcd10TheoTT06(hoSo));
 
-    // LAYER 5: Luật động NoCode
+    // LAYER 5: Luật động theo tab + DVKT-OP
     allLỗi = allLỗi.concat(await chayBoMayGiamDinhV3(hoSo));
 
     // LAYER 5b (nâng cấp tách biệt): CDSS — mapping ICD ↔ DM thuốc / DVKT BV (mặc định OFF; không mapping → không cảnh báo).

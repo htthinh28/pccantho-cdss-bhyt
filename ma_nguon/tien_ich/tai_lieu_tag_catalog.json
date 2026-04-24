@@ -1,0 +1,27 @@
+{
+  "catalog": [
+    { "id": "the_tri_thuc", "label": "Thẻ tri thức" },
+    { "id": "ai_huan_luyen", "label": "Huấn luyện AI / CDSS" },
+    { "id": "thuoc", "label": "Thuốc · XML2 · Mục 8" },
+    { "id": "dvkt", "label": "DVKT · CDHA · VBHN 17" },
+    { "id": "vtyt", "label": "VTYT" },
+    { "id": "pttt", "label": "PTTT · gói DVKT" },
+    { "id": "hanh_chinh", "label": "Hành chính · thẻ BHYT · XML1" },
+    { "id": "icd_chuyen_mon", "label": "ICD · chuyên môn · phác đồ" },
+    { "id": "cv266", "label": "CV266 · mã KT BYT" },
+    { "id": "phap_ly", "label": "Pháp lý · NĐ · TT · hợp đồng" },
+    { "id": "ca_mau", "label": "Ca huấn luyện mẫu" },
+    { "id": "bang_neo", "label": "Bảng neo ↔ engine" },
+    { "id": "tuong_tac_thuoc", "label": "Tương tác thuốc (XML2)" },
+    { "id": "xml_chuyen_de", "label": "XML 130 · chuyên đề" },
+    { "id": "cau_truc_xml", "label": "Cấu trúc XML · QĐ 4210 / 7464" },
+    { "id": "kiem_thu_quy_tac", "label": "Kiểm thử · quy tắc · QA" }
+  ],
+  "explicitByRelPath": {
+    "Chuan_hoa_kien_thuc_AI_giam_dinh_VTYT.html": ["vtyt", "ai_huan_luyen", "the_tri_thuc"],
+    "The_tri_thuc_quy_dinh_CLVT_BVPCST_2025_giam_dinh_AI.html": ["the_tri_thuc", "ai_huan_luyen", "phap_ly", "dvkt"],
+    "The_tri_thuc_doi_chieu_177_04032026_bao_cao_vs_xml_AI.html": ["the_tri_thuc", "ai_huan_luyen", "kiem_thu_quy_tac", "xml_chuyen_de"],
+    "The_tri_thuc_phan_loi_vi_pham_cau_truc_XML_dashboard_QPS_AI.html": ["the_tri_thuc", "ai_huan_luyen", "xml_chuyen_de", "kiem_thu_quy_tac", "cau_truc_xml"],
+    "Huong_dan_tai_nguyen_XML_thuc_chien_AI.html": ["ai_huan_luyen", "cau_truc_xml", "xml_chuyen_de"]
+  }
+}

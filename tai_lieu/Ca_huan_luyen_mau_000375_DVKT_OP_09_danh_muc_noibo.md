@@ -5,7 +5,7 @@ Ngày cập nhật: 09/04/2026
 
 ## 1. Mục tiêu
 
-Huấn luyện AI nhận diện cảnh báo từ **engine DVKT no-code** (`rule_engine_dvkt_no_code.jsx`): mã rule dạng **`DVKT-OP-xx`** (có **dấu gạch ngang**), **không** phải seed số **`DVKT_26xx`** trong `du_lieu_luat_pttt_muc11.jsx`.
+Huấn luyện AI nhận diện cảnh báo từ **engine DVKT no-code** (`dvkt_op_giam_dinh.jsx`): mã rule dạng **`DVKT-OP-xx`** (có **dấu gạch ngang**), **không** phải seed số **`DVKT_26xx`** trong `du_lieu_luat_pttt_muc11.jsx`.
 
 Trọng tâm phiên này: **`DVKT-OP-09`** — toán tử **`CHECK_INTERNAL_APPROVAL`**: dịch vụ **không khớp danh mục nội bộ CSKCB** (bảng **M05** / phê duyệt nội bộ trong cấu hình engine).
 
@@ -15,8 +15,8 @@ Trọng tâm phiên này: **`DVKT-OP-09`** — toán tử **`CHECK_INTERNAL_APPR
 
 - Audit: `test_xml/audit_000375_20260405_065828.json`
 - XML gốc (meta): `…\ip\PC022112088_IP26000080.xml`
-- Engine: `ma_nguon/tien_ich/rule_engine_dvkt_no_code.jsx` — `DEFAULT_DVKT_RULES` mục **DVKT-OP-09**; hàm xuất: `chayGiamDinhDvktNoCode` / `verifyClaimDvkt`.
-- Tích hợp luồng giám định: `dong_co_giam_dinh.jsx` (meta **`DVKT_NO_CODE`** → nhánh `rule_engine_dvkt_no_code`).
+- Engine: `ma_nguon/tien_ich/dvkt_op_giam_dinh.jsx` — `DEFAULT_DVKT_RULES` mục **DVKT-OP-09**; hàm xuất: `chayGiamDinhDvktOp` / `verifyClaimDvktOp`.
+- Tích hợp luồng giám định: `dong_co_giam_dinh.jsx` (meta **`DVKT_OP`** → nhánh `dvkt_op_giam_dinh`).
 
 ## 3. Tóm tắt hồ sơ
 

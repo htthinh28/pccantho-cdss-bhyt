@@ -1,0 +1,41 @@
+{
+  "phienBan": "2026-04-23",
+  "tieuDe": "Hướng dẫn chẩn đoán và điều trị — khung mục lục tham chiếu (Bộ Y tế)",
+  "ghiChu": "Đây là mục lục nhóm nghiệp vụ để tra cứu nhanh; chi tiết từng bệnh nằm ở danh mục bên trái (theo ICD). Có thể chỉnh sửa file JSON này cho khớp văn bản Word đính kèm của đơn vị.",
+  "taiLieuThamChieu": [
+    { "ma": "TT23/2024", "ten": "Thông tư 23/2024/TT-BYT — DVKT", "url": "https://thuvienphapluat.vn/van-ban/the-thao-y-te/thong-tu-23-2024-tt-byt" },
+    { "ma": "QĐ3310", "ten": "QĐ 3310/QĐ-BYT — Hướng dẫn CĐ & ĐT (một số bệnh)", "url": "https://thuvienphapluat.vn/van-ban/the-thao-y-te/quyet-dinh-3310-qd-byt-2022" }
+  ],
+  "nhomChuong": [
+    {
+      "id": "I",
+      "ten": "I. Nguyên tắc chung",
+      "cacMuc": [
+        { "id": "I.1", "ten": "Tiếp nhận, phân loại mức độ", "tuKhoaTim": "cấp cứu hồi sức" },
+        { "id": "I.2", "ten": "Ghi nhận ICD-10 và TT 23/2024", "tuKhoaTim": "cận lâm sàng" }
+      ]
+    },
+    {
+      "id": "II",
+      "ten": "II. Bệnh truyền nhiễm",
+      "cacMuc": [
+        { "id": "II.1", "ten": "Viêm gan virus", "tuKhoaTim": "viêm gan B16" },
+        { "id": "II.2", "ten": "Bệnh đường hô hấp cấp", "tuKhoaTim": "J18 J06" }
+      ]
+    },
+    {
+      "id": "III",
+      "ten": "III. Tim — Mạch máu — Huyết áp",
+      "cacMuc": [
+        { "id": "III.1", "ten": "Tăng huyết áp, suy tim", "tuKhoaTim": "I10 I50" }
+      ]
+    },
+    {
+      "id": "IV",
+      "ten": "IV. Tiêu hóa — Gan mật",
+      "cacMuc": [
+        { "id": "IV.1", "ten": "Viêm gan, vàng da", "tuKhoaTim": "K74 B16" }
+      ]
+    }
+  ]
+}

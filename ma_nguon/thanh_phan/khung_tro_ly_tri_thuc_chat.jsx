@@ -24,6 +24,7 @@ const GOI_Y_NHANH = [
   { label: 'THUOC_417', text: 'Vì sao hệ thống báo THUOC_417? Căn cứ trong thư viện nội bộ?' },
   { label: 'CK_41', text: 'Giải thích quy tắc CK_41 (công khám lần 2) theo tài liệu trong repo' },
   { label: 'Phác đồ / ICD', text: 'Phác đồ CDSS chuyên môn và gợi ý theo ICD trong tài liệu nội bộ' },
+  { label: 'QĐ 4210 / XML', text: 'Cấu trúc XML theo QĐ 4210 và 7464: tài liệu thẻ tri thức nào trong thư viện nội bộ?' },
 ];
 
 /**

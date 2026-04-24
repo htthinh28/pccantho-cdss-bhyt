@@ -59,7 +59,11 @@ const laURLHopLe = (url) => {
 // ============================================================
 // COMPONENT CHÍNH
 // ============================================================
-const TaiLieuGoc = ({ maICD, danhSachData }) => {
+/**
+ * @param {'doc_lap' | 'nhung'} [props.variant] — `nhung`: bố cục gọn, không padding ngoài (dùng trong panel phải Hướng dẫn BYT).
+ */
+const TaiLieuGoc = ({ maICD, danhSachData, variant = 'doc_lap' }) => {
+  const laNhung = variant === 'nhung';
   const duLieu = (danhSachData || []).find(item => item['Mã ICD10'] === maICD) || {};
 
   const [danhSachTaiLieu, setDanhSachTaiLieu] = useState([]);
@@ -177,11 +181,11 @@ const TaiLieuGoc = ({ maICD, danhSachData }) => {
   // RENDER CHÍNH
   // ----------------------------------------------------------
   return (
-    <SafeAreaView style={styles.vung_an_toan}>
-      <View style={styles.khung_giao_dien}>
+    <SafeAreaView style={[styles.vung_an_toan, laNhung && styles.vung_an_toan_nhung]}>
+      <View style={[styles.khung_giao_dien, laNhung && styles.khung_giao_dien_nhung]}>
 
         {/* PANEL TRÁI: DANH SÁCH THƯ VIỆN */}
-        <View style={styles.panel_trai}>
+        <View style={[styles.panel_trai, laNhung && styles.panel_trai_nhung]}>
           <Text style={styles.tieu_de_panel}>📋 THƯ VIỆN TÀI LIỆU (Mã: {maICD})</Text>
           <Text style={styles.ten_benh_phu}>{duLieu['Tên bệnh'] || 'Chưa cập nhật tên bệnh'}</Text>
           <Text style={styles.dem_tai_lieu}>{danhSachTaiLieu.length} tài liệu đính kèm</Text>
@@ -268,7 +272,7 @@ const TaiLieuGoc = ({ maICD, danhSachData }) => {
         </View>
 
         {/* PANEL PHẢI: TRÌNH XEM TÀI LIỆU (VIEWER) */}
-        <View style={styles.panel_phai}>
+        <View style={[styles.panel_phai, laNhung && styles.panel_phai_nhung]}>
           {taiLieuDangXem ? (
             <View style={styles.khung_viewer}>
               <View style={styles.header_viewer}>
@@ -317,7 +321,9 @@ const TaiLieuGoc = ({ maICD, danhSachData }) => {
 // ============================================================
 const styles = StyleSheet.create({
   vung_an_toan: { flex: 1, backgroundColor: '#EFEFEF', padding: 20 },
+  vung_an_toan_nhung: { padding: 0, backgroundColor: 'transparent' },
   khung_giao_dien: { flex: 1, flexDirection: 'row', gap: 20 },
+  khung_giao_dien_nhung: { gap: 12 },
 
   panel_trai: {
     width: 460,
@@ -325,6 +331,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     ...Platform.select({ web: { boxShadow: '0px 4px 10px rgba(0,0,0,0.1)' }, android: { elevation: 4 } }),
+  },
+  panel_trai_nhung: {
+    width: undefined,
+    flex: 0.38,
+    minWidth: 220,
+    maxWidth: 340,
+    padding: 12,
   },
   tieu_de_panel: { fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', color: '#1976D2', marginBottom: 4 },
   ten_benh_phu: { fontFamily: 'Arial', fontSize: 20, color: '#666', fontStyle: 'italic', marginBottom: 4 },
@@ -354,6 +367,7 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: '#FFFFFF', borderRadius: 12, overflow: 'hidden',
     ...Platform.select({ web: { boxShadow: '0px 4px 10px rgba(0,0,0,0.1)' }, android: { elevation: 4 } }),
   },
+  panel_phai_nhung: { minWidth: 0 },
   khung_viewer: { flex: 1, backgroundColor: '#525659' },
   header_viewer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#333333', padding: 15 },
   tieu_de_viewer: { flex: 1, fontFamily: 'Arial', fontSize: 20, fontWeight: 'bold', color: '#FFFFFF', marginRight: 10 },

@@ -1,7 +1,11 @@
 /**
- * Tổng hợp toàn bộ quy tắc phân tầng giám định: luật cứng (bundle JS) + DVKT-OP (toán tử cung trong dvkt_op_giam_dinh.jsx).
- * Dùng màn Thư viện — tra cứu, không nạp dong_co_giam_dinh (giữ bundle gọn).
+ * Tổng hợp quy tắc phân tầng giám định cho màn Thư viện (luật cứng trong bundle JS):
+ * — Cùng nguồn hardcoded + DVKT-OP-* với engine / màn ON/OFF.
+ * — Thêm seed PTTT mục 11 (`DU_LIEU_SEED_LUAT_PTTT_MUC11`) và danh mục mẫu ON/OFF (`DANH_MUC_QUY_TAC_NOI_BO`) để đồng bộ số lượng & phạm vi tra cứu với quản trị.
+ * — Không nạp `dong_co_giam_dinh`; quy tắc chỉ do BV import (CDSS_DATA_*) vẫn chỉ xem/sửa ở màn ON/OFF.
+ * — Cuối cùng hợp nhất trùng lặp cùng đối tượng + cùng điều kiện (`hop_nhat_quy_tac_trung_lap.js`).
  */
+import { DU_LIEU_SEED_LUAT_PTTT_MUC11 } from './du_lieu_luat_pttt_muc11';
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
 import { layDanhSachLuatCongKhamHardcoded } from './luat_cong_kham_hardcoded';
 import { layDanhSachLuatDuLieuHardcoded } from './luat_du_lieu_hardcoded';
@@ -15,11 +19,11 @@ import { layDanhSachLuatHopDongHardcoded } from './luat_hop_dong_hardcoded';
 import { layDanhSachLuatNhanSuHardcoded } from './luat_nhan_su_hardcoded';
 import { layDanhSachLuatThuocHardcoded } from './luat_thuoc_hardcoded';
 import { layQuyTacDvktOpMacDinh } from './dvkt_op_giam_dinh';
+import { DANH_MUC_QUY_TAC_NOI_BO } from './quy_tac_on_off_noi_bo.jsx';
+import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
 
 export const LOAI_NGUON = Object.freeze({
   LUAT_CUNG: 'LUAT_CUNG',
-  /** DVKT-OP-* — rule mặc định và toán tử trong mã nguồn (dvkt_op_giam_dinh.jsx) */
-  ENGINE_DVKT_OP: 'ENGINE_DVKT_OP',
 });
 
 /** Thứ tự hiển thị nhóm; key = mã nội bộ PHAN_HE / engine */
@@ -28,7 +32,7 @@ export const NHOM_GIAM_DINH_META = Object.freeze([
   { id: 'LUAT_HANH_CHINH', ten: 'Hành chính & thẻ BHYT (XML1)', thu_tu: 2 },
   { id: 'LUAT_CONG_KHAM', ten: 'Công khám & phí khám', thu_tu: 3 },
   { id: 'LUAT_THUOC', ten: 'Thuốc (XML2)', thu_tu: 4 },
-  { id: 'LUAT_CDHA', ten: 'DVKT / CĐHA (XML3) — bảng luật mã tĩnh', thu_tu: 5 },
+  { id: 'LUAT_CDHA', ten: 'DVKT / CĐHA (XML3) — CDHA_* & DVKT-OP-* (bundle)', thu_tu: 5 },
   { id: 'LUAT_NHAN_SU', ten: 'Nhân sự hành nghề (XML3)', thu_tu: 6 },
   { id: 'LUAT_GIUONG', ten: 'Giường & nội trú (XML1–3)', thu_tu: 7 },
   { id: 'LUAT_PTTT', ten: 'PTTT & chuyên khoa', thu_tu: 8 },
@@ -36,7 +40,6 @@ export const NHOM_GIAM_DINH_META = Object.freeze([
   { id: 'LUAT_HOP_DONG', ten: 'Hợp đồng BHYT & tổng chi hồ sơ', thu_tu: 10 },
   { id: 'LUAT_MAU', ten: 'Máu & hóa dịch (XML nếu áp dụng)', thu_tu: 11 },
   { id: 'LUAT_GIAM_DINH_CHUYEN_DE', ten: 'Giám định chuyên đề (CV 266, PL…)', thu_tu: 12 },
-  { id: 'ENGINE_DVKT_OP', ten: 'DVKT-OP (toán tử cung — DVKT-OP-*)', thu_tu: 13 },
 ]);
 
 const mapNhomTen = () => {
@@ -92,10 +95,13 @@ const ghepGhiChuRuiRo = (row, loaiNguon) => {
       'Điều kiện còn placeholder XML130: engine bỏ qua, không phát cảnh báo trên hồ sơ. Khi thay bằng biểu thức thật, cần rà từng mã (dương/âm giả).',
     );
   }
-  if (loaiNguon === LOAI_NGUON.ENGINE_DVKT_OP) {
-    parts.push(
-      'Kết quả phụ thuộc cấu hình: danh mục DVKT M05, thiết bị, phạm vi hành nghề, phê duyệt nội bộ tại cơ sở — khác cấu hình thì cảnh báo có thể thay đổi. Đổi ON/OFF tại màn quản lý quy tắc nội bộ (DVKT-OP-*) tương ứng.',
-    );
+  if (loaiNguon === LOAI_NGUON.LUAT_CUNG) {
+    const maDvktOp = String(row.MA_LUAT || row.ma_luat || '').trim().toUpperCase();
+    if (/^DVKT-OP-/.test(maDvktOp)) {
+      parts.push(
+        'Kết quả phụ thuộc cấu hình: danh mục DVKT M05, thiết bị, phạm vi hành nghề, phê duyệt nội bộ tại cơ sở — khác cấu hình thì cảnh báo có thể thay đổi. Đổi ON/OFF tại màn quản lý quy tắc nội bộ (DVKT-OP-*) tương ứng.',
+      );
+    }
   }
   if (parts.length) return parts.join('\n\n');
   return 'Chưa có ghi chú bổ sung trong bundle. Cần đối chiếu hồ sơ thực tế và tài liệu quy phạm trước khi chốt thanh toán; có thể âm/dương giả nếu thiếu trường XML, sai mã, hoặc dữ liệu ngoài hồ sơ.';
@@ -121,23 +127,19 @@ const toRecordLuatCung = (row, nhomIdMacDinh) => {
   };
 };
 
-const toRecordEngineDvkt = (r) => {
+/** Map DEFAULT_DVKT_RULES → cùng schema hàng luật cứng (PHAN_HE LUAT_CDHA). */
+const dvktOpRuleThanhHangLuatCung = (r) => {
   const code = String(r.RULE_CODE || r.RULE_NAME || '').trim() || 'DVKT-OP-?';
+  const op = String(r.OPERATOR || '').trim();
+  const sev = String(r.SEVERITY || '').trim();
   return {
-    id: `ENG|${code}`,
-    loai_nguon: LOAI_NGUON.ENGINE_DVKT_NOCODE,
-    phan_nhom_id: 'ENGINE_DVKT_NOCODE',
-    ten_nhom_hien_thi: ghiNhomTuPhanHe('ENGINE_DVKT_NOCODE'),
-    ma_luat: code,
-    ten_quy_tac: String(r.RULE_NAME || code).trim(),
-    canh_bao: String(r.ALERT_MESSAGE || '').trim(),
-    nguyen_tac_lam_viec: [
-      `Toán tử: ${String(r.OPERATOR || '—')}`,
-      `Mức: ${String(r.SEVERITY || '—')}`,
-    ].join('\n'),
-    trang_thai: String(r.STATUS || 'ON').toUpperCase() === 'OFF' ? 'OFF' : 'ON',
-    phan_tang: 'L5',
-    ghi_chu_rui_ro: ghepGhiChuRuiRo({}, LOAI_NGUON.ENGINE_DVKT_NOCODE),
+    MA_LUAT: code,
+    TEN_QUY_TAC: String(r.RULE_NAME || code).trim(),
+    CANH_BAO: String(r.ALERT_MESSAGE || '').trim(),
+    DIEU_KIEN: [`Toán tử: ${op || '—'}`, `Mức: ${sev || '—'}`].join('\n'),
+    TRANG_THAI: String(r.STATUS || 'ON').toUpperCase() === 'OFF' ? 'OFF' : 'ON',
+    PHAN_HE: 'LUAT_CDHA',
+    NGUON_DU_LIEU: 'dvkt_op_giam_dinh.jsx (DEFAULT_DVKT_RULES)',
   };
 };
 
@@ -157,16 +159,43 @@ export const layTatCaBanGhiQuyTacPhanLap = () => {
   pushList(layDanhSachLuatCongKhamHardcoded, 'LUAT_CONG_KHAM');
   pushList(layDanhSachLuatThuocHardcoded, 'LUAT_THUOC');
   pushList(layDanhSachLuatCdhaHardcoded, 'LUAT_CDHA');
+  (layQuyTacDvktOpMacDinh() || []).forEach((r) => {
+    out.push(toRecordLuatCung(dvktOpRuleThanhHangLuatCung(r), 'LUAT_CDHA'));
+  });
   pushList(layDanhSachLuatNhanSuHardcoded, 'LUAT_NHAN_SU');
   pushList(layDanhSachLuatGiuongHardcoded, 'LUAT_GIUONG');
   pushList(layDanhSachLuatHopDongHardcoded, 'LUAT_HOP_DONG');
   (layDanhSachLuatGiamDinhChuyenDeHardcoded() || []).forEach((row) => {
     out.push(toRecordLuatCung({ ...row, PHAN_HE: 'LUAT_GIAM_DINH_CHUYEN_DE' }, 'LUAT_GIAM_DINH_CHUYEN_DE'));
   });
-  (layQuyTacDvktNoCodeMacDinh() || []).forEach((r) => {
-    out.push(toRecordEngineDvkt(r));
+  (DU_LIEU_SEED_LUAT_PTTT_MUC11 || []).forEach((row) => {
+    const ph = 'LUAT_PTTT';
+    out.push(toRecordLuatCung({ ...row, PHAN_HE: ph }, ph));
   });
-  return out;
+  (DANH_MUC_QUY_TAC_NOI_BO || []).forEach((item) => {
+    const tab = String(item.tab_id || '').trim();
+    const ma = String(item.ma_luat || '').trim();
+    if (!tab || !ma) return;
+    out.push(
+      toRecordLuatCung(
+        {
+          MA_LUAT: ma,
+          TEN_QUY_TAC: String(item.ten_quy_tac || ma).trim(),
+          CANH_BAO: 'Nhóm điều khiển ON/OFF — bật/tắt tại màn Quản lý quy tắc ON/OFF.',
+          DIEU_KIEN: '— (Khớp mã / mẫu wildcard theo cấu hình BV.)',
+          PHAN_HE: tab,
+          TRANG_THAI: 'ON',
+        },
+        tab,
+      ),
+    );
+  });
+
+  const theoId = new Map();
+  out.forEach((r) => {
+    if (!theoId.has(r.id)) theoId.set(r.id, r);
+  });
+  return hopNhatQuyTacTrungTheoDoiTuong(Array.from(theoId.values()), (r) => r.phan_nhom_id);
 };
 
 const chuanHoa = (s) =>
@@ -181,7 +210,6 @@ const chuanHoa = (s) =>
 export const locBanGhiQuyTac = (tatCa, { tuKhoa, loaiNguonLoc, nhomIdLoc }) => {
   let rows = Array.isArray(tatCa) ? tatCa : [];
   if (loaiNguonLoc === LOAI_NGUON.LUAT_CUNG) rows = rows.filter((r) => r.loai_nguon === LOAI_NGUON.LUAT_CUNG);
-  else if (loaiNguonLoc === LOAI_NGUON.ENGINE_DVKT_NOCODE) { rows = rows.filter((r) => r.loai_nguon === LOAI_NGUON.ENGINE_DVKT_NOCODE); }
   if (nhomIdLoc) rows = rows.filter((r) => r.phan_nhom_id === nhomIdLoc);
   const q = chuanHoa(tuKhoa);
   if (q) {

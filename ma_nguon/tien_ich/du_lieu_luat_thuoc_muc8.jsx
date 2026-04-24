@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_THUOC (9).xlsx */
-export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-19_muc8_canhbao_icd_drug_dm_bv';
+export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-23_muc8_doc_xml_130_3176_4210_7464';
 export const COT_SEED_LUAT_THUOC_MUC8 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","GHI_CHU","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
   {
@@ -3718,7 +3718,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_372",
     "TEN_QUY_TAC": "[Vitamin B1 + B6 + B12] Kiểm tra Chỉ định",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.1050' AND XML1.MA_BENH_CHINH NOT IN ('E51', 'E53', 'G62') AND XML1.MA_BENH_KT NOT LIKE '%E51%' AND XML1.MA_BENH_KT NOT LIKE '%E53%' AND XML1.MA_BENH_KT NOT LIKE '%G62%' AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THIẾU VITAMIN B1|THIẾU VITAMIN B|BỆNH ĐA DÂY THẦN KINH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: Thuốc Solphabe chỉ thanh toán cho chẩn đoán Viêm đa dây thần kinh (G62) hoặc Thiếu Vitamin (E51).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: Thuốc Vit B1-B6-B12 chỉ thanh toán cho chẩn đoán Viêm đa dây thần kinh (G62) hoặc Thiếu Vitamin (E51).",
     "GHI_CHU": "Đã gộp dòng trùng [Vitamin B1+B6+B12] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },

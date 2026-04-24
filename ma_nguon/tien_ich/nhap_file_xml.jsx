@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { xuLyFileXML130 } from '../dich_vu/his_api';
+import { xuLyFileXML130Va4210 } from '../dich_vu/his_api';
 import { chayBoMayGiamDinhV3 } from './dong_co_giam_dinh';
 import { layDanhSachMaLKTuKho } from './kho_du_lieu';
 import { kiemTraDinhDangXML } from './kiem_tra_xml';
@@ -217,7 +217,7 @@ export const xuLyMotFileXmlChoBanGiamDinh = (file, { lichSuGiamDinh = [], danhSa
     reader.onload = async (e) => {
       try {
         const rawXML = e.target.result;
-        const ketQuaHoSo = xuLyFileXML130(rawXML);
+        const ketQuaHoSo = xuLyFileXML130Va4210(rawXML);
 
         const arr = Array.isArray(ketQuaHoSo) ? ketQuaHoSo : [ketQuaHoSo];
         const hsDauTien = arr[0] || {};

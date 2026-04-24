@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-04-20T15:01:48.473Z",
+  "timestamp": "2026-04-23T11:34:08.878Z",
   "tong_so": 4308,
-  "on": 3982,
-  "off": 326,
+  "on": 3980,
+  "off": 328,
   "unknown": 0,
   "danh_sach_off": [
     {
@@ -1561,6 +1561,11 @@
       "ten_quy_tac": "Đơn thuốc điện tử sai định dạng mã"
     },
     {
+      "ma_luat": "THUOC_404",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Đơn thuốc mạn tính quá 30 ngày"
+    },
+    {
       "ma_luat": "THUOC_442",
       "file": "du_lieu_luat_thuoc_muc8.jsx",
       "ten_quy_tac": "Methylprednisolon: Liều/24h"
@@ -1569,6 +1574,11 @@
       "ma_luat": "THUOC_443",
       "file": "du_lieu_luat_thuoc_muc8.jsx",
       "ten_quy_tac": "Người mua hộ thuốc thiếu định danh"
+    },
+    {
+      "ma_luat": "THUOC_448",
+      "file": "du_lieu_luat_thuoc_muc8.jsx",
+      "ten_quy_tac": "Rosuvastatin: Kiểm soát liều 24h"
     },
     {
       "ma_luat": "THUOC_477",
@@ -1645,7 +1655,7 @@
     "luat_giam_dinh_chuyen_de_hardcoded.jsx": 571,
     "du_lieu_luat_du_lieu_muc1.jsx": 109,
     "du_lieu_luat_hanh_chinh_muc2.jsx": 111,
-    "du_lieu_luat_thuoc_muc8.jsx": 524,
+    "du_lieu_luat_thuoc_muc8.jsx": 522,
     "du_lieu_luat_pttt_muc11.jsx": 2319
   }
 }

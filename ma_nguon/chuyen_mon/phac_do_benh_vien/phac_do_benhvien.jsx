@@ -37,7 +37,7 @@ const PhacDoBenhVien = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [newColName, setNewColName] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
-  /** Chiều cao vùng bảng (flex 3/4) — cần cho ScrollView ngang + cuộn dọc bên trong */
+  /** Chiều cao vùng bảng — dùng cho ScrollView ngang + cuộn dọc bên trong */
   const [chieuCaoVungBang, setChieuCaoVungBang] = useState(0);
   
   // Trạng thái điều hướng xem/in
@@ -197,54 +197,64 @@ const PhacDoBenhVien = () => {
 
   const renderTable = () => (
     <View style={styles.layout_chia_man_hinh}>
-      <View style={styles.phan_cong_cu_va_ghi_chu}>
+      <View style={styles.thanh_cong_cu_mot_hang}>
         <ScrollView
+          horizontal
           nestedScrollEnabled
           keyboardShouldPersistTaps="handled"
-          style={styles.cuon_phan_tren}
-          contentContainerStyle={styles.cuon_phan_tren_content}
+          showsHorizontalScrollIndicator={false}
+          style={styles.cuon_thanh_cong_cu}
+          contentContainerStyle={styles.cuon_thanh_cong_cu_content}
         >
-          <View style={styles.thanh_cong_cu_top}>
-            <Text style={styles.tieu_de_chinh}>CDSS: CƠ SỞ DỮ LIỆU PHÁC ĐỒ PHƯƠNG CHÂU</Text>
-            <View style={styles.group_buttons}>
-              <TouchableOpacity style={styles.btn_pink} onPress={handleAddRow}>
-                <Text style={styles.txt_btn}>➕ THÊM DÒNG MỚI</Text>
+          <View style={styles.khoi_tim_tu_khoa}>
+            <Text style={styles.icon_tim}>🔎</Text>
+            <TextInput
+              style={styles.o_tim_tu_khoa}
+              value={tuKhoaTim}
+              onChangeText={setTuKhoaTim}
+              placeholder="Tìm theo từ khóa (ICD-10, nội dung cột…)"
+              placeholderTextColor="#888"
+              autoCorrect={false}
+              autoCapitalize="none"
+              {...Platform.select({ web: { outlineStyle: 'none' } })}
+            />
+            {tuKhoaTim ? (
+              <TouchableOpacity onPress={() => setTuKhoaTim('')} style={styles.nut_xoa_tim} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Text style={styles.chu_xoa_tim}>✕</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btn_red} onPress={handleDeleteBulk}>
-                <Text style={styles.txt_btn}>🗑 XÓA ĐÃ CHỌN ({selectedRows.length})</Text>
-              </TouchableOpacity>
-            </View>
+            ) : null}
           </View>
-
-          <View style={styles.thanh_cong_cu_excel}>
-            <View style={styles.khoi_them_cot}>
-              <TextInput style={styles.o_nhap_cot} placeholder="Tên trường dữ liệu mới..." value={newColName} onChangeText={setNewColName} />
-              <TouchableOpacity style={styles.btn_blue} onPress={handleAddColumn}>
-                <Text style={styles.txt_btn_small}>+ THÊM TRƯỜNG</Text>
+          <TouchableOpacity style={styles.btn_gon_pink} onPress={handleAddRow}>
+            <Text style={styles.txt_btn_gon}>➕ THÊM DÒNG</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn_gon_red} onPress={handleDeleteBulk}>
+            <Text style={styles.txt_btn_gon}>🗑 XÓA ({selectedRows.length})</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.o_nhap_ten_cot_gon}
+            placeholder="Tên trường mới…"
+            value={newColName}
+            onChangeText={setNewColName}
+            placeholderTextColor="#888"
+            {...Platform.select({ web: { outlineStyle: 'none' } })}
+          />
+          <TouchableOpacity style={styles.btn_gon_blue} onPress={handleAddColumn}>
+            <Text style={styles.txt_btn_gon}>+ TRƯỜNG</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn_gon_outline} onPress={handleDownloadTemplate}>
+            <Text style={styles.txt_btn_gon_outline}>📄 MẪU</Text>
+          </TouchableOpacity>
+          {Platform.OS === 'web' && (
+            <>
+              <input type="file" accept=".xlsx, .xls" onChange={handleImport} style={{ display: 'none' }} id="import-excel" />
+              <TouchableOpacity style={styles.btn_gon_orange} onPress={() => document.getElementById('import-excel').click()}>
+                <Text style={styles.txt_btn_gon}>📤 IMPORT</Text>
               </TouchableOpacity>
-            </View>
-            <View style={styles.group_buttons}>
-              <TouchableOpacity style={styles.btn_outline} onPress={handleDownloadTemplate}>
-                <Text style={styles.txt_btn_outline}>📄 TẢI FILE MẪU</Text>
-              </TouchableOpacity>
-              {Platform.OS === 'web' && (
-                <>
-                  <input type="file" accept=".xlsx, .xls" onChange={handleImport} style={{ display: 'none' }} id="import-excel" />
-                  <TouchableOpacity style={styles.btn_orange} onPress={() => document.getElementById('import-excel').click()}>
-                    <Text style={styles.txt_btn}>📤 IMPORT</Text>
-                  </TouchableOpacity>
-                </>
-              )}
-              <TouchableOpacity style={styles.btn_green} onPress={handleExport}>
-                <Text style={styles.txt_btn}>📥 EXPORT</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.khu_vuc_trich_dan}>
-            <Text style={styles.van_ban_trich_dan}>Cấu trúc cột khớp bảng CDSS Guidelines (ICD-10, mục tiêu điều trị, điều trị đặc hiệu/triệu chứng, can thiệp, dự phòng, theo dõi…).</Text>
-            <Text style={styles.van_ban_trich_dan}>Import .xlsx (sheet Template nếu có): gộp với dữ liệu hiện tại — cùng mã ICD lấy theo file mới; không nhân đôi bệnh đã có mã.</Text>
-          </View>
+            </>
+          )}
+          <TouchableOpacity style={styles.btn_gon_green} onPress={handleExport}>
+            <Text style={styles.txt_btn_gon}>📥 EXPORT</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -254,6 +264,7 @@ const PhacDoBenhVien = () => {
       >
         <View style={styles.khung_tim_bang}>
           <TimKiemPhanTrangBang
+            anThanhTim
             tuKhoa={tuKhoaTim}
             onTuKhoa={setTuKhoaTim}
             tongDongGoc={data.length}
@@ -334,30 +345,82 @@ const PhacDoBenhVien = () => {
 const styles = StyleSheet.create({
   vung_an_toan: { flex: 1, backgroundColor: '#F9F9F9', minHeight: 0 },
   layout_chia_man_hinh: { flex: 1, flexDirection: 'column', minHeight: 0 },
-  /** Tỷ lệ 1 : 3 với vùng bảng (công cụ + ghi chú ~25%, bảng ~75%) */
-  phan_cong_cu_va_ghi_chu: { flex: 1, flexBasis: 0, minHeight: 0 },
-  cuon_phan_tren: { flex: 1 },
-  cuon_phan_tren_content: { flexGrow: 1, paddingBottom: 8 },
-  phan_bang_du_lieu: { flex: 3, flexBasis: 0, minHeight: 0, marginHorizontal: 20, marginBottom: 12 },
-  khung_tim_bang: { paddingHorizontal: 4, marginBottom: 4 },
+  thanh_cong_cu_mot_hang: {
+    flexShrink: 0,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 2,
+    borderBottomColor: '#FCE4EC',
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+  },
+  cuon_thanh_cong_cu: { flexGrow: 0 },
+  cuon_thanh_cong_cu_content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingRight: 8,
+    paddingVertical: 2,
+  },
+  khoi_tim_tu_khoa: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minWidth: 200,
+    maxWidth: 320,
+    height: 36,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#FFB3D1',
+    borderRadius: 8,
+    backgroundColor: '#FFF8FC',
+  },
+  icon_tim: { fontSize: 14, marginRight: 4 },
+  o_tim_tu_khoa: {
+    flex: 1,
+    minWidth: 120,
+    fontSize: 14,
+    fontFamily: 'Arial',
+    color: '#333',
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
+  nut_xoa_tim: { padding: 4 },
+  chu_xoa_tim: { fontSize: 16, color: '#999', fontWeight: 'bold' },
+  btn_gon_pink: { backgroundColor: '#D81B60', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_red: { backgroundColor: '#D32F2F', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_blue: { backgroundColor: '#1976D2', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_green: { backgroundColor: '#388E3C', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_orange: { backgroundColor: '#F57C00', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, justifyContent: 'center' },
+  btn_gon_outline: {
+    backgroundColor: '#FFF',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#D81B60',
+    justifyContent: 'center',
+  },
+  txt_btn_gon: { color: '#FFF', fontSize: 13, fontWeight: 'bold', fontFamily: 'Arial' },
+  txt_btn_gon_outline: { color: '#D81B60', fontSize: 13, fontWeight: 'bold', fontFamily: 'Arial' },
+  o_nhap_ten_cot_gon: {
+    width: 140,
+    height: 36,
+    borderWidth: 1,
+    borderColor: '#FFB3D1',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    fontSize: 13,
+    fontFamily: 'Arial',
+    color: '#333',
+    backgroundColor: '#FFF',
+  },
+  phan_bang_du_lieu: { flex: 1, minHeight: 0, marginHorizontal: 10, marginBottom: 8, marginTop: 0 },
+  khung_tim_bang: { paddingHorizontal: 2, marginBottom: 2 },
   khung_bang_content: { flexGrow: 1 },
   khoi_cot_bang: { flexDirection: 'column', alignSelf: 'flex-start' },
   cuon_bang_doc: { flex: 1 },
-  thanh_cong_cu_top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#FF66A3' },
-  tieu_de_chinh: { fontSize: 26, color: '#FFF', fontWeight: 'bold', fontFamily: 'Arial' },
-  thanh_cong_cu_excel: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#FCE4EC' },
-  khoi_them_cot: { flexDirection: 'row', gap: 10, alignItems: 'center' },
-  o_nhap_cot: { borderWidth: 2, borderColor: '#FFB3D1', borderRadius: 8, padding: 12, fontSize: 20, fontFamily: 'Arial', width: 280 },
-  group_buttons: { flexDirection: 'row', gap: 10 },
-  btn_pink: { backgroundColor: '#D81B60', padding: 15, borderRadius: 8 },
-  btn_red: { backgroundColor: '#D32F2F', padding: 15, borderRadius: 8 },
-  btn_blue: { backgroundColor: '#1976D2', padding: 15, borderRadius: 8 },
-  btn_green: { backgroundColor: '#388E3C', padding: 15, borderRadius: 8 },
-  btn_orange: { backgroundColor: '#F57C00', padding: 15, borderRadius: 8 },
   btn_icon_blue: { backgroundColor: '#1976D2', paddingVertical: 12, paddingHorizontal: 15, borderRadius: 6 },
   btn_icon_green: { backgroundColor: '#388E3C', paddingVertical: 12, paddingHorizontal: 15, borderRadius: 6 },
   btn_outline: { backgroundColor: '#FFF', padding: 15, borderRadius: 8, borderWidth: 2, borderColor: '#D81B60' },
-  txt_btn: { color: '#FFF', fontSize: 20, fontWeight: 'bold', fontFamily: 'Arial' },
   txt_btn_small: { color: '#FFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Arial' },
   txt_btn_outline: { color: '#D81B60', fontSize: 20, fontWeight: 'bold', fontFamily: 'Arial' },
   
@@ -372,8 +435,6 @@ const styles = StyleSheet.create({
   
   thanh_dieu_huong_noi_bo: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#FCE4EC' },
   txt_icd_dang_xem: { fontSize: 24, fontWeight: 'bold', color: '#333', fontFamily: 'Arial' },
-  khu_vuc_trich_dan: { padding: 20, backgroundColor: '#FFF', borderTopWidth: 2, borderColor: '#EEE' },
-  van_ban_trich_dan: { fontSize: 20, color: '#666', fontStyle: 'italic', fontFamily: 'Arial', marginBottom: 8 }
 });
 
 export default PhacDoBenhVien;

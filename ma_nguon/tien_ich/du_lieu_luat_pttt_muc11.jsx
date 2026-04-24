@@ -1,5 +1,5 @@
 /** Auto-generated from DuLieu_LUAT_PTTT rule.xlsx — không sửa tay; chạy lại script build. */
-export const PHIEN_BAN_SEED_LUAT_PTTT_MUC11 = "2026-04-15_DVKT_1742_chi_dinh_icd_mo_rong";
+export const PHIEN_BAN_SEED_LUAT_PTTT_MUC11 = "2026-04-23_muc11_pttt_doc_xml_130_3176_4210_7464";
 export const COT_SEED_LUAT_PTTT_MUC11 = ["TRANG_THAI", "MA_LUAT", "TEN_QUY_TAC", "DIEU_KIEN", "CANH_BAO", "GHI_CHU", "NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_PTTT_MUC11 = [
   {"TRANG_THAI": "ON", "MA_LUAT": "DVKT_0001", "TEN_QUY_TAC": "Chỉ định - Chụp CLVT sọ não (18.0149.0040)", "DIEU_KIEN": "XML3.MA_DICH_VU == '18.0149.0040' AND NOT (XML1.MA_BENH STARTS_WITH 'S06' OR XML1.MA_BENH IN ('I61','I63','G40','R51'))", "CANH_BAO": "🔴 Cần mã: S06 (Chấn thương sọ não), I61 (Xuất huyết não), I63 (Nhồi máu não), R51 (Đau đầu).", "GHI_CHU": "", "NGUON_DU_LIEU": "Template_LUAT_PTTT (3).xlsx"},

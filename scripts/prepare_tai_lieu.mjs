@@ -17,8 +17,115 @@ const root = path.join(__dirname, '..');
 const SRC = path.join(root, 'tai_lieu');
 const OUT = path.join(root, 'public', 'tai_lieu');
 const MANIFEST = path.join(root, 'ma_nguon', 'tien_ich', 'tai_lieu_manifest.json');
+const TAG_CATALOG = path.join(root, 'ma_nguon', 'tien_ich', 'tai_lieu_tag_catalog.json');
 
 const shouldSkip = (name) => name === '.git' || name === 'node_modules';
+
+function loadTagCatalog() {
+  try {
+    return JSON.parse(fs.readFileSync(TAG_CATALOG, 'utf8'));
+  } catch {
+    return { catalog: [], explicitByRelPath: {} };
+  }
+}
+
+/** Chuẩn hóa nhẹ để khớp mẫu (bỏ dấu, đ→d). */
+function chuanHoaBlob(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}
+
+/**
+ * Gán thẻ nghiệp vụ cho từng mục manifest (thư viện + trợ lý AI ưu tiên tài liệu).
+ * @param {string} relPath — đường dẫn trong public/tai_lieu (vd .html)
+ * @param {string} title
+ * @param {Set<string>} validIds
+ */
+function inferTagsForItem(relPath, title, validIds) {
+  const ok = (id) => !validIds.size || validIds.has(id);
+  const add = (set, id) => {
+    if (id && ok(id)) set.add(id);
+  };
+  const r = String(relPath || '').replace(/\\/g, '/');
+  const base = path.basename(r);
+  const bl = base.toLowerCase();
+  const blob = chuanHoaBlob(`${bl} ${title || ''}`);
+  const tags = new Set();
+
+  if (/^the_tri_thuc_/i.test(base)) {
+    add(tags, 'the_tri_thuc');
+    add(tags, 'ai_huan_luyen');
+  }
+  if (/^mau_the_tri_thuc/i.test(base)) {
+    add(tags, 'the_tri_thuc');
+    add(tags, 'ai_huan_luyen');
+  }
+  if (/^ca_huan_luyen_/i.test(base)) {
+    add(tags, 'ca_mau');
+    add(tags, 'ai_huan_luyen');
+  }
+  if (/^bang_neo_/i.test(base)) {
+    add(tags, 'bang_neo');
+    add(tags, 'ai_huan_luyen');
+  }
+  if (/huong_dan|huan_luyen_phien|lo_trinh.*ai|goi_du_lieu.*ai|quy_trinh_prompt|bai_tap.*ai/i.test(bl)) {
+    add(tags, 'ai_huan_luyen');
+  }
+  if (/chuan_hoa.*_ai_/i.test(bl) || /chuan_hoa.*ai.*giam_dinh/i.test(bl)) add(tags, 'ai_huan_luyen');
+
+  if (/tuong_tac.*thuoc|tuong_tac_thuoc/i.test(bl)) {
+    add(tags, 'tuong_tac_thuoc');
+    add(tags, 'thuoc');
+  }
+  if (/thuoc|xml2|muc8|chi_muc.*thuoc|giam_dinh_thuoc|dm.*thuoc|dot[1-5].*thuoc|nhom_thuoc/i.test(blob)) {
+    add(tags, 'thuoc');
+  }
+  if (/dvkt|cdha_|vbhn|danh_muc_[12]_dvkt|kiem_soat_loi_dvkt|giam_dinh_dvkt/i.test(blob)) add(tags, 'dvkt');
+  if (/vtyt/i.test(blob)) add(tags, 'vtyt');
+  if (/pttt|phau_thuat|nhom_pttt|giam_dinh_pttt/i.test(blob)) add(tags, 'pttt');
+  if (/hanh_chinh|xml1|the_bhyt|quyen_loi|kiem_soat_loi_the|cong_kham|mau_hanh_chinh/i.test(blob)) {
+    add(tags, 'hanh_chinh');
+  }
+  if (/icd|chuyen_mon|phac_do_cdss|^the_tri_thuc_phac_do|ebm|i10|nhom_chuyen_mon/i.test(blob)) {
+    add(tags, 'icd_chuyen_mon');
+  }
+  if (/cv266/i.test(blob)) add(tags, 'cv266');
+  if (/mau_luat|nghi_dinh|hop_dong.*kcb|188_2025|vbhn.*byt|phap_ly_quan_ly|quy_dinh_clvt/i.test(blob)) {
+    add(tags, 'phap_ly');
+  }
+  if (/xml130|chuyen_de_xml|chuyen_de/i.test(blob)) add(tags, 'xml_chuyen_de');
+  if (
+    /4210|7464|qd_4210|qd4210|cau_truc_xml|phan_loi.*cau_truc|tai_nguyen.*xml|huong_dan_tai_nguyen_xml/i.test(blob)
+  ) {
+    add(tags, 'cau_truc_xml');
+  }
+  if (/ban_ghi.*kiem|rasoat.*quy_tac|audit|on_off|thuc_trang_quy_tac|kiem_thu/i.test(blob)) {
+    add(tags, 'kiem_thu_quy_tac');
+  }
+
+  return [...tags];
+}
+
+function gopTheChoManifestItems(items, tagData) {
+  const catalog = Array.isArray(tagData.catalog) ? tagData.catalog : [];
+  const validIds = new Set(catalog.map((c) => c.id).filter(Boolean));
+  const explicit = tagData.explicitByRelPath && typeof tagData.explicitByRelPath === 'object'
+    ? tagData.explicitByRelPath
+    : {};
+
+  for (const it of items) {
+    const inferred = inferTagsForItem(it.relPath, it.title, validIds);
+    const extra = Array.isArray(explicit[it.relPath])
+      ? explicit[it.relPath].filter((id) => !validIds.size || validIds.has(id))
+      : [];
+    const merged = [...new Set([...inferred, ...extra])];
+    if (merged.length) it.tags = merged;
+  }
+}
 
 function walk(dir, baseRel = '') {
   const out = [];
@@ -169,6 +276,9 @@ function main() {
   }
 
   items.sort((a, b) => a.relPath.localeCompare(b.relPath, 'vi'));
+
+  const tagData = loadTagCatalog();
+  gopTheChoManifestItems(items, tagData);
 
   fs.writeFileSync(
     MANIFEST,

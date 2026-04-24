@@ -2,7 +2,7 @@
  * ============================================================
  * FILE: tien_ich/xml_helper.jsx
  * MỤC ĐÍCH: Cung cấp các hàm tiện ích để giải mã, bóc tách,
- * và xác thực dữ liệu XML theo chuẩn 130/QĐ-BYT.
+ * và xác thực dữ liệu XML theo chuẩn 130/QĐ-BYT (và PL QĐ 4210 + CV 7464/BYT-BH: thẻ Bảng 1–6/9, ánh xạ cột).
  * ============================================================
  */
 
@@ -100,6 +100,65 @@ const MAP_TAG_THEO_XML = Object.freeze({
   XML6: ['CHI_TIET_THANH_TOAN', 'CHITIETTHANHTOAN', 'THANH_TOAN', 'XML6'],
   XML11: ['CHI_TIEU_DU_LIEU_GIAY_CHUNG_NHAN_NGHI_VIEC_HUONG_BAO_HIEM_XA_HOI'],
 });
+
+/**
+ * Thẻ bản ghi theo Phụ lục QĐ 4210 (Bảng 1–6) + Công văn 7464/BYT-BH (bổ sung chỉ tiêu Bảng 1–3, 9).
+ * Gộp với MAP_TAG_THEO_XML khi đọc gói 4210; luồng 130/3176 không đổi.
+ */
+const MAP_TAG_THEO_XML_4210_BO_SUNG = Object.freeze({
+  XML1: [
+    'BANG1',
+    'BANG_1',
+    'BANG01',
+    'CHI_TIEU_TONG_HOP',
+    'CHITIEUTONGHOP',
+    'THONGTINCHUNG',
+    'THONG_TIN_TONG_HOP',
+    'DLBANG1',
+    'PHULUC1_BANG1',
+    'PHU_LUC_1_BANG_1',
+  ],
+  XML2: ['BANG2', 'BANG_2', 'BANG02', 'DLBANG2', 'PHULUC1_BANG2', 'PHU_LUC_1_BANG_2'],
+  XML3: ['BANG3', 'BANG_3', 'BANG03', 'DLBANG3', 'PHULUC1_BANG3', 'PHU_LUC_1_BANG_3'],
+  XML4: ['BANG4', 'BANG_4', 'BANG04', 'DLBANG4'],
+  XML5: ['BANG5', 'BANG_5', 'BANG05', 'DLBANG5'],
+  XML6: ['BANG6', 'BANG_6', 'BANG06', 'DLBANG6'],
+});
+
+/** Thẻ danh mục Bảng 9 (mã gói/nhóm thầu thuốc) — gom vào hoSo._raw.XML9. */
+const TAG_BANG_9_4210_7464 = Object.freeze([
+  'BANG9',
+  'BANG_9',
+  'BANG09',
+  'DM_GOI_THAU',
+  'DM_GOI_THAU_THUOC',
+  'CHI_TIEU_BANG_9',
+  'CHITIETBANG9',
+  'DLBANG9',
+]);
+
+const gopBangTag = (...groups) => {
+  const seen = new Set();
+  const out = [];
+  for (const group of groups) {
+    for (const tag of group || []) {
+      const k = chuanHoaTenTag(tag);
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(tag);
+    }
+  }
+  return out;
+};
+
+const MAP_TAG_DU_LIEU_VA_4210 = Object.freeze(
+  Object.fromEntries(
+    Object.keys(MAP_TAG_THEO_XML).map((k) => [
+      k,
+      gopBangTag(MAP_TAG_THEO_XML[k] || [], MAP_TAG_THEO_XML_4210_BO_SUNG[k] || []),
+    ])
+  )
+);
 const DANH_SACH_XML_CHUAN = Object.freeze(['XML1', 'XML2', 'XML3', 'XML4', 'XML5', 'XML6']);
 const CAU_HINH_XUAT_XML = Object.freeze({
   XML1: { singleTag: 'TONG_HOP' },
@@ -305,6 +364,73 @@ const parseRecordsByTag = (xmlDoc, tagName) => {
   return danhSach;
 };
 
+/** Sửa lỗi chính tả tên cột trong tài liệu/PM xuất 4210 (vd. CV 7464/BYT-BH: PHAM_Vl, T_NGOAlDS). */
+const chuanHoaKhoaSaiChinhTa4210 = (row = {}) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+  const r = { ...row };
+  const gopNeuThieu = (sai, dung) => {
+    if (IS_EMPTY_GIA_TRI(r[dung]) && !IS_EMPTY_GIA_TRI(r[sai])) r[dung] = r[sai];
+    if (Object.prototype.hasOwnProperty.call(r, sai) && sai !== dung) delete r[sai];
+  };
+  gopNeuThieu('PHAM_Vl', 'PHAM_VI');
+  gopNeuThieu('T_NGOAlDS', 'T_NGOAIDS');
+  return r;
+};
+
+/**
+ * Ánh xạ cột Phụ lục 1 Công văn 7464/BYT-BH (Bảng 1 QĐ 4210) → tên trường gần với QĐ 130/3176.
+ */
+const chuanHoaDongXml1Tu42107464 = (row = {}) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+  const x = chuanHoaKhoaSaiChinhTa4210({ ...row });
+  if (IS_EMPTY_GIA_TRI(x.MA_BENH_CHINH) && !IS_EMPTY_GIA_TRI(x.MA_BENH)) x.MA_BENH_CHINH = x.MA_BENH;
+  if (IS_EMPTY_GIA_TRI(x.MA_BENH_KT) && !IS_EMPTY_GIA_TRI(x.MA_BENHKHAC)) x.MA_BENH_KT = x.MA_BENHKHAC;
+  if (IS_EMPTY_GIA_TRI(x.LY_DO_VV) && !IS_EMPTY_GIA_TRI(x.MA_LYDO_VVIEN)) x.LY_DO_VV = x.MA_LYDO_VVIEN;
+  if (IS_EMPTY_GIA_TRI(x.MA_LOAI_RV) && !IS_EMPTY_GIA_TRI(x.TINH_TRANG_RV)) x.MA_LOAI_RV = x.TINH_TRANG_RV;
+  if (IS_EMPTY_GIA_TRI(x.NGAY_MIEN_CCT) && !IS_EMPTY_GIA_TRI(x.MIEN_CUNG_CT)) x.NGAY_MIEN_CCT = x.MIEN_CUNG_CT;
+  return x;
+};
+
+/** Bảng 2 (4210/7464): một cột THANH_TIEN → tách BV/BH cho kiểm tra 3176. */
+const chuanHoaDongXml2Tu42107464 = (row = {}) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+  const r = chuanHoaKhoaSaiChinhTa4210({ ...row });
+  if (!IS_EMPTY_GIA_TRI(r.THANH_TIEN)) {
+    if (IS_EMPTY_GIA_TRI(r.THANH_TIEN_BV)) r.THANH_TIEN_BV = r.THANH_TIEN;
+    if (IS_EMPTY_GIA_TRI(r.THANH_TIEN_BH)) r.THANH_TIEN_BH = r.THANH_TIEN;
+  }
+  return r;
+};
+
+/** Bảng 3 (4210/7464): DON_GIA / THANH_TIEN đơn → DON_GIA_BV|BH, THANH_TIEN_BV|BH. */
+const chuanHoaDongXml3Tu42107464 = (row = {}) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+  const r = chuanHoaKhoaSaiChinhTa4210({ ...row });
+  if (!IS_EMPTY_GIA_TRI(r.THANH_TIEN)) {
+    if (IS_EMPTY_GIA_TRI(r.THANH_TIEN_BV)) r.THANH_TIEN_BV = r.THANH_TIEN;
+    if (IS_EMPTY_GIA_TRI(r.THANH_TIEN_BH)) r.THANH_TIEN_BH = r.THANH_TIEN;
+  }
+  if (!IS_EMPTY_GIA_TRI(r.DON_GIA)) {
+    if (IS_EMPTY_GIA_TRI(r.DON_GIA_BV)) r.DON_GIA_BV = r.DON_GIA;
+    if (IS_EMPTY_GIA_TRI(r.DON_GIA_BH)) r.DON_GIA_BH = r.DON_GIA;
+  }
+  return r;
+};
+
+const gopBangPhu4210VaoHoSo = (hoSo, xmlDoc) => {
+  if (!hoSo || !xmlDoc) return hoSo;
+  const raw = { ...(hoSo._raw || {}) };
+  for (let i = 0; i < TAG_BANG_9_4210_7464.length; i++) {
+    const ds = parseRecordsByTag(xmlDoc, TAG_BANG_9_4210_7464[i]);
+    if (ds.length > 0) {
+      raw.XML9 = ds;
+      break;
+    }
+  }
+  if (!raw.XML9) return hoSo;
+  return { ...hoSo, _raw: raw };
+};
+
 const chuanHoaDongXml1TuPhienBanCu = (row = {}) => {
   if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
 
@@ -363,7 +489,55 @@ const chuanHoaHoSoSauKhiParse = (hoSo = {}) => {
   };
 };
 
-const parseHoSoTrucTiep = (xmlDoc) => {
+/**
+ * Chuẩn hóa dòng QĐ 4210 + hướng dẫn bổ sung 7464/BYT-BH → gần với kỳ vọng luật/CDSS theo 130/3176.
+ */
+const chuanHoaHoSoTuPhienBan4210 = (hoSo = {}) => {
+  if (!hoSo || typeof hoSo !== 'object') return hoSo;
+
+  let x1 = chuanHoaDongXml1TuPhienBanCu({ ...(hoSo.xml1 || {}) });
+  if (IS_EMPTY_GIA_TRI(x1.MA_LK)) {
+    const alt = lamSachGiaTri(x1.MA_LUOT_KHAM || x1.MA_LUOT_KCB || x1.MALK || x1.MA_LK_BN);
+    if (!IS_EMPTY_GIA_TRI(alt)) x1.MA_LK = alt;
+  }
+  if (IS_EMPTY_GIA_TRI(x1.MA_THE_BHYT) && !IS_EMPTY_GIA_TRI(x1.MA_THE)) x1.MA_THE_BHYT = x1.MA_THE;
+  x1 = chuanHoaDongXml1Tu42107464(x1);
+
+  const gopMaLkDong = (rows, mapRow) =>
+    Array.isArray(rows)
+      ? rows.map((row) => {
+          if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+          let r = { ...row };
+          if (IS_EMPTY_GIA_TRI(r.MA_LK)) {
+            const rk = lamSachGiaTri(r.MA_LUOT_KHAM || r.MA_LUOT_KCB || r.MALK);
+            if (!IS_EMPTY_GIA_TRI(rk)) r.MA_LK = rk;
+          }
+          r = mapRow ? mapRow(r) : r;
+          return chuanHoaKhoaSaiChinhTa4210(r);
+        })
+      : rows;
+
+  const xml5 = Array.isArray(hoSo.xml5)
+    ? hoSo.xml5.map((row) => chuanHoaDongXml5TuPhienBanCu(row, x1))
+    : hoSo.xml5;
+
+  return {
+    ...hoSo,
+    xml1: x1,
+    xml2: gopMaLkDong(hoSo.xml2, chuanHoaDongXml2Tu42107464),
+    xml3: gopMaLkDong(hoSo.xml3, chuanHoaDongXml3Tu42107464),
+    xml4: gopMaLkDong(hoSo.xml4, null),
+    xml5,
+    xml6: gopMaLkDong(hoSo.xml6, null),
+    _meta: {
+      ...(hoSo._meta || {}),
+      chuan_du_lieu: 'QD4210',
+      huong_dan_bo_sung: '7464/BYT-BH',
+    },
+  };
+};
+
+const parseHoSoTrucTiepVoiMap = (xmlDoc, mapTagTheoXml = MAP_TAG_THEO_XML) => {
   const parseByTags = (tags = []) => {
     for (const tag of tags) {
       const ds = parseRecordsByTag(xmlDoc, tag);
@@ -372,12 +546,12 @@ const parseHoSoTrucTiep = (xmlDoc) => {
     return [];
   };
 
-  const xml1List = parseByTags(MAP_TAG_THEO_XML.XML1);
-  const xml2List = parseByTags(MAP_TAG_THEO_XML.XML2);
-  const xml3List = parseByTags(MAP_TAG_THEO_XML.XML3);
-  const xml4List = parseByTags(MAP_TAG_THEO_XML.XML4);
-  const xml5List = parseByTags(MAP_TAG_THEO_XML.XML5);
-  const xml6List = parseByTags(MAP_TAG_THEO_XML.XML6);
+  const xml1List = parseByTags(mapTagTheoXml.XML1);
+  const xml2List = parseByTags(mapTagTheoXml.XML2);
+  const xml3List = parseByTags(mapTagTheoXml.XML3);
+  const xml4List = parseByTags(mapTagTheoXml.XML4);
+  const xml5List = parseByTags(mapTagTheoXml.XML5);
+  const xml6List = parseByTags(mapTagTheoXml.XML6);
 
   const hoSoGop = {
     xml1: xml1List[0] || {},
@@ -411,7 +585,9 @@ const parseHoSoTrucTiep = (xmlDoc) => {
   return hoSoDaChuanHoa;
 };
 
-const parseInnerXML = (xmlRaw, loaiHoso) => {
+const parseHoSoTrucTiep = (xmlDoc) => parseHoSoTrucTiepVoiMap(xmlDoc, MAP_TAG_THEO_XML);
+
+const parseInnerXMLVoiMap = (xmlRaw, loaiHoso, mapTagTheoXml = MAP_TAG_THEO_XML) => {
   const loaiChuan = normalizeLoaiHoSo(loaiHoso);
   const cleanedXml = chuanHoaNoiDungXmlTruocKhiParse(xmlRaw);
   if (!cleanedXml) return loaiChuan === 'XML1' ? {} : [];
@@ -423,7 +599,8 @@ const parseInnerXML = (xmlRaw, loaiHoso) => {
   }
   let ketQua = [];
 
-  const dsTag = MAP_TAG_THEO_XML[loaiChuan] || [loaiChuan, `CHI_TIET_${loaiChuan}`, `CHITIET${loaiChuan}`, 'HOSO'];
+  const dsTag =
+    mapTagTheoXml[loaiChuan] || [loaiChuan, `CHI_TIET_${loaiChuan}`, `CHITIET${loaiChuan}`, 'HOSO'];
   let items = [];
   for (let i = 0; i < dsTag.length; i++) {
     items = layDanhSachNodeTheoTen(xmlDoc, dsTag[i]);
@@ -446,7 +623,9 @@ const parseInnerXML = (xmlRaw, loaiHoso) => {
   return loaiChuan === 'XML1' ? (ketQua[0] || {}) : ketQua;
 };
 
-const parseHoSoTuDanhSachFileHoso = (listFileHoso) => {
+const parseInnerXML = (xmlRaw, loaiHoso) => parseInnerXMLVoiMap(xmlRaw, loaiHoso, MAP_TAG_THEO_XML);
+
+const parseHoSoTuDanhSachFileHosoVoiMap = (listFileHoso, mapTagTheoXml = MAP_TAG_THEO_XML) => {
   const hoSoGop = taoHoSoRong();
   const danhSachLoaiHoSo = [];
   for (let i = 0; i < listFileHoso.length; i++) {
@@ -456,7 +635,7 @@ const parseHoSoTuDanhSachFileHoso = (listFileHoso) => {
     const base64Content = getTagValue(listFileHoso[i], 'NOIDUNGFILE');
     if (!base64Content) continue;
 
-    const dataParsed = parseInnerXML(giaiMaBase64(base64Content), loai);
+    const dataParsed = parseInnerXMLVoiMap(giaiMaBase64(base64Content), loai, mapTagTheoXml);
     const key = loai.toLowerCase();
     if (Object.prototype.hasOwnProperty.call(hoSoGop, key)) {
       hoSoGop[key] = dataParsed;
@@ -468,6 +647,9 @@ const parseHoSoTuDanhSachFileHoso = (listFileHoso) => {
   hoSoDaChuanHoa._meta = taoMetaHoSo(danhSachLoaiHoSo, hoSoDaChuanHoa);
   return hoSoDaChuanHoa;
 };
+
+const parseHoSoTuDanhSachFileHoso = (listFileHoso) =>
+  parseHoSoTuDanhSachFileHosoVoiMap(listFileHoso, MAP_TAG_THEO_XML);
 
 export const xuLyFileXML130 = (rawXMLString) => {
   try {
@@ -516,6 +698,92 @@ export const xuLyFileXML130 = (rawXMLString) => {
     console.error("[xml_helper] Lỗi xử lý XML 130:", err);
     return [];
   }
+};
+
+/**
+ * Đọc XML theo Phụ lục QĐ 4210/QĐ-BYT (thẻ Bảng 1–6 + tương thích nội dung base64 trong FILEHOSO).
+ * Dùng khi gói không khớp thuần QĐ 130; không thay thế `xuLyFileXML130`.
+ */
+export const xuLyFileXML4210 = (rawXMLString) => {
+  try {
+    const xmlRaw = chuanHoaNoiDungXmlTruocKhiParse(rawXMLString);
+    if (!xmlRaw.trim()) return [];
+
+    const { xmlDoc, parserError } = parseXmlAnToan(xmlRaw);
+    if (parserError) {
+      return [
+        {
+          xml1: { parsererror: parserError },
+          xml2: [],
+          xml3: [],
+          xml4: [],
+          xml5: [],
+          xml6: [],
+          _raw: {},
+          _meta: {
+            chuan_du_lieu: 'QD4210',
+            rawLoaiHoSo: [],
+            availableXmlTypes: [],
+            missingXmlTypes: [...DANH_SACH_XML_CHUAN],
+            emptyXmlTypes: [],
+          },
+        },
+      ];
+    }
+
+    const map421 = MAP_TAG_DU_LIEU_VA_4210;
+
+    const listHoso = xmlDoc.getElementsByTagName('HOSO');
+    if (listHoso.length > 0) {
+      const ketQua = [];
+      for (let i = 0; i < listHoso.length; i++) {
+        const listFileHosoTheoHoSo = listHoso[i].getElementsByTagName('FILEHOSO');
+        if (listFileHosoTheoHoSo.length === 0) continue;
+        const hoSo = chuanHoaHoSoTuPhienBan4210(
+          gopBangPhu4210VaoHoSo(parseHoSoTuDanhSachFileHosoVoiMap(listFileHosoTheoHoSo, map421), xmlDoc)
+        );
+        if (coDuLieuHoSo(hoSo)) ketQua.push(hoSo);
+      }
+      if (ketQua.length > 0) return ketQua;
+    }
+
+    const listFileHoso = xmlDoc.getElementsByTagName('FILEHOSO');
+    if (listFileHoso.length > 0) {
+      const hoSo = chuanHoaHoSoTuPhienBan4210(
+        gopBangPhu4210VaoHoSo(parseHoSoTuDanhSachFileHosoVoiMap(listFileHoso, map421), xmlDoc)
+      );
+      if (coDuLieuHoSo(hoSo)) return [hoSo];
+    }
+
+    const hoSoTrucTiep = parseHoSoTrucTiepVoiMap(xmlDoc, map421);
+    if (hoSoTrucTiep) {
+      return [chuanHoaHoSoTuPhienBan4210(gopBangPhu4210VaoHoSo(hoSoTrucTiep, xmlDoc))];
+    }
+
+    return [];
+  } catch (err) {
+    console.error('[xml_helper] Lỗi xử lý XML QĐ 4210:', err);
+    return [];
+  }
+};
+
+/**
+ * Ưu tiên đọc theo QĐ 130/3176 (`xuLyFileXML130`); nếu không có dữ liệu hợp lệ thì thử Phụ lục QĐ 4210.
+ * `_meta.chuan_du_lieu`: `QD130_3176` | `QD4210`.
+ */
+export const xuLyFileXML130Va4210 = (rawXMLString) => {
+  const ds130 = xuLyFileXML130(rawXMLString);
+  const coLoiParser = ds130.some((h) => h?.xml1?.parsererror);
+  if (coLoiParser) return ds130;
+
+  if (ds130.some((h) => coDuLieuHoSo(h) && !h?.xml1?.parsererror)) {
+    return ds130.map((h) => ({
+      ...h,
+      _meta: { ...(h._meta || {}), chuan_du_lieu: 'QD130_3176' },
+    }));
+  }
+
+  return xuLyFileXML4210(rawXMLString);
 };
 
 export const validateHoSo = (hoSo) => {
