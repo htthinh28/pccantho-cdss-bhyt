@@ -3486,6 +3486,18 @@ const layTongSoGiuongDanhMuc = (row = {}) => (
         .reduce((sum, key) => sum + Math.max(0, TO_NUMBER(row?.[key])), 0)
 );
 
+/** Neo KT221 / SUM_IF tiền giường XML3 — đồng bộ chuỗi Chuyên đề; dùng stringify trong engine rule động (Chuyen_de_166). */
+const laDongGiuongXml3Kt221Neo = (item) => {
+    if (!item) return false;
+    const m = UPPER(String(item.MA_DICH_VU || item.MA_DV || ''));
+    const u = UPPER(String(item.TEN_DICH_VU || ''));
+    const n = UPPER(String(item.NHOM_DV || ''));
+    const nh = String(item.MA_NHOM || '').trim();
+    return nh === '14' || nh === '15' || m.startsWith('19')
+        || n.includes('GIƯỜNG') || n.includes('GIUONG')
+        || u.includes('GIƯỜNG') || u.includes('GIUONG');
+};
+
 const layMoTaKhoa = (row = {}, dm) => {
     const maKhoa = UPPER(row?.MA_KHOA || '');
     const dmKhoa = maKhoa ? dm?.MAP_KHOA_BV?.get(maKhoa) : null;
@@ -4257,6 +4269,7 @@ const SYS_KEYWORDS_RULE_DONG = Object.freeze([
     'THUOC_451_VI_PHAM_TRAN_BH_TREN_DON_VI',
     'THUOC_533_VI_PHAM_WAMLOX',
     'THUOC_398_VI_PHAM_DOMPERIDON',
+    'CHUYEN_DE_166_VI_PHAM_TT22_PROXY',
     'XML1', 'XML2', 'XML3', 'XML4', 'XML5', 'XML6', 'XML7', 'XML8', 'XML9', 'XML10', 'XML11', 'XML12', 'XML13', 'XML14', 'XML15',
     'DS_XML1', 'DS_XML2', 'DS_XML3', 'DS_XML4', 'DS_XML5', 'DS_XML6', 'DS_XML7', 'DS_XML8', 'DS_XML9', 'DS_XML10', 'DS_XML11', 'DS_XML12', 'DS_XML13', 'DS_XML14', 'DS_XML15', 'CURRENT', 'NOW', 'TODAY', 'CURRENT_TIMESTAMP',
     'NOT_CONTAINS', 'CONTAINS', 'IN', 'LIKE', 'NULL', 'OR', 'AND', 'Math', 'String', 'includes', 'match', 'true', 'false', 'item', 'RegExp', 'new',
@@ -5512,6 +5525,54 @@ const taoHamDieuKienLuatDong = (jsQuery = '') => {
             const layTapMaLoaiKcbTheoGiaTriRule = ${layTapMaLoaiKcbTheoGiaTriRule.toString()};
             const MATCH_MA_LOAI_KCB = ${MATCH_MA_LOAI_KCB.toString()};
             const MATCH_ANY_MA_LOAI_KCB = ${MATCH_ANY_MA_LOAI_KCB.toString()};
+            const layTongSoGiuongDanhMuc_CHUYEN_DE_166 = ${layTongSoGiuongDanhMuc.toString()};
+            const laBHYTKhôngThanhToan_CHUYEN_DE_166 = ${laBHYTKhôngThanhToan.toString()};
+            const laDongGiuongXml3Kt221_CHUYEN_DE_166 = ${laDongGiuongXml3Kt221Neo.toString()};
+            const CHUYEN_DE_166_VI_PHAM_TT22_PROXY = (x1, ds3) => {
+                try {
+                    const mk = UPPER(String(x1 && x1.MA_KHOA || '').trim());
+                    const map = danhMucHeThong && danhMucHeThong.MAP_KHOA_BV;
+                    if (!mk || !map || typeof map.get !== 'function') return false;
+                    const rowDm = map.get(mk);
+                    if (!rowDm) return false;
+                    const cap = layTongSoGiuongDanhMuc_CHUYEN_DE_166(rowDm);
+                    if (!(cap > 0)) return false;
+                    const arr = Array.isArray(ds3) ? ds3 : [];
+                    let tongNgayBHYT = 0;
+                    const bedRowsBHYT = [];
+                    for (let i = 0; i < arr.length; i += 1) {
+                        const item = arr[i];
+                        if (!laDongGiuongXml3Kt221_CHUYEN_DE_166(item)) continue;
+                        if (laBHYTKhôngThanhToan_CHUYEN_DE_166(item)) continue;
+                        tongNgayBHYT += Math.max(0, TO_NUMBER(item && item.SO_LUONG));
+                        bedRowsBHYT.push(item);
+                    }
+                    if (tongNgayBHYT <= cap) return false;
+                    if (bedRowsBHYT.length === 0) return false;
+                    for (let j = 0; j < bedRowsBHYT.length; j += 1) {
+                        const r = bedRowsBHYT[j];
+                        const rawT = (r.TYLE_TT != null && String(r.TYLE_TT).trim() !== '')
+                            ? r.TYLE_TT
+                            : ((r.TYLE_TT_BH != null && String(r.TYLE_TT_BH).trim() !== '')
+                                ? r.TYLE_TT_BH
+                                : ((r.TY_LE_TT != null && String(r.TY_LE_TT).trim() !== '')
+                                    ? r.TY_LE_TT
+                                    : r.TY_LE_THANH_TOAN));
+                        if (rawT != null && String(rawT).trim() !== '') {
+                            const t = TO_NUMBER(rawT);
+                            if (Number.isFinite(t) && t > 0 && t < 95) return false;
+                        }
+                        const rawM = r.MUC_HUONG;
+                        if (rawM != null && String(rawM).trim() !== '') {
+                            const mhu = TO_NUMBER(rawM);
+                            if (Number.isFinite(mhu) && mhu > 0 && mhu < 90) return false;
+                        }
+                    }
+                    return true;
+                } catch (_e) {
+                    return false;
+                }
+            };
             try { return !!(${expression}); } catch (_e) { return false; }
         `
     );

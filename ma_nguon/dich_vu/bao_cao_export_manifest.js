@@ -40,6 +40,7 @@ const COT_FACT_CANH = cot([
   ['id_canh_bao', 'id_canh_bao'],
   ['ma_lk', 'ma_lk'],
   ['ma_rule', 'ma_rule'],
+  ['ten_quy_tac', 'ten_quy_tac'],
   ['namespace_quy_tac', 'namespace_quy_tac'],
   ['muc_do', 'muc_do'],
   ['loai_loi', 'loai_loi'],
@@ -155,6 +156,10 @@ export const layCacBangDeXuat = ({ nhanh, quanTriThe, tai }) => {
 
   if (nhanh === 'CHUYEN_MON' && m7) {
     const pairs = [
+      ['BC_CM00_NHOM_NV', m7.bc_cm_00_nhom_vi_pham],
+      ['BC_CM00_KHOA_NHOM', m7.bc_cm_00_khoa_nhom_loi],
+      ['BC_CM00_TOP_KHOA', m7.bc_cm_00_top_khoa],
+      ['BC_CM00_NV_YTE', m7.bc_cm_00_nhan_vien_y_te],
       ['BC_CM01_KPI', m7.bc_cm_01_kpi],
       ['BC_CM01_KHOA', m7.bc_cm_01_phan_bo_khoa],
       ['BC_CM02_CPW', m7.bc_cm_02_cpw],
@@ -203,6 +208,34 @@ export const layCacBangDeXuat = ({ nhanh, quanTriThe, tai }) => {
     }
   }
 
+  const vizWs = tai?.hienThi?.widgets;
+  if (Array.isArray(vizWs) && vizWs.length) {
+    const vizRows = vizWs.map((w) => ({
+      id_widget: w.id_widget,
+      id_du_lieu: w.id_du_lieu,
+      tieu_de: w.tieu_de,
+      loai_bieu_do: w.loai_bieu_do,
+      truc_x: w.truc?.truc_x ?? '',
+      truc_y: w.truc?.truc_y ?? '',
+      mo_ta_ngan: w.mo_ta_ngan ?? '',
+    }));
+    addSheet(
+      sheets,
+      'VIZ_WIDGETS',
+      cot([
+        ['id_widget', 'id_widget'],
+        ['id_du_lieu', 'id_du_lieu'],
+        ['tieu_de', 'tieu_de'],
+        ['loai_bieu_do', 'loai_bieu_do'],
+        ['truc_x', 'truc_x'],
+        ['truc_y', 'truc_y'],
+        ['mo_ta_ngan', 'mo_ta_ngan'],
+      ]),
+      vizRows,
+      null,
+    );
+  }
+
   const metaRows = [
     { truong: 'tieu_de', gia_tri: tieuDe },
     { truong: 'nhanh', gia_tri: String(nhanh || '') },
@@ -210,6 +243,13 @@ export const layCacBangDeXuat = ({ nhanh, quanTriThe, tai }) => {
     { truong: 'so_ho_so', gia_tri: String(tai?.soHoSo ?? '') },
     { truong: 'thoi_diem_xuat', gia_tri: new Date().toISOString() },
   ];
+  if (tai?.hienThi?.phien_ban) {
+    metaRows.push({ truong: 'phien_ban_viz', gia_tri: String(tai.hienThi.phien_ban) });
+    metaRows.push({
+      truong: 'thoi_diem_du_lieu_viz',
+      gia_tri: String(tai.hienThi.thoi_diem_du_lieu || ''),
+    });
+  }
   addSheet(
     sheets,
     '_META',

@@ -1,0 +1,6790 @@
+{
+  "generated_at": "2026-04-26T02:30:54.291Z",
+  "source_audit": "test_xml/audit_tai_nguyen_ip_layers.json",
+  "meta_in": {
+    "mode": "directory",
+    "generated_at": "2026-04-26T02:21:22.482Z",
+    "dir": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\ip",
+    "dir_abs_windows": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\ip",
+    "xml_file_count": 159,
+    "tuong_tac_only": false,
+    "files_with_tuong_tac": 47,
+    "aggregate_tuong_tac_rule_summary": {
+      "TUONGTAC_059": 1,
+      "TUONGTAC_091": 1,
+      "TUONGTAC_136": 45
+    },
+    "aggregate_layers_full": {
+      "by_severity": {
+        "Critical": 373,
+        "Error": 642,
+        "Warning": 3756
+      },
+      "by_tang_V15": {
+        "L0": 663,
+        "L1": 745,
+        "L23": 171,
+        "L4": 866,
+        "L5": 2326
+      },
+      "by_phan_he": {
+        "XML1": 1482,
+        "XML2": 339,
+        "XML3": 2469,
+        "XML4": 11,
+        "XML7": 125,
+        "XML8": 345
+      },
+      "by_namespace_quy_tac": {
+        "CDHA_HARDCODED": 15,
+        "DVKT_OP": 2326,
+        "GIAM_DINH_CHUYEN_DE": 548,
+        "HANH_CHINH_BUILTIN": 29,
+        "HANH_CHINH_HARDCODED": 373,
+        "ICD10_TT06_BUILTIN": 32,
+        "PTTT_BUILTIN": 25,
+        "PTTT_SEED": 40,
+        "QUY_TAC_NOI_BO": 1173,
+        "THUOC_DANH_MUC_BUILTIN": 31,
+        "THUOC_HARDCODED": 90,
+        "XDC_BUILTIN": 7,
+        "XML3_KHAC": 82
+      },
+      "by_nguon_quy_tac": {
+        "dong_co_giam_dinh": 1379,
+        "dvkt_op_giam_dinh": 2326,
+        "luat_cdha_hardcoded": 15,
+        "luat_giam_dinh_chuyen_de_hardcoded": 548,
+        "luat_hanh_chinh_hardcoded": 373,
+        "luat_thuoc_hardcoded": 90,
+        "seed_luat_pttt_muc11": 40
+      },
+      "by_dieu_kien": {
+        "((COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0) || (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CÔNG KHÁM') || UPPER(String(item.TEN_DICH_VU || '')).includes('CONG KHAM') || UPPER(String(item.TEN_DICH_VU || '')).includes('KHÁM BAN ĐẦU') || (UPPER(String(item.TEN_DICH_VU || '')).includes('KHÁM') && UPPER(String(item.TEN_DICH_VU || '')).includes('BỆNH'))) > 0))": 58,
+        "((COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0) || (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GÂY MÊ') || UPPER(String(item.TEN_DICH_VU || '')).includes('GAY ME')) > 0))": 58,
+        "(COUNT_IF(DS_XML2, item1 => COUNT_IF(DS_XML2, item2 => item1 !== item2 && LEN(String(item1.MA_THUOC || '').trim()) > 0 && UPPER(String(item1.MA_THUOC || '')) == UPPER(String(item2.MA_THUOC || '')) && String(item1.NGAY_TH_YL || item1.NGAY_YL || '') == String(item2.NGAY_TH_YL || item2.NGAY_YL || '')) > 0) > 0)": 64,
+        "(COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_KQ) && !IS_EMPTY(item.NGAY_YL) && LEN(String(item.NGAY_KQ)) >= 12 && LEN(String(item.NGAY_YL)) >= 12 && TO_NUMBER(item.NGAY_KQ) < TO_NUMBER(item.NGAY_YL)) > 0)": 4,
+        "(COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_TH_YL) && !IS_EMPTY(item.NGAY_YL) && LEN(String(item.NGAY_TH_YL)) >= 12 && LEN(String(item.NGAY_YL)) >= 12 && TO_NUMBER(item.NGAY_YL) > TO_NUMBER(item.NGAY_TH_YL)) > 0)": 8,
+        "(COUNT_IF(DS_XML3, item => (UPPER(String(item.TEN_DICH_VU || ''))).includes('SIÊU ÂM') && ((UPPER(String(item.TEN_DICH_VU || ''))).includes('Ổ BỤNG') || (UPPER(String(item.TEN_DICH_VU || ''))).includes('O BUNG'))) > 0) && (COUNT_IF(DS_XML3, item => (UPPER(String(item.TEN_DICH_VU || ''))).includes('SIÊU ÂM') && (UPPER(String(item.TEN_DICH_VU || ''))).includes('THAI')) > 0)": 1,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CẮT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('CAT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('U LÀNH') || UPPER(String(item.TEN_DICH_VU || '')).includes('U LANH')) > 0)": 1,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('ĐIỆN TIM') || UPPER(String(item.TEN_DICH_VU || '')).includes('DIEN TIM') || UPPER(String(item.TEN_DICH_VU || '')).includes('ĐTĐ') || UPPER(String(item.TEN_DICH_VU || '')).includes('ECG')) > 0)": 5,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0)": 156,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0) && (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CHIẾU ĐÈN') || UPPER(String(item.TEN_DICH_VU || '')).includes('CHIEU DEN') || UPPER(String(item.TEN_DICH_VU || '')).includes('VÀNG DA') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHOTOTHERAPY') || UPPER(String(item.TEN_DICH_VU || '')).includes('BILIRUBIN')) > 0)": 4,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('NỘI SOI') || UPPER(String(item.TEN_DICH_VU || '')).includes('NOI SOI')) > 0)": 6,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('CẮT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('HẸP BAO QUY ĐẦU') || UPPER(String(item.TEN_DICH_VU || '')).includes('HẸP BAO QUY')) > 0) && (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GÂY MÊ') || UPPER(String(item.TEN_DICH_VU || '')).includes('GAY ME')) == 0)": 58,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('KHX') || UPPER(String(item.TEN_DICH_VU || '')).includes('LẤY XƯƠNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('XƯƠNG CHẾT')) > 0)": 58,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0)": 58,
+        "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('X-QUANG') || UPPER(String(item.TEN_DICH_VU || '')).includes('X QUANG') || UPPER(String(item.TEN_DICH_VU || '')).includes('CHỤP X') || UPPER(String(item.TEN_DICH_VU || '')).includes('XQUANG')) > 0) && !((STARTS_WITH(XML1.MA_BENH_CHINH, 'I') || STARTS_WITH(XML1.MA_BENH_CHINH, 'J') || XML1.MA_BENH_CHINH CONTAINS 'R07' || XML1.MA_BENH_CHINH CONTAINS 'R91' || XML1.MA_BENH_CHINH CONTAINS 'S22' || XML1.MA_BENH_CHINH CONTAINS 'S21' || XML1.MA_BENH_KT CONTAINS 'R07' || XML1.MA_BENH_KT CONTAINS 'R91' || XML1.MA_BENH_KT CONTAINS 'S22' || XML1.MA_BENH_KT CONTAINS 'S21' || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('TIM') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('PHỔI') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('PHOI') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('NGỰC') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('NGUC') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('XƯƠNG SƯỜN') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('XUONG SUON') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('SƯỜN') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('SUON')))": 2,
+        "(LEN(XML3.MA_MAY) < 5 OR XML3.MA_MAY == '12345') AND !(XML3.TEN_DICH_VU || '').toUpperCase().includes('KHÁM')": 6,
+        "(SUM_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BH), item => TO_NUMBER(item.THANH_TIEN_BH)) + SUM_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BH), item => TO_NUMBER(item.THANH_TIEN_BH))) > (SUM_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BV), item => TO_NUMBER(item.THANH_TIEN_BV)) + SUM_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BV), item => TO_NUMBER(item.THANH_TIEN_BV)))": 1,
+        "(XML1.MA_BENH_CHINH CONTAINS 'P59' OR XML1.MA_BENH_KT CONTAINS 'P59') && COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('BILIRUBIN')) == 0": 1,
+        "(XML1.MA_LOAI_KCB == '03' OR XML1.MA_LOAI_KCB == '09' OR XML1.MA_LOAI_KCB == '04') && !IS_EMPTY(XML1.NGAY_VAO) && !IS_EMPTY(XML1.NGAY_RA) && LEN(XML1.NGAY_VAO) >= 12 && LEN(XML1.NGAY_RA) >= 12 && TO_NUMBER(XML1.NGAY_RA) >= TO_NUMBER(XML1.NGAY_VAO) && (COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_KQ) && !IS_EMPTY(XML1.NGAY_VAO) && !IS_EMPTY(XML1.NGAY_RA) && LEN(XML1.NGAY_VAO) >= 12 && LEN(XML1.NGAY_RA) >= 12 && (TO_NUMBER(item.NGAY_KQ) < TO_NUMBER(XML1.NGAY_VAO) OR TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA))) > 0)": 6,
+        "ABS(SUM_IF(XML2, item => item.MA_NHOM IN ('4','5'), item => !IS_EMPTY(item.THANH_TIEN_BH) ? TO_NUMBER(item.THANH_TIEN_BH) : (!IS_EMPTY(item.THANH_TIEN) ? TO_NUMBER(item.THANH_TIEN) : (!IS_EMPTY(item.THANH_TIEN_BV) ? TO_NUMBER(item.THANH_TIEN_BV) : TO_NUMBER(item.T_BHTT)))) - TO_NUMBER(XML1.T_THUOC)) > 1": 52,
+        "ABS(TO_NUMBER(XML1.T_BHTT) - (SUM_IF(XML2, item => !IS_EMPTY(item.T_BHTT), item => TO_NUMBER(item.T_BHTT)) + SUM_IF(XML3, item => !IS_EMPTY(item.T_BHTT), item => TO_NUMBER(item.T_BHTT)))) > 1": 23,
+        "ABS(TO_NUMBER(XML1.T_TONGCHI_BV) - (TO_NUMBER(XML1.T_BHTT) + TO_NUMBER(XML1.T_BNTT) + TO_NUMBER(XML1.T_BNCCT) + TO_NUMBER(XML1.T_NGUONKHAC) + TO_NUMBER(XML1.T_NGOAIDS))) > 5": 3,
+        "ABS(TO_NUMBER(XML1.T_TONGCHI_BV) - (TO_NUMBER(XML1.T_BHTT) + TO_NUMBER(XML1.T_BNTT) + TO_NUMBER(XML1.T_NGUONKHAC) + TO_NUMBER(XML1.T_NGOAIDS) + TO_NUMBER(XML1.T_BNCCT))) > 5": 3,
+        "BUILT-IN": 215,
+        "CHECK_EQUIPMENT": 44,
+        "CHECK_INTERNAL_APPROVAL": 304,
+        "CHECK_PHAMVI": 989,
+        "CHECK_STAFF_PRACTICE_TIME": 989,
+        "CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_ICD_VI_PHAM_CHONG_CHI_DINH_THUOC(XML2.MA_THUOC, XML2.TEN_THUOC, (XML2.MA_HOAT_CHAT || XML2.TEN_HOAT_CHAT || ''))": 7,
+        "COUNT_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0 OR COUNT_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0": 4,
+        "COUNT_IF(XML3, item => !IS_EMPTY(item.MA_DV) && !IS_EMPTY(item.NGAY_YL) && COUNT_IF(XML3, other => item.MA_DV == other.MA_DV && SUBSTR(item.NGAY_YL, 1, 12) == SUBSTR(other.NGAY_YL, 1, 12)) >= 2) > 0": 1,
+        "COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(item.NGAY_YL) AND TO_NUMBER((LEN(item.NGAY_KQ) == 8 ? item.NGAY_KQ + '0000' : (LEN(item.NGAY_KQ) == 10 ? item.NGAY_KQ + '00' : SUBSTR(item.NGAY_KQ, 1, 12)))) < TO_NUMBER((LEN(item.NGAY_YL) == 8 ? item.NGAY_YL + '0000' : (LEN(item.NGAY_YL) == 10 ? item.NGAY_YL + '00' : SUBSTR(item.NGAY_YL, 1, 12))))) > 0": 4,
+        "COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_YL) AND !IS_EMPTY(XML1.NGAY_VAO) AND !IS_EMPTY(XML1.NGAY_RA) AND (TO_NUMBER(item.NGAY_YL) < TO_NUMBER(XML1.NGAY_VAO) OR TO_NUMBER(item.NGAY_YL) > TO_NUMBER(XML1.NGAY_RA))) > 0": 10,
+        "COUNT_IF(XML3, item => (!IS_EMPTY(item.DON_GIA_BV) AND TO_NUMBER(item.DON_GIA_BV) = 0) OR (!IS_EMPTY(item.DON_GIA_BH) AND TO_NUMBER(item.DON_GIA_BH) = 0)) > 0": 3,
+        "COUNT_IF(XML3, item => item.MA_NHOM == '8' AND !IS_EMPTY(item.NGAY_YL) AND !IS_EMPTY(item.NGAY_KQ) AND (DIFF_HOURS(item.NGAY_YL, item.NGAY_KQ) * 60) < 15) > 0": 1,
+        "COUNT_IF(XML3, item => TO_NUMBER(item.NGAY_YL) < TO_NUMBER(XML1.NGAY_VAO)) > 0": 1,
+        "COUNT_IF(XML4, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(XML1.NGAY_RA) AND TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA)) > 0": 1,
+        "COUNT(XML2) == 0 AND TO_NUMBER(XML1.T_THUOC) > 0": 21,
+        "COUNT(XML2) == 0 AND XML1.T_THUOC > 0": 21,
+        "DATEDIFF_HOUR(XML1.NGAY_VAO, XML1.NGAY_RA) < 4": 3,
+        "DATEDIFF_MINUTE(XML1.NGAY_VAO, XML1.NGAY_RA) == 0": 3,
+        "HC_65_CO_MOC_DV_NGOAI_KHOANG_VAO_RA(XML1, XML2, XML3, XML4)": 8,
+        "IS_EMPTY(XML4.MA_BS_DOC_KQ)": 9,
+        "KY_VONG_SO_NGAY_DTRI_VBHN17(XML1) != null && TO_NUMBER(XML1.SO_NGAY_DTRI) != KY_VONG_SO_NGAY_DTRI_VBHN17(XML1)": 101,
+        "LEN(XML1.DIEN_THOAI) < 10 AND XML1.DIEN_THOAI != ''": 3,
+        "LEN(XML1.MA_BENH_CHINH) < 3 OR XML1.MA_BENH_CHINH NOT IN (DM_ICD10)": 21,
+        "LEN(XML1.NGAY_VAO) != 12 OR LEN(XML1.NGAY_RA) != 12 OR (XML1.NGAY_SINH != '' AND LEN(XML1.NGAY_SINH) != 12)": 3,
+        "LEN(XML1.SO_CCCD) != 12 AND XML1.SO_CCCD != ''": 1,
+        "STATIC": 746,
+        "STATIC_GDH": 272,
+        "SUBSTR(XML1.NGAY_VAO, 1, 4) < '2024' OR SUBSTR(XML1.NGAY_VAO, 5, 2) < '01' OR SUBSTR(XML1.NGAY_VAO, 5, 2) > '12' OR SUBSTR(XML1.NGAY_VAO, 7, 2) < '01' OR SUBSTR(XML1.NGAY_VAO, 7, 2) > '31' OR SUBSTR(XML1.NGAY_RA, 1, 4) < '2024' OR SUBSTR(XML1.NGAY_RA, 5, 2) < '01' OR SUBSTR(XML1.NGAY_RA, 5, 2) > '12' OR SUBSTR(XML1.NGAY_RA, 7, 2) < '01' OR SUBSTR(XML1.NGAY_RA, 7, 2) > '31'": 3,
+        "TO_NUMBER(XML2.DON_GIA) > 0 AND THUOC_451_VI_PHAM_TRAN_BH_TREN_DON_VI(XML1, XML2)": 14,
+        "VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX(XML1)": 5,
+        "XML1.HO_TEN LIKE '%THỊ%' AND XML1.GIOI_TINH == '1' AND NOT NGOAI_TRU_HC39_HC40_TRE_SO_SINH(XML1)": 3,
+        "XML1.MA_BENH LIKE 'O80%' AND COUNT_IF(XML3, item => item.MA_DV IN (DM_GIUONG_SO_SINH)) == 0": 10,
+        "XML1.MA_BENH_CHINH == XML1.MA_BENH_KT": 6,
+        "XML1.MA_LOAI_KCB == '3' AND COUNT(XML5) == 0": 156,
+        "XML1.MA_LOAI_KCB == '3' AND DATEDIFF_MINUTE(XML1.NGAY_VAO, XML1.NGAY_RA) < 240": 3,
+        "XML1.MA_LOAI_KCB == '3' AND XML1.SO_NGAY_DTRI == 0": 18,
+        "XML1.MA_LOAI_KCB IN ('2','3') AND COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(XML1.NGAY_RA) AND TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA)) > 0": 5,
+        "XML1.MA_LOAI_RV == '2' AND LEN(XML1.MA_NOI_DEN) != 5": 3,
+        "XML1.MA_LOAI_RV NOT IN ('1','2','3','4','5')": 1,
+        "XML1.MA_THE_BHYT LIKE 'TE%' AND XML1.TUOI_NGAY <= 2190 AND XML2.MUC_HUONG != 100": 6,
+        "XML1.MA_THE_BHYT STARTS_WITH 'TE' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)": 6,
+        "XML1.NGAY_RA < XML1.NGAY_VAO": 6,
+        "XML1.T_BHTT > XML1.T_TONGCHI_BH": 2,
+        "XML1.T_BNCCT < 0": 1,
+        "XML1.T_TONGCHI_BH < (0.15 * 2340000) AND XML1.T_BNCCT > 0 AND XML1.MA_LOAI_KCB NOT IN ('1', '01')": 2,
+        "XML2.MA_THUOC == '40.1055' AND (XML1.MA_BENH_CHINH IN ('N18.4', 'N18.5', 'E83.5') OR XML1.MA_BENH_KT REGEXP 'N18\\.4|N18\\.5|E83\\.5')": 1,
+        "XML2.MA_THUOC == '40.1055' AND ENGINE_RULE_THUOC_374": 2,
+        "XML2.MA_THUOC == '40.155' AND THUOC_41_VI_PHAM_CHI_DINH(XML1, XML2)": 1,
+        "XML2.MA_THUOC == '40.169' AND XML2.SO_LUONG != (XML2.TAN_SUAT * XML2.SL_MOI_LAN)": 1,
+        "XML2.MA_THUOC == '40.718' AND ENGINE_RULE_THUOC_63": 7,
+        "XML2.MA_THUOC == '40.775' AND THUOC_267_VI_PHAM_CHI_DINH(XML1, XML2)": 1,
+        "XML2.SO_LUONG < (XML2.SL_MOI_NGAY * XML2.SO_NGAY)": 15,
+        "XML2.SO_LUONG > (XML2.SL_MOI_NGAY * XML2.SO_NGAY)": 32,
+        "XML3.MA_DICH_VU == '10.0557.0494_GT' AND NOT (XML1.MA_BENH STARTS_WITH 'K60.3' OR XML1.MA_BENH STARTS_WITH 'K60.4')": 2,
+        "XML3.MA_DICH_VU == '13.0002.0672_GT' AND NOT (XML1.MA_BENH STARTS_WITH 'O82')": 16,
+        "XML3.MA_DICH_VU == '13.0069.0681' AND COUNT_IF(DS_XML4, item => item.MA_NV != \"\") < 3": 1,
+        "XML3.MA_DICH_VU == '13.0071.0679_GT' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Giải phẫu bệnh') == 0": 1,
+        "XML3.MA_DICH_VU == '13.0122.0688_GT' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Giải phẫu bệnh') == 0": 1,
+        "XML3.MA_DICH_VU == '13.0235.0727' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Siêu âm thai') == 0": 1,
+        "XML3.MA_DICH_VU == '13.0235.0727' AND NOT (XML1.MA_BENH STARTS_WITH 'O04' OR XML1.MA_BENHKEM CONTAINS 'O34.2')": 1,
+        "XML3.MA_DICH_VU == '13.0235.0727' AND XML1.MA_BENH STARTS_WITH 'O00'": 1,
+        "XML3.MA_DICH_VU == '18.0026.0069' AND NOT (XML1.MA_BENH STARTS_WITH 'O36' OR XML1.MA_BENH STARTS_WITH 'O43' OR XML1.MA_BENH STARTS_WITH 'Z35')": 3,
+        "XML3.MA_DICH_VU == '23.0206.1596' AND NOT (XML1.MA_BENH_CHINH STARTS_WITH 'N' OR XML1.MA_BENH_CHINH STARTS_WITH 'O' OR XML1.MA_BENH_KT CONTAINS 'N' OR XML1.MA_BENH_KT CONTAINS 'O')": 1,
+        "XML3.MA_DICH_VU == '23.0228.1483' AND NOT (XML1.MA_BENH STARTS_WITH 'A' OR XML1.MA_BENH STARTS_WITH 'B' OR XML1.MA_BENH STARTS_WITH 'R50' OR XML1.MA_BENH STARTS_WITH 'R57' OR XML1.MA_BENH STARTS_WITH 'O85' OR XML1.MA_BENH STARTS_WITH 'P35' OR XML1.MA_BENH STARTS_WITH 'P36' OR XML1.MA_BENH STARTS_WITH 'P37' OR XML1.MA_BENH STARTS_WITH 'P38' OR XML1.MA_BENH STARTS_WITH 'P39' OR XML1.MA_BENH STARTS_WITH 'I20' OR XML1.MA_BENH STARTS_WITH 'I21' OR XML1.MA_BENH STARTS_WITH 'I22' OR XML1.MA_BENH STARTS_WITH 'I23' OR XML1.MA_BENH STARTS_WITH 'I24' OR XML1.MA_BENH STARTS_WITH 'I25' OR XML1.MA_BENH STARTS_WITH 'L51' OR XML1.MA_BENH STARTS_WITH 'L03' OR XML1.MA_BENH STARTS_WITH 'M32' OR XML1.MA_BENH STARTS_WITH 'M33' OR XML1.MA_BENH STARTS_WITH 'M34' OR XML1.MA_BENH STARTS_WITH 'M35' OR XML1.MA_BENH STARTS_WITH 'M36' OR XML1.MA_BENHKEM CONTAINS 'R50' OR XML1.MA_BENHKEM CONTAINS 'R57' OR XML1.MA_BENHKEM CONTAINS 'O85' OR XML1.MA_BENHKEM CONTAINS 'P35' OR XML1.MA_BENHKEM CONTAINS 'P36' OR XML1.MA_BENHKEM CONTAINS 'P37' OR XML1.MA_BENHKEM CONTAINS 'P38' OR XML1.MA_BENHKEM CONTAINS 'P39' OR XML1.MA_BENHKEM CONTAINS 'I20' OR XML1.MA_BENHKEM CONTAINS 'I21' OR XML1.MA_BENHKEM CONTAINS 'I22' OR XML1.MA_BENHKEM CONTAINS 'I23' OR XML1.MA_BENHKEM CONTAINS 'I24' OR XML1.MA_BENHKEM CONTAINS 'I25' OR XML1.MA_BENHKEM CONTAINS 'L51' OR XML1.MA_BENHKEM CONTAINS 'L03' OR XML1.MA_BENHKEM CONTAINS 'M32' OR XML1.MA_BENHKEM CONTAINS 'M33' OR XML1.MA_BENHKEM CONTAINS 'M34' OR XML1.MA_BENHKEM CONTAINS 'M35' OR XML1.MA_BENHKEM CONTAINS 'M36' OR XML1.MA_BENHKEM CONTAINS 'A0' OR XML1.MA_BENHKEM CONTAINS 'A1' OR XML1.MA_BENHKEM CONTAINS 'A2' OR XML1.MA_BENHKEM CONTAINS 'A3' OR XML1.MA_BENHKEM CONTAINS 'A4' OR XML1.MA_BENHKEM CONTAINS 'B0' OR XML1.MA_BENHKEM CONTAINS 'B1' OR XML1.MA_BENHKEM CONTAINS 'B2' OR XML1.MA_BENHKEM CONTAINS 'B9')": 12
+      },
+      "rule_summary": {
+        "CDHA_101": 6,
+        "CDHA_202": 9,
+        "Chuyen_de_003": 58,
+        "Chuyen_de_052": 64,
+        "Chuyen_de_063": 58,
+        "Chuyen_de_090": 4,
+        "Chuyen_de_094": 58,
+        "Chuyen_de_101": 1,
+        "Chuyen_de_102": 58,
+        "Chuyen_de_145": 58,
+        "Chuyen_de_166": 156,
+        "Chuyen_de_261": 4,
+        "Chuyen_de_268": 6,
+        "Chuyen_de_375": 8,
+        "Chuyen_de_424": 1,
+        "Chuyen_de_434": 2,
+        "Chuyen_de_442": 5,
+        "Chuyen_de_540": 6,
+        "Chuyen_de_557": 1,
+        "CK_14": 1,
+        "CLN-CHI-01": 30,
+        "CLN-CT-01": 3,
+        "CLN-CT-02": 3,
+        "CLN-GIUONG-01": 8,
+        "CLN-PTTT-02": 10,
+        "CLN-PTTT-05": 10,
+        "CLN-PTTT-08": 5,
+        "CLN-XDC-04": 7,
+        "DM-THUOC-04": 31,
+        "DVKT_0024": 12,
+        "DVKT_0261": 1,
+        "DVKT_1582": 3,
+        "DVKT_1642": 1,
+        "DVKT_1643": 1,
+        "DVKT_1645": 1,
+        "DVKT_1745": 1,
+        "DVKT_2587": 16,
+        "DVKT_2622": 1,
+        "DVKT_2639": 1,
+        "DVKT_2696": 2,
+        "DVKT-OP-03": 989,
+        "DVKT-OP-04": 44,
+        "DVKT-OP-09": 304,
+        "DVKT-OP-10": 989,
+        "GB_27": 10,
+        "GB_47": 3,
+        "GB_75": 3,
+        "GDH_4210_1": 91,
+        "GDH_4210_17": 1,
+        "GDH_4210_31": 20,
+        "GDH_4210_34": 3,
+        "GDH_4210_43": 14,
+        "GDH_4210_45": 14,
+        "GDH_4210_48": 4,
+        "GDH_9324_3": 84,
+        "GDH_9324_4": 41,
+        "HC_06": 2,
+        "HC_13": 6,
+        "HC_130": 101,
+        "HC_171": 156,
+        "HC_181": 3,
+        "HC_194": 3,
+        "HC_210": 3,
+        "HC_215": 6,
+        "HC_242": 3,
+        "HC_246": 3,
+        "HC_250": 5,
+        "HC_40": 3,
+        "HC_43": 3,
+        "HC_46": 18,
+        "HC_49": 21,
+        "HC_58": 2,
+        "HC_60": 1,
+        "HC_65": 8,
+        "HC_68": 21,
+        "HC_76": 1,
+        "HC_95": 3,
+        "HC_99": 1,
+        "HC-01b": 1,
+        "HC-06": 3,
+        "HC-06d": 4,
+        "HC-07": 21,
+        "HD_14": 5,
+        "ICD-TT06-CAM-CHINH": 1,
+        "ICD-TT06-CU-THE-HON": 31,
+        "THUOC_267": 1,
+        "THUOC_373": 1,
+        "THUOC_374": 2,
+        "THUOC_391": 15,
+        "THUOC_394": 1,
+        "THUOC_41": 1,
+        "THUOC_417": 32,
+        "THUOC_451": 14,
+        "THUOC_535": 6,
+        "THUOC_538": 3,
+        "THUOC_63": 7,
+        "THUOC_ICD_CONTRA_MAPPING": 7,
+        "TUONGTAC_059": 1,
+        "TUONGTAC_091": 1,
+        "TUONGTAC_136": 45,
+        "XML_109": 1,
+        "XML_143": 4,
+        "XML_18": 5,
+        "XML_26": 3,
+        "XML_36": 1,
+        "XML_37": 5,
+        "XML_38": 4,
+        "XML_49": 23,
+        "XML_53": 52,
+        "XML_59": 3,
+        "XML_64": 1,
+        "XML_88": 21,
+        "XML_90": 1,
+        "XML1-MATHE-FORMAT": 1,
+        "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 40,
+        "XML1-REQ-CHAN_DOAN_RV": 5,
+        "XML1-REQ-CHAN_DOAN_VAO": 62,
+        "XML1-REQ-GIOI_TINH": 1,
+        "XML1-REQ-LY_DO_VV": 2,
+        "XML1-REQ-MA_BENH_CHINH": 21,
+        "XML1-REQ-MA_DOITUONG_KCB": 4,
+        "XML1-REQ-MA_LOAI_RV": 1,
+        "XML1-REQ-MA_QUOCTICH": 1,
+        "XML1-REQ-NGAY_RA": 3,
+        "XML2-MAXLEN-DON_GIA": 3,
+        "XML2-NEG-T_BNTT": 2,
+        "XML2-REQ-TT_THAU": 61,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 11,
+        "XML2-TIME-NGAY_YL-AFTER-OUT": 2,
+        "XML3-REQ-NGAY_KQ": 32,
+        "XML3-TIME-KQ-BEFORE-YL": 4,
+        "XML3-TIME-NGAY_TH_YL-AFTER-OUT": 6,
+        "XML3-TIME-NGAY_TH_YL-BEFORE-IN": 1,
+        "XML3-TIME-NGAY_YL-AFTER-OUT": 4,
+        "XML3-TIME-NGAY_YL-BEFORE-IN": 1,
+        "XML3-TIME-THYL-BEFORE-YL": 6,
+        "XML4-TIME-NGAY_KQ-AFTER-OUT": 2,
+        "XML7-REQ-SO_LUU_TRU": 125,
+        "XML8-REQ-MA_KHOA_RV": 115,
+        "XML8-REQ-MA_YTE": 115,
+        "XML8-REQ-SO_LUU_TRU": 115
+      }
+    },
+    "focus_summary": {}
+  },
+  "file_count_ok": 159,
+  "aggregate_layers_full": {
+    "by_severity": {
+      "Critical": 373,
+      "Error": 642,
+      "Warning": 3756
+    },
+    "by_tang_V15": {
+      "L0": 663,
+      "L1": 745,
+      "L23": 171,
+      "L4": 866,
+      "L5": 2326
+    },
+    "by_phan_he": {
+      "XML1": 1482,
+      "XML2": 339,
+      "XML3": 2469,
+      "XML4": 11,
+      "XML7": 125,
+      "XML8": 345
+    },
+    "by_namespace_quy_tac": {
+      "CDHA_HARDCODED": 15,
+      "DVKT_OP": 2326,
+      "GIAM_DINH_CHUYEN_DE": 548,
+      "HANH_CHINH_BUILTIN": 29,
+      "HANH_CHINH_HARDCODED": 373,
+      "ICD10_TT06_BUILTIN": 32,
+      "PTTT_BUILTIN": 25,
+      "PTTT_SEED": 40,
+      "QUY_TAC_NOI_BO": 1173,
+      "THUOC_DANH_MUC_BUILTIN": 31,
+      "THUOC_HARDCODED": 90,
+      "XDC_BUILTIN": 7,
+      "XML3_KHAC": 82
+    },
+    "by_nguon_quy_tac": {
+      "dong_co_giam_dinh": 1379,
+      "dvkt_op_giam_dinh": 2326,
+      "luat_cdha_hardcoded": 15,
+      "luat_giam_dinh_chuyen_de_hardcoded": 548,
+      "luat_hanh_chinh_hardcoded": 373,
+      "luat_thuoc_hardcoded": 90,
+      "seed_luat_pttt_muc11": 40
+    },
+    "by_dieu_kien": {
+      "((COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0) || (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CÔNG KHÁM') || UPPER(String(item.TEN_DICH_VU || '')).includes('CONG KHAM') || UPPER(String(item.TEN_DICH_VU || '')).includes('KHÁM BAN ĐẦU') || (UPPER(String(item.TEN_DICH_VU || '')).includes('KHÁM') && UPPER(String(item.TEN_DICH_VU || '')).includes('BỆNH'))) > 0))": 58,
+      "((COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0) || (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GÂY MÊ') || UPPER(String(item.TEN_DICH_VU || '')).includes('GAY ME')) > 0))": 58,
+      "(COUNT_IF(DS_XML2, item1 => COUNT_IF(DS_XML2, item2 => item1 !== item2 && LEN(String(item1.MA_THUOC || '').trim()) > 0 && UPPER(String(item1.MA_THUOC || '')) == UPPER(String(item2.MA_THUOC || '')) && String(item1.NGAY_TH_YL || item1.NGAY_YL || '') == String(item2.NGAY_TH_YL || item2.NGAY_YL || '')) > 0) > 0)": 64,
+      "(COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_KQ) && !IS_EMPTY(item.NGAY_YL) && LEN(String(item.NGAY_KQ)) >= 12 && LEN(String(item.NGAY_YL)) >= 12 && TO_NUMBER(item.NGAY_KQ) < TO_NUMBER(item.NGAY_YL)) > 0)": 4,
+      "(COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_TH_YL) && !IS_EMPTY(item.NGAY_YL) && LEN(String(item.NGAY_TH_YL)) >= 12 && LEN(String(item.NGAY_YL)) >= 12 && TO_NUMBER(item.NGAY_YL) > TO_NUMBER(item.NGAY_TH_YL)) > 0)": 8,
+      "(COUNT_IF(DS_XML3, item => (UPPER(String(item.TEN_DICH_VU || ''))).includes('SIÊU ÂM') && ((UPPER(String(item.TEN_DICH_VU || ''))).includes('Ổ BỤNG') || (UPPER(String(item.TEN_DICH_VU || ''))).includes('O BUNG'))) > 0) && (COUNT_IF(DS_XML3, item => (UPPER(String(item.TEN_DICH_VU || ''))).includes('SIÊU ÂM') && (UPPER(String(item.TEN_DICH_VU || ''))).includes('THAI')) > 0)": 1,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CẮT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('CAT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('U LÀNH') || UPPER(String(item.TEN_DICH_VU || '')).includes('U LANH')) > 0)": 1,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('ĐIỆN TIM') || UPPER(String(item.TEN_DICH_VU || '')).includes('DIEN TIM') || UPPER(String(item.TEN_DICH_VU || '')).includes('ĐTĐ') || UPPER(String(item.TEN_DICH_VU || '')).includes('ECG')) > 0)": 5,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0)": 156,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0) && (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CHIẾU ĐÈN') || UPPER(String(item.TEN_DICH_VU || '')).includes('CHIEU DEN') || UPPER(String(item.TEN_DICH_VU || '')).includes('VÀNG DA') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHOTOTHERAPY') || UPPER(String(item.TEN_DICH_VU || '')).includes('BILIRUBIN')) > 0)": 4,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('NỘI SOI') || UPPER(String(item.TEN_DICH_VU || '')).includes('NOI SOI')) > 0)": 6,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('CẮT U') || UPPER(String(item.TEN_DICH_VU || '')).includes('HẸP BAO QUY ĐẦU') || UPPER(String(item.TEN_DICH_VU || '')).includes('HẸP BAO QUY')) > 0) && (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GÂY MÊ') || UPPER(String(item.TEN_DICH_VU || '')).includes('GAY ME')) == 0)": 58,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('KHX') || UPPER(String(item.TEN_DICH_VU || '')).includes('LẤY XƯƠNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('XƯƠNG CHẾT')) > 0)": 58,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('PHẪU THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHAU THUAT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THỦ THUẬT') || UPPER(String(item.TEN_DICH_VU || '')).includes('THU THUAT')) > 0)": 58,
+      "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('X-QUANG') || UPPER(String(item.TEN_DICH_VU || '')).includes('X QUANG') || UPPER(String(item.TEN_DICH_VU || '')).includes('CHỤP X') || UPPER(String(item.TEN_DICH_VU || '')).includes('XQUANG')) > 0) && !((STARTS_WITH(XML1.MA_BENH_CHINH, 'I') || STARTS_WITH(XML1.MA_BENH_CHINH, 'J') || XML1.MA_BENH_CHINH CONTAINS 'R07' || XML1.MA_BENH_CHINH CONTAINS 'R91' || XML1.MA_BENH_CHINH CONTAINS 'S22' || XML1.MA_BENH_CHINH CONTAINS 'S21' || XML1.MA_BENH_KT CONTAINS 'R07' || XML1.MA_BENH_KT CONTAINS 'R91' || XML1.MA_BENH_KT CONTAINS 'S22' || XML1.MA_BENH_KT CONTAINS 'S21' || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('TIM') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('PHỔI') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('PHOI') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('NGỰC') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('NGUC') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('XƯƠNG SƯỜN') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('XUONG SUON') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('SƯỜN') || UPPER(String(XML1.CHAN_DOAN_RV || '') + String(XML1.CHAN_DOAN_VAO || '')).includes('SUON')))": 2,
+      "(LEN(XML3.MA_MAY) < 5 OR XML3.MA_MAY == '12345') AND !(XML3.TEN_DICH_VU || '').toUpperCase().includes('KHÁM')": 6,
+      "(SUM_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BH), item => TO_NUMBER(item.THANH_TIEN_BH)) + SUM_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BH), item => TO_NUMBER(item.THANH_TIEN_BH))) > (SUM_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BV), item => TO_NUMBER(item.THANH_TIEN_BV)) + SUM_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BV), item => TO_NUMBER(item.THANH_TIEN_BV)))": 1,
+      "(XML1.MA_BENH_CHINH CONTAINS 'P59' OR XML1.MA_BENH_KT CONTAINS 'P59') && COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('BILIRUBIN')) == 0": 1,
+      "(XML1.MA_LOAI_KCB == '03' OR XML1.MA_LOAI_KCB == '09' OR XML1.MA_LOAI_KCB == '04') && !IS_EMPTY(XML1.NGAY_VAO) && !IS_EMPTY(XML1.NGAY_RA) && LEN(XML1.NGAY_VAO) >= 12 && LEN(XML1.NGAY_RA) >= 12 && TO_NUMBER(XML1.NGAY_RA) >= TO_NUMBER(XML1.NGAY_VAO) && (COUNT_IF(DS_XML3, item => !IS_EMPTY(item.NGAY_KQ) && !IS_EMPTY(XML1.NGAY_VAO) && !IS_EMPTY(XML1.NGAY_RA) && LEN(XML1.NGAY_VAO) >= 12 && LEN(XML1.NGAY_RA) >= 12 && (TO_NUMBER(item.NGAY_KQ) < TO_NUMBER(XML1.NGAY_VAO) OR TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA))) > 0)": 6,
+      "ABS(SUM_IF(XML2, item => item.MA_NHOM IN ('4','5'), item => !IS_EMPTY(item.THANH_TIEN_BH) ? TO_NUMBER(item.THANH_TIEN_BH) : (!IS_EMPTY(item.THANH_TIEN) ? TO_NUMBER(item.THANH_TIEN) : (!IS_EMPTY(item.THANH_TIEN_BV) ? TO_NUMBER(item.THANH_TIEN_BV) : TO_NUMBER(item.T_BHTT)))) - TO_NUMBER(XML1.T_THUOC)) > 1": 52,
+      "ABS(TO_NUMBER(XML1.T_BHTT) - (SUM_IF(XML2, item => !IS_EMPTY(item.T_BHTT), item => TO_NUMBER(item.T_BHTT)) + SUM_IF(XML3, item => !IS_EMPTY(item.T_BHTT), item => TO_NUMBER(item.T_BHTT)))) > 1": 23,
+      "ABS(TO_NUMBER(XML1.T_TONGCHI_BV) - (TO_NUMBER(XML1.T_BHTT) + TO_NUMBER(XML1.T_BNTT) + TO_NUMBER(XML1.T_BNCCT) + TO_NUMBER(XML1.T_NGUONKHAC) + TO_NUMBER(XML1.T_NGOAIDS))) > 5": 3,
+      "ABS(TO_NUMBER(XML1.T_TONGCHI_BV) - (TO_NUMBER(XML1.T_BHTT) + TO_NUMBER(XML1.T_BNTT) + TO_NUMBER(XML1.T_NGUONKHAC) + TO_NUMBER(XML1.T_NGOAIDS) + TO_NUMBER(XML1.T_BNCCT))) > 5": 3,
+      "BUILT-IN": 215,
+      "CHECK_EQUIPMENT": 44,
+      "CHECK_INTERNAL_APPROVAL": 304,
+      "CHECK_PHAMVI": 989,
+      "CHECK_STAFF_PRACTICE_TIME": 989,
+      "CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_ICD_VI_PHAM_CHONG_CHI_DINH_THUOC(XML2.MA_THUOC, XML2.TEN_THUOC, (XML2.MA_HOAT_CHAT || XML2.TEN_HOAT_CHAT || ''))": 7,
+      "COUNT_IF(XML2, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0 OR COUNT_IF(XML3, item => !IS_EMPTY(item.THANH_TIEN_BH) && !IS_EMPTY(item.THANH_TIEN_BV) && TO_NUMBER(item.THANH_TIEN_BH) - TO_NUMBER(item.THANH_TIEN_BV) > 1) > 0": 4,
+      "COUNT_IF(XML3, item => !IS_EMPTY(item.MA_DV) && !IS_EMPTY(item.NGAY_YL) && COUNT_IF(XML3, other => item.MA_DV == other.MA_DV && SUBSTR(item.NGAY_YL, 1, 12) == SUBSTR(other.NGAY_YL, 1, 12)) >= 2) > 0": 1,
+      "COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(item.NGAY_YL) AND TO_NUMBER((LEN(item.NGAY_KQ) == 8 ? item.NGAY_KQ + '0000' : (LEN(item.NGAY_KQ) == 10 ? item.NGAY_KQ + '00' : SUBSTR(item.NGAY_KQ, 1, 12)))) < TO_NUMBER((LEN(item.NGAY_YL) == 8 ? item.NGAY_YL + '0000' : (LEN(item.NGAY_YL) == 10 ? item.NGAY_YL + '00' : SUBSTR(item.NGAY_YL, 1, 12))))) > 0": 4,
+      "COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_YL) AND !IS_EMPTY(XML1.NGAY_VAO) AND !IS_EMPTY(XML1.NGAY_RA) AND (TO_NUMBER(item.NGAY_YL) < TO_NUMBER(XML1.NGAY_VAO) OR TO_NUMBER(item.NGAY_YL) > TO_NUMBER(XML1.NGAY_RA))) > 0": 10,
+      "COUNT_IF(XML3, item => (!IS_EMPTY(item.DON_GIA_BV) AND TO_NUMBER(item.DON_GIA_BV) = 0) OR (!IS_EMPTY(item.DON_GIA_BH) AND TO_NUMBER(item.DON_GIA_BH) = 0)) > 0": 3,
+      "COUNT_IF(XML3, item => item.MA_NHOM == '8' AND !IS_EMPTY(item.NGAY_YL) AND !IS_EMPTY(item.NGAY_KQ) AND (DIFF_HOURS(item.NGAY_YL, item.NGAY_KQ) * 60) < 15) > 0": 1,
+      "COUNT_IF(XML3, item => TO_NUMBER(item.NGAY_YL) < TO_NUMBER(XML1.NGAY_VAO)) > 0": 1,
+      "COUNT_IF(XML4, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(XML1.NGAY_RA) AND TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA)) > 0": 1,
+      "COUNT(XML2) == 0 AND TO_NUMBER(XML1.T_THUOC) > 0": 21,
+      "COUNT(XML2) == 0 AND XML1.T_THUOC > 0": 21,
+      "DATEDIFF_HOUR(XML1.NGAY_VAO, XML1.NGAY_RA) < 4": 3,
+      "DATEDIFF_MINUTE(XML1.NGAY_VAO, XML1.NGAY_RA) == 0": 3,
+      "HC_65_CO_MOC_DV_NGOAI_KHOANG_VAO_RA(XML1, XML2, XML3, XML4)": 8,
+      "IS_EMPTY(XML4.MA_BS_DOC_KQ)": 9,
+      "KY_VONG_SO_NGAY_DTRI_VBHN17(XML1) != null && TO_NUMBER(XML1.SO_NGAY_DTRI) != KY_VONG_SO_NGAY_DTRI_VBHN17(XML1)": 101,
+      "LEN(XML1.DIEN_THOAI) < 10 AND XML1.DIEN_THOAI != ''": 3,
+      "LEN(XML1.MA_BENH_CHINH) < 3 OR XML1.MA_BENH_CHINH NOT IN (DM_ICD10)": 21,
+      "LEN(XML1.NGAY_VAO) != 12 OR LEN(XML1.NGAY_RA) != 12 OR (XML1.NGAY_SINH != '' AND LEN(XML1.NGAY_SINH) != 12)": 3,
+      "LEN(XML1.SO_CCCD) != 12 AND XML1.SO_CCCD != ''": 1,
+      "STATIC": 746,
+      "STATIC_GDH": 272,
+      "SUBSTR(XML1.NGAY_VAO, 1, 4) < '2024' OR SUBSTR(XML1.NGAY_VAO, 5, 2) < '01' OR SUBSTR(XML1.NGAY_VAO, 5, 2) > '12' OR SUBSTR(XML1.NGAY_VAO, 7, 2) < '01' OR SUBSTR(XML1.NGAY_VAO, 7, 2) > '31' OR SUBSTR(XML1.NGAY_RA, 1, 4) < '2024' OR SUBSTR(XML1.NGAY_RA, 5, 2) < '01' OR SUBSTR(XML1.NGAY_RA, 5, 2) > '12' OR SUBSTR(XML1.NGAY_RA, 7, 2) < '01' OR SUBSTR(XML1.NGAY_RA, 7, 2) > '31'": 3,
+      "TO_NUMBER(XML2.DON_GIA) > 0 AND THUOC_451_VI_PHAM_TRAN_BH_TREN_DON_VI(XML1, XML2)": 14,
+      "VI_PHAM_KHAI_BAO_THE_SO3_LECH_PREFIX(XML1)": 5,
+      "XML1.HO_TEN LIKE '%THỊ%' AND XML1.GIOI_TINH == '1' AND NOT NGOAI_TRU_HC39_HC40_TRE_SO_SINH(XML1)": 3,
+      "XML1.MA_BENH LIKE 'O80%' AND COUNT_IF(XML3, item => item.MA_DV IN (DM_GIUONG_SO_SINH)) == 0": 10,
+      "XML1.MA_BENH_CHINH == XML1.MA_BENH_KT": 6,
+      "XML1.MA_LOAI_KCB == '3' AND COUNT(XML5) == 0": 156,
+      "XML1.MA_LOAI_KCB == '3' AND DATEDIFF_MINUTE(XML1.NGAY_VAO, XML1.NGAY_RA) < 240": 3,
+      "XML1.MA_LOAI_KCB == '3' AND XML1.SO_NGAY_DTRI == 0": 18,
+      "XML1.MA_LOAI_KCB IN ('2','3') AND COUNT_IF(XML3, item => !IS_EMPTY(item.NGAY_KQ) AND !IS_EMPTY(XML1.NGAY_RA) AND TO_NUMBER(item.NGAY_KQ) > TO_NUMBER(XML1.NGAY_RA)) > 0": 5,
+      "XML1.MA_LOAI_RV == '2' AND LEN(XML1.MA_NOI_DEN) != 5": 3,
+      "XML1.MA_LOAI_RV NOT IN ('1','2','3','4','5')": 1,
+      "XML1.MA_THE_BHYT LIKE 'TE%' AND XML1.TUOI_NGAY <= 2190 AND XML2.MUC_HUONG != 100": 6,
+      "XML1.MA_THE_BHYT STARTS_WITH 'TE' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)": 6,
+      "XML1.NGAY_RA < XML1.NGAY_VAO": 6,
+      "XML1.T_BHTT > XML1.T_TONGCHI_BH": 2,
+      "XML1.T_BNCCT < 0": 1,
+      "XML1.T_TONGCHI_BH < (0.15 * 2340000) AND XML1.T_BNCCT > 0 AND XML1.MA_LOAI_KCB NOT IN ('1', '01')": 2,
+      "XML2.MA_THUOC == '40.1055' AND (XML1.MA_BENH_CHINH IN ('N18.4', 'N18.5', 'E83.5') OR XML1.MA_BENH_KT REGEXP 'N18\\.4|N18\\.5|E83\\.5')": 1,
+      "XML2.MA_THUOC == '40.1055' AND ENGINE_RULE_THUOC_374": 2,
+      "XML2.MA_THUOC == '40.155' AND THUOC_41_VI_PHAM_CHI_DINH(XML1, XML2)": 1,
+      "XML2.MA_THUOC == '40.169' AND XML2.SO_LUONG != (XML2.TAN_SUAT * XML2.SL_MOI_LAN)": 1,
+      "XML2.MA_THUOC == '40.718' AND ENGINE_RULE_THUOC_63": 7,
+      "XML2.MA_THUOC == '40.775' AND THUOC_267_VI_PHAM_CHI_DINH(XML1, XML2)": 1,
+      "XML2.SO_LUONG < (XML2.SL_MOI_NGAY * XML2.SO_NGAY)": 15,
+      "XML2.SO_LUONG > (XML2.SL_MOI_NGAY * XML2.SO_NGAY)": 32,
+      "XML3.MA_DICH_VU == '10.0557.0494_GT' AND NOT (XML1.MA_BENH STARTS_WITH 'K60.3' OR XML1.MA_BENH STARTS_WITH 'K60.4')": 2,
+      "XML3.MA_DICH_VU == '13.0002.0672_GT' AND NOT (XML1.MA_BENH STARTS_WITH 'O82')": 16,
+      "XML3.MA_DICH_VU == '13.0069.0681' AND COUNT_IF(DS_XML4, item => item.MA_NV != \"\") < 3": 1,
+      "XML3.MA_DICH_VU == '13.0071.0679_GT' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Giải phẫu bệnh') == 0": 1,
+      "XML3.MA_DICH_VU == '13.0122.0688_GT' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Giải phẫu bệnh') == 0": 1,
+      "XML3.MA_DICH_VU == '13.0235.0727' AND COUNT_IF(DS_XML3, item => item.TEN_DICH_VU CONTAINS 'Siêu âm thai') == 0": 1,
+      "XML3.MA_DICH_VU == '13.0235.0727' AND NOT (XML1.MA_BENH STARTS_WITH 'O04' OR XML1.MA_BENHKEM CONTAINS 'O34.2')": 1,
+      "XML3.MA_DICH_VU == '13.0235.0727' AND XML1.MA_BENH STARTS_WITH 'O00'": 1,
+      "XML3.MA_DICH_VU == '18.0026.0069' AND NOT (XML1.MA_BENH STARTS_WITH 'O36' OR XML1.MA_BENH STARTS_WITH 'O43' OR XML1.MA_BENH STARTS_WITH 'Z35')": 3,
+      "XML3.MA_DICH_VU == '23.0206.1596' AND NOT (XML1.MA_BENH_CHINH STARTS_WITH 'N' OR XML1.MA_BENH_CHINH STARTS_WITH 'O' OR XML1.MA_BENH_KT CONTAINS 'N' OR XML1.MA_BENH_KT CONTAINS 'O')": 1,
+      "XML3.MA_DICH_VU == '23.0228.1483' AND NOT (XML1.MA_BENH STARTS_WITH 'A' OR XML1.MA_BENH STARTS_WITH 'B' OR XML1.MA_BENH STARTS_WITH 'R50' OR XML1.MA_BENH STARTS_WITH 'R57' OR XML1.MA_BENH STARTS_WITH 'O85' OR XML1.MA_BENH STARTS_WITH 'P35' OR XML1.MA_BENH STARTS_WITH 'P36' OR XML1.MA_BENH STARTS_WITH 'P37' OR XML1.MA_BENH STARTS_WITH 'P38' OR XML1.MA_BENH STARTS_WITH 'P39' OR XML1.MA_BENH STARTS_WITH 'I20' OR XML1.MA_BENH STARTS_WITH 'I21' OR XML1.MA_BENH STARTS_WITH 'I22' OR XML1.MA_BENH STARTS_WITH 'I23' OR XML1.MA_BENH STARTS_WITH 'I24' OR XML1.MA_BENH STARTS_WITH 'I25' OR XML1.MA_BENH STARTS_WITH 'L51' OR XML1.MA_BENH STARTS_WITH 'L03' OR XML1.MA_BENH STARTS_WITH 'M32' OR XML1.MA_BENH STARTS_WITH 'M33' OR XML1.MA_BENH STARTS_WITH 'M34' OR XML1.MA_BENH STARTS_WITH 'M35' OR XML1.MA_BENH STARTS_WITH 'M36' OR XML1.MA_BENHKEM CONTAINS 'R50' OR XML1.MA_BENHKEM CONTAINS 'R57' OR XML1.MA_BENHKEM CONTAINS 'O85' OR XML1.MA_BENHKEM CONTAINS 'P35' OR XML1.MA_BENHKEM CONTAINS 'P36' OR XML1.MA_BENHKEM CONTAINS 'P37' OR XML1.MA_BENHKEM CONTAINS 'P38' OR XML1.MA_BENHKEM CONTAINS 'P39' OR XML1.MA_BENHKEM CONTAINS 'I20' OR XML1.MA_BENHKEM CONTAINS 'I21' OR XML1.MA_BENHKEM CONTAINS 'I22' OR XML1.MA_BENHKEM CONTAINS 'I23' OR XML1.MA_BENHKEM CONTAINS 'I24' OR XML1.MA_BENHKEM CONTAINS 'I25' OR XML1.MA_BENHKEM CONTAINS 'L51' OR XML1.MA_BENHKEM CONTAINS 'L03' OR XML1.MA_BENHKEM CONTAINS 'M32' OR XML1.MA_BENHKEM CONTAINS 'M33' OR XML1.MA_BENHKEM CONTAINS 'M34' OR XML1.MA_BENHKEM CONTAINS 'M35' OR XML1.MA_BENHKEM CONTAINS 'M36' OR XML1.MA_BENHKEM CONTAINS 'A0' OR XML1.MA_BENHKEM CONTAINS 'A1' OR XML1.MA_BENHKEM CONTAINS 'A2' OR XML1.MA_BENHKEM CONTAINS 'A3' OR XML1.MA_BENHKEM CONTAINS 'A4' OR XML1.MA_BENHKEM CONTAINS 'B0' OR XML1.MA_BENHKEM CONTAINS 'B1' OR XML1.MA_BENHKEM CONTAINS 'B2' OR XML1.MA_BENHKEM CONTAINS 'B9')": 12
+    },
+    "rule_summary": {
+      "CDHA_101": 6,
+      "CDHA_202": 9,
+      "Chuyen_de_003": 58,
+      "Chuyen_de_052": 64,
+      "Chuyen_de_063": 58,
+      "Chuyen_de_090": 4,
+      "Chuyen_de_094": 58,
+      "Chuyen_de_101": 1,
+      "Chuyen_de_102": 58,
+      "Chuyen_de_145": 58,
+      "Chuyen_de_166": 156,
+      "Chuyen_de_261": 4,
+      "Chuyen_de_268": 6,
+      "Chuyen_de_375": 8,
+      "Chuyen_de_424": 1,
+      "Chuyen_de_434": 2,
+      "Chuyen_de_442": 5,
+      "Chuyen_de_540": 6,
+      "Chuyen_de_557": 1,
+      "CK_14": 1,
+      "CLN-CHI-01": 30,
+      "CLN-CT-01": 3,
+      "CLN-CT-02": 3,
+      "CLN-GIUONG-01": 8,
+      "CLN-PTTT-02": 10,
+      "CLN-PTTT-05": 10,
+      "CLN-PTTT-08": 5,
+      "CLN-XDC-04": 7,
+      "DM-THUOC-04": 31,
+      "DVKT_0024": 12,
+      "DVKT_0261": 1,
+      "DVKT_1582": 3,
+      "DVKT_1642": 1,
+      "DVKT_1643": 1,
+      "DVKT_1645": 1,
+      "DVKT_1745": 1,
+      "DVKT_2587": 16,
+      "DVKT_2622": 1,
+      "DVKT_2639": 1,
+      "DVKT_2696": 2,
+      "DVKT-OP-03": 989,
+      "DVKT-OP-04": 44,
+      "DVKT-OP-09": 304,
+      "DVKT-OP-10": 989,
+      "GB_27": 10,
+      "GB_47": 3,
+      "GB_75": 3,
+      "GDH_4210_1": 91,
+      "GDH_4210_17": 1,
+      "GDH_4210_31": 20,
+      "GDH_4210_34": 3,
+      "GDH_4210_43": 14,
+      "GDH_4210_45": 14,
+      "GDH_4210_48": 4,
+      "GDH_9324_3": 84,
+      "GDH_9324_4": 41,
+      "HC_06": 2,
+      "HC_13": 6,
+      "HC_130": 101,
+      "HC_171": 156,
+      "HC_181": 3,
+      "HC_194": 3,
+      "HC_210": 3,
+      "HC_215": 6,
+      "HC_242": 3,
+      "HC_246": 3,
+      "HC_250": 5,
+      "HC_40": 3,
+      "HC_43": 3,
+      "HC_46": 18,
+      "HC_49": 21,
+      "HC_58": 2,
+      "HC_60": 1,
+      "HC_65": 8,
+      "HC_68": 21,
+      "HC_76": 1,
+      "HC_95": 3,
+      "HC_99": 1,
+      "HC-01b": 1,
+      "HC-06": 3,
+      "HC-06d": 4,
+      "HC-07": 21,
+      "HD_14": 5,
+      "ICD-TT06-CAM-CHINH": 1,
+      "ICD-TT06-CU-THE-HON": 31,
+      "THUOC_267": 1,
+      "THUOC_373": 1,
+      "THUOC_374": 2,
+      "THUOC_391": 15,
+      "THUOC_394": 1,
+      "THUOC_41": 1,
+      "THUOC_417": 32,
+      "THUOC_451": 14,
+      "THUOC_535": 6,
+      "THUOC_538": 3,
+      "THUOC_63": 7,
+      "THUOC_ICD_CONTRA_MAPPING": 7,
+      "TUONGTAC_059": 1,
+      "TUONGTAC_091": 1,
+      "TUONGTAC_136": 45,
+      "XML_109": 1,
+      "XML_143": 4,
+      "XML_18": 5,
+      "XML_26": 3,
+      "XML_36": 1,
+      "XML_37": 5,
+      "XML_38": 4,
+      "XML_49": 23,
+      "XML_53": 52,
+      "XML_59": 3,
+      "XML_64": 1,
+      "XML_88": 21,
+      "XML_90": 1,
+      "XML1-MATHE-FORMAT": 1,
+      "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 40,
+      "XML1-REQ-CHAN_DOAN_RV": 5,
+      "XML1-REQ-CHAN_DOAN_VAO": 62,
+      "XML1-REQ-GIOI_TINH": 1,
+      "XML1-REQ-LY_DO_VV": 2,
+      "XML1-REQ-MA_BENH_CHINH": 21,
+      "XML1-REQ-MA_DOITUONG_KCB": 4,
+      "XML1-REQ-MA_LOAI_RV": 1,
+      "XML1-REQ-MA_QUOCTICH": 1,
+      "XML1-REQ-NGAY_RA": 3,
+      "XML2-MAXLEN-DON_GIA": 3,
+      "XML2-NEG-T_BNTT": 2,
+      "XML2-REQ-TT_THAU": 61,
+      "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 11,
+      "XML2-TIME-NGAY_YL-AFTER-OUT": 2,
+      "XML3-REQ-NGAY_KQ": 32,
+      "XML3-TIME-KQ-BEFORE-YL": 4,
+      "XML3-TIME-NGAY_TH_YL-AFTER-OUT": 6,
+      "XML3-TIME-NGAY_TH_YL-BEFORE-IN": 1,
+      "XML3-TIME-NGAY_YL-AFTER-OUT": 4,
+      "XML3-TIME-NGAY_YL-BEFORE-IN": 1,
+      "XML3-TIME-THYL-BEFORE-YL": 6,
+      "XML4-TIME-NGAY_KQ-AFTER-OUT": 2,
+      "XML7-REQ-SO_LUU_TRU": 125,
+      "XML8-REQ-MA_KHOA_RV": 115,
+      "XML8-REQ-MA_YTE": 115,
+      "XML8-REQ-SO_LUU_TRU": 115
+    }
+  },
+  "rule_prevalence_top40": [
+    {
+      "ma_luat": "DVKT-OP-03",
+      "files_hit": 159,
+      "pct_files": 100
+    },
+    {
+      "ma_luat": "DVKT-OP-10",
+      "files_hit": 159,
+      "pct_files": 100
+    },
+    {
+      "ma_luat": "Chuyen_de_166",
+      "files_hit": 156,
+      "pct_files": 98.1
+    },
+    {
+      "ma_luat": "HC_171",
+      "files_hit": 156,
+      "pct_files": 98.1
+    },
+    {
+      "ma_luat": "DVKT-OP-09",
+      "files_hit": 133,
+      "pct_files": 83.6
+    },
+    {
+      "ma_luat": "XML7-REQ-SO_LUU_TRU",
+      "files_hit": 125,
+      "pct_files": 78.6
+    },
+    {
+      "ma_luat": "XML8-REQ-MA_KHOA_RV",
+      "files_hit": 115,
+      "pct_files": 72.3
+    },
+    {
+      "ma_luat": "XML8-REQ-MA_YTE",
+      "files_hit": 115,
+      "pct_files": 72.3
+    },
+    {
+      "ma_luat": "XML8-REQ-SO_LUU_TRU",
+      "files_hit": 115,
+      "pct_files": 72.3
+    },
+    {
+      "ma_luat": "HC_130",
+      "files_hit": 101,
+      "pct_files": 63.5
+    },
+    {
+      "ma_luat": "GDH_4210_1",
+      "files_hit": 91,
+      "pct_files": 57.2
+    },
+    {
+      "ma_luat": "Chuyen_de_052",
+      "files_hit": 64,
+      "pct_files": 40.3
+    },
+    {
+      "ma_luat": "XML1-REQ-CHAN_DOAN_VAO",
+      "files_hit": 62,
+      "pct_files": 39
+    },
+    {
+      "ma_luat": "Chuyen_de_003",
+      "files_hit": 58,
+      "pct_files": 36.5
+    },
+    {
+      "ma_luat": "Chuyen_de_063",
+      "files_hit": 58,
+      "pct_files": 36.5
+    },
+    {
+      "ma_luat": "Chuyen_de_094",
+      "files_hit": 58,
+      "pct_files": 36.5
+    },
+    {
+      "ma_luat": "Chuyen_de_102",
+      "files_hit": 58,
+      "pct_files": 36.5
+    },
+    {
+      "ma_luat": "Chuyen_de_145",
+      "files_hit": 58,
+      "pct_files": 36.5
+    },
+    {
+      "ma_luat": "XML_53",
+      "files_hit": 52,
+      "pct_files": 32.7
+    },
+    {
+      "ma_luat": "TUONGTAC_136",
+      "files_hit": 45,
+      "pct_files": 28.3
+    },
+    {
+      "ma_luat": "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT",
+      "files_hit": 40,
+      "pct_files": 25.2
+    },
+    {
+      "ma_luat": "DVKT-OP-04",
+      "files_hit": 40,
+      "pct_files": 25.2
+    },
+    {
+      "ma_luat": "ICD-TT06-CU-THE-HON",
+      "files_hit": 31,
+      "pct_files": 19.5
+    },
+    {
+      "ma_luat": "CLN-CHI-01",
+      "files_hit": 30,
+      "pct_files": 18.9
+    },
+    {
+      "ma_luat": "DM-THUOC-04",
+      "files_hit": 30,
+      "pct_files": 18.9
+    },
+    {
+      "ma_luat": "XML3-REQ-NGAY_KQ",
+      "files_hit": 25,
+      "pct_files": 15.7
+    },
+    {
+      "ma_luat": "XML_49",
+      "files_hit": 23,
+      "pct_files": 14.5
+    },
+    {
+      "ma_luat": "GDH_9324_4",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "HC_68",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "XML_88",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "HC_49",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "HC-07",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "XML1-REQ-MA_BENH_CHINH",
+      "files_hit": 21,
+      "pct_files": 13.2
+    },
+    {
+      "ma_luat": "GDH_4210_31",
+      "files_hit": 20,
+      "pct_files": 12.6
+    },
+    {
+      "ma_luat": "THUOC_417",
+      "files_hit": 20,
+      "pct_files": 12.6
+    },
+    {
+      "ma_luat": "HC_46",
+      "files_hit": 18,
+      "pct_files": 11.3
+    },
+    {
+      "ma_luat": "GDH_9324_3",
+      "files_hit": 17,
+      "pct_files": 10.7
+    },
+    {
+      "ma_luat": "XML2-REQ-TT_THAU",
+      "files_hit": 17,
+      "pct_files": 10.7
+    },
+    {
+      "ma_luat": "DVKT_2587",
+      "files_hit": 16,
+      "pct_files": 10.1
+    },
+    {
+      "ma_luat": "THUOC_391",
+      "files_hit": 14,
+      "pct_files": 8.8
+    }
+  ],
+  "false_positive_triage_hints": {
+    "note": "pct_files = so ho so co >=1 canh bao ma luat do. pct_dvkt_op = ty trong canh bao tu DVKT_OP / DVKT-OP-* tren tong canh bao ho so (cao => uu tien doi chieu mapping nhan su / thoi diem hanh nghe).",
+    "top_30_ho_so_theo_ty_le_DVKT_OP": [
+      {
+        "ma_lk": "000404",
+        "file": "PC022601007_IP26000109.xml",
+        "total_warnings": 32,
+        "dvkt_op_warnings": 25,
+        "pct_dvkt_op": 78.1,
+        "by_severity": {
+          "Critical": 2,
+          "Warning": 30
+        },
+        "by_tang_V15": {
+          "L0": 1,
+          "L1": 2,
+          "L4": 4,
+          "L5": 25
+        },
+        "top_rules": {
+          "DVKT-OP-03": 11,
+          "DVKT-OP-10": 11,
+          "DVKT-OP-09": 2,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "GB_27": 1,
+          "GDH_4210_43": 1,
+          "HC_171": 1,
+          "TUONGTAC_136": 1,
+          "XML1-REQ-CHAN_DOAN_VAO": 1
+        }
+      },
+      {
+        "ma_lk": "000495",
+        "file": "PC022602344_IP26000200.xml",
+        "total_warnings": 22,
+        "dvkt_op_warnings": 16,
+        "pct_dvkt_op": 72.7,
+        "by_severity": {
+          "Critical": 2,
+          "Error": 1,
+          "Warning": 19
+        },
+        "by_tang_V15": {
+          "L0": 3,
+          "L1": 1,
+          "L4": 2,
+          "L5": 16
+        },
+        "top_rules": {
+          "DVKT-OP-03": 7,
+          "DVKT-OP-10": 7,
+          "DVKT-OP-09": 2,
+          "Chuyen_de_090": 1,
+          "Chuyen_de_166": 1,
+          "HC_171": 1,
+          "XML1-REQ-CHAN_DOAN_VAO": 1,
+          "XML1-REQ-MA_QUOCTICH": 1,
+          "XML7-REQ-SO_LUU_TRU": 1
+        }
+      },
+      {
+        "ma_lk": "000518",
+        "file": "PC022509335_IP26000223.xml",
+        "total_warnings": 48,
+        "dvkt_op_warnings": 33,
+        "pct_dvkt_op": 68.8,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 43
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 3,
+          "L4": 7,
+          "L5": 33
+        },
+        "top_rules": {
+          "DVKT-OP-03": 13,
+          "DVKT-OP-10": 13,
+          "DVKT-OP-09": 6,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "HC_130": 1,
+          "HC_171": 1
+        }
+      },
+      {
+        "ma_lk": "000544",
+        "file": "PC022600363_IP26000249.xml",
+        "total_warnings": 50,
+        "dvkt_op_warnings": 34,
+        "pct_dvkt_op": 68,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 45
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 3,
+          "L4": 8,
+          "L5": 34
+        },
+        "top_rules": {
+          "DVKT-OP-03": 13,
+          "DVKT-OP-10": 13,
+          "DVKT-OP-09": 7,
+          "CDHA_202": 1,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000365",
+        "file": "PC022601698_IP26000070.xml",
+        "total_warnings": 36,
+        "dvkt_op_warnings": 24,
+        "pct_dvkt_op": 66.7,
+        "by_severity": {
+          "Critical": 1,
+          "Warning": 35
+        },
+        "by_tang_V15": {
+          "L1": 2,
+          "L4": 10,
+          "L5": 24
+        },
+        "top_rules": {
+          "DVKT-OP-03": 10,
+          "DVKT-OP-10": 10,
+          "DVKT-OP-04": 2,
+          "DVKT-OP-09": 2,
+          "CDHA_101": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_166": 1,
+          "Chuyen_de_442": 1,
+          "DVKT_0024": 1,
+          "GDH_4210_1": 1,
+          "HC_171": 1,
+          "THUOC_374": 1
+        }
+      },
+      {
+        "ma_lk": "000409",
+        "file": "PC022602004_IP26000114.xml",
+        "total_warnings": 33,
+        "dvkt_op_warnings": 22,
+        "pct_dvkt_op": 66.7,
+        "by_severity": {
+          "Critical": 2,
+          "Error": 2,
+          "Warning": 29
+        },
+        "by_tang_V15": {
+          "L0": 2,
+          "L1": 3,
+          "L4": 6,
+          "L5": 22
+        },
+        "top_rules": {
+          "DVKT-OP-03": 10,
+          "DVKT-OP-10": 10,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_166": 1,
+          "CLN-CHI-01": 1,
+          "DVKT_1582": 1,
+          "DVKT-OP-04": 1,
+          "DVKT-OP-09": 1,
+          "GB_27": 1,
+          "GDH_4210_43": 1,
+          "HC_171": 1,
+          "TUONGTAC_136": 1
+        }
+      },
+      {
+        "ma_lk": "ER26000100",
+        "file": "PC022406916_ER26000100.xml",
+        "total_warnings": 21,
+        "dvkt_op_warnings": 14,
+        "pct_dvkt_op": 66.7,
+        "by_severity": {
+          "Error": 1,
+          "Warning": 20
+        },
+        "by_tang_V15": {
+          "L1": 2,
+          "L23": 1,
+          "L4": 4,
+          "L5": 14
+        },
+        "top_rules": {
+          "DVKT-OP-03": 6,
+          "DVKT-OP-10": 6,
+          "DVKT-OP-04": 2,
+          "THUOC_417": 2,
+          "CDHA_101": 1,
+          "Chuyen_de_442": 1,
+          "HC_194": 1,
+          "HC-06": 1,
+          "ICD-TT06-CAM-CHINH": 1
+        }
+      },
+      {
+        "ma_lk": "000502",
+        "file": "PC022303311_IP26000207.xml",
+        "total_warnings": 56,
+        "dvkt_op_warnings": 37,
+        "pct_dvkt_op": 66.1,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 51
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 4,
+          "L4": 10,
+          "L5": 37
+        },
+        "top_rules": {
+          "DVKT-OP-03": 16,
+          "DVKT-OP-10": 16,
+          "DVKT-OP-09": 4,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "Chuyen_de_442": 1,
+          "CLN-GIUONG-01": 1
+        }
+      },
+      {
+        "ma_lk": "000376",
+        "file": "PC022115527_IP26000081.xml",
+        "total_warnings": 41,
+        "dvkt_op_warnings": 27,
+        "pct_dvkt_op": 65.9,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 1,
+          "Warning": 39
+        },
+        "by_tang_V15": {
+          "L0": 1,
+          "L1": 4,
+          "L4": 9,
+          "L5": 27
+        },
+        "top_rules": {
+          "DVKT-OP-03": 12,
+          "DVKT-OP-10": 12,
+          "DVKT-OP-09": 3,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "CLN-CHI-01": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000456",
+        "file": "PC022517267_IP26000161.xml",
+        "total_warnings": 41,
+        "dvkt_op_warnings": 27,
+        "pct_dvkt_op": 65.9,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 36
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 1,
+          "L4": 8,
+          "L5": 27
+        },
+        "top_rules": {
+          "DVKT-OP-03": 11,
+          "DVKT-OP-10": 11,
+          "DVKT-OP-09": 5,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "HC_171": 1,
+          "TUONGTAC_136": 1
+        }
+      },
+      {
+        "ma_lk": "000309",
+        "file": "PC022601287_IP26000014.xml",
+        "total_warnings": 20,
+        "dvkt_op_warnings": 13,
+        "pct_dvkt_op": 65,
+        "by_severity": {
+          "Critical": 2,
+          "Warning": 18
+        },
+        "by_tang_V15": {
+          "L0": 1,
+          "L1": 5,
+          "L4": 1,
+          "L5": 13
+        },
+        "top_rules": {
+          "DVKT-OP-03": 6,
+          "DVKT-OP-10": 6,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-09": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "HC_46": 1,
+          "HC_99": 1,
+          "XML1-REQ-MA_LOAI_RV": 1
+        }
+      },
+      {
+        "ma_lk": "000524",
+        "file": "PC022602496_IP26000229.xml",
+        "total_warnings": 68,
+        "dvkt_op_warnings": 44,
+        "pct_dvkt_op": 64.7,
+        "by_severity": {
+          "Critical": 3,
+          "Error": 4,
+          "Warning": 61
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 9,
+          "L4": 10,
+          "L5": 44
+        },
+        "top_rules": {
+          "DVKT-OP-03": 19,
+          "DVKT-OP-10": 19,
+          "DVKT-OP-09": 4,
+          "DVKT-OP-04": 2,
+          "GDH_9324_4": 2,
+          "CDHA_202": 1,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1
+        }
+      },
+      {
+        "ma_lk": "000469",
+        "file": "PC022602033_IP26000174.xml",
+        "total_warnings": 30,
+        "dvkt_op_warnings": 19,
+        "pct_dvkt_op": 63.3,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 5,
+          "Warning": 24
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 2,
+          "L23": 1,
+          "L4": 4,
+          "L5": 19
+        },
+        "top_rules": {
+          "DVKT-OP-03": 8,
+          "DVKT-OP-10": 8,
+          "DVKT-OP-09": 3,
+          "Chuyen_de_166": 1,
+          "DM-THUOC-04": 1,
+          "GDH_4210_1": 1,
+          "HC_171": 1,
+          "THUOC_391": 1,
+          "THUOC_451": 1,
+          "THUOC_ICD_CONTRA_MAPPING": 1,
+          "XML7-REQ-SO_LUU_TRU": 1,
+          "XML8-REQ-MA_KHOA_RV": 1
+        }
+      },
+      {
+        "ma_lk": "000449",
+        "file": "PC022601462_IP26000154.xml",
+        "total_warnings": 43,
+        "dvkt_op_warnings": 27,
+        "pct_dvkt_op": 62.8,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 38
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 3,
+          "L4": 8,
+          "L5": 27
+        },
+        "top_rules": {
+          "DVKT-OP-03": 11,
+          "DVKT-OP-10": 11,
+          "DVKT-OP-09": 5,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "HC_130": 1,
+          "HC_171": 1
+        }
+      },
+      {
+        "ma_lk": "000354",
+        "file": "PC022601467_IP26000059.xml",
+        "total_warnings": 45,
+        "dvkt_op_warnings": 28,
+        "pct_dvkt_op": 62.2,
+        "by_severity": {
+          "Critical": 3,
+          "Error": 1,
+          "Warning": 41
+        },
+        "by_tang_V15": {
+          "L0": 2,
+          "L1": 8,
+          "L4": 7,
+          "L5": 28
+        },
+        "top_rules": {
+          "DVKT-OP-03": 12,
+          "DVKT-OP-10": 12,
+          "DVKT-OP-09": 4,
+          "GDH_9324_4": 2,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "GDH_4210_31": 1
+        }
+      },
+      {
+        "ma_lk": "000499",
+        "file": "PC022602127_IP26000204.xml",
+        "total_warnings": 42,
+        "dvkt_op_warnings": 26,
+        "pct_dvkt_op": 61.9,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 37
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 3,
+          "L4": 8,
+          "L5": 26
+        },
+        "top_rules": {
+          "DVKT-OP-03": 10,
+          "DVKT-OP-10": 10,
+          "DVKT-OP-09": 6,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "HC_130": 1,
+          "HC_171": 1
+        }
+      },
+      {
+        "ma_lk": "000551",
+        "file": "PC022210012_IP26000256.xml",
+        "total_warnings": 39,
+        "dvkt_op_warnings": 24,
+        "pct_dvkt_op": 61.5,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 34
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 3,
+          "L4": 8,
+          "L5": 24
+        },
+        "top_rules": {
+          "DVKT-OP-03": 10,
+          "DVKT-OP-10": 10,
+          "DVKT-OP-09": 4,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "GDH_4210_1": 1,
+          "HC_171": 1
+        }
+      },
+      {
+        "ma_lk": "000298",
+        "file": "PC022400905_IP26000003.xml",
+        "total_warnings": 26,
+        "dvkt_op_warnings": 16,
+        "pct_dvkt_op": 61.5,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 5,
+          "Warning": 20
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 3,
+          "L23": 1,
+          "L4": 2,
+          "L5": 16
+        },
+        "top_rules": {
+          "DVKT-OP-03": 6,
+          "DVKT-OP-10": 6,
+          "DVKT-OP-09": 3,
+          "CDHA_202": 1,
+          "Chuyen_de_166": 1,
+          "DM-THUOC-04": 1,
+          "DVKT-OP-04": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "XML7-REQ-SO_LUU_TRU": 1,
+          "XML8-REQ-MA_KHOA_RV": 1
+        }
+      },
+      {
+        "ma_lk": "000395",
+        "file": "PC022507424_IP26000100.xml",
+        "total_warnings": 13,
+        "dvkt_op_warnings": 8,
+        "pct_dvkt_op": 61.5,
+        "by_severity": {
+          "Critical": 1,
+          "Warning": 12
+        },
+        "by_tang_V15": {
+          "L1": 4,
+          "L4": 1,
+          "L5": 8
+        },
+        "top_rules": {
+          "DVKT-OP-03": 3,
+          "DVKT-OP-10": 3,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "DVKT-OP-09": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "HC_46": 1
+        }
+      },
+      {
+        "ma_lk": "000517",
+        "file": "PC022404074_IP26000222.xml",
+        "total_warnings": 49,
+        "dvkt_op_warnings": 30,
+        "pct_dvkt_op": 61.2,
+        "by_severity": {
+          "Critical": 3,
+          "Error": 4,
+          "Warning": 42
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 6,
+          "L4": 8,
+          "L5": 30
+        },
+        "top_rules": {
+          "DVKT-OP-03": 12,
+          "DVKT-OP-10": 12,
+          "DVKT-OP-09": 6,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000411",
+        "file": "PC022311678_IP26000116.xml",
+        "total_warnings": 40,
+        "dvkt_op_warnings": 24,
+        "pct_dvkt_op": 60,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 35
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 4,
+          "L4": 8,
+          "L5": 24
+        },
+        "top_rules": {
+          "DVKT-OP-03": 10,
+          "DVKT-OP-10": 10,
+          "DVKT-OP-09": 4,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000503",
+        "file": "PC022509360_IP26000208.xml",
+        "total_warnings": 40,
+        "dvkt_op_warnings": 24,
+        "pct_dvkt_op": 60,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 35
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 3,
+          "L4": 8,
+          "L5": 24
+        },
+        "top_rules": {
+          "DVKT-OP-03": 11,
+          "DVKT-OP-10": 11,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "DVKT-OP-04": 1,
+          "DVKT-OP-09": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000308",
+        "file": "PC022209964_IP26000013.xml",
+        "total_warnings": 35,
+        "dvkt_op_warnings": 21,
+        "pct_dvkt_op": 60,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 1,
+          "Warning": 33
+        },
+        "by_tang_V15": {
+          "L0": 2,
+          "L1": 2,
+          "L4": 10,
+          "L5": 21
+        },
+        "top_rules": {
+          "DVKT-OP-03": 9,
+          "DVKT-OP-10": 9,
+          "DVKT-OP-09": 3,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT_2587": 1,
+          "HC_130": 1
+        }
+      },
+      {
+        "ma_lk": "000478",
+        "file": "PC022602227_IP26000183.xml",
+        "total_warnings": 46,
+        "dvkt_op_warnings": 27,
+        "pct_dvkt_op": 58.7,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 41
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 3,
+          "L23": 1,
+          "L4": 11,
+          "L5": 27
+        },
+        "top_rules": {
+          "DVKT-OP-03": 13,
+          "DVKT-OP-10": 13,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "CLN-PTTT-02": 1,
+          "CLN-PTTT-05": 1,
+          "DVKT_0261": 1
+        }
+      },
+      {
+        "ma_lk": "000520",
+        "file": "PC022405576_IP26000225.xml",
+        "total_warnings": 36,
+        "dvkt_op_warnings": 21,
+        "pct_dvkt_op": 58.3,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 31
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 2,
+          "L4": 8,
+          "L5": 21
+        },
+        "top_rules": {
+          "DVKT-OP-03": 9,
+          "DVKT-OP-10": 9,
+          "DVKT-OP-09": 3,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "HC_171": 1,
+          "TUONGTAC_136": 1
+        }
+      },
+      {
+        "ma_lk": "000402",
+        "file": "PC022600755_IP26000107.xml",
+        "total_warnings": 24,
+        "dvkt_op_warnings": 14,
+        "pct_dvkt_op": 58.3,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 19
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 2,
+          "L4": 3,
+          "L5": 14
+        },
+        "top_rules": {
+          "DVKT-OP-03": 6,
+          "DVKT-OP-10": 6,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "DVKT-OP-09": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "THUOC_417": 1,
+          "XML1-REQ-CHAN_DOAN_VAO": 1,
+          "XML7-REQ-SO_LUU_TRU": 1,
+          "XML8-REQ-MA_KHOA_RV": 1
+        }
+      },
+      {
+        "ma_lk": "000338",
+        "file": "PC022601436_IP26000043.xml",
+        "total_warnings": 31,
+        "dvkt_op_warnings": 18,
+        "pct_dvkt_op": 58.1,
+        "by_severity": {
+          "Critical": 2,
+          "Error": 5,
+          "Warning": 24
+        },
+        "by_tang_V15": {
+          "L0": 5,
+          "L1": 5,
+          "L23": 1,
+          "L4": 2,
+          "L5": 18
+        },
+        "top_rules": {
+          "DVKT-OP-03": 8,
+          "DVKT-OP-10": 8,
+          "DVKT-OP-09": 2,
+          "Chuyen_de_166": 1,
+          "GDH_4210_1": 1,
+          "GDH_4210_43": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "HC_250": 1,
+          "ICD-TT06-CU-THE-HON": 1,
+          "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 1,
+          "XML3-REQ-NGAY_KQ": 1
+        }
+      },
+      {
+        "ma_lk": "000369",
+        "file": "PC022601649_IP26000074.xml",
+        "total_warnings": 31,
+        "dvkt_op_warnings": 18,
+        "pct_dvkt_op": 58.1,
+        "by_severity": {
+          "Error": 2,
+          "Warning": 29
+        },
+        "by_tang_V15": {
+          "L0": 1,
+          "L1": 4,
+          "L4": 8,
+          "L5": 18
+        },
+        "top_rules": {
+          "DVKT-OP-03": 8,
+          "DVKT-OP-10": 8,
+          "DVKT-OP-09": 2,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_052": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "CLN-CHI-01": 1,
+          "HC_171": 1
+        }
+      },
+      {
+        "ma_lk": "000335",
+        "file": "PC022601423_IP26000040.xml",
+        "total_warnings": 19,
+        "dvkt_op_warnings": 11,
+        "pct_dvkt_op": 57.9,
+        "by_severity": {
+          "Critical": 1,
+          "Error": 4,
+          "Warning": 14
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 3,
+          "L4": 1,
+          "L5": 11
+        },
+        "top_rules": {
+          "DVKT-OP-03": 4,
+          "DVKT-OP-10": 4,
+          "DVKT-OP-09": 3,
+          "Chuyen_de_166": 1,
+          "GDH_4210_1": 1,
+          "HC_130": 1,
+          "HC_171": 1,
+          "XML7-REQ-SO_LUU_TRU": 1,
+          "XML8-REQ-MA_KHOA_RV": 1,
+          "XML8-REQ-MA_YTE": 1,
+          "XML8-REQ-SO_LUU_TRU": 1
+        }
+      },
+      {
+        "ma_lk": "000454",
+        "file": "PC022602129_IP26000159.xml",
+        "total_warnings": 45,
+        "dvkt_op_warnings": 26,
+        "pct_dvkt_op": 57.8,
+        "by_severity": {
+          "Critical": 3,
+          "Error": 4,
+          "Warning": 38
+        },
+        "by_tang_V15": {
+          "L0": 4,
+          "L1": 9,
+          "L4": 6,
+          "L5": 26
+        },
+        "top_rules": {
+          "DVKT-OP-03": 11,
+          "DVKT-OP-10": 11,
+          "DVKT-OP-09": 3,
+          "GDH_9324_4": 2,
+          "Chuyen_de_003": 1,
+          "Chuyen_de_063": 1,
+          "Chuyen_de_094": 1,
+          "Chuyen_de_102": 1,
+          "Chuyen_de_145": 1,
+          "Chuyen_de_166": 1,
+          "DVKT-OP-04": 1,
+          "GDH_4210_1": 1
+        }
+      }
+    ]
+  },
+  "per_hoso": [
+    {
+      "ma_lk": "000524",
+      "file": "PC022602496_IP26000229.xml",
+      "total_warnings": 68,
+      "dvkt_op_warnings": 44,
+      "pct_dvkt_op": 64.7,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 61
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 9,
+        "L4": 10,
+        "L5": 44
+      },
+      "top_rules": {
+        "DVKT-OP-03": 19,
+        "DVKT-OP-10": 19,
+        "DVKT-OP-09": 4,
+        "DVKT-OP-04": 2,
+        "GDH_9324_4": 2,
+        "CDHA_202": 1,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1
+      }
+    },
+    {
+      "ma_lk": "000324",
+      "file": "PC022507539_IP26000029.xml",
+      "total_warnings": 59,
+      "dvkt_op_warnings": 29,
+      "pct_dvkt_op": 49.2,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 8,
+        "Warning": 49
+      },
+      "by_tang_V15": {
+        "L0": 9,
+        "L1": 10,
+        "L4": 11,
+        "L5": 29
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "DVKT-OP-09": 5,
+        "XML2-REQ-TT_THAU": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_268": 1,
+        "GDH_4210_34": 1
+      }
+    },
+    {
+      "ma_lk": "000437",
+      "file": "PC022602086_IP26000142.xml",
+      "total_warnings": 59,
+      "dvkt_op_warnings": 23,
+      "pct_dvkt_op": 39,
+      "by_severity": {
+        "Critical": 11,
+        "Error": 5,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 12,
+        "L4": 18,
+        "L5": 23
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "GDH_4210_45": 7,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT_2587": 1
+      }
+    },
+    {
+      "ma_lk": "000491",
+      "file": "PC022508954_IP26000196.xml",
+      "total_warnings": 57,
+      "dvkt_op_warnings": 32,
+      "pct_dvkt_op": 56.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 52
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 9,
+        "L4": 12,
+        "L5": 32
+      },
+      "top_rules": {
+        "DVKT-OP-03": 13,
+        "DVKT-OP-10": 13,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_268": 1,
+        "DVKT_2587": 1
+      }
+    },
+    {
+      "ma_lk": "000302",
+      "file": "PC022601232_IP26000007.xml",
+      "total_warnings": 57,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 47.4,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 2,
+        "Warning": 51
+      },
+      "by_tang_V15": {
+        "L0": 3,
+        "L1": 8,
+        "L23": 1,
+        "L4": 18,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "THUOC_417": 4,
+        "DVKT-OP-04": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1
+      }
+    },
+    {
+      "ma_lk": "000502",
+      "file": "PC022303311_IP26000207.xml",
+      "total_warnings": 56,
+      "dvkt_op_warnings": 37,
+      "pct_dvkt_op": 66.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 51
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 4,
+        "L4": 10,
+        "L5": 37
+      },
+      "top_rules": {
+        "DVKT-OP-03": 16,
+        "DVKT-OP-10": 16,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_442": 1,
+        "CLN-GIUONG-01": 1
+      }
+    },
+    {
+      "ma_lk": "000446",
+      "file": "PC022600356_IP26000151.xml",
+      "total_warnings": 56,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 48.2,
+      "by_severity": {
+        "Critical": 5,
+        "Error": 6,
+        "Warning": 45
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 12,
+        "L4": 11,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 5,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_261": 1,
+        "Chuyen_de_375": 1
+      }
+    },
+    {
+      "ma_lk": "000349",
+      "file": "PC022601596_IP26000054.xml",
+      "total_warnings": 56,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 33.9,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 49
+      },
+      "by_tang_V15": {
+        "L0": 7,
+        "L1": 7,
+        "L23": 8,
+        "L4": 15,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 6,
+        "DVKT-OP-09": 4,
+        "CLN-XDC-04": 2,
+        "XML2-TIME-NGAY_YL-AFTER-OUT": 2,
+        "CDHA_202": 1,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1
+      }
+    },
+    {
+      "ma_lk": "000460",
+      "file": "PC022407951_IP26000165.xml",
+      "total_warnings": 52,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 51.9,
+      "by_severity": {
+        "Critical": 5,
+        "Error": 4,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 13,
+        "L4": 7,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 4,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "DVKT-OP-04": 1
+      }
+    },
+    {
+      "ma_lk": "000358",
+      "file": "PC022601251_IP26000063.xml",
+      "total_warnings": 52,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 40.4,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 5,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 16,
+        "L4": 9,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_540": 1,
+        "CLN-PTTT-02": 1
+      }
+    },
+    {
+      "ma_lk": "000389",
+      "file": "PC022408266_IP26000094.xml",
+      "total_warnings": 51,
+      "dvkt_op_warnings": 29,
+      "pct_dvkt_op": 56.9,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 5,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 6,
+        "L4": 10,
+        "L5": 29
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000339",
+      "file": "PC022601324_IP26000044.xml",
+      "total_warnings": 51,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 37.3,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 11,
+        "Warning": 36
+      },
+      "by_tang_V15": {
+        "L0": 11,
+        "L1": 10,
+        "L23": 2,
+        "L4": 9,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "XML3-REQ-NGAY_KQ": 6,
+        "GDH_9324_3": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_540": 1,
+        "CLN-CHI-01": 1
+      }
+    },
+    {
+      "ma_lk": "000331",
+      "file": "PC022601362_IP26000036.xml",
+      "total_warnings": 51,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 41.2,
+      "by_severity": {
+        "Critical": 7,
+        "Error": 6,
+        "Warning": 38
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 10,
+        "L23": 6,
+        "L4": 8,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "GDH_9324_3": 5,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1
+      }
+    },
+    {
+      "ma_lk": "000426",
+      "file": "PC022602056_IP26000131.xml",
+      "total_warnings": 51,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 52.9,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 6,
+        "Warning": 42
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 5,
+        "L4": 13,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_261": 1,
+        "Chuyen_de_375": 1
+      }
+    },
+    {
+      "ma_lk": "000544",
+      "file": "PC022600363_IP26000249.xml",
+      "total_warnings": 50,
+      "dvkt_op_warnings": 34,
+      "pct_dvkt_op": 68,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 45
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 8,
+        "L5": 34
+      },
+      "top_rules": {
+        "DVKT-OP-03": 13,
+        "DVKT-OP-10": 13,
+        "DVKT-OP-09": 7,
+        "CDHA_202": 1,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000517",
+      "file": "PC022404074_IP26000222.xml",
+      "total_warnings": 49,
+      "dvkt_op_warnings": 30,
+      "pct_dvkt_op": 61.2,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 42
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 6,
+        "L4": 8,
+        "L5": 30
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "DVKT-OP-09": 6,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000518",
+      "file": "PC022509335_IP26000223.xml",
+      "total_warnings": 48,
+      "dvkt_op_warnings": 33,
+      "pct_dvkt_op": 68.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 7,
+        "L5": 33
+      },
+      "top_rules": {
+        "DVKT-OP-03": 13,
+        "DVKT-OP-10": 13,
+        "DVKT-OP-09": 6,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000311",
+      "file": "PC022509572_000311.xml",
+      "total_warnings": 48,
+      "dvkt_op_warnings": 17,
+      "pct_dvkt_op": 35.4,
+      "by_severity": {
+        "Critical": 12,
+        "Error": 7,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 3,
+        "L23": 12,
+        "L4": 10,
+        "L5": 17
+      },
+      "top_rules": {
+        "GDH_9324_3": 11,
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1
+      }
+    },
+    {
+      "ma_lk": "000311",
+      "file": "PC022509572_IP26000016.xml",
+      "total_warnings": 48,
+      "dvkt_op_warnings": 17,
+      "pct_dvkt_op": 35.4,
+      "by_severity": {
+        "Critical": 12,
+        "Error": 7,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 3,
+        "L23": 12,
+        "L4": 10,
+        "L5": 17
+      },
+      "top_rules": {
+        "GDH_9324_3": 11,
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1
+      }
+    },
+    {
+      "ma_lk": "000561",
+      "file": "PC022514998_IP26000266.xml",
+      "total_warnings": 48,
+      "dvkt_op_warnings": 25,
+      "pct_dvkt_op": 52.1,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 41
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 9,
+        "L23": 1,
+        "L4": 8,
+        "L5": 25
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "GDH_9324_4": 2,
+        "CDHA_202": 1,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2639": 1,
+        "DVKT-OP-04": 1
+      }
+    },
+    {
+      "ma_lk": "000316",
+      "file": "PC022601329_IP26000021.xml",
+      "total_warnings": 48,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 37.5,
+      "by_severity": {
+        "Critical": 5,
+        "Error": 6,
+        "Warning": 37
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 9,
+        "L23": 4,
+        "L4": 11,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "GDH_9324_3": 4,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_268": 1,
+        "CLN-CHI-01": 1
+      }
+    },
+    {
+      "ma_lk": "000330",
+      "file": "PC022210741_IP26000035.xml",
+      "total_warnings": 47,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 38.3,
+      "by_severity": {
+        "Critical": 6,
+        "Error": 3,
+        "Warning": 38
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 9,
+        "L23": 6,
+        "L4": 13,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "GDH_9324_3": 5,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_268": 1
+      }
+    },
+    {
+      "ma_lk": "000490",
+      "file": "PC022406057_IP26000195.xml",
+      "total_warnings": 47,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 57.4,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 40
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 5,
+        "L4": 10,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000356",
+      "file": "PC022601045_IP26000061.xml",
+      "total_warnings": 47,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 57.4,
+      "by_severity": {
+        "Critical": 4,
+        "Warning": 43
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 12,
+        "L4": 7,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_34": 1
+      }
+    },
+    {
+      "ma_lk": "000297",
+      "file": "PC022601220_IP26000002.xml",
+      "total_warnings": 47,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 38.3,
+      "by_severity": {
+        "Critical": 11,
+        "Error": 7,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L23": 12,
+        "L4": 9,
+        "L5": 18
+      },
+      "top_rules": {
+        "GDH_9324_3": 11,
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "CLN-GIUONG-01": 1
+      }
+    },
+    {
+      "ma_lk": "000334",
+      "file": "PC022601375_IP26000039.xml",
+      "total_warnings": 46,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 39.1,
+      "by_severity": {
+        "Critical": 6,
+        "Error": 7,
+        "Warning": 33
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 4,
+        "L23": 7,
+        "L4": 12,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "GDH_9324_3": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "CLN-GIUONG-01": 1
+      }
+    },
+    {
+      "ma_lk": "000478",
+      "file": "PC022602227_IP26000183.xml",
+      "total_warnings": 46,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 58.7,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 41
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 11,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 13,
+        "DVKT-OP-10": 13,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-PTTT-02": 1,
+        "CLN-PTTT-05": 1,
+        "DVKT_0261": 1
+      }
+    },
+    {
+      "ma_lk": "000354",
+      "file": "PC022601467_IP26000059.xml",
+      "total_warnings": 45,
+      "dvkt_op_warnings": 28,
+      "pct_dvkt_op": 62.2,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 1,
+        "Warning": 41
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 8,
+        "L4": 7,
+        "L5": 28
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "DVKT-OP-09": 4,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "GDH_4210_31": 1
+      }
+    },
+    {
+      "ma_lk": "000454",
+      "file": "PC022602129_IP26000159.xml",
+      "total_warnings": 45,
+      "dvkt_op_warnings": 26,
+      "pct_dvkt_op": 57.8,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 38
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 9,
+        "L4": 6,
+        "L5": 26
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 3,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1
+      }
+    },
+    {
+      "ma_lk": "000360",
+      "file": "PC022510491_IP26000065.xml",
+      "total_warnings": 44,
+      "dvkt_op_warnings": 23,
+      "pct_dvkt_op": 52.3,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 1,
+        "Warning": 39
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 7,
+        "L4": 12,
+        "L5": 23
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "CLN-PTTT-02": 1
+      }
+    },
+    {
+      "ma_lk": "000323",
+      "file": "PC022601353_IP26000028.xml",
+      "total_warnings": 44,
+      "dvkt_op_warnings": 25,
+      "pct_dvkt_op": 56.8,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 5,
+        "Warning": 36
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 4,
+        "L23": 3,
+        "L4": 7,
+        "L5": 25
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 4,
+        "GDH_9324_3": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1
+      }
+    },
+    {
+      "ma_lk": "000493",
+      "file": "PC022601615_IP26000198.xml",
+      "total_warnings": 44,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 54.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 37
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 12,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_375": 1,
+        "CLN-PTTT-02": 1,
+        "CLN-PTTT-05": 1
+      }
+    },
+    {
+      "ma_lk": "000452",
+      "file": "PC022401232_IP26000157.xml",
+      "total_warnings": 43,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 55.8,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 36
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 5,
+        "L4": 8,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000578",
+      "file": "PC022516725_IP26000283.xml",
+      "total_warnings": 43,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 55.8,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 4,
+        "Warning": 35
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 11,
+        "L4": 4,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 3,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_375": 1,
+        "DVKT_1582": 1,
+        "DVKT-OP-04": 1,
+        "GB_27": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "GDH_4210_43": 1
+      }
+    },
+    {
+      "ma_lk": "000314",
+      "file": "PC022601308_IP26000019.xml",
+      "total_warnings": 43,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 48.8,
+      "by_severity": {
+        "Critical": 8,
+        "Error": 7,
+        "Warning": 28
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 4,
+        "L23": 7,
+        "L4": 5,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "GDH_9324_3": 6,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1,
+        "GB_27": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000449",
+      "file": "PC022601462_IP26000154.xml",
+      "total_warnings": 43,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 62.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 38
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 8,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000412",
+      "file": "PC022602007_IP26000117.xml",
+      "total_warnings": 42,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 57.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 36
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 4,
+        "L4": 9,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000415",
+      "file": "PC022602009_IP26000120.xml",
+      "total_warnings": 42,
+      "dvkt_op_warnings": 23,
+      "pct_dvkt_op": 54.8,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 6,
+        "Warning": 34
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 5,
+        "L4": 9,
+        "L5": 23
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_261": 1,
+        "Chuyen_de_375": 1,
+        "CLN-CHI-01": 1,
+        "DVKT-OP-04": 1,
+        "GB_27": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000499",
+      "file": "PC022602127_IP26000204.xml",
+      "total_warnings": 42,
+      "dvkt_op_warnings": 26,
+      "pct_dvkt_op": 61.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 37
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 8,
+        "L5": 26
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 6,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000489",
+      "file": "PC022602299_IP26000194.xml",
+      "total_warnings": 42,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 57.1,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 5,
+        "Warning": 33
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 6,
+        "L4": 7,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 3,
+        "GDH_4210_45": 2,
+        "Chuyen_de_166": 1,
+        "DVKT_1642": 1,
+        "DVKT_1643": 1,
+        "DVKT_1645": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000376",
+      "file": "PC022115527_IP26000081.xml",
+      "total_warnings": 41,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 65.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 39
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L4": 9,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 12,
+        "DVKT-OP-10": 12,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000456",
+      "file": "PC022517267_IP26000161.xml",
+      "total_warnings": 41,
+      "dvkt_op_warnings": 27,
+      "pct_dvkt_op": 65.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 36
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 1,
+        "L4": 8,
+        "L5": 27
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 5,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1
+      }
+    },
+    {
+      "ma_lk": "000411",
+      "file": "PC022311678_IP26000116.xml",
+      "total_warnings": 40,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 60,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 35
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 8,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000503",
+      "file": "PC022509360_IP26000208.xml",
+      "total_warnings": 40,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 60,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 35
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 8,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000420",
+      "file": "PC022600542_IP26000125.xml",
+      "total_warnings": 40,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 32.5,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 14,
+        "Warning": 23
+      },
+      "by_tang_V15": {
+        "L0": 12,
+        "L1": 4,
+        "L23": 4,
+        "L4": 7,
+        "L5": 13
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 8,
+        "DVKT-OP-03": 5,
+        "DVKT-OP-10": 5,
+        "DVKT-OP-09": 3,
+        "GDH_9324_3": 2,
+        "THUOC_417": 2,
+        "XML2-NEG-T_BNTT": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000573",
+      "file": "PC022200433_000573.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 46.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 7,
+        "L1": 2,
+        "L4": 12,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "XML3-REQ-NGAY_KQ": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-GIUONG-01": 1
+      }
+    },
+    {
+      "ma_lk": "000573",
+      "file": "PC022200433_IP26000278.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 46.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 7,
+        "L1": 2,
+        "L4": 12,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "XML3-REQ-NGAY_KQ": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-GIUONG-01": 1
+      }
+    },
+    {
+      "ma_lk": "000551",
+      "file": "PC022210012_IP26000256.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 61.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 34
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 8,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-09": 4,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000326",
+      "file": "PC022313450_IP26000031.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 46.2,
+      "by_severity": {
+        "Critical": 8,
+        "Error": 7,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 3,
+        "L23": 7,
+        "L4": 5,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "GDH_9324_3": 6,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1,
+        "GB_27": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1
+      }
+    },
+    {
+      "ma_lk": "000540",
+      "file": "PC022508360_IP26000245.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 53.8,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 6,
+        "L4": 7,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000583",
+      "file": "PC022509746_IP26000288.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 15,
+      "pct_dvkt_op": 38.5,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 10,
+        "L23": 1,
+        "L4": 9,
+        "L5": 15
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_540": 1,
+        "CLN-PTTT-02": 1,
+        "CLN-PTTT-05": 1
+      }
+    },
+    {
+      "ma_lk": "000459",
+      "file": "PC022602122_IP26000164.xml",
+      "total_warnings": 39,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 46.2,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 6,
+        "L4": 9,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CK_14": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000590",
+      "file": "PC022516134_000590.xml",
+      "total_warnings": 38,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 55.3,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 5,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 10,
+        "L4": 2,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GB_27": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "HC_68": 1
+      }
+    },
+    {
+      "ma_lk": "000590",
+      "file": "PC022516134_IP26000295.xml",
+      "total_warnings": 38,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 55.3,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 5,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 10,
+        "L4": 2,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GB_27": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "HC_68": 1
+      }
+    },
+    {
+      "ma_lk": "000371",
+      "file": "PC022516521_IP26000076.xml",
+      "total_warnings": 38,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 55.3,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 1,
+        "Warning": 34
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 6,
+        "L4": 10,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "GDH_4210_1": 1
+      }
+    },
+    {
+      "ma_lk": "000547",
+      "file": "PC022601707_IP26000252.xml",
+      "total_warnings": 38,
+      "dvkt_op_warnings": 15,
+      "pct_dvkt_op": 39.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 31
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 5,
+        "L4": 14,
+        "L5": 15
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_261": 1,
+        "Chuyen_de_375": 1,
+        "CLN-PTTT-02": 1
+      }
+    },
+    {
+      "ma_lk": "000515",
+      "file": "PC022602471_IP26000220.xml",
+      "total_warnings": 38,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 55.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 33
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 10,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_101": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_540": 1,
+        "CLN-PTTT-02": 1
+      }
+    },
+    {
+      "ma_lk": "000560",
+      "file": "PC022517354_IP26000265.xml",
+      "total_warnings": 37,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 56.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 8,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000546",
+      "file": "PC022601725_IP26000251.xml",
+      "total_warnings": 37,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 56.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 32
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 8,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000520",
+      "file": "PC022405576_IP26000225.xml",
+      "total_warnings": 36,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 58.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 31
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 8,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1
+      }
+    },
+    {
+      "ma_lk": "000317",
+      "file": "PC022601327_IP26000022.xml",
+      "total_warnings": 36,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 52.8,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 4,
+        "Warning": 28
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 7,
+        "L4": 4,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_434": 1,
+        "DVKT_0024": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_215": 1
+      }
+    },
+    {
+      "ma_lk": "000351",
+      "file": "PC022601515_IP26000056.xml",
+      "total_warnings": 36,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 50,
+      "by_severity": {
+        "Critical": 3,
+        "Warning": 33
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 8,
+        "L4": 9,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_540": 1,
+        "CLN-PTTT-02": 1
+      }
+    },
+    {
+      "ma_lk": "000365",
+      "file": "PC022601698_IP26000070.xml",
+      "total_warnings": 36,
+      "dvkt_op_warnings": 24,
+      "pct_dvkt_op": 66.7,
+      "by_severity": {
+        "Critical": 1,
+        "Warning": 35
+      },
+      "by_tang_V15": {
+        "L1": 2,
+        "L4": 10,
+        "L5": 24
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "DVKT-OP-04": 2,
+        "DVKT-OP-09": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_442": 1,
+        "DVKT_0024": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "THUOC_374": 1
+      }
+    },
+    {
+      "ma_lk": "000528",
+      "file": "PC022602513_IP26000233.xml",
+      "total_warnings": 36,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 52.8,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 12,
+        "L4": 1,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "HC_68": 1
+      }
+    },
+    {
+      "ma_lk": "000308",
+      "file": "PC022209964_IP26000013.xml",
+      "total_warnings": 35,
+      "dvkt_op_warnings": 21,
+      "pct_dvkt_op": 60,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 33
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 2,
+        "L4": 10,
+        "L5": 21
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_2587": 1,
+        "HC_130": 1
+      }
+    },
+    {
+      "ma_lk": "000399",
+      "file": "PC022308891_IP26000104.xml",
+      "total_warnings": 35,
+      "dvkt_op_warnings": 15,
+      "pct_dvkt_op": 42.9,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 4,
+        "Warning": 27
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 6,
+        "L4": 8,
+        "L5": 15
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000435",
+      "file": "PC022602069_IP26000140.xml",
+      "total_warnings": 35,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 54.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 30
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 9,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 9,
+        "DVKT-OP-10": 9,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_1582": 1,
+        "DVKT_2587": 1,
+        "DVKT-OP-04": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000442",
+      "file": "PC022602094_IP26000147.xml",
+      "total_warnings": 34,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 32.4,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 5,
+        "Warning": 26
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 9,
+        "L4": 9,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 5,
+        "DVKT-OP-10": 5,
+        "GDH_9324_4": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_375": 1,
+        "CLN-PTTT-08": 1,
+        "DVKT_2587": 1
+      }
+    },
+    {
+      "ma_lk": "000474",
+      "file": "PC022602217_IP26000179.xml",
+      "total_warnings": 34,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 23.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 13,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 13,
+        "L1": 3,
+        "L23": 3,
+        "L4": 7,
+        "L5": 8
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 9,
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "DVKT-OP-09": 2,
+        "THUOC_391": 2,
+        "XML2-MAXLEN-DON_GIA": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1
+      }
+    },
+    {
+      "ma_lk": "000409",
+      "file": "PC022602004_IP26000114.xml",
+      "total_warnings": 33,
+      "dvkt_op_warnings": 22,
+      "pct_dvkt_op": 66.7,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 2,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 3,
+        "L4": 6,
+        "L5": 22
+      },
+      "top_rules": {
+        "DVKT-OP-03": 10,
+        "DVKT-OP-10": 10,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT_1582": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "GB_27": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1
+      }
+    },
+    {
+      "ma_lk": "000533",
+      "file": "PC022602033_IP26000238.xml",
+      "total_warnings": 33,
+      "dvkt_op_warnings": 15,
+      "pct_dvkt_op": 45.5,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 5,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 11,
+        "L4": 2,
+        "L5": 15
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "DVKT-OP-09": 3,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "GB_27": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_68": 1
+      }
+    },
+    {
+      "ma_lk": "000532",
+      "file": "PC022410272_IP26000237.xml",
+      "total_warnings": 32,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 50,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 5,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 8,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_375": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1
+      }
+    },
+    {
+      "ma_lk": "000404",
+      "file": "PC022601007_IP26000109.xml",
+      "total_warnings": 32,
+      "dvkt_op_warnings": 25,
+      "pct_dvkt_op": 78.1,
+      "by_severity": {
+        "Critical": 2,
+        "Warning": 30
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 2,
+        "L4": 4,
+        "L5": 25
+      },
+      "top_rules": {
+        "DVKT-OP-03": 11,
+        "DVKT-OP-10": 11,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GB_27": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1
+      }
+    },
+    {
+      "ma_lk": "000343",
+      "file": "PC022509335_IP26000048.xml",
+      "total_warnings": 31,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 51.6,
+      "by_severity": {
+        "Critical": 5,
+        "Error": 2,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L1": 3,
+        "L23": 5,
+        "L4": 7,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "GDH_9324_3": 4,
+        "THUOC_417": 3,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "THUOC_ICD_CONTRA_MAPPING": 1
+      }
+    },
+    {
+      "ma_lk": "000572",
+      "file": "PC022600710_IP26000277.xml",
+      "total_warnings": 31,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 51.6,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 9,
+        "L4": 1,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_31": 1,
+        "HC_171": 1,
+        "HC_68": 1,
+        "XML_49": 1,
+        "XML_53": 1,
+        "XML_88": 1,
+        "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 1
+      }
+    },
+    {
+      "ma_lk": "000338",
+      "file": "PC022601436_IP26000043.xml",
+      "total_warnings": 31,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 58.1,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 5,
+        "L23": 1,
+        "L4": 2,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_250": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 1,
+        "XML3-REQ-NGAY_KQ": 1
+      }
+    },
+    {
+      "ma_lk": "000369",
+      "file": "PC022601649_IP26000074.xml",
+      "total_warnings": 31,
+      "dvkt_op_warnings": 18,
+      "pct_dvkt_op": 58.1,
+      "by_severity": {
+        "Error": 2,
+        "Warning": 29
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L4": 8,
+        "L5": 18
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_003": 1,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_063": 1,
+        "Chuyen_de_094": 1,
+        "Chuyen_de_102": 1,
+        "Chuyen_de_145": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000516",
+      "file": "PC022601707_IP26000221.xml",
+      "total_warnings": 30,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 53.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 1,
+        "L4": 5,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_58": 1,
+        "THUOC_417": 1,
+        "THUOC_451": 1
+      }
+    },
+    {
+      "ma_lk": "000469",
+      "file": "PC022602033_IP26000174.xml",
+      "total_warnings": 30,
+      "dvkt_op_warnings": 19,
+      "pct_dvkt_op": 63.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 24
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 2,
+        "L23": 1,
+        "L4": 4,
+        "L5": 19
+      },
+      "top_rules": {
+        "DVKT-OP-03": 8,
+        "DVKT-OP-10": 8,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "THUOC_391": 1,
+        "THUOC_451": 1,
+        "THUOC_ICD_CONTRA_MAPPING": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000375",
+      "file": "PC022112088_IP26000080.xml",
+      "total_warnings": 28,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 57.1,
+      "by_severity": {
+        "Critical": 3,
+        "Warning": 25
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 10,
+        "L4": 1,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "DVKT-OP-09": 2,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_31": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "HC_68": 1,
+        "XML_49": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000362",
+      "file": "PC022601684_IP26000067.xml",
+      "total_warnings": 28,
+      "dvkt_op_warnings": 12,
+      "pct_dvkt_op": 42.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 21
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 2,
+        "L4": 7,
+        "L5": 12
+      },
+      "top_rules": {
+        "DVKT-OP-03": 5,
+        "DVKT-OP-10": 5,
+        "DM-THUOC-04": 2,
+        "DVKT-OP-09": 2,
+        "THUOC_417": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_63": 1,
+        "THUOC_ICD_CONTRA_MAPPING": 1
+      }
+    },
+    {
+      "ma_lk": "000488",
+      "file": "PC022601996_IP26000193.xml",
+      "total_warnings": 28,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 46.4,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 7,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 6,
+        "L4": 3,
+        "L5": 13
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "XML2-REQ-TT_THAU": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000444",
+      "file": "PC022602060_IP26000149.xml",
+      "total_warnings": 28,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 46.4,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 21
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 9,
+        "L23": 1,
+        "L4": 1,
+        "L5": 13
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "HC_171": 1,
+        "HC_68": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML_49": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000531",
+      "file": "PC022308641_IP26000236.xml",
+      "total_warnings": 27,
+      "dvkt_op_warnings": 12,
+      "pct_dvkt_op": 44.4,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 8,
+        "L4": 2,
+        "L5": 12
+      },
+      "top_rules": {
+        "DVKT-OP-03": 5,
+        "DVKT-OP-10": 5,
+        "GDH_9324_4": 2,
+        "CDHA_202": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_31": 1,
+        "HC_171": 1,
+        "HC_68": 1,
+        "XML_49": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000457",
+      "file": "PC022600272_IP26000162.xml",
+      "total_warnings": 27,
+      "dvkt_op_warnings": 14,
+      "pct_dvkt_op": 51.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 21
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L23": 1,
+        "L4": 4,
+        "L5": 14
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "CDHA_202": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CT-01": 1,
+        "CLN-CT-02": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_181": 1,
+        "ICD-TT06-CU-THE-HON": 1
+      }
+    },
+    {
+      "ma_lk": "000579",
+      "file": "PC022602828_IP26000284.xml",
+      "total_warnings": 27,
+      "dvkt_op_warnings": 14,
+      "pct_dvkt_op": 51.9,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 4,
+        "L23": 1,
+        "L4": 3,
+        "L5": 14
+      },
+      "top_rules": {
+        "DVKT-OP-03": 5,
+        "DVKT-OP-10": 5,
+        "DVKT-OP-09": 3,
+        "CDHA_202": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_43": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 1
+      }
+    },
+    {
+      "ma_lk": "000298",
+      "file": "PC022400905_IP26000003.xml",
+      "total_warnings": 26,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 61.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 2,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "DVKT-OP-09": 3,
+        "CDHA_202": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000336",
+      "file": "PC022404459_IP26000041.xml",
+      "total_warnings": 26,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 42.3,
+      "by_severity": {
+        "Critical": 6,
+        "Error": 5,
+        "Warning": 15
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 5,
+        "L4": 2,
+        "L5": 11
+      },
+      "top_rules": {
+        "GDH_9324_3": 5,
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML_53": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000431",
+      "file": "PC022601402_IP26000136.xml",
+      "total_warnings": 25,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 52,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 19
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L23": 2,
+        "L4": 3,
+        "L5": 13
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_417": 1,
+        "THUOC_451": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000427",
+      "file": "PC022602050_IP26000132.xml",
+      "total_warnings": 25,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 32,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 10,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 10,
+        "L1": 2,
+        "L4": 5,
+        "L5": 8
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 6,
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "DVKT-OP-09": 2,
+        "THUOC_417": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000511",
+      "file": "PC022602433_IP26000216.xml",
+      "total_warnings": 25,
+      "dvkt_op_warnings": 14,
+      "pct_dvkt_op": 56,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 4,
+        "L5": 14
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "CDHA_202": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_417": 1,
+        "THUOC_451": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000402",
+      "file": "PC022600755_IP26000107.xml",
+      "total_warnings": 24,
+      "dvkt_op_warnings": 14,
+      "pct_dvkt_op": 58.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 19
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 3,
+        "L5": 14
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_417": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000483",
+      "file": "PC022602133_IP26000188.xml",
+      "total_warnings": 24,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 54.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 18
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 4,
+        "L5": 13
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT-OP-09": 1,
+        "HC_171": 1,
+        "THUOC_451": 1,
+        "XML_53": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000506",
+      "file": "PC022602402_IP26000211.xml",
+      "total_warnings": 24,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 20.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 13,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 14,
+        "L1": 1,
+        "L4": 4,
+        "L5": 5
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 9,
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "HC_171": 1,
+        "THUOC_391": 1,
+        "THUOC_417": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000329",
+      "file": "PC022601402_IP26000034.xml",
+      "total_warnings": 23,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 30.4,
+      "by_severity": {
+        "Critical": 8,
+        "Warning": 15
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 7,
+        "L4": 7,
+        "L5": 7
+      },
+      "top_rules": {
+        "GDH_4210_45": 4,
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_215": 1,
+        "HC_46": 1,
+        "HC_49": 1
+      }
+    },
+    {
+      "ma_lk": "000471",
+      "file": "PC022303677_IP26000176.xml",
+      "total_warnings": 22,
+      "dvkt_op_warnings": 9,
+      "pct_dvkt_op": 40.9,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 4,
+        "Warning": 15
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 5,
+        "L4": 3,
+        "L5": 9
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "Chuyen_de_166": 1,
+        "CLN-GIUONG-01": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "HC_49": 1,
+        "HC-07": 1,
+        "TUONGTAC_136": 1,
+        "XML1-PP_DIEU_TRI-THAI_NGHEN-FORMAT": 1,
+        "XML1-REQ-MA_BENH_CHINH": 1
+      }
+    },
+    {
+      "ma_lk": "000337",
+      "file": "PC022601432_IP26000042.xml",
+      "total_warnings": 22,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 31.8,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 4,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 6,
+        "L1": 7,
+        "L4": 2,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_215": 1,
+        "HC_46": 1,
+        "HC_49": 1,
+        "HC-07": 1,
+        "THUOC_63": 1
+      }
+    },
+    {
+      "ma_lk": "000495",
+      "file": "PC022602344_IP26000200.xml",
+      "total_warnings": 22,
+      "dvkt_op_warnings": 16,
+      "pct_dvkt_op": 72.7,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 1,
+        "Warning": 19
+      },
+      "by_tang_V15": {
+        "L0": 3,
+        "L1": 1,
+        "L4": 2,
+        "L5": 16
+      },
+      "top_rules": {
+        "DVKT-OP-03": 7,
+        "DVKT-OP-10": 7,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_090": 1,
+        "Chuyen_de_166": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML1-REQ-MA_QUOCTICH": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000458",
+      "file": "PC022311026_IP26000163.xml",
+      "total_warnings": 21,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 52.4,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 16
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L4": 3,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_417": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "ER26000100",
+      "file": "PC022406916_ER26000100.xml",
+      "total_warnings": 21,
+      "dvkt_op_warnings": 14,
+      "pct_dvkt_op": 66.7,
+      "by_severity": {
+        "Error": 1,
+        "Warning": 20
+      },
+      "by_tang_V15": {
+        "L1": 2,
+        "L23": 1,
+        "L4": 4,
+        "L5": 14
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "DVKT-OP-04": 2,
+        "THUOC_417": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_442": 1,
+        "HC_194": 1,
+        "HC-06": 1,
+        "ICD-TT06-CAM-CHINH": 1
+      }
+    },
+    {
+      "ma_lk": "000439",
+      "file": "PC022501662_IP26000144.xml",
+      "total_warnings": 21,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 23.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 10,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 9,
+        "L1": 3,
+        "L23": 2,
+        "L4": 2,
+        "L5": 5
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 5,
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000320",
+      "file": "PC022601355_IP26000025.xml",
+      "total_warnings": 21,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 52.4,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L23": 1,
+        "L4": 1,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML1-REQ-MA_DOITUONG_KCB": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000487",
+      "file": "PC022602135_IP26000192.xml",
+      "total_warnings": 21,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 28.6,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 9,
+        "Warning": 11
+      },
+      "by_tang_V15": {
+        "L0": 9,
+        "L1": 3,
+        "L23": 1,
+        "L4": 2,
+        "L5": 6
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 5,
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000514",
+      "file": "PC022405688_IP26000219.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 30,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 6,
+        "L23": 1,
+        "L4": 3,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_17": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC-01b": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_63": 1,
+        "XML1-MATHE-FORMAT": 1
+      }
+    },
+    {
+      "ma_lk": "000309",
+      "file": "PC022601287_IP26000014.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 13,
+      "pct_dvkt_op": 65,
+      "by_severity": {
+        "Critical": 2,
+        "Warning": 18
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 5,
+        "L4": 1,
+        "L5": 13
+      },
+      "top_rules": {
+        "DVKT-OP-03": 6,
+        "DVKT-OP-10": 6,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "HC_99": 1,
+        "XML1-REQ-MA_LOAI_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000423",
+      "file": "PC022602054_IP26000128.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 40,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 4,
+        "L5": 8
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_417": 1,
+        "XML_53": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000425",
+      "file": "PC022602057_IP26000130.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 15,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 6,
+        "L23": 2,
+        "L4": 5,
+        "L5": 3
+      },
+      "top_rules": {
+        "THUOC_535": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_13": 1,
+        "HC_130": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000538",
+      "file": "PC022602579_000538.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 55,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 2,
+        "Warning": 17
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L4": 4,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CT-01": 1,
+        "CLN-CT-02": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_181": 1
+      }
+    },
+    {
+      "ma_lk": "000538",
+      "file": "PC022602579_IP26000243.xml",
+      "total_warnings": 20,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 55,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 2,
+        "Warning": 17
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L4": 4,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 2,
+        "CDHA_101": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CT-01": 1,
+        "CLN-CT-02": 1,
+        "DVKT-OP-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_181": 1
+      }
+    },
+    {
+      "ma_lk": "000388",
+      "file": "PC022600272_IP26000093.xml",
+      "total_warnings": 19,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 36.8,
+      "by_severity": {
+        "Critical": 3,
+        "Warning": 16
+      },
+      "by_tang_V15": {
+        "L1": 11,
+        "L4": 1,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "GDH_9324_4": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_31": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "HC_68": 1,
+        "XML_49": 1
+      }
+    },
+    {
+      "ma_lk": "000368",
+      "file": "PC022601307_IP26000073.xml",
+      "total_warnings": 19,
+      "dvkt_op_warnings": 9,
+      "pct_dvkt_op": 47.4,
+      "by_severity": {
+        "Warning": 19
+      },
+      "by_tang_V15": {
+        "L1": 5,
+        "L23": 2,
+        "L4": 3,
+        "L5": 9
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "XML4-TIME-NGAY_KQ-AFTER-OUT": 2,
+        "Chuyen_de_090": 1,
+        "Chuyen_de_166": 1,
+        "Chuyen_de_268": 1,
+        "DVKT-OP-09": 1,
+        "HC_171": 1,
+        "HC_65": 1,
+        "HC_76": 1,
+        "XML_36": 1,
+        "XML_37": 1
+      }
+    },
+    {
+      "ma_lk": "000335",
+      "file": "PC022601423_IP26000040.xml",
+      "total_warnings": 19,
+      "dvkt_op_warnings": 11,
+      "pct_dvkt_op": 57.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 1,
+        "L5": 11
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "DVKT-OP-09": 3,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000434",
+      "file": "PC022300479_IP26000139.xml",
+      "total_warnings": 18,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 44.4,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 2,
+        "L23": 1,
+        "L4": 3,
+        "L5": 8
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_417": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000496",
+      "file": "PC022308990_IP26000201.xml",
+      "total_warnings": 18,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 38.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 3,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "THUOC_394": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000342",
+      "file": "PC022404669_IP26000047.xml",
+      "total_warnings": 17,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 41.2,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 3,
+        "Warning": 11
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 2,
+        "L23": 3,
+        "L4": 3,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "GDH_9324_3": 2,
+        "XML2-REQ-TT_THAU": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT_0024": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1
+      }
+    },
+    {
+      "ma_lk": "000586",
+      "file": "PC022505592_IP26000291.xml",
+      "total_warnings": 17,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 41.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 11
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 1,
+        "L4": 1,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000305",
+      "file": "PC022601249_IP26000010.xml",
+      "total_warnings": 17,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 47.1,
+      "by_severity": {
+        "Critical": 3,
+        "Error": 1,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 3,
+        "L1": 4,
+        "L4": 2,
+        "L5": 8
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "DVKT-OP-09": 2,
+        "Chuyen_de_166": 1,
+        "HC_171": 1,
+        "HC_215": 1,
+        "HC_49": 1,
+        "HC-07": 1,
+        "THUOC_391": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML1-REQ-MA_BENH_CHINH": 1,
+        "XML2-REQ-TT_THAU": 1
+      }
+    },
+    {
+      "ma_lk": "000472",
+      "file": "PC022602188_IP26000177.xml",
+      "total_warnings": 17,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 41.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 1,
+        "L23": 1,
+        "L4": 3,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "CLN-XDC-04": 1,
+        "DVKT_0024": 1,
+        "DVKT-OP-09": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000542",
+      "file": "PC022602484_IP26000247.xml",
+      "total_warnings": 17,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 41.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 3,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_373": 1,
+        "THUOC_374": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000565",
+      "file": "PC022210337_IP26000270.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 31.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 3,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "THUOC_451": 1,
+        "THUOC_ICD_CONTRA_MAPPING": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000602",
+      "file": "PC022407138_IP26000307.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 25,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 11
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 2,
+        "L4": 2,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "CLN-XDC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1
+      }
+    },
+    {
+      "ma_lk": "000519",
+      "file": "PC022411429_IP26000224.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 12.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 3,
+        "L4": 4,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "CLN-GIUONG-01": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_417": 1,
+        "THUOC_451": 1,
+        "XML2-MAXLEN-DON_GIA": 1
+      }
+    },
+    {
+      "ma_lk": "000470",
+      "file": "PC022500598_IP26000175.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 37.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 6,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L23": 1,
+        "L4": 2,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-09": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "XML2-REQ-TT_THAU": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000530",
+      "file": "PC022509696_IP26000235.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 12.5,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 5,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 5,
+        "L23": 2,
+        "L4": 2,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "CLN-XDC-04": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_48": 1,
+        "HC_06": 1,
+        "HC_13": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML2-REQ-TT_THAU": 1,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 1
+      }
+    },
+    {
+      "ma_lk": "000364",
+      "file": "PC022509764_IP26000069.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 37.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 5,
+        "L4": 4,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-09": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "CLN-GIUONG-01": 1,
+        "HC_13": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC-06d": 1,
+        "THUOC_535": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000450",
+      "file": "PC022510591_IP26000155.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 37.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 14
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 2,
+        "L23": 2,
+        "L4": 4,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "CLN-XDC-04": 1,
+        "DVKT_0024": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_391": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000382",
+      "file": "PC022601909_IP26000087.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 37.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 2,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L23": 2,
+        "L4": 3,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_40": 1,
+        "ICD-TT06-CU-THE-HON": 1
+      }
+    },
+    {
+      "ma_lk": "000390",
+      "file": "PC022601935_IP26000095.xml",
+      "total_warnings": 16,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 43.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 2,
+        "Warning": 13
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L4": 4,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT_0024": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_13": 1,
+        "HC_171": 1,
+        "THUOC_535": 1,
+        "XML_53": 1,
+        "XML2-REQ-TT_THAU": 1
+      }
+    },
+    {
+      "ma_lk": "000486",
+      "file": "PC022310725_IP26000191.xml",
+      "total_warnings": 15,
+      "dvkt_op_warnings": 7,
+      "pct_dvkt_op": 46.7,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 2,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 2,
+        "L23": 2,
+        "L4": 3,
+        "L5": 7
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_63": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000429",
+      "file": "PC022601621_IP26000134.xml",
+      "total_warnings": 15,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 33.3,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 4,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 3,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GB_27": 1,
+        "GDH_4210_1": 1,
+        "GDH_4210_43": 1,
+        "HC_171": 1,
+        "TUONGTAC_136": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000508",
+      "file": "PC022602401_IP26000213.xml",
+      "total_warnings": 15,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 33.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 2,
+        "L23": 1,
+        "L4": 2,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_06": 1,
+        "HC_171": 1,
+        "THUOC_451": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000536",
+      "file": "PC022408115_IP26000241.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 6,
+      "pct_dvkt_op": 42.9,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 1,
+        "L4": 2,
+        "L5": 6
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000403",
+      "file": "PC022408905_IP26000108.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 28.6,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L1": 6,
+        "L23": 1,
+        "L4": 3,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-09": 2,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_13": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC-06d": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "THUOC_535": 1
+      }
+    },
+    {
+      "ma_lk": "000303",
+      "file": "PC022601233_IP26000008.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 21.4,
+      "by_severity": {
+        "Critical": 5,
+        "Error": 2,
+        "Warning": 7
+      },
+      "by_tang_V15": {
+        "L0": 3,
+        "L1": 4,
+        "L23": 3,
+        "L4": 1,
+        "L5": 3
+      },
+      "top_rules": {
+        "GDH_9324_3": 2,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML1-REQ-GIOI_TINH": 1,
+        "XML1-REQ-MA_DOITUONG_KCB": 1
+      }
+    },
+    {
+      "ma_lk": "000485",
+      "file": "PC022601983_IP26000190.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 57.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 1,
+        "L4": 3,
+        "L5": 8
+      },
+      "top_rules": {
+        "DVKT-OP-03": 4,
+        "DVKT-OP-10": 4,
+        "Chuyen_de_090": 1,
+        "Chuyen_de_166": 1,
+        "DVKT_0024": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000448",
+      "file": "PC022602126_IP26000153.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 35.7,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 1,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000501",
+      "file": "PC022602397_IP26000206.xml",
+      "total_warnings": 14,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 35.7,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 1,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000466",
+      "file": "PC022404883_000466.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 23.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 2,
+        "L5": 3
+      },
+      "top_rules": {
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000466",
+      "file": "PC022404883_IP26000171.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 23.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 2,
+        "L5": 3
+      },
+      "top_rules": {
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000393",
+      "file": "PC022406784_IP26000098.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 23.1,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 3,
+        "Warning": 9
+      },
+      "by_tang_V15": {
+        "L0": 3,
+        "L1": 3,
+        "L23": 2,
+        "L4": 2,
+        "L5": 3
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 2,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1
+      }
+    },
+    {
+      "ma_lk": "000447",
+      "file": "PC022501789_000447.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 15.4,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 1,
+        "L4": 2,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_40": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000447",
+      "file": "PC022501789_IP26000152.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 15.4,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L23": 1,
+        "L4": 2,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_40": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1
+      }
+    },
+    {
+      "ma_lk": "000571",
+      "file": "PC022505291_IP26000276.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 38.5,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 7
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 2,
+        "L23": 1,
+        "L4": 1,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000395",
+      "file": "PC022507424_IP26000100.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 8,
+      "pct_dvkt_op": 61.5,
+      "by_severity": {
+        "Critical": 1,
+        "Warning": 12
+      },
+      "by_tang_V15": {
+        "L1": 4,
+        "L4": 1,
+        "L5": 8
+      },
+      "top_rules": {
+        "DVKT-OP-03": 3,
+        "DVKT-OP-10": 3,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1
+      }
+    },
+    {
+      "ma_lk": "000296",
+      "file": "PC022601214_IP26000001.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 38.5,
+      "by_severity": {
+        "Critical": 4,
+        "Error": 1,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 4,
+        "L23": 2,
+        "L4": 1,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "DM-THUOC-04": 1,
+        "DVKT-OP-09": 1,
+        "GDH_4210_1": 1,
+        "GDH_9324_3": 1,
+        "HC_171": 1,
+        "HC_49": 1,
+        "HC-07": 1,
+        "XML1-REQ-MA_BENH_CHINH": 1
+      }
+    },
+    {
+      "ma_lk": "000584",
+      "file": "PC022601521_IP26000289.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 30.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 4,
+        "L4": 1,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "HC_46": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000509",
+      "file": "PC022602428_IP26000214.xml",
+      "total_warnings": 13,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 30.8,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 5,
+        "Warning": 7
+      },
+      "by_tang_V15": {
+        "L0": 5,
+        "L1": 3,
+        "L4": 1,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML2-REQ-TT_THAU": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000539",
+      "file": "PC022500855_IP26000244.xml",
+      "total_warnings": 12,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 41.7,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 2,
+        "L23": 1,
+        "L4": 2,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_166": 1,
+        "CLN-XDC-04": 1,
+        "DVKT-OP-09": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML2-TIME-NGAY_TH_YL-AFTER-OUT": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000401",
+      "file": "PC022601985_IP26000106.xml",
+      "total_warnings": 12,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 33.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L1": 5,
+        "L4": 3,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-09": 2,
+        "Chuyen_de_166": 1,
+        "CLN-CHI-01": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_13": 1,
+        "HC_171": 1,
+        "HC-06d": 1,
+        "THUOC_535": 1,
+        "XML_53": 1
+      }
+    },
+    {
+      "ma_lk": "000563",
+      "file": "PC022601985_IP26000268.xml",
+      "total_warnings": 12,
+      "dvkt_op_warnings": 4,
+      "pct_dvkt_op": 33.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 10
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L1": 3,
+        "L23": 1,
+        "L4": 3,
+        "L5": 4
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "THUOC_417": 2,
+        "Chuyen_de_166": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000589",
+      "file": "PC022300757_000589.xml",
+      "total_warnings": 11,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 18.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 6
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 1,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "HC_194": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000589",
+      "file": "PC022300757_IP26000294.xml",
+      "total_warnings": 11,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 18.2,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 6
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L23": 1,
+        "L4": 1,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "HC_194": 1,
+        "ICD-TT06-CU-THE-HON": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000421",
+      "file": "PC022305680_IP26000126.xml",
+      "total_warnings": 11,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 27.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 6
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 3,
+        "L4": 1,
+        "L5": 3
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000381",
+      "file": "PC022514683_IP26000086.xml",
+      "total_warnings": 11,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 27.3,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 3,
+        "Warning": 6
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 2,
+        "L4": 2,
+        "L5": 3
+      },
+      "top_rules": {
+        "XML2-REQ-TT_THAU": 3,
+        "Chuyen_de_052": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "XML1-REQ-LY_DO_VV": 1
+      }
+    },
+    {
+      "ma_lk": "000523",
+      "file": "PC022602514_IP26000228.xml",
+      "total_warnings": 11,
+      "dvkt_op_warnings": 3,
+      "pct_dvkt_op": 27.3,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 4,
+        "Warning": 6
+      },
+      "by_tang_V15": {
+        "L0": 4,
+        "L1": 2,
+        "L4": 2,
+        "L5": 3
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "Chuyen_de_424": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-09": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_171": 1,
+        "XML7-REQ-SO_LUU_TRU": 1,
+        "XML8-REQ-MA_KHOA_RV": 1,
+        "XML8-REQ-MA_YTE": 1,
+        "XML8-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "000476",
+      "file": "PC022601970_IP26000181.xml",
+      "total_warnings": 10,
+      "dvkt_op_warnings": 5,
+      "pct_dvkt_op": 50,
+      "by_severity": {
+        "Critical": 1,
+        "Error": 1,
+        "Warning": 8
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 1,
+        "L4": 2,
+        "L5": 5
+      },
+      "top_rules": {
+        "DVKT-OP-03": 2,
+        "DVKT-OP-10": 2,
+        "Chuyen_de_090": 1,
+        "Chuyen_de_166": 1,
+        "DVKT-OP-09": 1,
+        "HC_171": 1,
+        "XML1-REQ-CHAN_DOAN_VAO": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "ER26000392",
+      "file": "PC022602974_ER26000392.xml",
+      "total_warnings": 9,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 22.2,
+      "by_severity": {
+        "Critical": 4,
+        "Warning": 5
+      },
+      "by_tang_V15": {
+        "L0": 1,
+        "L23": 3,
+        "L4": 3,
+        "L5": 2
+      },
+      "top_rules": {
+        "GDH_4210_48": 3,
+        "THUOC_417": 3,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "XML1-REQ-MA_DOITUONG_KCB": 1
+      }
+    },
+    {
+      "ma_lk": "000424",
+      "file": "PC022211043_IP26000129.xml",
+      "total_warnings": 8,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 25,
+      "by_severity": {
+        "Critical": 2,
+        "Error": 1,
+        "Warning": 5
+      },
+      "by_tang_V15": {
+        "L0": 2,
+        "L1": 3,
+        "L4": 1,
+        "L5": 2
+      },
+      "top_rules": {
+        "Chuyen_de_166": 1,
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "GDH_4210_1": 1,
+        "HC_130": 1,
+        "HC_171": 1,
+        "XML1-REQ-MA_DOITUONG_KCB": 1,
+        "XML7-REQ-SO_LUU_TRU": 1
+      }
+    },
+    {
+      "ma_lk": "OP26004737",
+      "file": "PC022601996_OP26004737.xml",
+      "total_warnings": 3,
+      "dvkt_op_warnings": 2,
+      "pct_dvkt_op": 66.7,
+      "by_severity": {
+        "Warning": 3
+      },
+      "by_tang_V15": {
+        "L23": 1,
+        "L5": 2
+      },
+      "top_rules": {
+        "DVKT-OP-03": 1,
+        "DVKT-OP-10": 1,
+        "ICD-TT06-CU-THE-HON": 1
+      }
+    }
+  ]
+}

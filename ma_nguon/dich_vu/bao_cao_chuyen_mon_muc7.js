@@ -4,6 +4,7 @@
  */
 
 import { suyRaNamespaceVaNguonQuyTac } from '../tien_ich/dong_co_giam_dinh';
+import { phangHoaDanhSachLoiChiTiet } from '../tien_ich/thong_ke_loi_dung_chung';
 
 const toNum = (v, fb = 0) => {
   const n = Number(String(v ?? '').replace(/,/g, '').trim());
@@ -407,6 +408,148 @@ export const taoBangBcCm05ChiSo = (factCanhBao = []) => {
   ];
 };
 
+/** BC-CM-00 — Gom theo nhóm vi phạm nghiệp vụ (HANH_CHINH / DVKT / THUOC / …) từ chi tiết lỗi đã phẳng hoá. */
+export const taoBangBcCm00NhomViPham = (chiTiet = []) => {
+  const m = new Map();
+  let tong = 0;
+  for (const r of Array.isArray(chiTiet) ? chiTiet : []) {
+    const id = String(r.nhom_vi_pham || 'KHAC').trim() || 'KHAC';
+    const label = String(r.nhan_nhom_vi_pham || id).trim() || id;
+    if (!m.has(id)) {
+      m.set(id, { nhom_ma: id, nhom_ten: label, so_loi: 0, _hs: new Set(), tong_cp_uoc: 0 });
+    }
+    const o = m.get(id);
+    o.so_loi += 1;
+    tong += 1;
+    if (r.ma_lk) o._hs.add(String(r.ma_lk));
+    o.tong_cp_uoc += toNum(r.chi_phi_uoc_tinh, 0);
+  }
+  const total = tong || 1;
+  return [...m.values()]
+    .map((x) => ({
+      nhom_ma: x.nhom_ma,
+      nhom_ten: x.nhom_ten,
+      so_loi: x.so_loi,
+      so_ho_so: x._hs.size,
+      tong_cp_uoc: Math.round(x.tong_cp_uoc),
+      ty_le_pt: Math.round((1000 * x.so_loi) / total) / 10,
+      label: `${x.nhom_ten} (${x.nhom_ma})`,
+      value: x.so_loi,
+    }))
+    .sort((a, b) => b.so_loi - a.so_loi);
+};
+
+/** BC-CM-00 — Ma trận khoa × nhóm lỗi nghiệp vụ (dòng = cặp duy nhất). */
+export const taoBangBcCm00KhoaNhomLoi = (chiTiet = [], top = 80) => {
+  const m = new Map();
+  for (const r of Array.isArray(chiTiet) ? chiTiet : []) {
+    const mk = String(r.ma_khoa_chuan || r.ma_khoa || 'KHONG_RO').trim() || 'KHONG_RO';
+    const id = String(r.nhom_vi_pham || 'KHAC').trim() || 'KHAC';
+    const label = String(r.nhan_nhom_vi_pham || id).trim();
+    const k = `${mk}\t${id}`;
+    if (!m.has(k)) {
+      m.set(k, {
+        ma_khoa: mk === 'KHONG_RO' ? '' : mk,
+        nhom_ma: id,
+        nhom_ten: label,
+        so_loi: 0,
+        _hs: new Set(),
+        tong_cp_uoc: 0,
+      });
+    }
+    const o = m.get(k);
+    o.so_loi += 1;
+    if (r.ma_lk) o._hs.add(String(r.ma_lk));
+    o.tong_cp_uoc += toNum(r.chi_phi_uoc_tinh, 0);
+  }
+  return [...m.values()]
+    .map((x) => ({
+      ma_khoa: x.ma_khoa || '(trống)',
+      nhom_nghiep_vu: x.nhom_ten,
+      ma_nhom: x.nhom_ma,
+      so_loi: x.so_loi,
+      so_ho_so: x._hs.size,
+      tong_cp_uoc: Math.round(x.tong_cp_uoc),
+    }))
+    .sort((a, b) => b.so_loi - a.so_loi || b.so_ho_so - a.so_ho_so)
+    .slice(0, top);
+};
+
+/** BC-CM-00 — Tổng lỗi theo khoa (cho biểu đồ Top khoa). */
+export const taoBangBcCm00TopKhoaTongLoi = (chiTiet = [], top = 12) => {
+  const m = new Map();
+  for (const r of Array.isArray(chiTiet) ? chiTiet : []) {
+    const mk = String(r.ma_khoa_chuan || r.ma_khoa || 'KHONG_RO').trim() || 'KHONG_RO';
+    const key = mk === 'KHONG_RO' ? '(Chưa ghi khoa)' : mk;
+    if (!m.has(key)) m.set(key, { ma_khoa: key, so_loi: 0, _hs: new Set() });
+    const o = m.get(key);
+    o.so_loi += 1;
+    if (r.ma_lk) o._hs.add(String(r.ma_lk));
+  }
+  return [...m.values()]
+    .map((x) => ({
+      ma_khoa: x.ma_khoa,
+      so_loi: x.so_loi,
+      so_ho_so: x._hs.size,
+      label: x.ma_khoa,
+      value: x.so_loi,
+    }))
+    .sort((a, b) => b.so_loi - a.so_loi)
+    .slice(0, top);
+};
+
+/** BC-CM-00 — Theo nhân viên y tế (MA_BS_KHAM trên XML1 / bản ghi chi tiết). */
+export const taoBangBcCm00NhanVienYTe = (chiTiet = [], top = 40) => {
+  const byBs = new Map();
+  const demNhom = new Map();
+
+  for (const r of Array.isArray(chiTiet) ? chiTiet : []) {
+    const bs = String(r.ma_bac_si || 'KHONG_RO').trim() || 'KHONG_RO';
+    const id = String(r.nhom_vi_pham || 'KHAC').trim() || 'KHAC';
+    if (!byBs.has(bs)) {
+      byBs.set(bs, { ma_nhan_vien: bs, so_loi: 0, _hs: new Set(), tong_cp_uoc: 0 });
+    }
+    const o = byBs.get(bs);
+    o.so_loi += 1;
+    if (r.ma_lk) o._hs.add(String(r.ma_lk));
+    o.tong_cp_uoc += toNum(r.chi_phi_uoc_tinh, 0);
+    const kn = `${bs}\t${id}`;
+    demNhom.set(kn, (demNhom.get(kn) || 0) + 1);
+  }
+
+  const out = [...byBs.entries()].map(([bs, v]) => {
+    let bestN = '';
+    let bestC = 0;
+    for (const [kn, c] of demNhom.entries()) {
+      const parts = kn.split('\t');
+      if (parts[0] !== bs) continue;
+      if (c > bestC) {
+        bestC = c;
+        bestN = parts[1] || '';
+      }
+    }
+    const labelNhom = (() => {
+      const hit = Array.isArray(chiTiet)
+        ? chiTiet.find((x) => String(x.ma_bac_si || '').trim() === bs && String(x.nhom_vi_pham || '') === bestN)
+        : null;
+      return hit?.nhan_nhom_vi_pham || bestN || '—';
+    })();
+
+    return {
+      ma_nhan_vien: bs === 'KHONG_RO' ? '(Chưa ghi BS điều trị)' : bs,
+      so_loi: v.so_loi,
+      so_ho_so: v._hs.size,
+      tong_cp_uoc: Math.round(v.tong_cp_uoc),
+      nhom_pho_bien_ma: bestN || '—',
+      nhom_pho_bien_ten: labelNhom,
+      label: bs === 'KHONG_RO' ? '(Chưa ghi BS điều trị)' : bs,
+      value: v.so_loi,
+    };
+  });
+
+  return out.sort((a, b) => b.so_loi - a.so_loi).slice(0, top);
+};
+
 export const taoBangBcCm05TopIcdChiPhiCao = (factHoSo = []) => {
   const byIcd = new Map();
   for (const f of factHoSo) {
@@ -446,9 +589,14 @@ export const taoBangBcCm05TopIcdChiPhiCao = (factHoSo = []) => {
 export const tongHopBaoCaoChuyenMonMuc7 = ({ moHinhMuc5 = {}, danhSachHoSo = [] }) => {
   const fhs = moHinhMuc5.fact_ho_so || [];
   const fcb = moHinhMuc5.fact_canh_bao || [];
+  const chiTietLoi = phangHoaDanhSachLoiChiTiet(danhSachHoSo);
 
   return {
-    phien_ban: 'SPEC-BC-MUC7-V1',
+    phien_ban: 'SPEC-BC-MUC7-V1.1',
+    bc_cm_00_nhom_vi_pham: taoBangBcCm00NhomViPham(chiTietLoi),
+    bc_cm_00_khoa_nhom_loi: taoBangBcCm00KhoaNhomLoi(chiTietLoi, 220),
+    bc_cm_00_top_khoa: taoBangBcCm00TopKhoaTongLoi(chiTietLoi, 14),
+    bc_cm_00_nhan_vien_y_te: taoBangBcCm00NhanVienYTe(chiTietLoi, 50),
     bc_cm_01_kpi: taoBangBcCm01Kpi(fhs, fcb),
     bc_cm_01_phan_bo_khoa: taoBangBcCm01PhanBoKhoa(fhs, fcb, danhSachHoSo),
     bc_cm_02_cpw: taoBangBcCm02PhacDoCpw(),

@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   cellHeadTxt: {
     fontFamily: 'Arial',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#f1f5f9',
   },
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   },
   cellTxt: {
     fontFamily: 'Arial',
-    fontSize: 11,
+    fontSize: 12,
     color: '#334155',
-    lineHeight: 15,
+    lineHeight: 17,
   },
   note: {
     fontFamily: 'Arial',
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748b',
     marginTop: 10,
     fontStyle: 'italic',

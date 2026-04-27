@@ -1,12 +1,12 @@
 {
-  "version": "2026-04-24",
+  "version": "2026-04-26",
   "source_file": "ma_nguon/tien_ich/luat_giam_dinh_chuyen_de_hardcoded.jsx",
   "on_off_reference": "ma_nguon/tien_ich/quy_tac_on_off_noi_bo.jsx (DANH_SACH_MAU_QUY_TAC_MAC_DINH_OFF)",
   "totals": {
-    "rules": 581,
+    "rules": 583,
     "placeholder_count": 195,
-    "xml130_condition_count": 386,
-    "seed_on_among_xml130": 383,
+    "xml130_condition_count": 388,
+    "seed_on_among_xml130": 385,
     "seed_off_among_xml130": 3
   },
   "policy_note": "xml130_condition = DIEU_KIEN không phải placeholder (EXIT_AUDIT_BACKLOG hoặc CHO_XU_LY_SAU). Engine bỏ qua CHO_XU_LY_SAU qua laDieuKienChuyenDeXml130Placeholder; EXIT_AUDIT_BACKLOG luôn false cho đến khi thay DIEU_KIEN. Quy tắc mặc định OFF (data_quy_tac_giu_off_mo_rong) vẫn cần bật trong Quản lý ON/OFF để chạy thật.",
@@ -594,7 +594,9 @@
       "CHUYEN_DE-649",
       "CHUYEN_DE-650",
       "CHUYEN_DE-651",
-      "CHUYEN_DE-652"
+      "CHUYEN_DE-652",
+      "CHUYEN_DE-653",
+      "CHUYEN_DE-654"
     ],
     "xml130_seed_on_rule_ids": [
       "CHUYEN_DE-001",
@@ -979,7 +981,9 @@
       "CHUYEN_DE-649",
       "CHUYEN_DE-650",
       "CHUYEN_DE-651",
-      "CHUYEN_DE-652"
+      "CHUYEN_DE-652",
+      "CHUYEN_DE-653",
+      "CHUYEN_DE-654"
     ],
     "xml130_seed_on_but_default_off_noi_bo": []
   }

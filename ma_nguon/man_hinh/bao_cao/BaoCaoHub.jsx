@@ -3,9 +3,11 @@
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
   Platform,
   ScrollView,
   StyleSheet,
@@ -13,10 +15,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { chuanHoaMaKhoaBaoCao, khoaDrillKhop } from '../../dich_vu/bao_cao_drill_chuan';
 import { layCacBangDeXuat } from '../../dich_vu/bao_cao_export_manifest';
 import { taiNguonVaMoHinhMuc5 } from '../../dich_vu/bao_cao_service';
-import { inHoacChiaSePdfBaoCao, xuatExcelBaoCao } from '../../dich_vu/bao_cao_xuat_file';
+import { layBangMauTheoWidget } from '../../dich_vu/bao_cao_viz_meta';
+import {
+  inHoacChiaSePdfBaoCao,
+  xuatExcelBaoCao,
+  xuatJsonSnapshotBaoCao,
+  xuatZipCsvBaoCao,
+} from '../../dich_vu/bao_cao_xuat_file';
 import BangMoHinhMuc5 from './BangMoHinhMuc5';
+import BieuDoGiftedBarNgang from './BieuDoGiftedBarNgang';
+import BieuDoGiftedCotDoc from './BieuDoGiftedCotDoc';
+import HeatmapCm00 from './HeatmapCm00';
 
 const NHANH = [
   {
@@ -167,6 +179,33 @@ const COT_CHENH_CHI = [
   { key: 'chenh_lech', label: 'Chênh', width: 88 },
 ];
 
+const COT_BC_CM_00_NHOM = [
+  { key: 'nhom_ma', label: 'Mã nhóm', width: 100 },
+  { key: 'nhom_ten', label: 'Nhóm lỗi (nghiệp vụ)', width: 200 },
+  { key: 'so_loi', label: 'Số dòng lỗi', width: 96 },
+  { key: 'so_ho_so', label: 'Số hồ sơ', width: 88 },
+  { key: 'ty_le_pt', label: '%/tổng lỗi', width: 96 },
+  { key: 'tong_cp_uoc', label: 'Σ CP ước (VND)', width: 120 },
+];
+
+const COT_BC_CM_00_KHOA_NHOM = [
+  { key: 'ma_khoa', label: 'Mã khoa', width: 88 },
+  { key: 'nhom_nghiep_vu', label: 'Nhóm nghiệp vụ', width: 180 },
+  { key: 'ma_nhom', label: 'Mã nhóm', width: 88 },
+  { key: 'so_loi', label: 'Số dòng', width: 80 },
+  { key: 'so_ho_so', label: 'Số HS', width: 72 },
+  { key: 'tong_cp_uoc', label: 'Σ CP ước', width: 100 },
+];
+
+const COT_BC_CM_00_NVYT = [
+  { key: 'ma_nhan_vien', label: 'Mã NV/Bác sĩ (XML1)', width: 140 },
+  { key: 'so_loi', label: 'Số dòng lỗi', width: 88 },
+  { key: 'so_ho_so', label: 'Số HS', width: 72 },
+  { key: 'nhom_pho_bien_ten', label: 'Nhóm lỗi phổ biến', width: 200 },
+  { key: 'nhom_pho_bien_ma', label: 'Mã nhóm PB', width: 96 },
+  { key: 'tong_cp_uoc', label: 'Σ CP ước', width: 100 },
+];
+
 const COT_BC_CM_01_KPI = [
   { key: 'ma_chi_so', label: 'Mã', width: 120 },
   { key: 'ten', label: 'Chỉ số', width: 260 },
@@ -261,6 +300,7 @@ const COT_BC_DT_01_KHOA_RR = [
 
 const COT_BC_DT_01_RULE_RR = [
   { key: 'ma_rule', label: 'ma_rule', width: 110 },
+  { key: 'ten_quy_tac', label: 'Tên quy tắc', width: 240 },
   { key: 'so_loi', label: 'so_loi', width: 64 },
   { key: 'tong_chi_phi', label: 'Σ rủi ro', width: 100 },
 ];
@@ -328,7 +368,16 @@ const COT_BC_DT_06_KCB = [
   { key: 'tong_t_bhtt', label: 'Σ T_BHTT', width: 100 },
 ];
 
+const COT_DRILL_HS = [
+  { key: 'ma_lk', label: 'MA_LK', width: 140 },
+  { key: 'ma_bn', label: 'MA_BN', width: 100 },
+  { key: 'ma_khoa', label: 'Khoa', width: 80 },
+];
+
+const RONG_BANG_DRILL_HS = COT_DRILL_HS.reduce((s, c) => s + (c.width || 0), 0);
+
 export default function BaoCaoHub() {
+  const navigation = useNavigation();
   const [nhanh, setNhanh] = useState('QUAN_TRI');
   const [quanTriThe, setQuanTriThe] = useState('M5');
   const [tai, setTai] = useState({
@@ -339,13 +388,34 @@ export default function BaoCaoHub() {
     muc6: null,
     muc7: null,
     muc8: null,
+    hienThi: null,
+    tuCache: false,
   });
   const [xuatDang, setXuatDang] = useState(false);
+  const [drillCm00, setDrillCm00] = useState({ ma_khoa: null, ma_nhom: null });
+  const debTabRef = useRef(null);
+  const TAB_DEB_MS = 120;
 
-  const nap = useCallback(async () => {
+  const chaySauDebounceTab = useCallback((fn) => {
+    if (debTabRef.current) clearTimeout(debTabRef.current);
+    debTabRef.current = setTimeout(() => {
+      fn();
+      debTabRef.current = null;
+    }, TAB_DEB_MS);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (debTabRef.current) clearTimeout(debTabRef.current);
+    },
+    [],
+  );
+
+  const nap = useCallback(async (options = {}) => {
+    const { boQuaCache = false } = options;
     setTai((s) => ({ ...s, dangTai: true, loi: null }));
     try {
-      const kq = await taiNguonVaMoHinhMuc5();
+      const kq = await taiNguonVaMoHinhMuc5({ boQuaCache });
       setTai({
         dangTai: false,
         loi: null,
@@ -354,6 +424,8 @@ export default function BaoCaoHub() {
         muc6: kq.bao_cao_quan_tri_muc6,
         muc7: kq.bao_cao_chuyen_mon_muc7,
         muc8: kq.bao_cao_doanh_thu_muc8,
+        hienThi: kq.hien_thi_bao_cao || null,
+        tuCache: !!kq._tu_cache,
       });
     } catch (e) {
       setTai({
@@ -364,13 +436,28 @@ export default function BaoCaoHub() {
         muc6: null,
         muc7: null,
         muc8: null,
+        hienThi: null,
+        tuCache: false,
       });
     }
   }, []);
 
   useEffect(() => {
-    nap();
+    nap({});
   }, [nap]);
+
+  const pollMs = tai.hienThi?.chu_ky_lam_moi_goi_y_ms ?? 0;
+  useEffect(() => {
+    if (tai.dangTai || tai.loi || !pollMs || pollMs <= 0) return undefined;
+    const id = setInterval(() => {
+      nap({ boQuaCache: false });
+    }, pollMs);
+    return () => clearInterval(id);
+  }, [tai.dangTai, tai.loi, pollMs, nap]);
+
+  useEffect(() => {
+    if (nhanh !== 'CHUYEN_MON') setDrillCm00({ ma_khoa: null, ma_nhom: null });
+  }, [nhanh]);
 
   const thongKe = useMemo(() => {
     const fcb = tai.moHinh?.fact_canh_bao;
@@ -387,6 +474,239 @@ export default function BaoCaoHub() {
       tongBhtt,
     };
   }, [tai.moHinh]);
+
+  const kpiTyLeLoi100 = useMemo(() => {
+    const raw = tai.muc7?.bc_cm_01_kpi?.[0]?.gia_tri;
+    const n = Number(String(raw ?? '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }, [tai.muc7]);
+
+  const kpiNghiem100 = useMemo(() => {
+    const raw = tai.muc7?.bc_cm_01_kpi?.[1]?.gia_tri;
+    const n = Number(String(raw ?? '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }, [tai.muc7]);
+
+  const dongKhoaNhomFiltered = useMemo(() => {
+    const rows = tai.muc7?.bc_cm_00_khoa_nhom_loi || [];
+    let out = [...rows];
+    if (drillCm00.ma_khoa != null) {
+      out = out.filter((r) => khoaDrillKhop(r.ma_khoa, drillCm00.ma_khoa));
+    }
+    if (drillCm00.ma_nhom != null) {
+      out = out.filter((r) => String(r.ma_nhom || '').trim() === String(drillCm00.ma_nhom).trim());
+    }
+    return out;
+  }, [tai.muc7, drillCm00]);
+
+  const hoSoDrillTheoKhoa = useMemo(() => {
+    const fhs = tai.moHinh?.fact_ho_so || [];
+    if (drillCm00.ma_khoa == null) return [];
+    return fhs.filter((r) => khoaDrillKhop(r.ma_khoa, drillCm00.ma_khoa)).slice(0, 45);
+  }, [tai.moHinh, drillCm00.ma_khoa]);
+
+  const moHoSoGiamDinh = useCallback(
+    (maLK) => {
+      const k = String(maLK || '').trim();
+      if (!k) return;
+      try {
+        navigation.navigate('SuaFileXML', { maLK: k });
+      } catch {
+        /* ignore */
+      }
+    },
+    [navigation],
+  );
+
+  const onChonBarKhoaCm00 = useCallback((row) => {
+    const mk = String(row?.ma_khoa ?? '').trim();
+    if (!mk) return;
+    if (Platform.OS !== 'web') {
+      Haptics.selectionAsync().catch(() => {});
+    }
+    setDrillCm00((d) => ({
+      ...d,
+      ma_khoa: d.ma_khoa != null && khoaDrillKhop(d.ma_khoa, mk) ? null : mk,
+    }));
+  }, []);
+
+  const onChonBarNhomCm00 = useCallback((row) => {
+    const id = String(row?.nhom_ma ?? '').trim();
+    if (!id) return;
+    if (Platform.OS !== 'web') {
+      Haptics.selectionAsync().catch(() => {});
+    }
+    setDrillCm00((d) => ({
+      ...d,
+      ma_nhom: d.ma_nhom != null && String(d.ma_nhom) === id ? null : id,
+    }));
+  }, []);
+
+  const onChonHeatmapCm00 = useCallback((cell) => {
+    const mk = String(cell?.ma_khoa ?? '').trim();
+    const mn = String(cell?.ma_nhom ?? '').trim();
+    if (Platform.OS !== 'web') {
+      Haptics.selectionAsync().catch(() => {});
+    }
+    setDrillCm00((d) => {
+      const sameK = d.ma_khoa != null && khoaDrillKhop(d.ma_khoa, mk);
+      const sameN = d.ma_nhom != null && String(d.ma_nhom) === mn;
+      if (sameK && sameN) return { ma_khoa: null, ma_nhom: null };
+      return { ma_khoa: mk, ma_nhom: mn || null };
+    });
+  }, []);
+
+  const bangMauCm00Nhom = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'cm00_bar_nhom'),
+    [tai.hienThi],
+  );
+  const bangMauCm00Khoa = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'cm00_bar_khoa'),
+    [tai.hienThi],
+  );
+  const bangMauQt04Rule = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'qt04_bar_rule'),
+    [tai.hienThi],
+  );
+  const bangMauQt04Khoa = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'qt04_bar_khoa'),
+    [tai.hienThi],
+  );
+  const bangMauDtKhoaRr = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'dt01_bar_khoa_rr'),
+    [tai.hienThi],
+  );
+  const bangMauDtRuleRr = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'dt01_top_rule_rr'),
+    [tai.hienThi],
+  );
+  const bangMauDtPhanLoai = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'dt01_bar_phan_loai'),
+    [tai.hienThi],
+  );
+  const bangMauDtThang = useMemo(
+    () => layBangMauTheoWidget(tai.hienThi, 'dt05_line_thang'),
+    [tai.hienThi],
+  );
+
+  const rowsM6Qt04RuleChart = useMemo(
+    () =>
+      (tai.muc6?.bc_qt_04_top10_rule || []).map((r) => ({
+        ...r,
+        label: String(r.ma_rule || '—').length > 16 ? `${String(r.ma_rule).slice(0, 14)}…` : String(r.ma_rule || '—'),
+        value: Number(r.so_loi) || 0,
+      })),
+    [tai.muc6],
+  );
+  const rowsM6Qt04KhoaChart = useMemo(
+    () =>
+      (tai.muc6?.bc_qt_04_top10_khoa || []).map((r) => ({
+        ...r,
+        label: String(r.ma_khoa || '—'),
+        value: Number(r.so_loi) || 0,
+      })),
+    [tai.muc6],
+  );
+
+  const rowsM8Dt01LoaiChart = useMemo(
+    () =>
+      (tai.muc8?.bc_dt_01_phan_loai || []).map((r) => ({
+        ...r,
+        label: String(r.ten_loai || r.loai || '—').slice(0, 20),
+        value: Number(r.tong_chi_phi) || 0,
+      })),
+    [tai.muc8],
+  );
+  const rowsM8Dt01KhoaRrChart = useMemo(
+    () =>
+      (tai.muc8?.bc_dt_01_top_khoa || []).map((r) => ({
+        ...r,
+        label: String(r.ma_khoa || '—'),
+        value: Number(r.tong_chi_phi_rui_ro) || 0,
+      })),
+    [tai.muc8],
+  );
+  const rowsM8Dt01RuleRrChart = useMemo(
+    () =>
+      (tai.muc8?.bc_dt_01_top_rule || []).map((r) => {
+        const ten = String(r.ten_quy_tac || '').trim();
+        const code = String(r.ma_rule || '—');
+        const base =
+          ten && ten !== 'Không có tên quy tắc' ? ten : code;
+        const label = base.length > 14 ? `${base.slice(0, 12)}…` : base;
+        return {
+          ...r,
+          label,
+          value: Number(r.tong_chi_phi) || 0,
+        };
+      }),
+    [tai.muc8],
+  );
+  const rowsM8Dt05ThangChart = useMemo(
+    () =>
+      (tai.muc8?.bc_dt_05_thang || []).map((r) => ({
+        ...r,
+        label: String(r.ky_thang || '—'),
+        value: Number(r.tong_t_bhtt) || 0,
+      })),
+    [tai.muc8],
+  );
+
+  /** Drill khoa → gom lại nhóm từ ma trận khoa×nhóm (đồng bộ biểu đồ). */
+  const rowsBarNhomDongBo = useMemo(() => {
+    const base = tai.muc7?.bc_cm_00_nhom_vi_pham || [];
+    const matrix = tai.muc7?.bc_cm_00_khoa_nhom_loi || [];
+    if (drillCm00.ma_khoa == null) return base;
+    const agg = new Map();
+    for (const r of matrix) {
+      if (!khoaDrillKhop(r.ma_khoa, drillCm00.ma_khoa)) continue;
+      const id = String(r.ma_nhom || '').trim() || 'KHAC';
+      const lab = String(r.nhom_nghiep_vu || id).trim() || id;
+      if (!agg.has(id)) {
+        agg.set(id, { nhom_ma: id, nhom_ten: lab, so_loi: 0 });
+      }
+      const o = agg.get(id);
+      o.so_loi += Number(r.so_loi) || 0;
+    }
+    return [...agg.values()]
+      .map((x) => ({
+        nhom_ma: x.nhom_ma,
+        nhom_ten: x.nhom_ten,
+        so_loi: x.so_loi,
+        label: `${x.nhom_ten} (${x.nhom_ma})`,
+        value: x.so_loi,
+      }))
+      .sort((a, b) => b.so_loi - a.so_loi);
+  }, [tai.muc7, drillCm00.ma_khoa]);
+
+  /** Drill nhóm → gom lại khoa từ ma trận (đồng bộ biểu đồ Top khoa). */
+  const rowsBarKhoaDongBo = useMemo(() => {
+    const base = tai.muc7?.bc_cm_00_top_khoa || [];
+    const matrix = tai.muc7?.bc_cm_00_khoa_nhom_loi || [];
+    if (drillCm00.ma_nhom == null) return base;
+    const mn = String(drillCm00.ma_nhom).trim();
+    if (!mn) return base;
+    const agg = new Map();
+    for (const r of matrix) {
+      if (String(r.ma_nhom || '').trim() !== mn) continue;
+      const mkRaw = String(r.ma_khoa || '').trim();
+      const key = mkRaw || '(trống)';
+      if (!agg.has(key)) {
+        agg.set(key, { ma_khoa: key, so_loi: 0, so_ho_so: 0 });
+      }
+      const o = agg.get(key);
+      o.so_loi += Number(r.so_loi) || 0;
+    }
+    return [...agg.values()]
+      .map((x) => ({
+        ma_khoa: x.ma_khoa,
+        so_loi: x.so_loi,
+        so_ho_so: x.so_ho_so,
+        label: x.ma_khoa,
+        value: x.so_loi,
+      }))
+      .sort((a, b) => b.so_loi - a.so_loi);
+  }, [tai.muc7, drillCm00.ma_nhom]);
 
   const coDuLieuXuat = useMemo(() => {
     if (tai.dangTai || tai.loi) return false;
@@ -426,6 +746,30 @@ export default function BaoCaoHub() {
     }
   }, [coDuLieuXuat, xuatDang, nhanh, quanTriThe, tai]);
 
+  const onXuatZipCsv = useCallback(async () => {
+    if (!coDuLieuXuat || xuatDang) return;
+    setXuatDang(true);
+    try {
+      const { sheets, tieuDe } = layCacBangDeXuat({ nhanh, quanTriThe, tai });
+      const base = tieuDe
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w\s-]+/g, '')
+        .replace(/\s+/g, '_')
+        .slice(0, 40);
+      await xuatZipCsvBaoCao(sheets, base || 'BaoCao_CDSS_CSV');
+      if (Platform.OS !== 'web') {
+        try {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } catch {
+          /* ignore */
+        }
+      }
+    } finally {
+      setXuatDang(false);
+    }
+  }, [coDuLieuXuat, xuatDang, nhanh, quanTriThe, tai]);
+
   const onInBaoCao = useCallback(async () => {
     if (!coDuLieuXuat || xuatDang) return;
     setXuatDang(true);
@@ -444,25 +788,32 @@ export default function BaoCaoHub() {
     }
   }, [coDuLieuXuat, xuatDang, nhanh, quanTriThe, tai]);
 
+  const onXuatJsonSnapshot = useCallback(async () => {
+    if (!coDuLieuXuat || xuatDang) return;
+    setXuatDang(true);
+    try {
+      await xuatJsonSnapshotBaoCao({ nhanh, quanTriThe, tai });
+      if (Platform.OS !== 'web') {
+        try {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } catch {
+          /* ignore */
+        }
+      }
+    } finally {
+      setXuatDang(false);
+    }
+  }, [coDuLieuXuat, xuatDang, nhanh, quanTriThe, tai]);
+
   const meta = NHANH.find((x) => x.id === nhanh) || NHANH[0];
 
   return (
     <View style={styles.container}>
       <View style={styles.hero}>
         <View style={styles.heroAccent} />
-        <View style={styles.heroRow}>
-          <View style={styles.heroTextCol}>
-            <Text style={styles.heroEyebrow}>CDSS BHYT · SPEC-BC</Text>
-            <Text style={styles.heroTitle}>Trung tâm báo cáo</Text>
-            <Text style={styles.heroSub}>
-              Ba nhánh: Quản trị (mục 5–6), Chuyên môn (mục 7), Doanh thu BHYT (mục 8). Xuất Excel đa sheet hoặc
-              in / PDF ngay trên màn hình đang xem.
-            </Text>
-          </View>
-          <View style={styles.heroIconWrap}>
-            <MaterialCommunityIcons name="monitor-dashboard" size={36} color="#93c5fd" />
-          </View>
-        </View>
+        <Text style={styles.heroTitleCenter} accessibilityRole="header">
+          TRUNG TÂM BÁO CÁO
+        </Text>
 
         {!tai.dangTai && !tai.loi ? (
           <View style={styles.statRow}>
@@ -481,12 +832,25 @@ export default function BaoCaoHub() {
           </View>
         ) : null}
 
-        {coDuLieuXuat ? (
+        {!tai.dangTai && !tai.loi && tai.moHinh ? (
           <View style={styles.toolRow}>
+            <TouchableOpacity
+              style={[styles.toolBtn, styles.toolBtnRefresh]}
+              onPress={() => {
+                setDrillCm00({ ma_khoa: null, ma_nhom: null });
+                nap({ boQuaCache: true });
+              }}
+              disabled={tai.dangTai || xuatDang}
+              accessibilityRole="button"
+              accessibilityLabel="Làm mới cứng — bỏ cache và đọc lại kho"
+            >
+              <MaterialCommunityIcons name="refresh" size={22} color={ACCENT} />
+              <Text style={[styles.toolBtnText, styles.toolBtnTextDark]}>Làm mới</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={[styles.toolBtn, styles.toolBtnExcel]}
               onPress={onXuatExcel}
-              disabled={xuatDang}
+              disabled={!coDuLieuXuat || xuatDang}
               accessibilityRole="button"
               accessibilityLabel="Xuất file Excel"
             >
@@ -500,12 +864,32 @@ export default function BaoCaoHub() {
             <TouchableOpacity
               style={[styles.toolBtn, styles.toolBtnPrint]}
               onPress={onInBaoCao}
-              disabled={xuatDang}
+              disabled={!coDuLieuXuat || xuatDang}
               accessibilityRole="button"
               accessibilityLabel="In hoặc tạo PDF"
             >
               <MaterialCommunityIcons name="printer-outline" size={22} color={ACCENT} />
               <Text style={[styles.toolBtnText, styles.toolBtnTextDark]}>In / PDF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toolBtn, styles.toolBtnZip]}
+              onPress={onXuatZipCsv}
+              disabled={!coDuLieuXuat || xuatDang}
+              accessibilityRole="button"
+              accessibilityLabel="Xuất ZIP nhiều file CSV UTF-8"
+            >
+              <MaterialCommunityIcons name="folder-zip-outline" size={22} color="#be185d" />
+              <Text style={[styles.toolBtnText, styles.toolBtnZipText]}>ZIP / CSV</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toolBtn, styles.toolBtnJson]}
+              onPress={onXuatJsonSnapshot}
+              disabled={!coDuLieuXuat || xuatDang}
+              accessibilityRole="button"
+              accessibilityLabel="Xuất snapshot JSON meta cho BI"
+            >
+              <MaterialCommunityIcons name="code-json" size={22} color="#0f766e" />
+              <Text style={[styles.toolBtnText, styles.toolBtnJsonText]}>JSON</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -518,72 +902,102 @@ export default function BaoCaoHub() {
         ) : tai.loi ? (
           <Text style={styles.loi}>Không đọc được kho: {tai.loi}</Text>
         ) : (
-          <Text style={styles.metaLine}>Đã gom trùng MA_LK — dữ liệu sẵn sàng cho bảng và xuất file.</Text>
+          <Text style={styles.metaLine} numberOfLines={3}>
+            Gom MA_LK
+            {tai.hienThi?.phien_ban ? ` · ${tai.hienThi.phien_ban}` : ''}
+            {tai.hienThi?.thoi_diem_du_lieu
+              ? ` · ${new Date(tai.hienThi.thoi_diem_du_lieu).toLocaleString('vi-VN')}`
+              : ''}
+            {tai.tuCache ? ' · cache' : ''}
+            {pollMs > 0 ? ` · làm mới ~${Math.round(pollMs / 60000)}p` : ''}
+          </Text>
         )}
       </View>
 
-      <View style={styles.tabStrip}>
-        {NHANH.map((t) => {
-          const active = t.id === nhanh;
-          return (
-            <TouchableOpacity
-              key={t.id}
-              style={[styles.tab, active && styles.tabActive]}
-              onPress={() => {
-                setNhanh(t.id);
-                if (t.id !== 'QUAN_TRI') setQuanTriThe('M5');
-              }}
-              accessibilityRole="button"
-              accessibilityState={{ selected: active }}
-            >
-              <MaterialCommunityIcons
-                name={t.icon}
-                size={22}
-                color={active ? '#fff' : '#64748b'}
-                style={styles.tabIcon}
-              />
-              <Text style={[styles.tabText, active && styles.tabTextActive]} numberOfLines={2}>
-                {t.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <View style={styles.bodyRow}>
+        <ScrollView
+          style={styles.sidebarScroll}
+          contentContainerStyle={styles.sidebarInner}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={styles.sidebarHeading}>Điều hướng</Text>
+          {NHANH.map((t) => {
+            const active = t.id === nhanh;
+            return (
+              <TouchableOpacity
+                key={t.id}
+                style={[styles.sidebarItem, active && styles.sidebarItemActive]}
+                onPress={() => {
+                  chaySauDebounceTab(() => {
+                    setNhanh(t.id);
+                    if (t.id !== 'QUAN_TRI') setQuanTriThe('M5');
+                  });
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+              >
+                <MaterialCommunityIcons
+                  name={t.icon}
+                  size={20}
+                  color={active ? '#fff' : '#64748b'}
+                  style={styles.sidebarItemIcon}
+                />
+                <Text style={[styles.sidebarItemLabel, active && styles.sidebarItemLabelActive]} numberOfLines={3}>
+                  {t.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+          {nhanh === 'QUAN_TRI' ? (
+            <>
+              <View style={styles.sidebarDivider} />
+              <Text style={styles.sidebarHeading}>Quản trị</Text>
+              <TouchableOpacity
+                style={[styles.sidebarSubItem, quanTriThe === 'M5' && styles.sidebarSubItemActive]}
+                onPress={() => chaySauDebounceTab(() => setQuanTriThe('M5'))}
+                accessibilityRole="button"
+                accessibilityState={{ selected: quanTriThe === 'M5' }}
+              >
+                <MaterialCommunityIcons
+                  name="database-outline"
+                  size={18}
+                  color={quanTriThe === 'M5' ? '#fff' : ACCENT}
+                />
+                <Text
+                  style={[styles.sidebarSubLabel, quanTriThe === 'M5' && styles.sidebarSubLabelActive]}
+                  numberOfLines={3}
+                >
+                  Mục 5 — Fact / Dim
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.sidebarSubItem, quanTriThe === 'M6' && styles.sidebarSubItemActive]}
+                onPress={() => chaySauDebounceTab(() => setQuanTriThe('M6'))}
+                accessibilityRole="button"
+                accessibilityState={{ selected: quanTriThe === 'M6' }}
+              >
+                <MaterialCommunityIcons
+                  name="view-dashboard-variant"
+                  size={18}
+                  color={quanTriThe === 'M6' ? '#fff' : ACCENT}
+                />
+                <Text
+                  style={[styles.sidebarSubLabel, quanTriThe === 'M6' && styles.sidebarSubLabelActive]}
+                  numberOfLines={3}
+                >
+                  Mục 6 — BC-QT
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : null}
+        </ScrollView>
 
-      {nhanh === 'QUAN_TRI' ? (
-        <View style={styles.subTabRow}>
-          <TouchableOpacity
-            style={[styles.subTab, quanTriThe === 'M5' && styles.subTabActive]}
-            onPress={() => setQuanTriThe('M5')}
-          >
-            <MaterialCommunityIcons
-              name="database-outline"
-              size={18}
-              color={quanTriThe === 'M5' ? '#fff' : ACCENT}
-              style={styles.subTabIcon}
-            />
-            <Text style={[styles.subTabText, quanTriThe === 'M5' && styles.subTabTextActive]} numberOfLines={2}>
-              Mục 5 — Fact / Dimension
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.subTab, quanTriThe === 'M6' && styles.subTabActive]}
-            onPress={() => setQuanTriThe('M6')}
-          >
-            <MaterialCommunityIcons
-              name="view-dashboard-variant"
-              size={18}
-              color={quanTriThe === 'M6' ? '#fff' : ACCENT}
-              style={styles.subTabIcon}
-            />
-            <Text style={[styles.subTabText, quanTriThe === 'M6' && styles.subTabTextActive]} numberOfLines={2}>
-              Mục 6 — BC-QT-01…04
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          style={styles.mainScroll}
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+        >
         <Text style={styles.sectionTitle}>{meta.label}</Text>
         <Text style={styles.sectionHint}>{meta.hint}</Text>
 
@@ -726,6 +1140,30 @@ export default function BaoCaoHub() {
               rows={tai.muc6.bc_qt_04_ty_le}
               maxRows={10}
             />
+            <View style={styles.chartRow}>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="QT-04 — Top rule (số lỗi)"
+                  subtitle="Tương tác chạm; SPEC-VIZ widget qt04_bar_rule."
+                  rows={rowsM6Qt04RuleChart}
+                  keyNhan="label"
+                  keySo="value"
+                  maxItems={8}
+                  bangMau={bangMauQt04Rule}
+                />
+              </View>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="QT-04 — Top khoa (số lỗi)"
+                  subtitle="Đồng bộ logic drill với nhánh Chuyên môn."
+                  rows={rowsM6Qt04KhoaChart}
+                  keyNhan="label"
+                  keySo="value"
+                  maxItems={8}
+                  bangMau={bangMauQt04Khoa}
+                />
+              </View>
+            </View>
             <BangMoHinhMuc5
               title="BC-QT-04 — Top 10 mã rule vi phạm"
               columns={COT_TOP_RULE}
@@ -760,6 +1198,169 @@ export default function BaoCaoHub() {
               thường. Số liệu tính từ fact mục 5 và hồ sơ XML; phần cần phác đồ / workflow DDI / DRG hiển thị “—”
               kèm ghi chú theo đặc tả.
             </Text>
+
+            <Text style={styles.mucPhu}>7.0 — Phân tích theo nhóm lỗi nghiệp vụ, khoa & nhân viên y tế</Text>
+            <Text style={styles.doanVan}>
+              Gom từ danh sách lỗi đã phẳng hoá (cùng nguồn dashboard Tổng quan): nhóm vi phạm Hành chính / DVKT /
+              Thuốc / …, ma trận khoa × nhóm, và mã BS điều trị trên XML1. Biểu đồ chuẩn hoá theo giá trị lớn nhất trong
+              từng khung để so sánh nhanh; bảng dùng cỡ chữ tối thiểu 12pt. Chạm một dòng trên biểu đồ để lọc ma trận
+              (drill-down); chạm MA_LK dưới đây để mở giám định.
+            </Text>
+            {kpiTyLeLoi100 != null || kpiNghiem100 != null ? (
+              <View style={styles.kpiHeroRow}>
+                <View
+                  style={[
+                    styles.kpiCard,
+                    kpiTyLeLoi100 != null && kpiTyLeLoi100 > 30 && styles.kpiCardCanhBao,
+                  ]}
+                >
+                  <Text style={styles.kpiCardLabel}>Tỷ lệ lỗi / 100 HS (BC-CM-01)</Text>
+                  <Text
+                    style={[
+                      styles.kpiCardValue,
+                      kpiTyLeLoi100 != null && kpiTyLeLoi100 > 30 && styles.kpiCardValueCanhBao,
+                    ]}
+                  >
+                    {kpiTyLeLoi100 != null ? `${kpiTyLeLoi100.toFixed(1)}` : '—'}
+                  </Text>
+                  <Text style={styles.kpiCardUnit}>lỗi/100HS · Three-second rule (&gt;30 đỏ)</Text>
+                </View>
+                <View style={styles.kpiCard}>
+                  <Text style={styles.kpiCardLabel}>Lỗi trọng yếu / 100 HS</Text>
+                  <Text style={styles.kpiCardValue}>{kpiNghiem100 != null ? `${kpiNghiem100.toFixed(1)}` : '—'}</Text>
+                  <Text style={styles.kpiCardUnit}>JCI QPS proxy</Text>
+                </View>
+              </View>
+            ) : null}
+            <HeatmapCm00
+              title="7.0 — Heatmap khoa × nhóm (mật độ dòng lỗi)"
+              subtitle="SPEC-VIZ-2.0.3 · theme + drill_registry; ô đậm = nhiều lỗi hơn trong khung hiển thị."
+              rows={tai.muc7.bc_cm_00_khoa_nhom_loi || []}
+              hienThi={tai.hienThi}
+              maxHang={10}
+              maxCot={10}
+              maKhoaHighlight={drillCm00.ma_khoa}
+              maNhomHighlight={drillCm00.ma_nhom}
+              onChonO={onChonHeatmapCm00}
+            />
+            <View style={styles.chartRow}>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="Top nhóm lỗi nghiệp vụ"
+                  subtitle={
+                    drillCm00.ma_khoa != null
+                      ? `Đã lọc theo khoa ${drillCm00.ma_khoa || '(trống)'} — gom từ ma trận khoa×nhóm.`
+                      : 'Theo số dòng cảnh báo (react-native-gifted-charts).'
+                  }
+                  rows={rowsBarNhomDongBo}
+                  keyNhan="label"
+                  keySo="so_loi"
+                  maxItems={8}
+                  bangMau={bangMauCm00Nhom}
+                  onChonDong={onChonBarNhomCm00}
+                  keyDongChon="nhom_ma"
+                  maDongChon={drillCm00.ma_nhom ?? ''}
+                />
+              </View>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="Top khoa phát sinh cảnh báo"
+                  subtitle={
+                    drillCm00.ma_nhom != null
+                      ? `Đã lọc theo nhóm ${drillCm00.ma_nhom} — gom từ ma trận khoa×nhóm.`
+                      : 'Theo MA_KHOA trên hồ sơ.'
+                  }
+                  rows={rowsBarKhoaDongBo}
+                  keyNhan="label"
+                  keySo="so_loi"
+                  maxItems={8}
+                  bangMau={bangMauCm00Khoa}
+                  onChonDong={onChonBarKhoaCm00}
+                  keyDongChon="ma_khoa"
+                  maDongChon={drillCm00.ma_khoa ?? ''}
+                />
+              </View>
+            </View>
+            {drillCm00.ma_khoa != null || drillCm00.ma_nhom != null ? (
+              <View style={styles.drillBanner}>
+                <Text style={styles.drillBannerTxt}>
+                  Lọc drill:
+                  {drillCm00.ma_khoa != null
+                    ? ` Khoa ${
+                        chuanHoaMaKhoaBaoCao(drillCm00.ma_khoa) === '' ? '(trống / chưa ghi)' : drillCm00.ma_khoa
+                      }`
+                    : ''}
+                  {drillCm00.ma_khoa != null && drillCm00.ma_nhom != null ? ' · ' : ''}
+                  {drillCm00.ma_nhom != null ? `Nhóm ${drillCm00.ma_nhom}` : ''}
+                </Text>
+                <TouchableOpacity onPress={() => setDrillCm00({ ma_khoa: null, ma_nhom: null })} accessibilityRole="button">
+                  <Text style={styles.drillClear}>Xoá lọc</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+            {drillCm00.ma_khoa != null && hoSoDrillTheoKhoa.length > 0 ? (
+              <View style={styles.drillHsWrap}>
+                <Text style={styles.drillHsTitle}>Hồ sơ tại khoa đã chọn — chạm MA_LK để mở giám định</Text>
+                <ScrollView horizontal nestedScrollEnabled showsHorizontalScrollIndicator>
+                  <View style={{ width: RONG_BANG_DRILL_HS }}>
+                    <View style={styles.drillHsHead}>
+                      {COT_DRILL_HS.map((c) => (
+                        <View key={c.key} style={[styles.drillHsCell, { width: c.width }]}>
+                          <Text style={styles.drillHsHeadTxt}>{c.label}</Text>
+                        </View>
+                      ))}
+                    </View>
+                    <FlatList
+                      data={hoSoDrillTheoKhoa}
+                      keyExtractor={(item, index) => `${item.ma_lk}-${index}`}
+                      nestedScrollEnabled
+                      scrollEnabled={hoSoDrillTheoKhoa.length > 5}
+                      style={styles.drillHsFlash}
+                      renderItem={({ item: r, index: ri }) => (
+                        <TouchableOpacity
+                          style={[styles.drillHsRow, ri % 2 === 1 && styles.drillHsRowAlt]}
+                          onPress={() => moHoSoGiamDinh(r.ma_lk)}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Mở hồ sơ ${r.ma_lk}`}
+                        >
+                          {COT_DRILL_HS.map((c) => (
+                            <View key={c.key} style={[styles.drillHsCell, { width: c.width }]}>
+                              <Text style={styles.drillHsTxt} numberOfLines={2}>
+                                {String(r[c.key] ?? '')}
+                              </Text>
+                            </View>
+                          ))}
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                </ScrollView>
+              </View>
+            ) : null}
+            <BangMoHinhMuc5
+              title="7.0.1 — Bảng nhóm vi phạm nghiệp vụ (tổng hợp)"
+              subtitle="Số hồ sơ = đếm MA_LK khác nhau có ≥1 lỗi thuộc nhóm; % = phần trăm trên tổng dòng lỗi toàn kho."
+              columns={COT_BC_CM_00_NHOM}
+              rows={tai.muc7.bc_cm_00_nhom_vi_pham || []}
+              maxRows={35}
+              stableKeyPrefix="BC_CM_00_NHOM"
+            />
+            <BangMoHinhMuc5
+              title="7.0.2 — Ma trận khoa × nhóm lỗi nghiệp vụ (theo drill nếu có)"
+              subtitle="Mỗi dòng là cặp (khoa, nhóm); hỗ trợ rà soát khoa trọng điểm theo từng loại rủi ro."
+              columns={COT_BC_CM_00_KHOA_NHOM}
+              rows={dongKhoaNhomFiltered}
+              maxRows={45}
+              stableKeyPrefix="BC_CM_00_KHOA_NHOM"
+            />
+            <BangMoHinhMuc5
+              title="7.0.3 — Theo nhân viên y tế (mã BS điều trị / XML1)"
+              subtitle="Nhóm phổ biến = nhóm nghiệp vụ có nhiều dòng lỗi nhất gắn với cùng mã BS trong kỳ."
+              columns={COT_BC_CM_00_NVYT}
+              rows={tai.muc7.bc_cm_00_nhan_vien_y_te || []}
+              maxRows={40}
+              stableKeyPrefix="BC_CM_00_NV"
+            />
 
             <Text style={styles.mucPhu}>7.1 — BC-CM-01: Lỗi chuyên môn theo khoa</Text>
             <Text style={styles.doanVan}>Route đặc tả: /reports/chuyen-mon/loi-theo-khoa</Text>
@@ -866,6 +1467,48 @@ export default function BaoCaoHub() {
               rows={tai.muc8.bc_dt_01_top_rule}
               maxRows={22}
             />
+            <View style={styles.chartRow}>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="DT-01 — Phân bố rủi ro (Σ chi phí)"
+                  subtitle="Theo loại lỗi / proxy hồ sơ — widget dt01_bar_phan_loai."
+                  rows={rowsM8Dt01LoaiChart}
+                  keyNhan="label"
+                  keySo="value"
+                  maxItems={7}
+                  bangMau={bangMauDtPhanLoai}
+                />
+              </View>
+              <View style={styles.chartHalf}>
+                <BieuDoGiftedBarNgang
+                  title="DT-01 — Top khoa (chi phí rủi ro)"
+                  subtitle="Chưa xử lý — VND trên trục."
+                  rows={rowsM8Dt01KhoaRrChart}
+                  keyNhan="label"
+                  keySo="value"
+                  maxItems={8}
+                  bangMau={bangMauDtKhoaRr}
+                />
+              </View>
+            </View>
+            <BieuDoGiftedBarNgang
+              title="DT-01 — Top rule theo tổn thất tiền"
+              subtitle="Ưu tiên xử lý rule có Σ chi_phí_anh_huong cao; nhãn ưu tiên tên quy tắc (dataset_meta_viz)."
+              rows={rowsM8Dt01RuleRrChart}
+              keyNhan="label"
+              keySo="value"
+              maxItems={10}
+              bangMau={bangMauDtRuleRr}
+            />
+            <BieuDoGiftedCotDoc
+              title="DT-05 — T_BHTT theo tháng (proxy NGAY_RA)"
+              subtitle="Cột dọc cuộn ngang khi nhiều kỳ; line/Skia ở bản dev."
+              rows={rowsM8Dt05ThangChart}
+              keyNhan="label"
+              keySo="value"
+              maxItems={24}
+              bangMau={bangMauDtThang}
+            />
 
             <Text style={styles.mucPhu}>8.2 — BC-DT-02: Hồ sơ ưu tiên rà soát</Text>
             <Text style={styles.doanVan}>Route: /reports/doanh-thu/ho-so-uu-tien — Top 100 theo điểm §8.2 (chuẩn hoá proxy).</Text>
@@ -941,7 +1584,8 @@ export default function BaoCaoHub() {
         {!tai.dangTai && tai.loi ? (
           <Text style={styles.placeholder}>Không thể tải dữ liệu báo cáo: {tai.loi}</Text>
         ) : null}
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -952,12 +1596,12 @@ const styles = StyleSheet.create({
     backgroundColor: BG,
   },
   hero: {
-    paddingHorizontal: 18,
-    paddingTop: 18,
-    paddingBottom: 16,
+    paddingHorizontal: 14,
+    paddingTop: 6,
+    paddingBottom: 6,
     backgroundColor: INK,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     ...Platform.select({
       web: { boxShadow: '0 12px 40px rgba(15,23,42,0.25)' },
       default: {
@@ -977,58 +1621,27 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: '#38bdf8',
   },
-  heroRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  heroTextCol: {
-    flex: 1,
-  },
-  heroEyebrow: {
+  heroTitleCenter: {
     fontFamily: 'Arial',
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#94a3b8',
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
-  },
-  heroTitle: {
-    fontFamily: 'Arial',
-    fontSize: 26,
+    fontSize: 17,
     fontWeight: '800',
     color: '#f8fafc',
-    marginTop: 4,
-    letterSpacing: -0.5,
-  },
-  heroSub: {
-    fontFamily: 'Arial',
-    fontSize: 13,
-    marginTop: 8,
-    color: '#cbd5e1',
-    lineHeight: 20,
-  },
-  heroIconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: 'rgba(37,99,235,0.35)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(147,197,253,0.4)',
+    textAlign: 'center',
+    letterSpacing: 0.8,
+    width: '100%',
+    paddingVertical: 2,
   },
   statRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 16,
+    gap: 6,
+    marginTop: 4,
   },
   statCard: {
     flex: 1,
     backgroundColor: 'rgba(30,41,59,0.65)',
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    borderRadius: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     borderWidth: 1,
     borderColor: 'rgba(148,163,184,0.25)',
   },
@@ -1042,32 +1655,33 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: '800',
     color: '#f1f5f9',
-    marginTop: 4,
+    marginTop: 2,
   },
   statValueSmall: {
     fontFamily: 'Arial',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: '#e2e8f0',
-    marginTop: 4,
+    marginTop: 2,
   },
   toolRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 14,
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
   },
   toolBtn: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    borderRadius: 12,
-    minHeight: 48,
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 10,
+    minHeight: 44,
   },
   toolBtnExcel: {
     backgroundColor: '#059669',
@@ -1076,6 +1690,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderWidth: 1,
     borderColor: '#e2e8f0',
+  },
+  toolBtnRefresh: {
+    flex: 0.85,
+    backgroundColor: '#eef2ff',
+    borderWidth: 1,
+    borderColor: '#c7d2fe',
+  },
+  toolBtnZip: {
+    flex: 0.9,
+    backgroundColor: '#fdf2f8',
+    borderWidth: 1,
+    borderColor: '#f9a8d4',
+  },
+  toolBtnZipText: {
+    color: '#be185d',
+  },
+  toolBtnJson: {
+    flex: 0.75,
+    backgroundColor: '#ecfdf5',
+    borderWidth: 1,
+    borderColor: '#99f6e4',
+  },
+  toolBtnJsonText: {
+    color: '#0f766e',
   },
   toolBtnText: {
     fontFamily: 'Arial',
@@ -1089,131 +1727,151 @@ const styles = StyleSheet.create({
   rowTai: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginTop: 14,
+    gap: 8,
+    marginTop: 4,
+    justifyContent: 'center',
   },
   metaLine: {
     fontFamily: 'Arial',
-    fontSize: 13,
-    color: '#cbd5e1',
-    marginTop: 12,
+    fontSize: 10,
+    color: '#94a3b8',
+    marginTop: 2,
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
   loi: {
     fontFamily: 'Arial',
-    fontSize: 13,
+    fontSize: 12,
     color: '#fca5a5',
-    marginTop: 12,
+    marginTop: 4,
+    textAlign: 'center',
   },
-  tabStrip: {
+  bodyRow: {
+    flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    gap: 10,
+    alignItems: 'stretch',
+    minHeight: 0,
+    backgroundColor: BG,
+  },
+  sidebarScroll: {
+    width: 188,
+    maxWidth: 200,
+    flexGrow: 0,
+    flexShrink: 0,
     backgroundColor: SURFACE,
-    marginHorizontal: 12,
-    marginTop: -10,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderRightWidth: 1,
+    borderRightColor: '#e2e8f0',
     ...Platform.select({
-      web: { boxShadow: '0 4px 20px rgba(15,23,42,0.06)' },
+      web: { boxShadow: '2px 0 12px rgba(15,23,42,0.04)' },
       default: {
-        shadowColor: '#0f172a',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.06,
-        shadowRadius: 10,
         elevation: 2,
+        shadowColor: '#0f172a',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.05,
+        shadowRadius: 6,
       },
     }),
   },
-  tab: {
-    flex: 1,
+  sidebarInner: {
     paddingVertical: 10,
-    paddingHorizontal: 6,
-    borderRadius: 12,
-    backgroundColor: ACCENT_SOFT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 72,
+    paddingHorizontal: 10,
+    paddingBottom: 24,
   },
-  tabActive: {
-    backgroundColor: ACCENT,
-  },
-  tabIcon: {
-    marginBottom: 4,
-  },
-  tabText: {
+  sidebarHeading: {
     fontFamily: 'Arial',
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#475569',
-    textAlign: 'center',
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#94a3b8',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 8,
+    marginTop: 4,
   },
-  tabTextActive: {
-    color: '#FFFFFF',
-  },
-  subTabRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    gap: 10,
-    backgroundColor: SURFACE,
-    marginHorizontal: 12,
-    marginTop: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  subTab: {
-    flex: 1,
+  sidebarItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
+    gap: 8,
     paddingVertical: 10,
     paddingHorizontal: 8,
-    borderRadius: 12,
+    borderRadius: 10,
+    backgroundColor: ACCENT_SOFT,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  sidebarItemActive: {
+    backgroundColor: ACCENT,
+    borderColor: '#1d4ed8',
+  },
+  sidebarItemIcon: {
+    marginTop: 1,
+  },
+  sidebarItemLabel: {
+    flex: 1,
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  sidebarItemLabelActive: {
+    color: '#fff',
+  },
+  sidebarDivider: {
+    height: 1,
+    backgroundColor: '#e2e8f0',
+    marginVertical: 12,
+  },
+  sidebarSubItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 9,
+    paddingHorizontal: 8,
+    borderRadius: 10,
     backgroundColor: '#f8fafc',
+    marginBottom: 6,
     borderWidth: 1,
     borderColor: '#e2e8f0',
-    minHeight: 46,
   },
-  subTabActive: {
+  sidebarSubItemActive: {
     backgroundColor: ACCENT,
     borderColor: ACCENT,
   },
-  subTabIcon: {
-    marginRight: 2,
-  },
-  subTabText: {
+  sidebarSubLabel: {
+    flex: 1,
     fontFamily: 'Arial',
     fontSize: 11,
     fontWeight: '700',
     color: ACCENT,
-    textAlign: 'center',
-    flexShrink: 1,
   },
-  subTabTextActive: {
-    color: '#FFFFFF',
+  sidebarSubLabelActive: {
+    color: '#fff',
+  },
+  mainScroll: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 0,
   },
   scroll: {
-    padding: 16,
-    paddingBottom: 40,
-    paddingTop: 20,
+    paddingHorizontal: 12,
+    paddingBottom: 32,
+    paddingTop: 2,
   },
   sectionTitle: {
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     color: INK,
     letterSpacing: -0.3,
+    marginBottom: 2,
   },
   sectionHint: {
     fontFamily: 'Arial',
-    fontSize: 14,
+    fontSize: 12,
     color: '#64748b',
-    marginTop: 8,
-    lineHeight: 21,
+    marginTop: 2,
+    lineHeight: 17,
+    marginBottom: 4,
   },
   placeholder: {
     fontFamily: 'Arial',
@@ -1224,9 +1882,9 @@ const styles = StyleSheet.create({
   },
   blockIntro: {
     fontFamily: 'Arial',
-    fontSize: 14,
+    fontSize: 13,
     color: '#475569',
-    marginTop: 14,
+    marginTop: 6,
     marginBottom: 8,
     lineHeight: 22,
     backgroundColor: SURFACE,
@@ -1249,5 +1907,132 @@ const styles = StyleSheet.create({
     color: '#64748b',
     lineHeight: 20,
     marginBottom: 4,
+  },
+  chartRow: {
+    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 8,
+  },
+  chartHalf: {
+    flex: 1,
+    minWidth: Platform.OS === 'web' ? 280 : undefined,
+    maxWidth: '100%',
+  },
+  kpiHeroRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 14,
+  },
+  kpiCard: {
+    flex: 1,
+    minWidth: 160,
+    backgroundColor: '#fffbeb',
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#fde68a',
+  },
+  kpiCardCanhBao: {
+    backgroundColor: '#fff1f2',
+    borderColor: '#fda4af',
+  },
+  kpiCardLabel: {
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#9f1239',
+  },
+  kpiCardValue: {
+    fontFamily: 'Arial',
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#0f172a',
+    marginTop: 6,
+  },
+  kpiCardValueCanhBao: {
+    color: '#b91c1c',
+    fontSize: 24,
+  },
+  kpiCardUnit: {
+    fontFamily: 'Arial',
+    fontSize: 11,
+    color: '#64748b',
+    marginTop: 4,
+  },
+  drillBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fdf2f8',
+    borderWidth: 1,
+    borderColor: '#f9a8d4',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
+  drillBannerTxt: {
+    fontFamily: 'Arial',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#831843',
+    flex: 1,
+  },
+  drillClear: {
+    fontFamily: 'Arial',
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#db2777',
+  },
+  drillHsWrap: {
+    marginBottom: 14,
+    backgroundColor: SURFACE,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    padding: 10,
+  },
+  drillHsTitle: {
+    fontFamily: 'Arial',
+    fontSize: 13,
+    fontWeight: '800',
+    color: ACCENT,
+    marginBottom: 8,
+  },
+  drillHsFlash: {
+    maxHeight: 320,
+  },
+  drillHsHead: {
+    flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderColor: '#e83e8c',
+    paddingBottom: 6,
+    marginBottom: 4,
+  },
+  drillHsRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderColor: '#f1f5f9',
+  },
+  drillHsRowAlt: {
+    backgroundColor: '#fdf2f8',
+  },
+  drillHsCell: {
+    paddingHorizontal: 6,
+    justifyContent: 'center',
+  },
+  drillHsHeadTxt: {
+    fontFamily: 'Arial',
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#9d174d',
+  },
+  drillHsTxt: {
+    fontFamily: 'Arial',
+    fontSize: 12,
+    color: INK,
   },
 });

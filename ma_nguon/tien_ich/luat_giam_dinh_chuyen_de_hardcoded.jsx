@@ -27,7 +27,7 @@
  */
 
 /** Đổi khi bắt đầu/ hoàn thành từng lô viết lại DIEU_KIEN XML130 (đồng bộ manifest). */
-export const CHUYEN_DE_XML130_CONVERSION_VERSION = '2026-04-24-chuyen-de-653-654-hba1c-tt39-st38';
+export const CHUYEN_DE_XML130_CONVERSION_VERSION = '2026-04-26-chuyen-de-166-tt22-m01';
 
 /**
  * Điều kiện luôn sai trên hồ sơ có MA_LK — giữ chỗ khi chưa viết được biểu thức XML130/handler.
@@ -416,6 +416,14 @@ const CHUYEN_DE_XML130_CO_PROXY_NOI_TRU_KHOA_CAP_CUU_CV266_KT223 =
  */
 const CHUYEN_DE_XML130_NOI_TRU_CO_KHOANG_NAM_VIEN =
   "(XML1.MA_LOAI_KCB == '03' OR XML1.MA_LOAI_KCB == '09' OR XML1.MA_LOAI_KCB == '04') && !IS_EMPTY(XML1.NGAY_VAO) && !IS_EMPTY(XML1.NGAY_RA) && LEN(XML1.NGAY_VAO) >= 12 && LEN(XML1.NGAY_RA) >= 12 && TO_NUMBER(XML1.NGAY_RA) >= TO_NUMBER(XML1.NGAY_VAO)";
+
+/**
+ * Chuyên đề 166 — TT22/2023 (proxy XML130 + danh mục khoa M01 nội bộ): nội trú có khoảng nằm viện; có ít nhất một dòng giường BHYT (neo KT221);
+ * MA_KHOA khớp MAP_KHOA_BV với tổng cột giường phê duyệt (GIUONG_PD/TK/HSTC/HSCC/2015) > 0; tổng SO_LUONG các dòng giường BHYT > tổng ghế;
+ * mọi dòng giường BHYT vẫn khai tỷ lệ thanh toán “đầy đủ” (TYLE_TT/TYLE_TT_BH/TY_LE_TT ≥ 95 hoặc trống; MUC_HUONG ≥ 90 hoặc trống).
+ * Handler: `CHUYEN_DE_166_VI_PHAM_TT22_PROXY` trong `dong_co_giam_dinh.jsx`. Không thay hợp đồng/C79 BHXH — chỉ gợi kiểm tra.
+ */
+const CHUYEN_DE_166_DIEU_KIEN_TT22_XML130_M01 = `(${CHUYEN_DE_XML130_NOI_TRU_CO_KHOANG_NAM_VIEN}) && (${CHUYEN_DE_XML130_CO_IT_NHAT_MOT_DONG_GIUONG_XML3_CV266_KT221}) && !IS_EMPTY(XML1.MA_KHOA) && CHUYEN_DE_166_VI_PHAM_TT22_PROXY(XML1, DS_XML3)`;
 
 /**
  * Số ngày giường / SO_NGAY_DTRI nội trú lệch quy đếm (VBHN 17) hoặc tổng ngày giường XML3 thừa so với mốc — PL01 CV266 / KT221 (TT 35/2016 Điều 4c điểm a, b; sửa TT 39/2024/TT-BYT khoản 4 Điều 1).
@@ -1804,7 +1812,7 @@ const CACHE_RULES_HARDCODED = Object.freeze([
   { id: 'CHUYEN_DE-163', MA_LUAT: 'Chuyen_de_163', TEN_QUY_TAC: `Tiêm Botulinum thiếu thông số thuốc/lược đồ`, DIEU_KIEN: `(${CHUYEN_DE_XML130_CO_THUOC_GOI_BOTULINUM} || ${CHUYEN_DE_XML130_CO_DV_BOTULINUM})`, CANH_BAO: `🚨 Cảnh báo xuất toán: Lược đồ phẫu thuật/thủ thuật không thể hiện loại thuốc, liều lượng, vị trí tiêm Botulinum (sai QĐ 3154/QĐ-BYT). (Heuristic XML130: có Botulinum/Botox trong DS_XML2 hoặc tên DVKT trong DS_XML3 — liều/vị trí cần đối chiếu phiếu PT.)`, TRANG_THAI: 'ON' },
   { id: 'CHUYEN_DE-164', MA_LUAT: 'Chuyen_de_164', TEN_QUY_TAC: `Áp giá sai phân vùng PT gân gấp bàn tay`, DIEU_KIEN: `${CHUYEN_DE_XML130_CO_DV_PT_GAN_GAP_BAN_TAY}`, CANH_BAO: `🚨 Cảnh báo xuất toán: Thống kê phẫu thuật tổn thương gân gấp vùng cấm từng ngón tay không đúng phân vùng theo QTKT 38 (QĐ 4484/QĐ-BYT). (Heuristic XML130: có dòng gợi PT gân gấp bàn tay/ngón trong DS_XML3 — đối chiếu phân vùng QTKT 38.)`, TRANG_THAI: 'ON' },
   { id: 'CHUYEN_DE-165', MA_LUAT: 'Chuyen_de_165', TEN_QUY_TAC: `Thu rời Fortrans trong DVKT Nội soi/PT đại tràng`, DIEU_KIEN: `${CHUYEN_DE_XML130_CO_THUOC_GOI_FORTANS} && ${CHUYEN_DE_XML130_CO_DV_SOI_HOAC_PT_DAI_TRANG}`, CANH_BAO: `🚨 Cảnh báo xuất toán: Thuốc Fortrans (chuẩn bị làm sạch đại tràng) đã kết cấu vào giá DVKT chuẩn bị trước mổ/soi (sai TT 20/2022/TT-BYT). (Heuristic XML130: có Fortrans/PEG trong DS_XML2 và dòng nội soi/PT đại tràng trong DS_XML3 — đối chiếu gói chuẩn bị.)`, TRANG_THAI: 'ON' },
-  { id: 'CHUYEN_DE-166', MA_LUAT: 'Chuyen_de_166', TEN_QUY_TAC: `Vượt công suất giường bệnh`, DIEU_KIEN: `${CHUYEN_DE_XML130_CO_DV_GIUONG}`, CANH_BAO: `⚠️ Cảnh báo lỗi: Công suất giường vượt mức quy định nhưng chưa áp dụng tỷ lệ giảm trừ giá thanh toán theo Thông tư 22/2023/TT-BYT (Kế thừa TT 39/2018). (Heuristic XML130: có dòng gợi giường trong DS_XML3 — công suất/phê duyệt cần đối chiếu BHXH.)`, TRANG_THAI: 'ON' },
+  { id: 'CHUYEN_DE-166', MA_LUAT: 'Chuyen_de_166', TEN_QUY_TAC: `Vượt công suất giường bệnh`, DIEU_KIEN: `${CHUYEN_DE_166_DIEU_KIEN_TT22_XML130_M01}`, CANH_BAO: `⚠️ Cảnh báo lỗi (proxy XML130 + M01 nội bộ): Tổng ngày giường BHYT (neo KT221) vượt tổng giường phê duyệt theo MA_KHOA trong danh mục khoa, đồng thời các dòng giường BHYT vẫn khai TYLE_TT/TY_LE_TT ≥ 95 (hoặc trống) và MUC_HUONG ≥ 90 (hoặc trống) — gợi ý chưa phản ánh giảm giá khi vượt công suất theo Thông tư 22/2023/TT-BYT (kế thừa TT 39/2018). Cần đối chiếu hợp đồng KCB BHXH/C79 và quyết định giám định thực tế.`, GHI_CHU: `Điều kiện: nội trú 03/04/09 + NGAY_VAO/RA; COUNT neo KT221; MAP_KHOA_BV + tổng GIUONG_*; SO_LUONG giường BHYT > cap; heuristic “chưa giảm giá” qua TYLE_TT/MUC_HUONG trên XML3 — không thay API BHXH.`, TRANG_THAI: 'ON' },
   { id: 'CHUYEN_DE-167', MA_LUAT: 'Chuyen_de_167', TEN_QUY_TAC: `Thận nhân tạo dưới 4 giờ`, DIEU_KIEN: `${CHUYEN_DE_XML130_CO_DV_LOC_MAU_THAN_NHAN_TAO}`, CANH_BAO: `🚨 Cảnh báo xuất toán: Ca lọc máu chu kỳ thực hiện dưới 4 giờ nhưng vẫn thống kê thu đủ giá dịch vụ (sai QTCM Thận nhân tạo). (Heuristic XML130: có dòng gợi lọc máu/thận nhân tạo trong DS_XML3 — thời lượng ca lọc cần đối chiếu log máy; XML1 không có trường giờ lọc.)`, TRANG_THAI: 'ON' },
   { id: 'CHUYEN_DE-168', MA_LUAT: 'Chuyen_de_168', TEN_QUY_TAC: `Thời gian đợt khám ngoại trú rất ngắn (<10 phút)`, DIEU_KIEN: `${CHUYEN_DE_XML130_NGOAI_TRU_DUOI_10_PHUT}`, CANH_BAO: `⚠️ Cảnh báo: Ngoại trú (XML1.MA_LOAI_KCB = 1) — hiệu thời điểm NGAY_RA − NGAY_VAO chỉ theo XML1 (YYYYMMDDHHmm hoặc YYYYMMDDHHmmss; DIFF_MINUTES sau khi parse giờ–phút) nhỏ hơn 10 phút. Đối chiếu log thời gian khám trên HIS — dễ bị nghi ngờ ghi nhận phi thực tế.`, TRANG_THAI: 'ON' },
   { id: 'CHUYEN_DE-169', MA_LUAT: 'Chuyen_de_169', TEN_QUY_TAC: `Lạm dụng XN Tuyến giáp (FT3, FT4, TSH)`, DIEU_KIEN: `${CHUYEN_DE_XML130_CO_DV_XN_TUYEN_GIAP} && !(XML1.MA_BENH_CHINH CONTAINS 'E03' OR XML1.MA_BENH_CHINH CONTAINS 'E04' OR XML1.MA_BENH_CHINH CONTAINS 'E05' OR XML1.MA_BENH_CHINH CONTAINS 'E06' OR XML1.MA_BENH_CHINH CONTAINS 'E07' OR XML1.MA_BENH_KT CONTAINS 'E03' OR XML1.MA_BENH_KT CONTAINS 'E04' OR XML1.MA_BENH_KT CONTAINS 'E05' OR XML1.MA_BENH_KT CONTAINS 'E06' OR XML1.MA_BENH_KT CONTAINS 'E07')`, CANH_BAO: `⚠️ Cảnh báo lỗi: Xét nghiệm chức năng tuyến giáp không có mã chẩn đoán suy giáp, cường giáp, bướu cổ (Sai QĐ 320/QĐ-BYT). (Heuristic XML130: có TSH/FT3/FT4 trong DS_XML3 nhưng không thấy ICD E03–E07 trên XML1 — đối chiếu chỉ định.)`, TRANG_THAI: 'ON' },

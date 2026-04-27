@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T09:16:49.334Z",
+  "generatedAt": "2026-04-27T01:20:10.622Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -460,6 +460,12 @@
       ]
     },
     {
+      "id": "txt:dac_ta_du_lieu_module_bao_cao.txt",
+      "relPath": "dac_ta_du_lieu_module_bao_cao.txt",
+      "title": "dac ta du lieu module bao cao",
+      "nguon": "text"
+    },
+    {
       "id": "docx:Dac_ta_he_thong_CDSS_BHYT_20260405.docx",
       "relPath": "Dac_ta_he_thong_CDSS_BHYT_20260405.docx",
       "title": "ĐẶC TẢ HỆ THỐNG CDSS BHYT (Word)",
@@ -470,6 +476,12 @@
       "relPath": "Dac_ta_he_thong_CDSS_BHYT_20260405.html",
       "title": "ĐẶC TẢ HỆ THỐNG CDSS BHYT",
       "nguon": "markdown"
+    },
+    {
+      "id": "txt:dac_ta_ky_thuat_module_bao_cao.txt",
+      "relPath": "dac_ta_ky_thuat_module_bao_cao.txt",
+      "title": "dac ta ky thuat module bao cao",
+      "nguon": "text"
     },
     {
       "id": "txt:Danh_muc_quy_tac_OFF_va_Placeholder.txt",
@@ -866,6 +878,18 @@
       "nguon": "markdown",
       "tags": [
         "thuoc"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_AI_giam_dinh_CDSS_engine_Chuyen_de_DVKT.md",
+      "relPath": "The_tri_thuc_AI_giam_dinh_CDSS_engine_Chuyen_de_DVKT.html",
+      "title": "THẺ TRI THỨC: GIÁM ĐỊNH TỰ ĐỘNG CDSS (ENGINE — CHUYÊN ĐỀ — DVKT-OP)",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "dvkt",
+        "xml_chuyen_de"
       ]
     },
     {

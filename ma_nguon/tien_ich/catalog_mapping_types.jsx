@@ -26,7 +26,7 @@ export const CATALOG_REF = {
   },
   /** Tập mã PHAN_LOAI_PTTT suy ra từ DVKT M05 — không còn mapping DVKT→PTTT riêng */
   surgery_types: { storageKey: null, codeFields: ['PHAN_LOAI_PTTT'], nameFields: [] },
-  bed_types: { storageKey: 'DANH_MUC_GIUONG_BAN_KHAM_BV', codeFields: ['MA_TUONG_DUONG'], nameFields: ['TEN_DVKT_PHEDUYET', 'TEN_DVKT_GIA'] },
+  bed_types: { storageKey: 'DANH_MUC_GIUONG_BAN_KHAM_BV', codeFields: ['MA_TUONG_DUONG', 'MA_TD_LIST', 'MA_DVKT_CU', 'MA_GIUONG_CU'], nameFields: ['TEN_DVKT_PHEDUYET', 'TEN_DVKT_GIA'] },
   equipments: { storageKey: 'DANH_MUC_TRANG_THIET_BI_M06', codeFields: ['MA_MAY'], nameFields: ['TEN_TB', 'KY_HIEU'] },
 };
 

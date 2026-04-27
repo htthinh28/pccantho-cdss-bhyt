@@ -1,0 +1,402 @@
+================================================================================
+ĐẶC TẢ DỮ LIỆU — MODULE BÁO CÁO CDSS-BHYT (BẢN VIẾT LẠI TỔNG HỢP)
+================================================================================
+Phiên bản tài liệu: 2.0.3
+Ngày cập nhật: 2026-04-26
+Ghi chú triển khai mã: hien_thi_bao_cao (SPEC-VIZ-2.0.3) tại ma_nguon/dich_vu/bao_cao_viz_meta.js,
+  đính kèm taiNguonVaMoHinhMuc5; UI BaoCaoHub; xuất VIZ_WIDGETS + _META; snapshot JSON CDSS-BHYT-SNAPSHOT-3.
+  Chuỗi 2.0.2: fact_canh_bao.ten_quy_tac; bc_dt_01_top_rule + ten_quy_tac; FACT_CANH_BAO xuất ten_quy_tac.
+  2.0.3: chiến lược trực quan hoá / progressive disclosure / drill_registry / dataset_meta_viz / theme_config;
+  widget dt01_top_rule_rr; lộ trình FHIR · BigQuery · Victory Skia · Agentic AI (tài liệu + backlog, chưa bắt buộc mã).
+Mã đặc tả dữ liệu lõi: CDSS-BHYT-SPEC-BC-V1.0 (bao_cao_service.jsx)
+Mã phần mở rộng hiển thị: SPEC-VIZ-2.0.3 (tương thích đọc ngược SPEC-VIZ-1 / DRAFT-1)
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+  A. Mục đích, phạm vi và căn cứ phân tích
+  B. Xu hướng UI/UX & trực quan hóa liên quan (tóm tắt khảo sát)
+  C. Phân tích cấu trúc dữ liệu hiện tại: Mức 5, 6, 7, 8
+  D. Đối chiếu với nhu cầu dashboard hiện đại
+  E. Lược đồ metadata phục vụ hiển thị (bổ sung đề xuất)
+  F. Đầu ra dịch vụ, chi tiết lỗi, xuất sheet và cột FACT/DIM
+  G. Phiên bản nội bộ và lộ trình đồng bộ mã
+  H. Chiến lược trực quan hoá & đặc tả thế hệ mới (2026) — tóm tắt điều hành
+
+================================================================================
+A. MỤC ĐÍCH, PHẠM VI VÀ CĂN CỨ PHÂN TÍCH
+================================================================================
+
+A.1 Mục đích
+  Tài liệu mô tả cấu trúc dữ liệu phục vụ:
+    - Thống kê quản trị vận hành giám định (nhánh Quản trị — M5/M6).
+    - Cải tiến chất lượng chuyên môn lâm sàng / CDSS (nhánh Chuyên môn — M7).
+    - Theo dõi rủi ro xuất toán và cơ cấu chi phí BHYT (nhánh Doanh thu — M8).
+    - Xuất đa sheet (Excel/PDF) và hiển thị tương thích UI.
+
+A.2 Phạm vi
+  Trùng khớp với mã nguồn tại:
+    ma_nguon/dich_vu/bao_cao_*.js(x), ma_nguon/tien_ich/thong_ke_loi_dung_chung.jsx
+  Phần E (metadata hiển thị) là đặc tả mở rộng: các trường được mô tả theo chuẩn
+  tùy chọn (optional); triển khai thực tế trong object JSON có thể gắn song song
+  (ví dụ khoá `hien_thi` cùng cấp `bc_cm_*`) mà không thay đổi ngữ nghĩa các cột
+  báo cáo hiện hành.
+
+A.3 Định dạng
+  Văn bản UTF-8; kiểu dữ liệu ý niệm: string | number | boolean | object | array.
+
+A.4 Chiến lược thế hệ mới (2026) — khung vận hành
+  Module báo cáo là lớp kết nối: hiệu suất vận hành (M6) — chất lượng lâm sàng / CDSS (M7) —
+  an toàn tài chính BHYT (M8), trên nền fact/dim M5. Mục tiêu thiết kế: outcome-first
+  (ưu tiên kết quả ra quyết định), giảm tải nhận thức, progressive disclosure ba tầng
+  (tóm tắt KPI → phân tích biểu đồ/heatmap → bảng & hồ sơ hành động). Agentic AI /
+  narrative_summary từng dòng: lộ trình tích hợp dịch vụ — không làm phần cứng bắt buộc trong payload lõi.
+  Liên thông dài hạn: HL7 FHIR (DetectedIssue, Claim…), Parquet/BigQuery — đặc tả nghiệp vụ riêng khi triển khai.
+
+================================================================================
+B. XU HƯỚNG UI/UX & TRỰC QUAN HÓA (TÓM TẮT KHẢO SÁT — PHỤC VỤ BƯỚC ĐỐI CHIẾU)
+================================================================================
+
+B.1 Điểm chính (2025–2026, tổng hợp nguồn công khai)
+  - Outcome design & “three-second rule”: KPI / cảnh báo bất thường nhận diện tức thì;
+    màu + hierarchy theo theme_config (SPEC-VIZ-2.0.3); dashboard ưu tiên tín hiệu & hành động gợi ý.
+  - Drill-down & progressive disclosure: từ KPI → bảng chi tiết → dòng lỗi /
+    hồ sơ, breadcrumb và bộ lọc dòng chính phía trên kết quả.
+  - Cá nhân hóa theo vai trò: khối widget có thể bật/tắt, tóm tắt trước khi đào sâu.
+  - Tương tác thời gian thực: làm mới theo sự kiện hoặc polling có dấu thời gian
+    “dữ liệu đến …”; tooltip/hover (web) hoặc long-press (mobile) cho giá trị.
+  - Giải thích & tin cậy: liên kết số liệu với rule, namespace, văn bản cảnh báo.
+  - Khả năng xuất & chia sẻ: bảng thô + meta phiên xuất; mở rộng định dạng sau này.
+  - Skeuomorphism chức năng & WCAG 2.2: độ tương phản, mù màu, font tối thiểu — theme_config ghi nhận chuẩn gợi ý.
+
+B.2 Tham chiếu đọc thêm (không thay thế quy định pháp lý BHYT)
+  - https://fuselabcreative.com/healthcare-ux-design-best-practices-guide/
+  - https://magicflux.co/blog/ux-trends-digital-healthcare-2026
+  - https://www.eleken.co/blog-posts/user-interface-design-for-healthcare-applications
+  - https://interface-design.co.uk/blog/medical-data-dashboard-ux-benchmarking-2026
+  - https://fuselabcreative.com/top-data-visualization-trends-2026/
+
+================================================================================
+C. PHÂN TÍCH CẤU TRÚC DỮ LIỆU HIỆN TẠI
+================================================================================
+
+C.0 Luồng gốc (tóm tắt)
+  Kho hồ sơ → taiDuLieuNguonBaoCao (gom MA_LK) → tongHopMoHinhMuc5
+  → đồng thời M6, M7, M8 → BaoCaoHub / layCacBangDeXuat.
+
+C.1 Mô hình Mức 5 (MoHinhMuc5) — “Lớp fact/dimension”
+  Vai trò: Chuẩn hoá dữ liệu đa hồ sơ thành các bảng phân tích (grain rõ ràng).
+
+  C.1.1 Grain & khoá logic
+    - fact_ho_so: một dòng = một MA_LK (hồ sơ điều trị).
+    - fact_dong_chi_phi: một dòng = một dòng chi phí (XML2/3/… đã phẳng hoá).
+    - fact_canh_bao: một dòng = một cảnh báo / kết quả rule trên hồ sơ hoặc dòng.
+    - dim_khoa / dim_bac_si: tra cứu mã → tên / khối / trạng thái active.
+
+  C.1.2 Phụ thuộc chéo
+    - fact_ho_so.tong_chi_phi_rui_ro: cộng chi_phi_uoc_tinh từ ChiTietLoi theo ma_lk
+      (phangHoaDanhSachLoiChiTiet trong bao_cao_mo_hinh_muc5.js).
+    - fact_canh_bao.loai_loi: map từ loai_hien_thi gốc (xuất toán, cấu trúc XML,
+      nhắc nhở, cảnh báo engine).
+
+  C.1.3 dac_ta_store_5_4
+    - cache_bao_cao, snapshot_bao_cao: mô tả trường/kieu cho kho meta đặc tả 5.4;
+      hiện mang tính khuôn mẫu / mở rộng tương lai.
+
+  C.1.4 Ràng buộc xuất
+    - fact_dong_chi_phi có giới hạn 20000 dòng khi xuất Excel (MAX_FACT_DONG_XUAT).
+
+C.2 Báo cáo Quản trị Mức 6 (BaoCaoMuc6)
+  Vai trò: KPI vận hành, top khoa/rule, tuân thủ, năng suất, chênh tổng chi.
+
+  C.2.1 Nhóm chỉ số
+    - bc_qt_01_* : tổng quan + top khoa lỗi (mật độ lỗi trên hồ sơ).
+    - bc_qt_02_* : năng suất (throughput proxy từ fact_ho_so).
+    - bc_qt_03_* : tuân thủ từ fact_canh_bao.
+    - bc_qt_04_* : chất lượng / đối chiếu chi phí / top rule-khoa / chênh XML1 vs tổng dòng.
+
+  C.2.2 Grain điển hình
+    - KPI: một dòng = một chỉ số (wide table).
+    - Top rule/khoa: một dòng = một mã rule hoặc mã khoa + số đếm.
+    - Đối chiếu chi phí / chênh tổng: một dòng = một MA_LK (hoặc cặp ma_lk + rule).
+
+C.3 Báo cáo Chuyên môn Mức 7 (BaoCaoMuc7)
+  Vai trò: Chất lượng lâm sàng, phân bố theo khoa, nhóm vi phạm nghiệp vụ,
+    namespace engine, chỉ số nâng cao (một phần placeholder).
+
+  C.3.1 Nguồn BC-CM-00
+    - Đầu vào: ChiTietLoi (phangHoaDanhSachLoiChiTiet) — grain một dòng = một lỗi.
+    - bc_cm_00_nhom_vi_pham: gom theo nhom_vi_pham + nhãn hiển thị.
+    - bc_cm_00_khoa_nhom_loi: cặp (khoa chuẩn hoá × nhóm vi phạm), giới hạn top N.
+    - bc_cm_00_top_khoa: tổng số lỗi theo khoa (cho ranking / biểu đồ).
+    - bc_cm_00_nhan_vien_y_te: theo ma_bac_si, kèm nhóm phổ biến.
+
+  C.3.2 Trường label/value
+    - Một số bảng CM-00 có `label`, `value` song song để tái sử dụng trực tiếp cho
+      biểu đồ thanh (value = khối lượng lỗi hoặc đại lượng tương ứng).
+
+  C.3.3 BC-CM-01 … 05
+    - CM-01: KPI + phân bố khoa (hành chính hồ sơ, logic thời gian, engine theo loai_loi).
+    - CM-02: CPW — placeholder chờ map phác đồ.
+    - CM-03: DDI / top rule / khoa–BS.
+    - CM-04: vi phạm theo namespace + gợi ý hành động.
+    - CM-05: chỉ số chất lượng (nhiều giá trị "—" khi thiếu pipeline XML đủ sâu) + top ICD.
+
+C.4 Báo cáo Doanh thu BHYT Mức 8 (BaoCaoMuc8)
+  Vai trò: Rủi ro xuất toán, ưu tiên hồ sơ, pivot khoa×rule, cơ cấu CP, chuỗi thời gian,
+    chỉ số tài chính–BHYT.
+
+  C.4.1 Liên kết mức 6
+    - bc_dt_03_chenh_tong: tái sử dụng logic chênh tổng chi từ mức 6 (đồng nhất định nghĩa).
+
+  C.4.2 Grain
+    - KPI / phân loại: tổng hợp.
+    - top100 / chi_tiet / pivot: dòng hồ sơ hoặc cặp (khoa, rule) tùy bảng.
+    - bc_dt_01_top_rule: một dòng = một ma_rule (chỉ fact_canh_bao trang_thai_xu_ly = chua_xu_ly),
+      sắp xếp theo tong_chi_phi giảm dần, tối đa 20 dòng. Trường ten_quy_tac: với mỗi ma_rule,
+      đếm tần suất từng chuỗi ten_quy_tac trên các dòng fact; nếu có ít nhất một tên khác placeholder
+      "Không có tên quy tắc" thì chỉ xét nhóm tên đó; chọn tên có số lần cao nhất, hòa thì so sánh
+      locale 'vi'. Nếu không có ten_quy_tac nào: chuỗi rỗng (UI/biểu đồ fallback sang ma_rule).
+
+================================================================================
+D. ĐỐI CHIẾU VỚI NHU CẦU DASHBOARD HIỆN ĐẠI (GAP NGẮN GỌN)
+================================================================================
+
+D.1 Điểm mạnh hiện tại
+  - Pipeline rõ: M5 làm nền, M6/M7/M8 tách nhánh nghiệp vụ.
+  - BC-CM-00 đã gom theo nhóm vi phạm, khoa, nhân viên y tế — phù hợp phân tích chất lượng.
+  - Xuất Excel đồng nhất qua manifest; meta phiên (_META).
+
+D.2 Khoảng trống so với xu hướng (B mục B.1) — cập nhật mã 2.0.3
+  - Drill-down: CM-00 đã hoạt động trong Hub; drill_registry + dataset_meta_viz mô tả khai báo
+    (SPEC-VIZ-2.0.3). Chưa: áp dụng registry tự động cho mọi KPI M6/M8 (cần nối handler theo meta).
+  - Thời gian thực: snapshot + polling gợi ý; chưa SSE/WebSocket; chưa versioning chuỗi M7.
+  - Biểu đồ: Gifted + heatmap; Victory Native XL + Skia: lộ trình hiệu năng tập lớn.
+  - Agentic AI / FHIR / BigQuery: chưa triển khai — xem mục G–H.
+
+D.3 Hướng xử lý (đồng bộ Đặc tả Kỹ thuật 2.0.3)
+  - UI đọc theme_config, drill_registry, dataset_meta_viz; Hub hiển thị phien_ban SPEC-VIZ trên meta dòng.
+  - Skeleton / debounce chart / haptics nâng cao: khuyến nghị kỹ thuật (từng PR).
+
+================================================================================
+E. LƯỢC ĐỒ METADATA PHỤC VỤ HIỂN THỊ (ĐỀ XUẤT — SPEC-VIZ-DRAFT-1)
+================================================================================
+
+E.1 Nguyên tắc
+  - Không đổi tên hay kiểu các cột nghiệp vụ hiện có (ma_lk, so_loi, …).
+  - Mọi trường trong mục E đều OPTIONAL trừ khi triển khai quyết định bắt buộc.
+  - Có thể đặt theo một trong hai kiểu vận hành:
+      (1) Hình vi cấp bảng: object `hien_thi` cùng cấp với mảng dữ liệu (song song).
+      (2) Hình vi cấp payload: một object `hien_thi_bao_cao` ở root sau khi tải.
+
+E.2 Khối gốc (áp dụng cho toàn module hoặc từng nhánh)
+  hien_thi_bao_cao {
+    phien_ban: "SPEC-VIZ-2.0.3",
+    thoi_diem_du_lieu: string,          // ISO-8601, nguồn sự thật cho “snapshot”
+    chu_ky_lam_moi_goi_y_ms: number,    // gợi ý UI polling (0 = chỉ tay)
+    theme: {
+      palette: string[],                // ví dụ 6–8 mã hex theo thứ tự ưu tiên hiển thị
+      mau_canh_bao: string,             // vượt ngưỡng KPI
+      mau_binh_thuong: string,
+      mau_nen_luoi: string,
+      font_chu_danh_muc: number          // điểm — khớp WCAG tối thiểu 12pt body
+    },
+    drill: {
+      kich_hoat: boolean,
+      luoc_do: "KPI_TOP_RULE_FACT_CANH" | "KPI_TOP_KHOA_CM00" | "TUONG_MINH",
+      khoa_loc_mac_dinh: object          // ví dụ { "ma_khoa": "" }
+    }
+    theme_config: object                 // 2.0.3: mở rộng theme + chuan_tiep_can_goi_y (WCAG), progressive_disclosure
+    drill_registry: [{                   // 2.0.3: đăng ký luồng drill hợp lệ (blueprint; Hub có thể map thủ công trước)
+      id: string,
+      cap: number,                        // tầng progressive disclosure gợi ý
+      nguon: string,                      // id dataset nguồn
+      dich: string[],                     // dataset đích / lớp fact
+      khoa_goi_y: string[],               // khóa lọc gợi ý (ma_khoa, ma_nhom, ma_rule, …)
+      trang_thai: "dang_hoat_dong" | "ke_hoach_meta",
+      mo_ta: string
+    }],
+    dataset_meta_viz: {                  // 2.0.3: meta theo id bảng nghiệp vụ (vd bc_dt_01_top_rule)
+      "<id_dataset>": {
+        id_widget_goi_y: string,
+        loai_bieu_do: string,
+        tieu_de: string,
+        mo_ta: string,
+        cau_hinh_truc: object,
+        nguong_canh_bao: array,
+        tuong_tac: object
+      }
+    },
+    tuong_thich_v1: boolean              // true nếu reader SPEC-VIZ-1 vẫn parse được widgets/theme
+  }
+
+E.3 Đặc tả widget (một biểu đồ / một cụm bảng)
+  widget_bao_cao {
+    id_widget: string,                   // duy nhất trong màn, ví dụ "cm00_top_khoa"
+    id_du_lieu: string,                  // tham chiếu logic: "bc_cm_00_top_khoa"
+    tieu_de: string,
+    mo_ta_ngan: string,
+    loai_bieu_do: "bar_horizontal" | "bar_vertical" | "line" | "area" |
+                  "donut" | "heatmap" | "scatter" | "table" | "kpi_card" | "sankey",
+    truc: {
+      loai: "cartesian" | "category" | "time",
+      truc_x: string,                    // tên trường dữ liệu, ví dụ "ma_khoa"
+      truc_y: string,                    // ví dụ "so_loi" hoặc "ty_le_pt"
+      nhan_truc_x: string,
+      nhan_truc_y: string,
+      thu_tu_danh_muc: "asc" | "desc" | "giu_nguyen"
+    },
+    mau_series: [{
+      ten_series: string,
+      ma_mau: string,                    // hex hoặc token theme.palette[i]
+      do_day_net: number,
+      bo_loc_series: object              // optional — tách nhánh nhóm
+    }],
+    toa_do_dong: boolean,                // true: client tính pixel; false: dùng diem_bieu_do
+    diem_bieu_do: [{                    // optional — server gợi ý tọa độ chuẩn hoá 0..1
+      x_ty_le: number,                   // vị trí theo trục X (0 = trái, 1 = phải)
+      y_ty_le: number,
+      ref_ban_ghi: object,               // subset khóa dòng nguồn, ví dụ { ma_khoa, so_loi }
+      tooltip: string
+    }],
+    tuong_tac: {
+      bat_tooltip: boolean,
+      bat_chon_dong: boolean,
+      hanh_dong_chon: "loc_bang_duoi" | "mo_chi_tiet_hs" | "xuat_loc",
+      bo_loc_ap_dung: object             // ví dụ sau chọn một cột trên heatmap
+    },
+    nguong_canh_bao: [{
+      truong: string,
+      toan_tu: ">" | ">=" | "<" | "<=" | "==",
+      gia_tri: number,
+      mau_khi_vuot: string,
+      nhan: string
+    }]
+  }
+
+E.4 Gợi ý ánh xạ nhanh theo tập dữ liệu hiện có
+  - bc_cm_00_top_khoa / bc_cm_00_nhom_vi_pham:
+      loai_bieu_do: bar_horizontal, truc_x: so_loi hoặc ty_le_pt, truc_y: label|nhom_ten
+  - bc_cm_00_khoa_nhom_loi:
+      loai_bieu_do: heatmap, truc_x: ma_nhom, truc_y: ma_khoa, màu theo so_loi
+  - bc_qt_04_top10_rule / bc_dt_01_top_rule:
+      bar_vertical (client); nhãn trục ưu tiên ten_quy_tac nếu khác placeholder, không thì ma_rule;
+      drill chi tiết theo ma_rule: lọc fact_canh_bao / ChiTietLoi ngoài phạm vi payload tự động hiện tại
+  - bc_dt_05_thang:
+      line | area, truc_x: ky_thoi_gian (nếu có cột), truc_y: chỉ tiêu tài chính
+
+E.5 Mở rộng từng dòng ChiTietLoi (tùy chọn từng bản ghi)
+  de_hien_thi: {
+    cap_do_uu_tien_hien_thi: number,    // 0 = nền, 3 = nổi bật toàn màn
+    mau_vien_dong: string,
+    icon_goi_y: string,
+    nhom_mau_sac: string                // khóa vào theme.palette
+  }
+  // 2.0.3 đề xuất mở rộng (khi có pipeline AI / theme server):
+  // uu_tien, mau_chu_dao, narrative_summary (ngôn ngữ tự nhiên gợi ý xử lý)
+
+E.6 Sheet xuất VIZ_WIDGETS (đã bật trong bao_cao_export_manifest.js)
+  Một sheet phẳng: id_widget, id_du_lieu, tieu_de, loai_bieu_do, truc_x, truc_y, mo_ta_ngan
+  cho từng widget trong hien_thi_bao_cao (trước sheet _META).
+
+E.7 SPEC-VIZ-2.0.3 — triển khai mã (taoHienThiBaoCao)
+  - phien_ban = "SPEC-VIZ-2.0.3"; tuong_thich_v1 = true.
+  - theme_config: palette + chuan_tiep_can_goi_y + progressive_disclosure (nhãn tầng UX).
+  - drill_registry: taoDrillRegistry() — CM00 heatmap→HS; DT01 top rule→fact; QT04→fact (kế hoạch meta).
+  - dataset_meta_viz: taoDatasetMetaViz(muc8) — ít nhất khóa bc_dt_01_top_rule (Pareto, trục, ngưỡng, tuong_tac).
+  - Widget mới id_widget dt01_top_rule_rr, id_du_lieu bc_dt_01_top_rule (màu series riêng).
+  - Helper: layMetaVizDataset(hienThi, idDataset).
+
+================================================================================
+F. ĐẦU RA DỊCH VỤ, CHI TIẾT LỖI, XUẤT SHEET VÀ CỘT FACT/DIM (GIỮ NGUYÊN 1.0)
+================================================================================
+
+F.1 Đầu ra taiNguonVaMoHinhMuc5()
+  {
+    ma_dac_ta: string,
+    so_ho_so_sau_gom: number,
+    danh_sach_ho_so: HoSo[],
+    mo_hinh_muc5: MoHinhMuc5,
+    bao_cao_quan_tri_muc6: BaoCaoMuc6,
+    bao_cao_chuyen_mon_muc7: BaoCaoMuc7,
+    bao_cao_doanh_thu_muc8: BaoCaoMuc8,
+    hien_thi_bao_cao: object   // SPEC-VIZ-2.0.3 — theme, theme_config, drill, drill_registry,
+                               // dataset_meta_viz, widgets, tom_tat_tai_nguyen
+  }
+
+F.2 MoHinhMuc5 — phien_ban_mo_hinh: "SPEC-BC-MUC5-V1"
+  fact_ho_so[]: ma_lk, ma_bn, ma_cskcb, ma_khoa, ma_bac_si, loai_kcb, ma_icd_chinh,
+    ma_icd_phu, ngay_vao, ngay_ra, so_ngay_dtri, t_thanhtoan, t_bhtt, t_bncct, t_bntt,
+    t_thuoc, t_vtyt, t_xn, t_cdha, t_pttt, t_dvkt, t_giuong, trang_thai_ho_so,
+    thoi_diem_nhap, thoi_diem_kiem_cuoi, so_lan_sua, co_canh_bao, tong_chi_phi_rui_ro
+  fact_dong_chi_phi[]: id_dong, ma_lk, loai_dong, ma_dich_vu, ten_dich_vu, ma_nhom,
+    ma_khoa_chi_dinh, ma_bs_chi_dinh, ngay_yl, ngay_kq, so_luong, don_gia, thanh_tien,
+    thanh_tien_bv, thanh_tien_bh, t_bhtt_dong, ty_le_tt (theo taoFactDongChiPhi)
+  fact_canh_bao[] (taoFactCanhBao — grain một dòng = một lỗi đã phẳng từ ChiTietLoi):
+    id_canh_bao, ma_lk, ma_rule, ten_quy_tac (từ ChiTietLoi / chuẩn hoá canh báo),
+    namespace_quy_tac, nguon_quy_tac, muc_do, loai_loi, ma_khoa, ma_bac_si,
+    chi_phi_anh_huong, luong_giai_trinh, tab_quan_tri_goi_y, thoi_diem_phat_sinh,
+    trang_thai_xu_ly (mặc định chua_xu_ly), ly_do_bo_qua
+  dim_khoa[] / dim_bac_si[]: như triển khai mã
+  dac_ta_store_5_4: cache_bao_cao, snapshot_bao_cao (object)
+  Mảng dự phòng: fact_phien_lam_viec, dim_*, … = []
+
+F.3 ChiTietLoi — phangHoaDanhSachLoiChiTiet
+  stt, khoa_noi_dung, khoa, ma_lk, ten_bn, ma_loai_kcb, ma_loai_kcb_chuan, ten_loai_kcb_802,
+  nhom_cap_loai_kcb, nhan_nhom_cap_loai_kcb, ma_khoa, ma_khoa_chuan, ma_bac_si,
+  ma_luat, ten_quy_tac, canh_bao, phan_he, truong_loi, index,
+  namespace_quy_tac, nguon_quy_tac, luong_giai_trinh, co_so_phap_ly, dieu_kien,
+  tab_quan_tri_goi_y, nhom_vi_pham, nhan_nhom_vi_pham, loai_hien_thi, nhan_loai_hien_thi,
+  muc_uu_tien, nhom_loi_code, level_goc, vi_tri_xml, chi_phi_uoc_tinh, doi_tuong_goc
+  (+ de_hien_thi optional theo E.5)
+
+F.4 BaoCaoMuc6 — phien_ban: "SPEC-BC-MUC6-V1"
+  bc_qt_01_kpi, bc_qt_01_top5_khoa_loi, bc_qt_02_nang_suat, bc_qt_03_tuan_thu,
+  bc_qt_04_ty_le, bc_qt_04_top10_rule, bc_qt_04_top10_khoa, bc_qt_04_doi_chieu_chi_phi,
+  bc_qt_04_chenh_tong_chi (tối đa 35 dòng)
+
+F.5 BaoCaoMuc7 — phien_ban: "SPEC-BC-MUC7-V1.1"
+  bc_cm_00_* (như mục C.3), bc_cm_01_kpi, bc_cm_01_phan_bo_khoa, bc_cm_02_cpw,
+  bc_cm_03_tom_tat, bc_cm_03_top_rule, bc_cm_03_top_khoa_major, bc_cm_04_namespace,
+  bc_cm_05_chi_so, bc_cm_05_top_icd
+
+F.6 BaoCaoMuc8 — phien_ban: "SPEC-BC-MUC8-V1"
+  Khối chính: bc_dt_01_kpi, bc_dt_01_phan_loai, bc_dt_01_top_khoa, bc_dt_01_top_rule,
+    bc_dt_02_top100, bc_dt_03_pivot, bc_dt_03_chi_tiet, bc_dt_03_chenh_tong (tối đa 35 dòng, tái dùng M6),
+    bc_dt_04_co_cau, bc_dt_05_thang, bc_dt_05_du_bao, bc_dt_06_chi_so, bc_dt_06_loai_kcb.
+  bc_dt_01_top_rule[] (một dòng): ma_rule, ten_quy_tac, so_loi, tong_chi_phi (VND, làm tròn).
+
+F.7 layCacBangDeXuat({ nhanh, quanTriThe, tai }) → { tieuDe, sheets[] }
+  tai.hienThi: object (alias UI từ hien_thi_bao_cao) — dùng sheet VIZ_WIDGETS + _META mở rộng
+  Sheet: sheetName, columns[{key,label}], rows[], exportNote?
+  Xuất bổ sung (BaoCaoHub + bao_cao_xuat_file): ZIP CSV đa sheet; file JSON snapshot (payload/meta) — ngoài luồng Excel thuần.
+
+F.8 Tên sheet xuất (đồng bộ bao_cao_export_manifest.js)
+  M5: FACT_HO_SO, FACT_DONG_CP (tập cột theo COT_FACT_DONG — subset so với fact đầy đủ trong bộ nhớ),
+    FACT_CANH_BAO (cột cố định gồm ten_quy_tac sau ma_rule),
+    DIM_KHOA, DIM_BAC_SI, cache_bao_cao, snapshot_bao_cao
+  M6: BC_QT01_* … BC_QT04_CHENH_TONG
+  M7: BC_CM00_* … BC_CM05_ICD
+  M8: BC_DT01_* … BC_DT06_KCB
+  Luôn: _META; khi có hien_thi: thêm VIZ_WIDGETS (trước _META) và dòng phien_ban_viz trong _META
+
+================================================================================
+G. PHIÊN BẢN NỘI BỘ VÀ LỘ TRÌNH ĐỒNG BỘ MÃ
+================================================================================
+  - SPEC-VIZ-2.0.3 trong bao_cao_viz_meta.js; snapshot JSON CDSS-BHYT-SNAPSHOT-3 (tóm tắt meta viz).
+  - Drill CM-00 hoạt động; drill_registry mô tả thêm DT01/QT04 → fact (handler nối dần).
+  - Bước G.1–G.4 (ưu tiên sản phẩm): (1) Áp drill_registry trong Hub generic; (2) Victory Native XL dev build;
+    (3) Xuất / adapter FHIR DetectedIssue từ fact_canh_bao; (4) Hook Agentic AI (server) cho narrative_summary.
+
+================================================================================
+H. CHIẾN LƯỢC TRỰC QUAN HOÁ & ĐẶC TẢ THẾ HỆ MỚI (2026) — TÓM TẮT
+================================================================================
+  H.1 Vai trò module: “thần kinh trung ương” phân tích — nối vận hành, lâm sàng, tài chính BHYT trên M5.
+  H.2 Nguyên tắc UX: three-second rule; progressive disclosure 3 tầng; giảm overload; actionable insights.
+  H.3 Công nghệ: RN + Expo; Gifted Charts + expo-linear-gradient; FlatList đa nền; Victory+Skia khi cần hiệu năng.
+  H.4 Dữ liệu: snapshot nhất quán; meta tách khỏi grain nghiệp vụ (SPEC-VIZ-2.0.3); Pareto DT-01 theo tiền.
+  H.5 Liên thông & AI: FHIR · Parquet/BigQuery · SSE — theo lộ trình; không nhúng vào grain fact nếu chưa sẵn sàng.
+
+================================================================================
+HẾT TÀI LIỆU — ĐẶC TẢ DỮ LIỆU 2.0.3
+================================================================================

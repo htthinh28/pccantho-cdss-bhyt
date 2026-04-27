@@ -712,6 +712,31 @@ export const taoBanGhiLoiChiTiet = (hoSo = {}, loi = {}, stt = 0) => {
     vi_tri_xml: taoMoTaViTriXmlThongKe({ phanHe, truongLoi, index }),
     chi_phi_uoc_tinh: tinhChiPhiUocTinhTheoLoi({ ...daChuan, loai_hien_thi: thongTinLoai.id }),
     doi_tuong_goc: daChuan,
+    de_hien_thi: (() => {
+      const prio = Number(thongTinLoai.priority);
+      const lvRaw = String(
+        layGiaTriTheoKhoaKhongPhanBiet(daChuan, 'level', '')
+          || layGiaTriTheoKhoaKhongPhanBiet(daChuan, 'muc_do', ''),
+      ).toUpperCase();
+      let cap_do_uu_tien_hien_thi = 0;
+      if (Number.isFinite(prio) && prio <= 2) cap_do_uu_tien_hien_thi = 1;
+      if (Number.isFinite(prio) && prio <= 1) cap_do_uu_tien_hien_thi = 2;
+      if (
+        lvRaw.includes('ERROR')
+        || lvRaw.includes('CRITICAL')
+        || String(thongTinLoai.id || '').toUpperCase() === 'XUAT_TOAN'
+      ) {
+        cap_do_uu_tien_hien_thi = 3;
+      }
+      let icon_goi_y = 'information-outline';
+      if (cap_do_uu_tien_hien_thi >= 3) icon_goi_y = 'alert-circle-outline';
+      else if (cap_do_uu_tien_hien_thi >= 2) icon_goi_y = 'alert-outline';
+      return {
+        cap_do_uu_tien_hien_thi,
+        icon_goi_y,
+        nhom_mau_sac: cap_do_uu_tien_hien_thi >= 3 ? 'canh_bao' : 'binh_thuong',
+      };
+    })(),
   };
 };
 

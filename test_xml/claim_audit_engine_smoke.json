@@ -1,36 +1,35 @@
 {
   "meta": {
-    "generated_at": "2026-04-23T12:10:35.132Z",
+    "generated_at": "2026-04-26T05:02:34.926Z",
     "claim_path": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\tai_nguyen\\ip\\PC022601307_IP26000073.xml",
     "ma_lk": "000368",
-    "total_warnings": 19,
+    "total_warnings": 18,
     "tuong_tac_only": false,
     "by_severity": {
-      "Warning": 19
+      "Warning": 18
     },
     "by_tang_V15": {
       "L1": 5,
       "L23": 2,
-      "L4": 3,
+      "L4": 2,
       "L5": 9
     },
     "by_namespace": {
       "DVKT_OP": 9,
-      "GIAM_DINH_CHUYEN_DE": 3,
+      "GIAM_DINH_CHUYEN_DE": 2,
       "HANH_CHINH_HARDCODED": 3,
       "QUY_TAC_NOI_BO": 4
     },
     "by_source": {
       "dong_co_giam_dinh": 4,
       "dvkt_op_giam_dinh": 9,
-      "luat_giam_dinh_chuyen_de_hardcoded": 3,
+      "luat_giam_dinh_chuyen_de_hardcoded": 2,
       "luat_hanh_chinh_hardcoded": 3
     },
     "focus_summary": {}
   },
   "unique_rule_codes": [
     "Chuyen_de_090",
-    "Chuyen_de_166",
     "Chuyen_de_268",
     "DVKT-OP-03",
     "DVKT-OP-09",
@@ -44,7 +43,6 @@
   ],
   "rule_summary": {
     "Chuyen_de_090": 1,
-    "Chuyen_de_166": 1,
     "Chuyen_de_268": 1,
     "DVKT-OP-03": 4,
     "DVKT-OP-09": 1,
@@ -67,23 +65,6 @@
       "ma_luat": "Chuyen_de_090",
       "ten_quy_tac": "Chỉ định chiếu đèn vàng da sai chỉ định",
       "dieu_kien": "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0) && (COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('CHIẾU ĐÈN') || UPPER(String(item.TEN_DICH_VU || '')).includes('CHIEU DEN') || UPPER(String(item.TEN_DICH_VU || '')).includes('VÀNG DA') || UPPER(String(item.TEN_DICH_VU || '')).includes('PHOTOTHERAPY') || UPPER(String(item.TEN_DICH_VU || '')).includes('BILIRUBIN')) > 0)",
-      "co_so_phap_ly": "17/VBHN-BYT (31/12/2024): văn bản hợp nhất quy định danh mục và điều kiện thanh toán DVKT BHYT; gốc Thông tư 35/2016/TT-BYT, sửa đổi bổ sung tại Thông tư 13/2020/TT-BYT và Thông tư 39/2024/TT-BYT (HL 01/01/2025: một lượt KCB — khoản 7 Điều 4; Điều 4a–4d; hợp đồng KCB BHYT thể hiện số giường). Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử. TT 12/2026/TT-BTC: Điều 10 khoản 1; Điều 13 khoản 1–3",
-      "namespace_quy_tac": "GIAM_DINH_CHUYEN_DE",
-      "nguon_quy_tac": "luat_giam_dinh_chuyen_de_hardcoded",
-      "luong_giai_trinh": "XML3 -> hardcoded giám định chuyên đề",
-      "tab_quan_tri_goi_y": "LUAT_GIAM_DINH_CHUYEN_DE",
-      "tang_V15": "L4"
-    },
-    {
-      "id": "Chuyen_de_166",
-      "phan_he": "XML1",
-      "truong_loi": "UNKNOWN",
-      "canh_bao": "⚠️ Cảnh báo lỗi: Công suất giường vượt mức quy định nhưng chưa áp dụng tỷ lệ giảm trừ giá thanh toán theo Thông tư 22/2023/TT-BYT (Kế thừa TT 39/2018). (Heuristic XML130: có dòng gợi giường trong DS_XML3 — công suất/phê duyệt cần đối chiếu BHXH.)",
-      "muc_do": "Warning",
-      "index": -1,
-      "ma_luat": "Chuyen_de_166",
-      "ten_quy_tac": "Vượt công suất giường bệnh",
-      "dieu_kien": "(COUNT_IF(DS_XML3, item => UPPER(String(item.TEN_DICH_VU || '')).includes('GIƯỜNG') || UPPER(String(item.TEN_DICH_VU || '')).includes('GIUONG')) > 0)",
       "co_so_phap_ly": "17/VBHN-BYT (31/12/2024): văn bản hợp nhất quy định danh mục và điều kiện thanh toán DVKT BHYT; gốc Thông tư 35/2016/TT-BYT, sửa đổi bổ sung tại Thông tư 13/2020/TT-BYT và Thông tư 39/2024/TT-BYT (HL 01/01/2025: một lượt KCB — khoản 7 Điều 4; Điều 4a–4d; hợp đồng KCB BHYT thể hiện số giường). Nghị định 188/2025/NĐ-CP: quy định về thanh toán chi phí KCB BHYT, thủ tục thanh toán và xử lý vi phạm hành chính. Quyết định 3618/QĐ-BHXH: quy trình kiểm tra BHYT và bộ danh mục, chỉ tiêu dữ liệu phục vụ kiểm tra điện tử. TT 12/2026/TT-BTC: Điều 10 khoản 1; Điều 13 khoản 1–3",
       "namespace_quy_tac": "GIAM_DINH_CHUYEN_DE",
       "nguon_quy_tac": "luat_giam_dinh_chuyen_de_hardcoded",

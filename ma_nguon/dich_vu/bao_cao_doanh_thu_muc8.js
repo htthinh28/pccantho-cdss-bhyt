@@ -118,17 +118,49 @@ export const taoBangBcDt01TopKhoaRuiRo = (factCanhBao = []) => {
     }));
 };
 
+const PLACEHOLDER_TEN_QUY_TAC = 'Không có tên quy tắc';
+
+const tenQuyTacCoTheHien = (s) => {
+  const t = String(s || '').trim();
+  return t && t !== PLACEHOLDER_TEN_QUY_TAC;
+};
+
 export const taoBangBcDt01Top20Rule = (factCanhBao = []) => {
   const agg = new Map();
   for (const c of factCanhBao) {
     if (String(c.trang_thai_xu_ly || '') !== 'chua_xu_ly') continue;
     const rule = String(c.ma_rule || '').trim() || '(không mã)';
-    if (!agg.has(rule)) agg.set(rule, { ma_rule: rule, so_loi: 0, tong_chi_phi: 0 });
+    if (!agg.has(rule)) {
+      agg.set(rule, {
+        ma_rule: rule,
+        ten_quy_tac: '',
+        so_loi: 0,
+        tong_chi_phi: 0,
+        _ten_votes: new Map(),
+      });
+    }
     const r = agg.get(rule);
     r.so_loi += 1;
     r.tong_chi_phi += toNum(c.chi_phi_anh_huong, 0);
+    const tn = String(c.ten_quy_tac || '').trim();
+    if (tn) r._ten_votes.set(tn, (r._ten_votes.get(tn) || 0) + 1);
   }
   return [...agg.values()]
+    .map((x) => {
+      const entries = [...x._ten_votes];
+      const useful = entries.filter(([ten]) => tenQuyTacCoTheHien(ten));
+      const pool = useful.length ? useful : entries;
+      let bestTen = '';
+      let bestCnt = -1;
+      for (const [ten, cnt] of pool) {
+        if (cnt > bestCnt || (cnt === bestCnt && String(ten).localeCompare(String(bestTen), 'vi') < 0)) {
+          bestCnt = cnt;
+          bestTen = ten;
+        }
+      }
+      const { _ten_votes, ...rest } = x;
+      return { ...rest, ten_quy_tac: bestTen };
+    })
     .sort((a, b) => b.tong_chi_phi - a.tong_chi_phi)
     .slice(0, 20)
     .map((x) => ({ ...x, tong_chi_phi: Math.round(x.tong_chi_phi) }));

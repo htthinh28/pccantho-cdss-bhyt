@@ -135,10 +135,11 @@ const CODE_CATALOG_SEEDS = {
   },
   /** Giường & khám/chỉ định theo bảng mã nội bộ BV (thay định dạng cũ Kxx.xxxx). Import: mã giường bàn khám.xlsx */
   DANH_MUC_GIUONG_BAN_KHAM_BV: {
-    version: '2026.04.1',
+    version: '2026.04.2',
     rows: [],
     columns: [
       'STT', 'MA_TUONG_DUONG', 'TEN_DVKT_PHEDUYET', 'TEN_DVKT_GIA', 'PHAN_LOAI_PTTT', 'DON_GIA',
+      'MA_TD_LIST', 'MA_DVKT_CU', 'MA_GIUONG_CU',
       'GHICHU', 'QUYET_DINH', 'TUNGAY', 'DENNGAY', 'CSKCB_CGKT', 'CSKCB_CLS', 'ID',
     ],
   },

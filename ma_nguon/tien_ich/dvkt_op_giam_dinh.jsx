@@ -327,6 +327,135 @@ const normalizeDvktCode = (value) => {
   return normalizedSeparators;
 };
 
+/**
+ * Trích mã giường/khám nội bộ **cũ** trong ghi chú hoặc tên giá (vd. K27.1939, H005)
+ * để map sang dòng danh mục có MA_TUONG_DUONG mới (15.xx, K27.NG3, …).
+ */
+const extractLegacyGiuongKhamCodesFromText = (text) => {
+  const raw = String(text || '');
+  if (!raw.trim()) return [];
+  const upper = toUpper(raw);
+  const found = [];
+  const seen = new Set();
+  const push = (c) => {
+    const n = normalizeDvktCode(c);
+    if (!n || seen.has(n)) return;
+    seen.add(n);
+    found.push(n);
+  };
+  const reK = /\b(K\d+\.\d{4})\b/gi;
+  let m = reK.exec(upper);
+  while (m) {
+    push(m[1]);
+    m = reK.exec(upper);
+  }
+  const reH = /\b(H\d{2,4})\b/gi;
+  m = reH.exec(upper);
+  while (m) {
+    push(m[1]);
+    m = reH.exec(upper);
+  }
+  return found;
+};
+
+/** Mọi mã đối chiếu DVKT-OP-09: mã mới + MA_TD_LIST + mã cũ explicit + mã trích từ TEN_DVKT_GIA/GHICHU. */
+const collectOp09AliasCodesForRow = (row) => {
+  if (!row || typeof row !== 'object') return [];
+  const seen = new Set();
+  const out = [];
+  const push = (v) => {
+    const c = normalizeDvktCode(v);
+    if (!c || seen.has(c)) return;
+    seen.add(c);
+    out.push(c);
+  };
+  push(pickValue(row, ['MA_TUONG_DUONG', 'MA_DICH_VU']));
+  parseList(pickValue(row, ['MA_TD_LIST', 'MA_LIEN_KET_MA_CU', 'MA_DVKT_CU', 'MA_GIUONG_CU'])).forEach((x) => push(x));
+  [
+    pickValue(row, ['TEN_DVKT_GIA']),
+    pickValue(row, ['GHICHU', 'GHI_CHU', 'QUY_TRINH']),
+    pickValue(row, ['TEN_DVKT_PHEDUYET']),
+  ].forEach((t) => {
+    extractLegacyGiuongKhamCodesFromText(String(t || '')).forEach((c) => push(c));
+  });
+  return out;
+};
+
+const buildDmktEntryFromGiuongBkRow = (row, canonicalMa) => ({
+  raw: row,
+  canonicalMa: normalizeDvktCode(canonicalMa) || '',
+  tenDvkt: String(pickValue(row, ['TEN_DVKT_PHEDUYET', 'TEN_DICH_VU', 'TEN_DVKT_GIA', 'TEN_GIA', 'TEN_DVKT']) || '').trim(),
+  tenDvktNorm: normalizeText(pickValue(row, ['TEN_DVKT_PHEDUYET', 'TEN_DICH_VU', 'TEN_DVKT_GIA', 'TEN_GIA', 'TEN_DVKT'])),
+  donGia: toNumber(pickValue(row, ['DON_GIA', 'GIA_TT_BHYT', 'DON_GIA_BHYT', 'GIA_BH_TT'])),
+  tuNgayKey: dateToKey(pickValue(row, ['TU_NGAY', 'TUNGAY', 'HD_TU'])),
+  denNgayKey: dateToKey(pickValue(row, ['DEN_NGAY', 'DENNGAY', 'HD_DEN'])),
+  prefixHint: normalizePrefix(pickValue(row, ['PREFIX', 'PREFIX_DVKT']) || canonicalMa || ''),
+  maChuyenKhoa: normalizePrefix(pickValue(row, ['MA_CHUYEN_KHOA', 'Mã chuyên khoa', 'PREFIX_DVKT'])),
+  phamviNeeded: new Set(collectListValues(row, ['PHAMVI_CM_NEEDED', 'PHAMVI_CM_OK']).map((value) => normalizeToken(value)).filter(Boolean)),
+  phanLoaiPtttRaw: String(pickValue(row, ['PHAN_LOAI_PTTT', 'MA_PTTT', 'PHAN_LOAI'])).trim(),
+  phanLoaiPtttNorm: normalizeToken(pickValue(row, ['PHAN_LOAI_PTTT', 'MA_PTTT', 'PHAN_LOAI'])),
+  ghiChuNorm: normalizeText(pickValue(row, ['GHICHU', 'GHI_CHU', 'QUY_TRINH'])),
+  danhMucNorm: normalizeText(pickValue(row, ['DANH_MUC', 'DANH_MUC_AP_DUNG', 'PHAN_LOAI_DM', 'LOAI_DVKT'])),
+  danhMucToken: normalizeToken(pickValue(row, ['DANH_MUC', 'DANH_MUC_AP_DUNG', 'PHAN_LOAI_DM', 'LOAI_DVKT'])),
+  dieuKienThanhToanNorm: normalizeText(pickValue(row, ['DIEU_KIEN_THANH_TOAN', 'DIEU_KIEN', 'COT_3', 'DIEUKIEN_COT3'])),
+  quyetDinh: String(pickValue(row, ['QUYET_DINH', 'QUYETDINH', 'SO_QUYET_DINH'])).trim(),
+  maCskcb: toUpper(pickValue(row, ['MA_CSKCB', 'MA_BV'])),
+  approvalRaw: pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET']),
+  approvalNorm: normalizeToken(pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET'])),
+  approvalActive: isActiveStatus(pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET']), true),
+});
+
+const buildOp09DmktMapFromGiuongRows = (rows) => {
+  const dmktByCode = new Map();
+  (Array.isArray(rows) ? rows : []).forEach((row) => {
+    const codes = collectOp09AliasCodesForRow(row);
+    const canonicalMa = normalizeDvktCode(pickValue(row, ['MA_TUONG_DUONG', 'MA_DICH_VU'])) || codes[0];
+    if (!canonicalMa || codes.length === 0) return;
+    const entry = buildDmktEntryFromGiuongBkRow(row, canonicalMa);
+    codes.forEach((code) => {
+      if (!dmktByCode.has(code)) dmktByCode.set(code, entry);
+    });
+  });
+  return dmktByCode;
+};
+
+const buildOp09InternalApprovalMapFromGiuongRows = (rows) => {
+  const internalApprovalByCode = new Map();
+  (Array.isArray(rows) ? rows : []).forEach((row) => {
+    const codes = collectOp09AliasCodesForRow(row);
+    const canonicalMa = normalizeDvktCode(pickValue(row, ['MA_TUONG_DUONG', 'MA_DICH_VU'])) || codes[0];
+    if (!canonicalMa) return;
+    const approvalEntry = {
+      raw: row,
+      canonicalMa: normalizeDvktCode(canonicalMa),
+      maCskcb: toUpper(pickValue(row, ['MA_CSKCB', 'MA_BV'])),
+      tuNgayKey: dateToKey(pickValue(row, ['TU_NGAY', 'TUNGAY', 'HD_TU', 'NGAY_HL_TU'])),
+      denNgayKey: dateToKey(pickValue(row, ['DEN_NGAY', 'DENNGAY', 'HD_DEN', 'NGAY_HL_DEN'])),
+      approvalRaw: pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET']),
+      approvalNorm: normalizeToken(pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET'])),
+      approvalActive: isActiveStatus(pickValue(row, ['TINHTRANG_DV', 'TRANG_THAI', 'TRANGTHAI', 'TRANG_THAI_SU_DUNG', 'PHE_DUYET', 'DUOC_PHE_DUYET']), true),
+    };
+    codes.forEach((code) => {
+      if (!internalApprovalByCode.has(code)) internalApprovalByCode.set(code, approvalEntry);
+    });
+  });
+  return internalApprovalByCode;
+};
+
+/** Chỉ mục TEN_DVKT_PHEDUYET (đã map sang TEN_DICH_VU) → entry OP09 — fallback khi hồ sơ còn mã cũ nhưng tên khớp danh mục. */
+const buildOp09DmktByTenNorm = (rows, dmktByCode) => {
+  const byTen = new Map();
+  (Array.isArray(rows) ? rows : []).forEach((row) => {
+    const canonicalMa = normalizeDvktCode(pickValue(row, ['MA_TUONG_DUONG', 'MA_DICH_VU']));
+    if (!canonicalMa) return;
+    const entry = dmktByCode.get(canonicalMa);
+    if (!entry) return;
+    const tenPheDuyet = normalizeText(pickValue(row, ['TEN_DVKT_PHEDUYET', 'TEN_DICH_VU']));
+    if (tenPheDuyet.length >= 6 && !byTen.has(tenPheDuyet)) byTen.set(tenPheDuyet, entry);
+  });
+  return byTen;
+};
+
 const parseAllowedProfessionCodes = (raw) => {
   const matches = String(raw || '').match(/\d+/g) || [];
   return [...new Set(matches.map((item) => normalizeToken(item)).filter(Boolean))];
@@ -631,7 +760,10 @@ const mapByPrefix = (rows, prefixKeys, valueKeys) => {
   return m;
 };
 
-/** Map sheet nội bộ Khám và giường bệnh (DANH_MUC_GIUONG_BAN_KHAM_BV) → dòng field tương thích engine (DVKT-OP-09 chỉ đối chiếu bảng này, không dùng DM05). */
+/**
+ * Map sheet nội bộ Khám và giường bệnh (DANH_MUC_GIUONG_BAN_KHAM_BV) → dòng field tương thích engine.
+ * DVKT-OP-09: MA_TUONG_DUONG = mã mới; MA_TD_LIST / MA_*_CU / mã trong TEN_DVKT_GIA (Kxx.xxxx, Hxxx) dùng ghép mã cũ từ hồ sơ.
+ */
 const mapGiuongBanKhamRowToDmkt = (row) => {
   if (!row || typeof row !== 'object') return null;
   const ma = normalizeDvktCode(pickValue(row, ['MA_TUONG_DUONG', 'MA_DICH_VU']));
@@ -881,10 +1013,11 @@ const buildEngineConfig = async () => {
 
   /**
    * DVKT-OP-09 (CHECK_INTERNAL_APPROVAL): chỉ giuongBkMapped — sheet Giường & khám (mã BV mới).
-   * Không dùng dmktRows / DANH_MUC_DVKT_M05; không đọc DVKT_INTERNAL_APPROVAL nếu đã map ở đây (cùng nguồn sau khi đồng bộ đúng).
+   * Đối chiếu thêm MA_TD_LIST / mã cũ trong ghi chú (Kxx.xxxx, Hxxx) và tên TEN_DVKT_PHEDUYET khi mã hồ sơ là hệ cũ.
    */
-  const op09DmktByCode = buildDmktMapFromRows(giuongBkMapped);
-  const op09InternalApprovalByCode = buildInternalApprovalMapFromRows(giuongBkMapped);
+  const op09DmktByCode = buildOp09DmktMapFromGiuongRows(giuongBkMapped);
+  const op09InternalApprovalByCode = buildOp09InternalApprovalMapFromGiuongRows(giuongBkMapped);
+  const op09DmktByTenNorm = buildOp09DmktByTenNorm(giuongBkMapped, op09DmktByCode);
 
   const staffById = new Map();
   (Array.isArray(staff) ? staff : []).forEach((row) => {
@@ -975,6 +1108,7 @@ const buildEngineConfig = async () => {
     internalApprovalByCode,
     op09DmktByCode,
     op09InternalApprovalByCode,
+    op09DmktByTenNorm,
     staffById,
     equipmentByPrefix,
     equipmentByCode,
@@ -1646,7 +1780,22 @@ const checkInternalApproval = ({ rule, line, claim, config }) => {
   if (!dmMap || (dmMap.size === 0 && (!apMap || apMap.size === 0))) return pass();
   const maDv = line.maTuongDuong;
   const maG = String(line.maGiuong || '').trim();
-  const dmRow = dmMap.get(maDv) || (maG ? dmMap.get(maG) : undefined);
+  const maGNorm = maG ? normalizeDvktCode(maG) : '';
+  const tenNormLine = normalizeText(line.tenDvkt || '');
+
+  let dmRow = dmMap.get(maDv) || (maGNorm ? dmMap.get(maGNorm) : undefined);
+  if (!dmRow && config.op09DmktByTenNorm && tenNormLine.length >= 6) {
+    dmRow = config.op09DmktByTenNorm.get(tenNormLine);
+  }
+  if (!dmRow && config.op09DmktByTenNorm && tenNormLine.length >= 10) {
+    for (const [catNorm, ent] of config.op09DmktByTenNorm) {
+      if (catNorm.length < 10) continue;
+      if (tenNormLine.includes(catNorm) || catNorm.includes(tenNormLine)) {
+        dmRow = ent;
+        break;
+      }
+    }
+  }
   if (!dmRow) {
     const chiTiet = maG
       ? `Mã dịch vụ [${maDv || '—'}]; mã giường [${maG}]`
@@ -1658,7 +1807,16 @@ const checkInternalApproval = ({ rule, line, claim, config }) => {
     );
   }
 
-  const approvalRow = (apMap.get(maDv) || (maG ? apMap.get(maG) : undefined)) || dmRow;
+  const canonicalMa = normalizeDvktCode(dmRow.canonicalMa || pickValue(dmRow.raw, ['MA_TUONG_DUONG', 'MA_DICH_VU']) || maDv);
+  let approvalRow = apMap.get(maDv) || (maGNorm ? apMap.get(maGNorm) : undefined);
+  if (!approvalRow && canonicalMa) approvalRow = apMap.get(canonicalMa);
+  if (!approvalRow) {
+    return fail(
+      'WARNING',
+      `${rule.ALERT_MESSAGE} Có ghép được dòng danh mục nhưng thiếu bản ghi phê duyệt nội bộ (MA_TUONG_DUONG [${canonicalMa || '—'}]).`,
+      'MA_DICH_VU'
+    );
+  }
   if (!approvalRow.approvalActive) {
     return fail('REJECT', `${rule.ALERT_MESSAGE} DVKT [${line.maTuongDuong}] thuộc Danh mục 3/tạm thời chưa thanh toán BHYT.`, 'MA_DICH_VU');
   }

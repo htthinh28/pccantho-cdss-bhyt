@@ -1,6 +1,6 @@
 /**
- * Mô hình dữ liệu mục 5 — CDSS-BHYT-SPEC-BC (fact / dimension logic, view ảo từ kho).
- * Không ghi IndexedDB; chỉ tính toán từ danh sách hồ sơ đã tải.
+ * Mô hình dữ liệu mục 5 — CDSS-BHYT-SPEC-BC (Star Schema: fact ở giữa, dimension tra cứu).
+ * Nền tảng cho báo cáo JCI/QPS (đồng bộ M6–M8); không ghi IndexedDB — chỉ tính từ kho đã tải.
  */
 
 import { phangHoaDanhSachLoiChiTiet } from '../tien_ich/thong_ke_loi_dung_chung';
@@ -149,6 +149,7 @@ export const taoFactCanhBao = (danhSachHoSo = []) => {
     id_canh_bao: String(c?.khoa || `${c.ma_lk}_${c.ma_luat}_${c.index}`),
     ma_lk: String(c?.ma_lk || '').trim(),
     ma_rule: String(c?.ma_luat || '').trim(),
+    ten_quy_tac: String(c?.ten_quy_tac || '').trim(),
     namespace_quy_tac: String(c?.namespace_quy_tac || '').trim(),
     nguon_quy_tac: String(c?.nguon_quy_tac || '').trim(),
     muc_do: mapMucDo(c),

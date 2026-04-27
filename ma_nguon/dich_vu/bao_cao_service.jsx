@@ -8,6 +8,7 @@ import { tongHopMoHinhMuc5 } from './bao_cao_mo_hinh_muc5';
 import { tongHopBaoCaoQuanTriMuc6 } from './bao_cao_quan_tri_muc6';
 import { tongHopBaoCaoChuyenMonMuc7 } from './bao_cao_chuyen_mon_muc7';
 import { tongHopBaoCaoDoanhThuMuc8 } from './bao_cao_doanh_thu_muc8';
+import { taoHienThiBaoCao } from './bao_cao_viz_meta';
 
 export const MA_DAC_TA_BAO_CAO = 'CDSS-BHYT-SPEC-BC-V1.0';
 
@@ -59,9 +60,21 @@ export const taiDuLieuNguonBaoCao = async () => {
   };
 };
 
-/** Tải kho + tổng hợp mô hình dữ liệu mục 5 (fact / dimension) cho module báo cáo. */
-export const taiNguonVaMoHinhMuc5 = async () => {
-  const nguon = await taiDuLieuNguonBaoCao();
+/** Fingerprint nguồn: số hồ sơ + độ dài danh sách + mốc thời gian cập nhật mới nhất (cache an toàn). */
+const tinhFingerprintNguon = (nguon) => {
+  const arr = nguon.danh_sach_ho_so || [];
+  let maxTs = 0;
+  for (const hs of arr) {
+    const raw = hs?.thoi_diem_nhap_kho || hs?.thoi_diem_cap_nhat_so_lieu_tho;
+    const t = raw ? Date.parse(String(raw)) : NaN;
+    if (Number.isFinite(t) && t > maxTs) maxTs = t;
+  }
+  return `${nguon.so_ho_so_sau_gom}|${arr.length}|${maxTs}`;
+};
+
+let _baoCaoCache = { fingerprint: '', payload: null };
+
+const tongHopPayloadTuNguon = (nguon) => {
   const mo_hinh_muc5 = tongHopMoHinhMuc5(nguon.danh_sach_ho_so);
   const muc6 = tongHopBaoCaoQuanTriMuc6({
     moHinhMuc5: mo_hinh_muc5,
@@ -75,11 +88,34 @@ export const taiNguonVaMoHinhMuc5 = async () => {
     moHinhMuc5: mo_hinh_muc5,
     danhSachHoSo: nguon.danh_sach_ho_so,
   });
+  const hien_thi_bao_cao = taoHienThiBaoCao({
+    mo_hinh_muc5,
+    muc6,
+    muc7,
+    muc8,
+    soHoSo: nguon.so_ho_so_sau_gom,
+  });
   return {
     ...nguon,
     mo_hinh_muc5,
     bao_cao_quan_tri_muc6: muc6,
     bao_cao_chuyen_mon_muc7: muc7,
     bao_cao_doanh_thu_muc8: muc8,
+    hien_thi_bao_cao,
   };
+};
+
+/**
+ * Tải kho + tổng hợp mô hình mục 5 và báo cáo M6–M8.
+ * @param {{ boQuaCache?: boolean }} [options] boQuaCache=true: bỏ qua bộ nhớ đệm (Làm mới cứng).
+ */
+export const taiNguonVaMoHinhMuc5 = async ({ boQuaCache = false } = {}) => {
+  const nguon = await taiDuLieuNguonBaoCao();
+  const fp = tinhFingerprintNguon(nguon);
+  if (!boQuaCache && _baoCaoCache.fingerprint === fp && _baoCaoCache.payload) {
+    return { ..._baoCaoCache.payload, _tu_cache: true, _fingerprint: fp };
+  }
+  const payload = tongHopPayloadTuNguon(nguon);
+  _baoCaoCache = { fingerprint: fp, payload };
+  return { ...payload, _tu_cache: false, _fingerprint: fp };
 };

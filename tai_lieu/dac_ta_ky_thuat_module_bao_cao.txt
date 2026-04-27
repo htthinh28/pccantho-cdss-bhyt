@@ -1,0 +1,266 @@
+================================================================================
+ĐẶC TẢ KỸ THUẬT — MODULE BÁO CÁO CDSS-BHYT (BẢN VIẾT LẠI TỔNG HỢP)
+================================================================================
+Phiên bản tài liệu: 2.0.3
+Ngày cập nhật: 2026-04-26
+Mã đặc tả: MA_DAC_TA_BAO_CAO = CDSS-BHYT-SPEC-BC-V1.0 (bao_cao_service.jsx)
+Đồng bộ đặc tả dữ liệu: tai_lieu/dac_ta_du_lieu_module_bao_cao.txt (phiên bản 2.0.3)
+Ghi chú 2.0.3: SPEC-VIZ-2.0.3 — theme_config, drill_registry, dataset_meta_viz, widget dt01_top_rule_rr;
+  snapshot JSON CDSS-BHYT-SNAPSHOT-3; chiến lược 2026 (outcome UX, progressive disclosure, lộ trình FHIR/AI/Skia).
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+  1. Tóm tắt điều hành
+  2. Xu hướng UI/UX & trực quan hóa (khảo sát — ứng dụng cho module)
+  3. Luồng dữ liệu và kiến trúc tổng thể (trích xuất từ triển khai hiện tại)
+  4. Thành phần giao diện và quy trình xuất báo cáo
+  5. Đánh giá thiết kế hiện tại so với xu hướng & đề xuất nâng cấp
+  6. Thư viện biểu đồ & tối ưu luồng tương tác (React Native / Expo)
+  7. Làm giàu định dạng xuất và dữ liệu thời gian thực / drill-down
+  8. Ma trận thành phần mã nguồn và phiên bản SPEC nội bộ
+  9. Phụ lục: URL tham khảo xu hướng
+  10. Chiến lược thế hệ mới (2026) — tổng hợp điều hành
+
+================================================================================
+1. TÓM TẮT ĐIỀU HÀNH
+================================================================================
+
+Module báo cáo là lớp “đọc kho — tổng hợp — hiển thị — xuất” cho ba nhánh nghiệp vụ:
+Quản trị (M5/M6), Chuyên môn (M7), Doanh thu BHYT (M8). Luồng lõi không ghi
+ngược metadata vào kho; mọi số liệu là snapshot tại thời điểm gọi
+taiNguonVaMoHinhMuc5.
+
+Tài liệu 2.0.3: (i) chiến lược dashboard y tế / trực quan hoá 2025–2026 (outcome-first, WCAG, Agentic AI lộ trình);
+  (ii) drill CM-00 trong Hub + drill_registry khai báo (SPEC-VIZ-2.0.3);
+  (iii) cache fingerprint + boQuaCache; (iv) Gifted + Victory Skia khi cần; (v) Excel / PDF / ZIP CSV / JSON snapshot-3;
+  (vi) backlog: FHIR, BigQuery, skeleton/debounce — mục 5–7 và 10.
+
+================================================================================
+2. XU HƯỚNG UI/UX & TRỰC QUAN HÓA (KHẢO SÁT — ÁP DỤNG CHO MODULE)
+================================================================================
+
+2.1 Trích yếu phục vụ quản trị & chất lượng y tế
+  - Ưu tiên tín hiệu trong vài giây đầu: KPI rủi ro, top khoa/rule, màu phân cấp.
+  - Drill-down có lộ trình: tổng → theo khoa / nhóm lỗi → danh sách hồ sơ / dòng lỗi.
+  - Progressive disclosure: bảng tóm tắt trước, chi tiết mở theo nhu cầu; breadcrumb.
+  - Giảm chuyển ngữ cảnh: gắn số liệu với rule, namespace, tab quản trị gợi ý.
+  - Dashboard “chủ động”: gợi ý hành động (đã có phần văn bản trong CM-04); mở rộng
+    UI nút lọc nhanh theo metadata (đặc tả dữ liệu 2.0 — khối hien_thi_bao_cao).
+  - Thời gian thực / gần thời gian thực: dấu thời gian dữ liệu + làm mới có chu kỳ;
+    chuẩn bị sẵn hook cho push sau này (SSE/WebSocket) nếu backend có.
+
+2.2 Trực quan hóa dữ liệu hiện đại
+  - Biểu đồ tương tác (tooltip, chọn điểm, lọc cử chỉ), heatmap cho ma trận khoa×nhóm.
+  - So sánh chuỗi thời gian (M8 theo tháng) dạng line/area khi dữ liệu đủ mịn.
+  - Tránh “mọi thứ cùng trọng số thị giác”: dùng theme và ngưỡng cảnh báo (đặc tả VIZ).
+
+2.3 Nguồn đọc thêm (không ràng buộc pháp lý BHYT)
+  - Fuselab — Healthcare UX & Dataviz 2026
+  - Magicflux — UX trends digital healthcare 2026
+  - Eleken — Healthcare UI 2026
+  - Interface Design — Medical dashboard benchmarking 2026
+  (URL đầy đủ: mục 9.)
+
+================================================================================
+3. LUỒNG DỮ LIỆU VÀ KIẾN TRÚC TỔNG THỂ
+================================================================================
+
+3.1 Sơ đồ luồng (triển khai hiện tại)
+
+  ┌─────────────────────────┐
+  │ Kho (IndexedDB / API    │
+  │ layTatCaHoSoTuKho)      │
+  └───────────┬─────────────┘
+              v
+  ┌─────────────────────────┐
+  │ taiDuLieuNguonBaoCao    │
+  │ + ghepHoSoKhongTrungMaLK│
+  └───────────┬─────────────┘
+              v
+  ┌─────────────────────────┐
+  │ tongHopMoHinhMuc5       │── fact_ho_so, fact_dong_chi_phi, fact_canh_bao
+  │ (bao_cao_mo_hinh_muc5)  │── dim_khoa, dim_bac_si, dac_ta_store_5_4
+  └───────────┬─────────────┘
+              ├──────────────> tongHopBaoCaoQuanTriMuc6   (M6)
+              ├──────────────> tongHopBaoCaoChuyenMonMuc7 (M7, dùng ChiTietLoi)
+              └──────────────> tongHopBaoCaoDoanhThuMuc8  (M8)
+              v
+  ┌─────────────────────────┐
+  │ taiNguonVaMoHinhMuc5    │  payload + hien_thi_bao_cao (taoHienThiBaoCao)
+  └───────────┬─────────────┘
+              v
+  ┌─────────────────────────┐
+  │ BaoCaoHub               │  nhánh + tab M5/M6; bảng; biểu đồ (màu theo hienThi)
+  └───────────┬─────────────┘
+              v
+  ┌─────────────────────────┐
+  │ layCacBangDeXuat        │  manifest đa sheet + _META
+  └───────────┬─────────────┘
+              v
+  ┌─────────────────────────┐
+  │ xuatExcelBaoCao /       │
+  │ inHoacChiaSePdfBaoCao   │
+  └─────────────────────────┘
+
+3.2 Ranh giới trách nhiệm
+  - tongHop*: thuần tính toán, không I/O.
+  - BaoCaoHub: tải, state nhánh, điều hướng xuất.
+  - bao_cao_xuat_file: tuần tự hoá sheet → XLSX / HTML in.
+
+3.3 Phụ thuộc dữ liệu chéo
+  - M7 BC-CM-00: phụ thuộc phangHoaDanhSachLoiChiTiet (không chỉ fact_canh_bao).
+  - M5 fact_ho_so.tong_chi_phi_rui_ro: đồng bộ với ChiTietLoi.
+  - M8 chênh tổng chi: tái sử dụng hàm mức 6 để một nghĩa duy nhất.
+
+================================================================================
+4. THÀNH PHẦN GIAO DIỆN VÀ QUY TRÌNH XUẤT BÁO CÁO
+================================================================================
+
+4.1 Thành phần UI hiện có
+  - baocao_va_thongke.jsx → re-export BaoCaoHub (ổn định deep link / RBAC).
+  - BaoCaoHub.jsx: chọn nhánh QUAN_TRI | CHUYEN_MON | DOANH_THU_BHYT; tab M5/M6;
+    định nghĩa cột bảng theo từng dataset (gồm BC-DT-01 Top rule: ma_rule, ten_quy_tac, so_loi, Σ rủi ro);
+    nút xuất Excel / PDF / ZIP CSV / JSON snapshot; header/trình bày hub gọn theo design hiện tại.
+  - BangMoHinhMuc5.jsx: lưới cuộn ngang, font body tối thiểu theo chỉnh gần đây.
+  - BieuDoThanhNgang.jsx: thanh ngang Animated (RN) — vẫn dùng nơi phù hợp tương thích cũ.
+  - HeatmapCm00.jsx: ma trận khoa × nhóm vi phạm (CM-00), sự kiện onChonO kích hoạt drill.
+  - BieuDoGiftedBarNgang.jsx / BieuDoGiftedCotDoc.jsx: biểu đồ thanh ngang / cột dọc (react-native-gifted-charts,
+    cần expo-linear-gradient). M7/M8 dùng các component này cho nhiều widget.
+  - bao_cao_drill_chuan.js: chuanHoaMaKhoaBaoCao, khoaDrillKhop — đồng bộ mã khoa khi lọc drill.
+  - FlatList: danh sách dài (kể drill hồ sơ); không dùng @shopify/flash-list trên bundle web (tránh lỗi resolve).
+
+4.2 Quy trình xuất (chi tiết)
+  (1) Người dùng chọn nhánh và (nếu Quản trị) M5 hoặc M6.
+  (2) Hub gọi layCacBangDeXuat({ nhanh, quanTriThe, tai }) với tai.moHinh | muc6|7|8.
+  (3) Manifest thêm từng sheet: cột suy ra từ keys hàng đầu (hoặc cột cố định M5 — ví dụ FACT_CANH_BAO có ten_quy_tac).
+  (4) Sheet rỗng → một dòng placeholder.
+  (5) _META ghi tieu_de, nhanh, quan_tri_the, so_ho_so, thoi_diem_xuat (ISO).
+  (6) xuatExcelBaoCao: json_to_sheet theo label; tên sheet ≤31 ký tự, trùng tên → hậu tố.
+  (7) PDF: render HTML từ cùng sheets (expo-print).
+  (8) Tuỳ chọn Hub: xuatZipCsvBaoCao (ZIP nhiều CSV UTF-8), xuatJsonSnapshotBaoCao (snapshot JSON cho BI / meta).
+
+================================================================================
+5. ĐÁNH GIÁ THIẾT KẾ HIỆN TẠI VÀ ĐỀ XUẤT NÂNG CẤP UI/UX
+================================================================================
+
+5.1 Ma trận đối chiếu ngắn
+
+  Hạng mục                  | Hiện trạng (2.0.3)       | Đề xuất nâng cấp (SPEC tiếp theo)
+  --------------------------|--------------------------|----------------------------------
+  KPI tổng quan             | Có + theme_config WCAG  | KPI card đọc ngưỡng từ meta; voice-over
+  Biểu đồ động              | Gifted + heatmap         | Victory Skia; line/donut theo dataset_meta_viz
+  Drill-down                | CM-00 + drill_registry   | Handler generic theo registry; DT01→fact
+  Thời gian thực            | Snapshot + cache + poll  | SSE; background refresh
+  Giải thích số liệu        | ten_quy_tac + meta_viz   | narrative_summary (AI server)
+  Cá nhân hóa               | Chưa                     | Layout widget AsyncStorage
+  Liên thông                | Excel PDF CSV JSON       | FHIR R4; Parquet/BigQuery
+
+5.2 Drill-down
+  - Đã code (CM-00): Lớp 1 heatmap khoa×nhóm → setState ma_khoa / ma_nhom → biểu đồ thanh và ma trận đồng bộ;
+    danh sách FlatList MA_LK (fact_ho_so theo khoa) → điều hướng mở giám định.
+  - Đề xuất mở rộng: Lớp meta drill.khoa_loc_mac_dinh trên payload; lọc fact_canh_bao / ChiTietLoi theo KPI;
+    Lớp 3: màn hồ sơ chi tiết (luồng giám định hiện có) với ma_lk.
+
+5.3 Theo dõi “gần thời gian thực”
+  - Ngắn hạn: polling có backoff khi màn báo cáo đang foreground; hiển thị badge
+    “Dữ liệu: …” từ _META hoặc hien_thi_bao_cao.thoi_diem_du_lieu.
+  - Dài hạn: đăng ký sự kiện kho (nếu có) hoặc kênh push — ngoài phạm vi tài liệu này.
+
+================================================================================
+6. THƯ VIỆN BIỂU ĐỒ & TỐI ƯU LUỒNG TƯƠNG TÁC (REACT NATIVE / EXPO)
+================================================================================
+
+6.1 Lựa chọn gợi ý (theo độ ưu tiên kỹ thuật)
+
+  (A) victory-native (+ @shopify/react-native-skia, react-native-reanimated,
+      react-native-gesture-handler)
+      - Ưu: GPU Skia, tooltip/chartPress, hiệu năng tốt tập dữ liệu lớn.
+      - Nhược: cần Expo development build / EAS — không chạy đầy đủ trên Expo Go.
+      - Tài liệu: https://nearform.com/open-source/victory-native/docs/getting-started
+      - Repo: https://github.com/FormidableLabs/victory-native-xl
+
+  (B) react-native-gifted-charts (+ expo-linear-gradient) — ĐANG DÙNG trong BaoCaoHub cho bar/column.
+      - Ưu: cài đặt nhẹ, chạy Expo Go / web bundle hiện tại; gradient hỗ trợ style chart.
+      - Nhược: SVG/JS — hạn chế hơn khi N > vài nghìn điểm; theo dõi kích thước bundle.
+
+  (C) Web-only (nếu bundle web tách): @nivo/* hoặc Recharts trong màn web dashboard
+      — chỉ khi dự án chấp nhận song song code path Platform.OS === 'web'.
+
+6.2 Tối ưu luồng tương tác người dùng
+  - Giảm số lần taiNguonVaMoHinhMuc5: cache trong bao_cao_service (fingerprint nguồn);
+    boQuaCache=true để làm mới cứng.
+  - Virtualized list: FlatList cho danh sách dài (đồng nhất native/web; tránh FlashList trên web).
+  - Skeleton / ActivityIndicator trong lần tải đầu; debounce chuyển tab nhánh.
+  - Haptics nhẹ khi chuyển nhánh (đã có pattern) + tránh spam khi polling.
+
+6.3 Babel / native
+  - Reanimated: plugin phải là mục cuối trong babel.config.js khi dùng Victory Native.
+
+================================================================================
+7. LÀM GIÀU ĐỊNH DẠNG XUẤT BÁO CÁO & METADATA PHIÊN
+================================================================================
+
+7.1 Hiện trạng
+  - Excel đa sheet, PDF từ HTML, chia sẻ qua expo-sharing (nền tảng cho phép).
+
+7.2 Đề xuất mở rộng (theo lộ trình sản phẩm)
+  - Xuất thêm: CSV (UTF-8 BOM) từng sheet hoặc gói ZIP đa CSV cho pipeline BI.
+  - JSON snapshot: một file kèm workbook chứa hien_thi_bao_cao + sheets (cho web viewer).
+  - In báo cáo: header lặp theo trang, chân trang số trang + thoi_diem_xuat.
+
+7.3 Đồng bộ với đặc tả dữ liệu 2.0
+  - Trường visualization (màu, loại biểu đồ, tọa độ chuẩn hoá) mô tả tại
+    dac_ta_du_lieu_module_bao_cao.txt mục E — triển khai dần ở lớp service/UI.
+
+================================================================================
+8. MA TRẬN THÀNH PHẦN MÃ NGUỒN VÀ PHIÊN BẢN SPEC
+================================================================================
+
+8.1 File chính
+  ma_nguon/man_hinh/baocao_va_thongke.jsx
+  ma_nguon/man_hinh/bao_cao/BaoCaoHub.jsx
+  ma_nguon/man_hinh/bao_cao/BangMoHinhMuc5.jsx
+  ma_nguon/man_hinh/bao_cao/BieuDoThanhNgang.jsx
+  ma_nguon/man_hinh/bao_cao/HeatmapCm00.jsx
+  ma_nguon/man_hinh/bao_cao/BieuDoGiftedBarNgang.jsx
+  ma_nguon/man_hinh/bao_cao/BieuDoGiftedCotDoc.jsx
+  ma_nguon/dich_vu/bao_cao_service.jsx
+  ma_nguon/dich_vu/bao_cao_mo_hinh_muc5.js
+  ma_nguon/dich_vu/bao_cao_quan_tri_muc6.js
+  ma_nguon/dich_vu/bao_cao_chuyen_mon_muc7.js
+  ma_nguon/dich_vu/bao_cao_doanh_thu_muc8.js
+  ma_nguon/dich_vu/bao_cao_drill_chuan.js
+  ma_nguon/dich_vu/bao_cao_export_manifest.js
+  ma_nguon/dich_vu/bao_cao_xuat_file.jsx
+  ma_nguon/dich_vu/bao_cao_viz_meta.js          — SPEC-VIZ-2.0.3 (taoDrillRegistry, taoDatasetMetaViz, layMetaVizDataset)
+  ma_nguon/tien_ich/thong_ke_loi_dung_chung.jsx
+
+8.2 Phiên bản SPEC nội bộ
+  SPEC-BC-MUC5-V1, SPEC-BC-MUC6-V1, SPEC-BC-MUC7-V1.1, SPEC-BC-MUC8-V1
+  SPEC-VIZ-2.0.3 (hien_thi_bao_cao); PHEN_BAN_VIZ_LEGACY = SPEC-VIZ-1 (tham chiếu audit)
+  CDSS-BHYT-SNAPSHOT-3 (xuất JSON meta)
+
+================================================================================
+9. PHỤ LỤC — URL THAM KHẢO XU HƯỚNG
+================================================================================
+  https://fuselabcreative.com/healthcare-ux-design-best-practices-guide/
+  https://magicflux.co/blog/ux-trends-digital-healthcare-2026
+  https://www.eleken.co/blog-posts/user-interface-design-for-healthcare-applications
+  https://interface-design.co.uk/blog/medical-data-dashboard-ux-benchmarking-2026
+  https://fuselabcreative.com/top-data-visualization-trends-2026/
+  https://reactnativerelay.com/article/react-native-charts-victory-native-interactive-data-visualizations-expo
+  https://github.com/FormidableLabs/victory-native-xl
+
+================================================================================
+10. CHIẾN LƯỢC THẾ HỆ MỚI (2026) — TỔNG HỢP ĐIỀU HÀNH
+================================================================================
+  Module báo cáo CDSS-BHYT định vị là lớp phân tích chủ động trên snapshot kho: hỗ trợ quản trị lâm sàng
+  và tài chính y tế, không thay thế hệ thống gốc ghi nhận. Trục giá trị: giảm độ trễ ra quyết định,
+  Pareto rủi ro (DT-01), chất lượng theo nhóm vi phạm (CM-00), vận hành (QT). Trực quan hoá: progressive
+  disclosure; metadata (SPEC-VIZ-2.0.3) tách khỏi grain nghiệp vụ để BI/AI có thể tiêu thụ cùng payload.
+  Lộ trình: áp drill_registry trong UI → Victory Native XL → FHIR adapter → dịch vụ gợi ý (Agentic) tùy chính sách BV.
+
+================================================================================
+HẾT TÀI LIỆU — ĐẶC TẢ KỸ THUẬT 2.0.3
+================================================================================
