@@ -92,6 +92,11 @@ await admin.auth().setCustomUserClaims(uid, {
 });
 ```
 
+## Huấn luyện SFT (trợ lý AI, ngoài app)
+
+- Sinh JSONL từ CSV quy tắc chống chỉ định: `npm run train:build-sft-dataset` → `training_data/generated/sft_chong_chi_dinh.jsonl`.
+- Quy trình đầy đủ (Unsloth, GPU, triển khai): [`tai_lieu/Huong_dan_huan_luyen_SFT_CDSS_BHYT.md`](tai_lieu/Huong_dan_huan_luyen_SFT_CDSS_BHYT.md).
+
 ## Python service (hybrid mode)
 
 The app can now run in a hybrid model:

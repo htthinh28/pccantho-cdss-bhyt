@@ -18,6 +18,7 @@
     "py:install": "python -m pip install -r python_service/requirements.txt",
     "py:install:ai": "python -m pip install -r python_service/requirements-ai.txt",
     "py:start": "python -m uvicorn python_service.app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "train:build-sft-dataset": "python scripts/build_sft_dataset_cdss.py",
     "qa:python-service": "node ./scripts/smoke_test_python_service.js",
     "qa:his-gateway": "node ./scripts/smoke_test_his_gateway.mjs",
     "lint": "expo lint && npm run -s encoding:check && npm run -s font:check",

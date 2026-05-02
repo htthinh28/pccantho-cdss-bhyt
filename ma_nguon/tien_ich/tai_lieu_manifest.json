@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-01T09:46:02.752Z",
+  "generatedAt": "2026-05-02T11:35:25.700Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -708,6 +708,15 @@
         "ai_huan_luyen",
         "icd_chuyen_mon",
         "kiem_thu_quy_tac"
+      ]
+    },
+    {
+      "id": "md:Huong_dan_huan_luyen_SFT_CDSS_BHYT.md",
+      "relPath": "Huong_dan_huan_luyen_SFT_CDSS_BHYT.html",
+      "title": "Hướng dẫn huấn luyện SFT cho trợ lý CDSS BHYT",
+      "nguon": "markdown",
+      "tags": [
+        "ai_huan_luyen"
       ]
     },
     {

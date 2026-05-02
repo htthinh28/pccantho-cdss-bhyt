@@ -98,3 +98,6 @@ temp_*_extract*.txt
 *.rar
 *.dmg
 *.AppImage
+
+# Dataset SFT sinh từ script (có thể lớn / nhạy cảm nội bộ)
+training_data/generated/
