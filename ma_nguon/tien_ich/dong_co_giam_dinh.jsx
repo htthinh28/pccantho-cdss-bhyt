@@ -1979,6 +1979,49 @@ const tachMaIcdDaChuanHoaTuXml1 = (xml1) => {
 };
 
 /**
+ * THUOC_540: Hydrochlorothiazide — chống chỉ định tương đối/tuyệt đối khi ICD chính/kèm (tachMaIcd) thuộc nhóm:
+ * gút (M10, M1A), tăng acid uric máu (E79.0), vô niệu/thiểu niệu (R34), Addison (E27.4), tăng calci máu (E83.52),
+ * suy thận nặng (N18.4–N18.6), suy gan nặng (K72.*).
+ */
+const laMaIcdChongChiDinhHydrochlorothiazide = (maNorm) => {
+    if (!maNorm) return false;
+    if (maNorm.startsWith('M10') || maNorm.startsWith('M1A')) return true;
+    if (maNorm.startsWith('E790')) return true;
+    if (maNorm.startsWith('R34')) return true;
+    if (maNorm.startsWith('E274')) return true;
+    if (maNorm.startsWith('E8352')) return true;
+    if (maNorm.startsWith('N184') || maNorm.startsWith('N185') || maNorm.startsWith('N186')) return true;
+    if (maNorm.startsWith('K72')) return true;
+    return false;
+};
+
+const coHoSoCoIcdChongChiDinhHydrochlorothiazide = (xml1) => tachMaIcdDaChuanHoaTuXml1(xml1).some(laMaIcdChongChiDinhHydrochlorothiazide);
+
+const ghepVanBanNhanDangHctTuXml2 = (cur = {}, mapThuoc) => {
+    const maT = UPPER(String(cur?.MA_THUOC || '').trim());
+    const dmRow = mapThuoc instanceof Map ? mapThuoc.get(maT) : null;
+    const tuDm = dmRow ? String(layGiaTriDanhMuc(dmRow, ['TEN_THUOC', 'TEN_HOAT_CHAT', 'HOAT_CHAT', 'TEN']) || '').trim() : '';
+    return [
+        cur?.TEN_THUOC,
+        cur?.TEN_HOAT_CHAT,
+        cur?.HAM_LUONG,
+        cur?.MA_HOAT_CHAT,
+        tuDm,
+    ].filter(Boolean).join(' ');
+};
+
+const laVanBanCoHydrochlorothiazide = (blob) => {
+    const u = normalizeTextNoAccent(String(blob || '')).toUpperCase()
+        .replace(/\+/g, ' ')
+        .replace(/[^A-Z0-9 ]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (/HYDROCHLOROTHIAZIDE|HYDROCHLOROTHIAZID|HYDROCLOROTIAZID|HYDROCHLORTHIAZIDE/.test(u)) return true;
+    if (/\bHCTZ\b/.test(u) || /\bHCT\b/.test(u)) return true;
+    return false;
+};
+
+/**
  * THUOC_345 Simethicon (40.750): chỉ định theo HC — giảm đầy hơi/khó chịu do thừa hơi (R14),
  * khó tiêu chức năng (K30), trào ngược (K21), rối loạn dạ dày–tá tràng (K31.8), triệu chứng liên quan (R10.1, R12),
  * khám đặc biệt (Z01.8), hoặc bối cảnh nội soi/chụp đường tiêu hóa (phá bọt).
@@ -4618,6 +4661,7 @@ const SYS_KEYWORDS_RULE_DONG = Object.freeze([
     'THUOC_41_VI_PHAM_CHI_DINH',
     'THUOC_267_VI_PHAM_CHI_DINH',
     'THUOC_451_VI_PHAM_TRAN_BH_TREN_DON_VI',
+    'ENGINE_RULE_THUOC_540',
     'THUOC_533_VI_PHAM_WAMLOX',
     'THUOC_398_VI_PHAM_DOMPERIDON',
     'CHUYEN_DE_166_VI_PHAM_TT22_PROXY',
@@ -4701,6 +4745,21 @@ const layMocThoiGianLienHoSo = (row = {}, xml1 = {}) => {
     return normalizeDateKey(moc, '0').slice(0, 12);
 };
 
+/**
+ * NS_10: không áp dụng “BS phân thân” cho dịch vụ nhóm xét nghiệm / nhân viên chuyên môn CLS xét nghiệm.
+ * QĐ 130 — MA_NHOM 2: nhóm chi phí xét nghiệm; kèm heuristic tên dịch vụ khi MA_NHOM sai/thiếu.
+ */
+const laDongXml3LoaiTruNS10ChuyenMonXetNghiem = (row = {}) => {
+    const nhomRaw = String(row?.MA_NHOM ?? '').replace(/\s/g, '');
+    const nhom = nhomRaw.replace(/^0+/, '') || nhomRaw;
+    if (nhom === '2') return true;
+    const ten = String(row?.TEN_DICH_VU || row?.TEN_DVKT || '');
+    if (!ten) return false;
+    if (/xét\s*nghiệm/i.test(ten)) return true;
+    const tenU = UPPER(ten);
+    return tenU.includes('XÉT NGHIỆM') || tenU.includes('XET NGHIEM');
+};
+
 /** Chuẩn hoá mốc datetime XML3 (số) về 12 ký tự đầu — đồng bộ với logic PTTT. */
 const chuanHoaMocDatetime12Xml3 = (v) => String(v || '').replace(/\D/g, '').padEnd(12, '0').slice(0, 12);
 
@@ -4722,7 +4781,22 @@ const layMocPhutThucHienXml3 = (row) => {
     return raw.length >= 12 ? raw.slice(0, 12) : '';
 };
 
+/** Công khám Khám Tai Mũi Họng (TT12) — đối chiếu CLN-DVKT-03 với nhóm nội soi TMH. */
+const MA_DVKT_CONG_KHAM_TMH_1528 = '15.28';
+const TAP_MA_DVKT_NOI_SOI_TMH = new Set([
+    '03.1003.2048',
+    '03.1002.2048',
+    '03.1001.2048',
+    '20.0013.2048',
+]);
+
+const laMaDvCongKhamTmh1528 = (maDv) => UPPER(String(maDv || '').replace(/\s/g, '')) === MA_DVKT_CONG_KHAM_TMH_1528;
+const laMaDvNoiSoiTmh = (maDv) => TAP_MA_DVKT_NOI_SOI_TMH.has(UPPER(String(maDv || '').replace(/\s/g, '')));
+
 /**
+ * CLN-DVKT-03: công khám 15.28 (Khám Tai Mũi Họng) không được ghi nhận cùng mốc phút thực hiện (NGAY_TH_YL, fallback NGAY_YL ≥12 số)
+ * với nội soi họng/mũi/tai hoặc nội soi TMH — cảnh báo trên dòng nội soi.
+ *
  * CLN-DVKT-01: cùng mã hành nghề thực hiện, cùng phút NGAY_TH_YL/NGAY_YL (≥12 số), vừa công khám (DM_KHAM) vừa DVKT khác.
  * CLN-DVKT-02: DVKT không thuộc DM_KHAM có cả NGAY_KQ và NGAY_TH_YL trùng nhau (sau chuẩn hoá 12 ký tự).
  */
@@ -4801,6 +4875,80 @@ const giamDinhNguoiThucHienKhamVaDvktXml3 = (hoSo, danhMuc) => {
                 muc_do: 'Warning',
                 ma_luat: 'CLN-DVKT-01',
                 ten_quy_tac: 'Trùng thời điểm công khám và DVKT (NGUOI_THUC_HIEN)',
+                dieu_kien: 'BUILT-IN',
+                co_so_phap_ly: CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
+            });
+        }
+    }
+    return ds;
+};
+
+/**
+ * CLN-DVKT-03 — TMH: trùng mốc phút thực hiện giữa 15.28 và một trong các mã nội soi TMH (cùng XML3 / lượt khám).
+ */
+const giamDinhCongKhamTmhVaNoiSoiTrungMocXml3 = (hoSo) => {
+    const ds = [];
+    const rawXml3 = hoSo.XML3 || hoSo.xml3 || [];
+    if (!Array.isArray(rawXml3) || rawXml3.length < 2) return ds;
+
+    const prepared = rawXml3.map((row) => prepareData(row));
+    const seenCap = new Set();
+
+    for (let i = 0; i < prepared.length; i += 1) {
+        if (laBHYTKhôngThanhToan(rawXml3[i])) continue;
+        const r = prepared[i];
+        const maI = UPPER(String(r.MA_DV || r.MA_DICH_VU || '').trim());
+        if (!maI) continue;
+        if (!laMaDvCongKhamTmh1528(maI) && !laMaDvNoiSoiTmh(maI)) continue;
+        if (!coMocThucHienPhutXml3(r)) continue;
+        const timeI = layMocPhutThucHienXml3(r);
+        if (!timeI) continue;
+
+        const laKhamTmhI = laMaDvCongKhamTmh1528(maI);
+        const laNoiSoiI = laMaDvNoiSoiTmh(maI);
+
+        for (let j = i + 1; j < prepared.length; j += 1) {
+            if (laBHYTKhôngThanhToan(rawXml3[j])) continue;
+            const r2 = prepared[j];
+            const maJ = UPPER(String(r2.MA_DV || r2.MA_DICH_VU || '').trim());
+            if (!maJ) continue;
+            if (!laMaDvCongKhamTmh1528(maJ) && !laMaDvNoiSoiTmh(maJ)) continue;
+            if (!coMocThucHienPhutXml3(r2)) continue;
+            const timeJ = layMocPhutThucHienXml3(r2);
+            if (timeJ !== timeI) continue;
+
+            const laKhamTmhJ = laMaDvCongKhamTmh1528(maJ);
+            const laNoiSoiJ = laMaDvNoiSoiTmh(maJ);
+
+            let idxKham = -1;
+            let idxNoiSoi = -1;
+            if (laKhamTmhI && laNoiSoiJ) {
+                idxKham = i;
+                idxNoiSoi = j;
+            } else if (laNoiSoiI && laKhamTmhJ) {
+                idxNoiSoi = i;
+                idxKham = j;
+            } else {
+                continue;
+            }
+
+            const cap = `${idxKham}|${idxNoiSoi}`;
+            if (seenCap.has(cap)) continue;
+            seenCap.add(cap);
+
+            const rowNs = prepared[idxNoiSoi];
+            const maNs = UPPER(rowNs.MA_DV || rowNs.MA_DICH_VU || '');
+            const tenNs = String(rowNs.TEN_DICH_VU || rowNs.TEN_DVKT || '').trim();
+            const goiTen = tenNs ? `${maNs} (${tenNs})` : maNs;
+
+            ds.push({
+                phan_he: 'XML3',
+                index: idxNoiSoi,
+                truong_loi: 'NGAY_TH_YL',
+                canh_bao: `Nội soi TMH [${goiTen}] trùng mốc phút thực hiện y lệnh (${timeI}, NGAY_TH_YL/NGAY_YL) với công khám Khám Tai Mũi Họng [${MA_DVKT_CONG_KHAM_TMH_1528}] (STT ${idxKham + 1}) — nguyên tắc không thanh toán đồng thời trong cùng lượt khám.`,
+                muc_do: 'Warning',
+                ma_luat: 'CLN-DVKT-03',
+                ten_quy_tac: 'Công khám TMH (15.28) trùng mốc với nội soi',
                 dieu_kien: 'BUILT-IN',
                 co_so_phap_ly: CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
             });
@@ -5096,6 +5244,7 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
             if (!currentEntry) return [];
             const violations = [];
             currentEntry.xml3Prepared.forEach((row, rowIndex) => {
+                if (laDongXml3LoaiTruNS10ChuyenMonXetNghiem(row)) return;
                 const doctorKey = layMaBacSiLienHoSo(row, currentEntry.xml1);
                 const timeKey = layMocThoiGianLienHoSo(row, currentEntry.xml1);
                 if (!doctorKey || !timeKey) return;
@@ -5213,6 +5362,29 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
                 const cur = preparedRows[index] || enrichXML2Data(row);
                 if (String(cur?.MA_THUOC || '').trim() !== '40.1055') return;
                 if (coChiDinhHopLeMagnesiB6374(xml1)) return;
+                violations.push(taoCanhBaoViPhamRuleDong(ruleMeta, { phan_he: 'XML2', index, truong_loi: 'MA_THUOC' }));
+            });
+            return violations;
+        };
+    }
+
+    /**
+     * THUOC_540: Hydrochlorothiazide (mã/tên/hoạt chất HCT, HCTZ) — chống chỉ định khi ICD chính/kèm thuộc nhóm gút, tăng acid uric,
+     * vô niệu, Addison, tăng calci máu, suy gan/thận nặng.
+     */
+    if (maLuat === 'THUOC_540') {
+        return (ruleMeta, contextRuleDong, danhMucHeThong) => {
+            const xml1 = contextRuleDong?.baseCtx?.XML1 || {};
+            const rows = contextRuleDong?.rowsByTable?.XML2 || [];
+            const preparedRows = contextRuleDong?.preparedRowsByTable?.XML2 || [];
+            const mapThuoc = danhMucHeThong?.MAP_THUOC_BV;
+            const violations = [];
+            rows.forEach((row, index) => {
+                if (!row || laBHYTKhôngThanhToan(row)) return;
+                const cur = preparedRows[index] || enrichXML2Data(row);
+                const blob = ghepVanBanNhanDangHctTuXml2(cur, mapThuoc);
+                if (!laVanBanCoHydrochlorothiazide(blob)) return;
+                if (!coHoSoCoIcdChongChiDinhHydrochlorothiazide(xml1)) return;
                 violations.push(taoCanhBaoViPhamRuleDong(ruleMeta, { phan_he: 'XML2', index, truong_loi: 'MA_THUOC' }));
             });
             return violations;
@@ -6331,6 +6503,7 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     allLỗi = allLỗi.concat(giamDinhThuoc(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhCDHA(hoSo));
     allLỗi = allLỗi.concat(giamDinhNguoiThucHienKhamVaDvktXml3(hoSo, danhMuc));
+    allLỗi = allLỗi.concat(giamDinhCongKhamTmhVaNoiSoiTrungMocXml3(hoSo));
     allLỗi = allLỗi.concat(giamDinhGiuong(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhPTTT(hoSo));
     allLỗi = allLỗi.concat(giamDinhChuyenTuyen(hoSo));

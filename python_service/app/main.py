@@ -102,6 +102,21 @@ def normalize_time_key(value: Any) -> str:
     return raw[:12]
 
 
+def la_xml3_loai_tru_ns10_xet_nghiem(row: Dict[str, Any]) -> bool:
+    """NS_10: loại trừ DVKT nhóm xét nghiệm (MA_NHOM=2 theo QĐ 130) + heuristic tên dịch vụ."""
+    if not isinstance(row, dict):
+        return False
+    nhom = "".join(ch for ch in str(row.get("MA_NHOM") or "") if not ch.isspace())
+    nhom = nhom.lstrip("0") or nhom
+    if nhom == "2":
+        return True
+    ten = str(row.get("TEN_DICH_VU") or row.get("TEN_DVKT") or "")
+    if re.search(r"xét\s*nghiệm", ten, re.IGNORECASE):
+        return True
+    ten_u = normalize_text(ten)
+    return "XET NGHIEM" in ten_u or "XÉT NGHIỆM" in ten_u
+
+
 def day_diff(from_day: str, to_day: str) -> int:
     try:
         start = datetime.strptime(from_day[:8], "%Y%m%d")
@@ -801,12 +816,14 @@ def build_python_claim_results(claims: List[Dict[str, Any]], options: Dict[str, 
             if not doctor_key or not time_key:
                 continue
             if doctor_time_counter.get((doctor_key, time_key), 0) > 1:
+                if la_xml3_loai_tru_ns10_xet_nghiem(row):
+                    continue
                 them_canh_bao_khong_trung(
                     ket_qua_giam_dinh,
                     tao_canh_bao(
                         ma_luat="NS_10",
-                        ten_quy_tac='BS "Phân thân" - Trùng thời gian thực hiện DVKT',
-                        canh_bao='⛔ [XUẤT TOÁN]: BS ({NGUOI_THUC_HIEN}) thực hiện ≥2 DVKT/PTTT cùng thời điểm (NGAY_YL) trên ≥2 bệnh nhân khác nhau.',
+                        ten_quy_tac='BS "Phân thân" - Trùng thời gian thực hiện DVKT (trừ CLS xét nghiệm)',
+                        canh_bao='⛔ [XUẤT TOÁN]: BS ({NGUOI_THUC_HIEN}) thực hiện ≥2 DVKT/PTTT cùng thời điểm (NGAY_YL) trên ≥2 bệnh nhân khác nhau. Không áp dụng cho dòng nhóm xét nghiệm (MA_NHOM=2 / tên DVKT xét nghiệm).',
                         noi_dung=(
                             f"Nhân sự {doctor_key} có thời điểm {time_key} xuất hiện "
                             f"{doctor_time_counter[(doctor_key, time_key)]} lần giữa các hồ sơ trong batch."
@@ -814,7 +831,7 @@ def build_python_claim_results(claims: List[Dict[str, Any]], options: Dict[str, 
                         phan_he="XML3",
                         truong_loi="NGUOI_THUC_HIEN",
                         index=row_index,
-                        dieu_kien="XML3.NGUOI_THUC_HIEN = SAME_BS AND XML3.NGAY_YL OVERLAP ACROSS DIFFERENT XML1.MA_LK",
+                        dieu_kien="XML3.NGUOI_THUC_HIEN = SAME_BS AND XML3.NGAY_YL OVERLAP ACROSS DIFFERENT XML1.MA_LK AND NOT(XML3 MA_NHOM==2 OR TEN_DICH_VU xét nghiệm)",
                     ),
                 )
 

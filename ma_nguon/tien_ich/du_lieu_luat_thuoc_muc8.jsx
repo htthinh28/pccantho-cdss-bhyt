@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_THUOC (9).xlsx */
-export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-04-23_muc8_doc_xml_130_3176_4210_7464';
+export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-05-01_THUOC540_HCT_chong_chi_dinh';
 export const COT_SEED_LUAT_THUOC_MUC8 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","GHI_CHU","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
   {
@@ -5375,5 +5375,16 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "CANH_BAO": "⛔ [XUẤT TOÁN]: Sosallergy/Setbozi ([40.82]) chỉ TT khi chỉ định đúng nhóm bệnh theo TT. Mã ICD được TT: J06; J06.8; J06.9; J39; J39.3; J39.8; J39.9; J68.2; L20.0; L28.2; L29; L29.0; L29.1; L29.2; L29.3; L29.8; L29.9. Tương ứng (rút gọn): nhiễm/ bệnh lý đường hô hấp trên (J06, J39…); viêm HH trên do hóa chất khí (J68.2); Besnier L20.0; sẩn ngứa L28.2; các thể ngứa L29.x. Chi tiết thuốc: [40.82] Setbozi.",
     "GHI_CHU": "Cập nhật 19/04/2026: Thay chỉ định cũ J30/L50/H10.1 bằng danh mục ICD TT (J06/J39/J68.2/L20/L28/L29…). Regex J06/J39/L29 có nhánh ngăn nhầm J06.x trái TT (vd J06.0); bổ sung khớp CHẨN ĐOÁN RV theo cụm bệnh học đối chiếu user.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
+  },
+  {
+    "id": "SEED_THUOC_540",
+    "TRANG_THAI": "ON",
+    "MA_LUAT": "THUOC_540",
+    "MUC_DO": "Critical",
+    "TEN_QUY_TAC": "[Hydrochlorothiazide / HCT] Chống chỉ định (ICD gút, acid uric, vô niệu, Addison, tăng calci, suy gan/thận nặng)",
+    "DIEU_KIEN": "NOT IS_EMPTY(XML2.MA_THUOC) AND ENGINE_RULE_THUOC_540",
+    "CANH_BAO": "⛔ [NGUY HIỂM / CHỐNG CHỈ ĐỊNH]: Thuốc có Hydrochlorothiazide (HCT/HCTZ, kể cả phối hợp hạ áp) — bệnh nhân có ICD-10 chính/kèm: gút (M10, M1A), tăng acid uric máu (E79.0), vô niệu/thiểu niệu (R34), suy tuyến thượng thận/Addison (E27.4), tăng calci máu (E83.52), suy thận giai đoạn cuối/nặng (N18.4–N18.6), suy gan nặng (K72.*). Kê đơn không phù hợp chống chỉ định — đối chiếu SmPC và hồ sơ lâm sàng.",
+    "GHI_CHU": "Engine: dong_co_giam_dinh — nhận diện tên/hoạt chất (XML2 + DM thuốc BV); ICD qua tachMaIcd (MA_BENH_CHINH, MA_BENH_KT, MA_BENHKEM).",
+    "NGUON_DU_LIEU": "engine_THUOC_540_HCT_ICD"
   }
 ];
