@@ -1,5 +1,5 @@
 {
-  "version": "2026-05-07",
+  "version": "2026-05-25",
   "generated_note": "Tự động sinh — phục vụ lộ trình triển khai; điều chỉnh từ khóa rủi ro / XML trong script nếu cần.",
   "source_file": "ma_nguon\\tien_ich\\luat_giam_dinh_chuyen_de_hardcoded.jsx",
   "data_off_reference": "ma_nguon\\tien_ich\\data_quy_tac_giu_off_mo_rong.json",
