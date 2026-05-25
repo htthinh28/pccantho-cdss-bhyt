@@ -15,6 +15,8 @@
     "preweb": "npm run chuyen-de:prepare-build",
     "web": "expo start --web --port 8081",
     "web:serve:lan": "node ./scripts/serve_web_dist.mjs",
+    "vercel:build": "npm run desktop:export:light",
+    "start:lan": "node server.js",
     "py:install": "python -m pip install -r python_service/requirements.txt",
     "py:install:ai": "python -m pip install -r python_service/requirements-ai.txt",
     "py:start": "python -m uvicorn python_service.app.main:app --host 0.0.0.0 --port 8000 --reload",
