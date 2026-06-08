@@ -70,6 +70,7 @@ import NhapFileXML, {
   taiNguonPhuThuocNhapXml,
   xuLyMotFileXmlChoBanGiamDinh,
 } from '../tien_ich/nhap_file_xml';
+import { BREAKPOINTS, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 
 const LOGO_PC = 'https://i.ibb.co/nNr9SQYr/logo-pc.png';
 
@@ -359,6 +360,8 @@ const layKetQuaGiamDinhCoSan = (hoSo = {}) => {
 };
 
 const ManHinhTongQuan = ({ navigation }) => {
+  const { dungSidebarTrai, width: beRongCuaSo } = useLayoutMode();
+  const rongSidebarDash = beRongCuaSo >= BREAKPOINTS.xl ? 300 : 260;
   const [dangTai, setDangTai] = useState(false);
   const [thongBaoDangTai, setThongBaoDangTai] = useState('Đang kiểm tra hồ sơ...');
   const [thongKe, setThongKe] = useState({ tong: 0, sach: 0, loi: 0, giamDinhLai: 0, danhMuc: [] });
@@ -1244,8 +1247,13 @@ ${phanDongKhoi.join('\n')}
         </View>
       </View>
 
-      <View style={styles.dashboard_layout}>
-        <View style={styles.sidebar_dashboard}>
+      <View style={[styles.dashboard_layout, dungSidebarTrai ? styles.dashboard_layout_row : styles.dashboard_layout_col]}>
+        <View style={[
+          styles.sidebar_dashboard,
+          dungSidebarTrai
+            ? { width: rongSidebarDash }
+            : styles.sidebar_dashboard_compact,
+        ]}>
           <View style={styles.sidebar_header}>
             <View style={[styles.sidebar_header_accent, { backgroundColor: CD.brand.mauChinh }]} />
             <View style={styles.sidebar_header_inner}>
@@ -2180,14 +2188,16 @@ const styles = StyleSheet.create({
   // ── DASHBOARD LAYOUT ──
   dashboard_layout: {
     flex: 1,
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     gap: 12,
     padding: 12,
   },
+  dashboard_layout_row: {
+    flexDirection: 'row',
+  },
+  dashboard_layout_col: {
+    flexDirection: 'column',
+  },
   sidebar_dashboard: {
-    ...(Platform.OS === 'web'
-      ? { width: 300 }
-      : { width: '100%', maxHeight: 300 }),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -2207,6 +2217,10 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
     }),
+  },
+  sidebar_dashboard_compact: {
+    width: '100%',
+    maxHeight: 360,
   },
   sidebar_header: {
     flexDirection: 'row',

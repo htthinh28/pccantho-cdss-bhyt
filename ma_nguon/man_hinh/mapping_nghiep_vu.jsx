@@ -16,7 +16,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
@@ -53,6 +52,7 @@ import {
     layCauHinhLoaiMapping,
 } from '../tien_ich/catalog_mapping_types';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { rongSidebarTheoMan, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import { kiemTraKetNoiFirebaseThucTe } from '../tien_ich/firebase_cloud_bhyt';
 import { taoBanSaoDuLieuHeThong } from '../tien_ich/sao_luu_du_lieu_he_thong';
@@ -67,7 +67,7 @@ const BO_LOC_TRANG_THAI = [
 const ID_INPUT_IMPORT_MAPPING = 'import-excel-catalog-mapping-input';
 
 const MappingNghiepVu = ({ navigation }) => {
-  const { width: winW } = useWindowDimensions();
+  const { dungBoCucDoc, width: winW } = useLayoutMode();
   const [hang, setHang] = useState([]);
   const [bangTheoRef, setBangTheoRef] = useState({});
   const [taiXong, setTaiXong] = useState(false);
@@ -175,9 +175,9 @@ const MappingNghiepVu = ({ navigation }) => {
 
   /** Sidebar trái (list menu lọc + thêm); rộng hơn một chút để đọc nhãn loại. */
   const rongSidebarMapping = useMemo(() => {
-    const w = winW || 800;
-    return Math.min(268, Math.max(148, Math.round(w * 0.22)));
-  }, [winW]);
+    if (dungBoCucDoc) return undefined;
+    return rongSidebarTheoMan(winW, { min: 148, max: 268, ratio: 0.22 });
+  }, [dungBoCucDoc, winW]);
 
   const demSoDongTheoLoai = useMemo(() => {
     const m = {};
@@ -377,7 +377,7 @@ const MappingNghiepVu = ({ navigation }) => {
   };
 
   /** Độ rộng tối thiểu bảng theo vùng phải (sau sidebar). */
-  const rongBangToiThieu = Math.max(960, (winW || 800) - rongSidebarMapping - 52);
+  const rongBangToiThieu = Math.max(960, (winW || 800) - (rongSidebarMapping ?? 0) - (dungBoCucDoc ? 24 : 52));
 
   const xuLyNhapMappingTuJson = useCallback(
     async (jsonRows) => {
@@ -641,8 +641,8 @@ const MappingNghiepVu = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.khung_chinh_mapping}>
-        <View style={[styles.sidebar_trai, { width: rongSidebarMapping }]}>
+      <View style={[styles.khung_chinh_mapping, dungBoCucDoc && styles.khung_chinh_mapping_doc]}>
+        <View style={[styles.sidebar_trai, dungBoCucDoc ? styles.sidebar_trai_doc : { width: rongSidebarMapping }]}>
           <ScrollView
             style={styles.sidebar_scroll}
             contentContainerStyle={styles.sidebar_scroll_content}
@@ -926,6 +926,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     minWidth: 0,
   },
+  khung_chinh_mapping_doc: {
+    flexDirection: 'column',
+  },
   sidebar_trai: {
     alignSelf: 'stretch',
     flexDirection: 'column',
@@ -937,6 +940,13 @@ const styles = StyleSheet.create({
     borderRightColor: CD.border.glass_md,
     backgroundColor: 'rgba(0,0,0,0.24)',
     ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  sidebar_trai_doc: {
+    width: '100%',
+    maxHeight: 240,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass_md,
   },
   chu_sidebar_tieu_de: {
     fontSize: 11,

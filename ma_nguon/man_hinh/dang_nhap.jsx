@@ -14,8 +14,9 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
+import { BREAKPOINTS, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -210,14 +211,16 @@ const ManHinhDangNhap = ({ navigation }) => {
     setDangXuLy(false);
   };
 
-  const isWeb = Platform.OS === 'web';
+  const { width: beRong } = useLayoutMode();
+  const dungBoCucHaiCot = beRong >= BREAKPOINTS.sm;
+  const rongFormPanel = dungBoCucHaiCot ? Math.min(520, Math.max(400, Math.round(beRong * 0.42))) : '100%';
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={isWeb ? styles.layout_web : styles.layout_mobile}>
+      <View style={dungBoCucHaiCot ? styles.layout_web : styles.layout_mobile}>
 
-        {/* ===== PANEL TRÁI: BRANDING (chỉ web) ===== */}
-        {isWeb && (
+        {/* ===== PANEL TRÁI: BRANDING (tablet trở lên) ===== */}
+        {dungBoCucHaiCot && (
           <View style={styles.brand_panel}>
             {/* Vòng trang trí nền */}
             <View style={styles.deco_circle_1} />
@@ -260,13 +263,13 @@ const ManHinhDangNhap = ({ navigation }) => {
         {/* ===== PANEL PHẢI: FORM ĐĂNG NHẬP ===== */}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.form_panel}
+          style={[styles.form_panel, { width: rongFormPanel }]}
         >
           <ScrollView contentContainerStyle={styles.form_scroll} showsVerticalScrollIndicator={false}>
             <View style={styles.form_card}>
 
               {/* Header form (mobile) */}
-              {!isWeb && (
+              {!dungBoCucHaiCot && (
                 <View style={styles.mobile_brand}>
                   <View style={styles.brand_icon_ring_sm}>
                     <Text style={{ fontSize: 32 }}>🏥</Text>
@@ -276,7 +279,7 @@ const ManHinhDangNhap = ({ navigation }) => {
                 </View>
               )}
 
-              <Text style={styles.form_title}>{isWeb ? 'Đăng nhập hệ thống' : 'Xác thực tài khoản'}</Text>
+              <Text style={styles.form_title}>{dungBoCucHaiCot ? 'Đăng nhập hệ thống' : 'Xác thực tài khoản'}</Text>
               <Text style={styles.form_sub}>Nhập thông tin xác thực để tiếp tục</Text>
 
               {/* Input: Tài khoản */}
@@ -433,7 +436,6 @@ const styles = StyleSheet.create({
 
   // ---- FORM PANEL (phải) ----
   form_panel: {
-    width: Platform.OS === 'web' ? 520 : '100%',
     backgroundColor: CD.bg.glass_card,
     justifyContent: 'center',
     ...Platform.select({ web: { backdropFilter: CD.web.blur_header, WebkitBackdropFilter: CD.web.blur_header } }),

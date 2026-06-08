@@ -3,7 +3,7 @@
     "name": "CDSS BHYT Phuong Chau",
     "slug": "ung_dung_cdss_bhyt",
     "version": "1.2.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./tai_nguyen/icon.png",
     "userInterfaceStyle": "light",
     "ios": {

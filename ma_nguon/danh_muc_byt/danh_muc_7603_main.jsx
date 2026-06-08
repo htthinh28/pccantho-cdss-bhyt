@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import * as XLSX from 'xlsx';
+import { BREAKPOINTS } from '../tien_ich/diem_anh_man_hinh';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import {
@@ -46,7 +47,7 @@ const MODULES_CONFIG = [
 ];
 
 /** ≥ breakpoint này: sidebar trái; nhỏ hơn: thanh phụ lục ngang (cuộn) để không chèn bảng. */
-const RONG_SIDEBAR_BYT = 860;
+const RONG_SIDEBAR_BYT = BREAKPOINTS.md;
 
 const DanhMucBYTMain = ({ navigation }) => {
   const { width: beRongCuaSo } = useWindowDimensions();

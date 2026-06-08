@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CD } from '../tien_ich/chu_de_giao_dien';
+import { BREAKPOINTS } from '../tien_ich/diem_anh_man_hinh';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import taiLieuManifest from '../tien_ich/tai_lieu_manifest.json';
 import taiLieuTagCatalog from '../tien_ich/tai_lieu_tag_catalog.json';
@@ -21,7 +22,7 @@ import { layGocUrlTaiLieu, taoUrlMoTaiLieu } from '../tien_ich/tai_lieu_url';
 import { dieuHuongMoTabMoi } from '../tien_ich/dieu_huong_mo_tab_moi';
 import ThuVienPanelTraCuuQuyTac from './thu_vien_panel_tra_cuu_quy_tac';
 
-const RONG_BREAKPOINT_HAI_COT = 860;
+const RONG_BREAKPOINT_HAI_COT = BREAKPOINTS.md;
 const RONG_SIDEBAR_TOC = 300;
 
 const moLienKet = async (url) => {

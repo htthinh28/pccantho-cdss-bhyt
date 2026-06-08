@@ -19,10 +19,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { rongSidebarCap, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
@@ -98,8 +98,8 @@ const DANH_SACH_TAB_DONG_BO = DANH_SACH_TAB.map((tab) => ({
 }));
 
 const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
-  const { width: winW } = useWindowDimensions();
-  const rongSidebar = winW < 420 ? 196 : winW < 768 ? 232 : 292;
+  const { dungBoCucDoc, width: winW } = useLayoutMode();
+  const rongSidebar = rongSidebarCap(winW);
   const [danhMucHienTai, setDanhMucHienTai] = useState(DANH_SACH_TAB[0].id); 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -1046,8 +1046,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.khung_chinh_dm}>
-        <View style={[styles.sidebar, { width: rongSidebar }]}>
+      <View style={[styles.khung_chinh_dm, dungBoCucDoc && styles.khung_chinh_dm_doc]}>
+        <View style={[styles.sidebar, dungBoCucDoc ? styles.sidebar_doc : { width: rongSidebar }]}>
           <Text style={styles.chu_sidebar_tieu_de}>Chọn danh mục</Text>
           <ScrollView
             style={styles.sidebar_scroll}
@@ -1328,6 +1328,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     minWidth: 0,
   },
+  khung_chinh_dm_doc: {
+    flexDirection: 'column',
+  },
   sidebar: {
     alignSelf: 'stretch',
     flexDirection: 'column',
@@ -1338,6 +1341,13 @@ const styles = StyleSheet.create({
     borderRightColor: CD.border.glass_md,
     backgroundColor: 'rgba(0,0,0,0.22)',
     ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  sidebar_doc: {
+    width: '100%',
+    maxHeight: 260,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass_md,
   },
   chu_sidebar_tieu_de: {
     fontSize: 14,
