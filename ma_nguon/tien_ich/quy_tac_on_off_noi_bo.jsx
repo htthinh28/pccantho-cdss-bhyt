@@ -224,7 +224,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
   { tab_id: 'LUAT_HANH_CHINH', ma_luat: 'HC-06d', ten_quy_tac: 'Đối chiếu mức hưởng theo mã thẻ BHYT' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-04', ten_quy_tac: 'Kê đơn ngoại trú quá 30 ngày ngoài danh mục cho phép' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-05', ten_quy_tac: 'Gợi ý ICD danh mục cho phép kê đơn >30 ngày (ngoại trú)' },
-  { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-06', ten_quy_tac: 'Kê đơn ≤30 ngày khi bệnh chính và bệnh kèm đều thuộc danh mục TT26 >30 ngày' },
+  { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-06', ten_quy_tac: 'Kê đơn ≤30 ngày khi bệnh chính (± kèm theo) thuộc danh mục TT26 >30 ngày' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'THUOC_DKTT_01', ten_quy_tac: 'Thuốc [27.67] Lysin + vitamin + khoáng chất — điều kiện ICD/chẩn đoán/tuổi' },
   {
     tab_id: 'LUAT_THUOC',

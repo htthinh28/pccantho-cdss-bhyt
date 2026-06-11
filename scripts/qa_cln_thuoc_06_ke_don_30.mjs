@@ -81,7 +81,9 @@ const allInCatalog = (codes, ruleSet) => codes.length > 0 && codes.every((c) => 
 const phaiKeDonTren30 = (xml1, ruleSet) => {
   const maChinh = extractCodes(xml1.MA_BENH_CHINH);
   const maKem = extractCodes(xml1.MA_BENH_KT, xml1.MA_BENHKEM);
-  return allInCatalog(maChinh, ruleSet) && allInCatalog(maKem, ruleSet);
+  if (!allInCatalog(maChinh, ruleSet)) return false;
+  if (maKem.length === 0) return true;
+  return allInCatalog(maKem, ruleSet);
 };
 const canhBaoCln06 = (xml1, soNgay, ruleSet) => phaiKeDonTren30(xml1, ruleSet) && soNgay > 0 && soNgay <= 30;
 
@@ -92,7 +94,8 @@ assert.ok(!isInCatalog('J06', ruleSet));
 
 assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: 'E11' }, 30, ruleSet), true);
 assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: 'E11' }, 31, ruleSet), false);
-assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: '' }, 14, ruleSet), false);
+assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: '' }, 14, ruleSet), true);
+assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: '' }, 31, ruleSet), false);
 assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'I10', MA_BENH_KT: 'J06' }, 14, ruleSet), false);
 assert.equal(canhBaoCln06({ MA_BENH_CHINH: 'J06', MA_BENH_KT: 'I10' }, 14, ruleSet), false);
 

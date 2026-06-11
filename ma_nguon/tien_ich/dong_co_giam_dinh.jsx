@@ -2948,16 +2948,31 @@ const tatCaMaIcdThuocDanhMucKeDon30Ngay = (codes, ruleSet) => {
     return arr.every((code) => isIcdInAllowed30DayCatalog(code, ruleSet));
 };
 
-/** Bệnh chính (MA_BENH_CHINH) và bệnh kèm (MA_BENH_KT) đều có mã thuộc Phụ lục VII TT 26/2025. */
-const hoSoBenhChinhVaBenhKemDeuThuocDmKeDon30Ngay = (xml1, dm) => {
+/**
+ * Hồ sơ phải kê đơn >30 ngày theo Phụ lục VII TT 26/2025:
+ * - Chỉ bệnh chính thuộc danh mục, không có bệnh kèm; hoặc
+ * - Bệnh chính và mọi mã bệnh kèm theo đều thuộc danh mục.
+ */
+const hoSoPhaiKeDonTren30NgayTheoDmTT26 = (xml1, dm) => {
     const ruleSet = layRuleSetKeDon30Ngay(dm);
     if ((!ruleSet?.exact || ruleSet.exact.size === 0) && (!Array.isArray(ruleSet?.ranges) || ruleSet.ranges.length === 0)) {
         return false;
     }
     const maChinh = extractIcdCodesFromClaim(xml1?.MA_BENH_CHINH);
     const maKem = extractIcdCodesFromClaim(xml1?.MA_BENH_KT, xml1?.MA_BENHKEM, xml1?.MA_BENHKT);
-    return tatCaMaIcdThuocDanhMucKeDon30Ngay(maChinh, ruleSet)
-        && tatCaMaIcdThuocDanhMucKeDon30Ngay(maKem, ruleSet);
+    if (!tatCaMaIcdThuocDanhMucKeDon30Ngay(maChinh, ruleSet)) return false;
+    if (maKem.length === 0) return true;
+    return tatCaMaIcdThuocDanhMucKeDon30Ngay(maKem, ruleSet);
+};
+
+const moTaDieuKienKeDon30NgayTT26 = (xml1) => {
+    const maChinh = String(xml1?.MA_BENH_CHINH || '').trim() || 'N/A';
+    const maKemRaw = String(xml1?.MA_BENH_KT || xml1?.MA_BENHKEM || '').trim();
+    const maKem = extractIcdCodesFromClaim(xml1?.MA_BENH_KT, xml1?.MA_BENHKEM, xml1?.MA_BENHKT);
+    if (maKem.length === 0) {
+        return `bệnh chính [${maChinh}] thuộc danh mục Phụ lục VII TT 26/2025 và không có bệnh kèm theo`;
+    }
+    return `bệnh chính [${maChinh}] và bệnh kèm theo [${maKemRaw || 'N/A'}] đều thuộc danh mục Phụ lục VII TT 26/2025`;
 };
 
 /**
@@ -4164,7 +4179,7 @@ const giamDinhThuoc = (hoSo, dm) => {
     const laNgoaiTru = _laHoSoNgoaiTru(xml1);
     const laNoiTru = _laHoSoNoiTru(xml1);
     const duocKeDonQua30Ngay = laNgoaiTru && !laNoiTru && isClaimAllowedPrescriptionOver30Days(xml1, dm);
-    const phaiKeDonTren30Ngay = laNgoaiTru && !laNoiTru && hoSoBenhChinhVaBenhKemDeuThuocDmKeDon30Ngay(xml1, dm);
+    const phaiKeDonTren30Ngay = laNgoaiTru && !laNoiTru && hoSoPhaiKeDonTren30NgayTheoDmTT26(xml1, dm);
     const coTiêmChíchBHYT = coBHYTThuocTiêmChíchTrongHoSo(hoSo);
     let daGhiClnThuoc05 = false;
     const maThuocMap = new Map();
@@ -4208,10 +4223,10 @@ const giamDinhThuoc = (hoSo, dm) => {
                 phan_he: 'XML2',
                 index: idx,
                 truong_loi: 'SO_NGAY',
-                canh_bao: `Thuốc [${ma || 'N/A'}] có số ngày sử dụng ${soNgaySuDung} (≤30 ngày) trong khi bệnh chính [${String(xml1?.MA_BENH_CHINH || '').trim() || 'N/A'}] và bệnh kèm theo [${String(xml1?.MA_BENH_KT || xml1?.MA_BENHKEM || '').trim() || 'N/A'}] đều thuộc danh mục Phụ lục VII TT 26/2025 — cần kê đơn trên 30 ngày (tối đa 90 ngày theo lâm sàng).`,
+                canh_bao: `Thuốc [${ma || 'N/A'}] có số ngày sử dụng ${soNgaySuDung} (≤30 ngày) trong khi ${moTaDieuKienKeDon30NgayTT26(xml1)} — cần kê đơn trên 30 ngày (tối đa 90 ngày theo lâm sàng).`,
                 muc_do: 'Warning',
                 ma_luat: 'CLN-THUOC-06',
-                ten_quy_tac: 'Kê đơn ≤30 ngày — bệnh chính và bệnh kèm đều trong danh mục >30 ngày',
+                ten_quy_tac: 'Kê đơn ≤30 ngày — bệnh chính (± kèm theo) trong danh mục TT26 >30 ngày',
                 dieu_kien: 'BUILT-IN',
                 co_so_phap_ly: CO_SO_PHAP_LY_THUOC.SO_NGAY_SU_DUNG,
             });
