@@ -52,6 +52,8 @@ const DVKT_OP09_CATALOG_STORAGE_KEY = 'DANH_MUC_GIUONG_BAN_KHAM_BV';
 /** XML3.MA_NHOM (nhóm chi phí): 1 — phí khám; 15 — phí giường (đồng bộ rule DVKT-OP-16 / tiền giường). */
 const OP09_XML3_MA_NHOM_KHAM = '1';
 const OP09_XML3_MA_NHOM_GIUONG = '15';
+/** Mọi khóa định danh nhân sự cần index trong staffById (XML thường gửi MACCHN làm MA_BAC_SI). */
+const STAFF_LOOKUP_ID_KEYS = ['MA_BAC_SI', 'MA_BHXH', 'MACCHN', 'SO_CCHN', 'SO_GPHN', 'MA_NV', 'ID', 'SO_CCCD', 'SO_DINH_DANH'];
 
 const DVKT_SYNC_TABLES = [
   { datasetKey: DVKT_ENGINE_STORAGE_KEYS.RULES, fallbackKey: 'CDSS_DATA_LUAT_CDHA' },
@@ -1022,7 +1024,7 @@ const buildEngineConfig = async () => {
   const staffById = new Map();
   (Array.isArray(staff) ? staff : []).forEach((row) => {
     const ids = [
-      pickValue(row, ['MA_BAC_SI', 'MA_BHXH', 'MACCHN', 'MA_NV', 'ID', 'SO_CCCD', 'SO_DINH_DANH']),
+      ...collectFieldValues(row, STAFF_LOOKUP_ID_KEYS),
       ...parseList(pickValue(row, ['ALIAS_IDS', 'IDS'])),
     ].map((x) => toUpper(x)).filter(Boolean);
     const scopes = new Set(collectListValues(row, ['PHAMVI_CM', 'PHAMVI', 'PHAMVI_CMBS']).map((v) => normalizeToken(v)));
@@ -1648,10 +1650,10 @@ const checkIcdContraindication = ({ rule, line, claim, config }) => {
 const checkPhamVi = ({ rule, line, config }) => {
   if (config.staffById.size === 0) return pass();
   const evidence = resolveStaffEvidence(line, config);
-  line = evidence.selectedId ? { ...line, maBacSi: evidence.selectedId } : line;
-  if (isEmpty(line.maBacSi)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu phạm vi hành nghề.`, 'MA_BAC_SI');
-  const staff = config.staffById.get(line.maBacSi);
-  const nhanSuText = formatStaffDisplay(staff, line.maBacSi);
+  const staffId = evidence.selectedId || line.maBacSi;
+  if (isEmpty(staffId)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu phạm vi hành nghề.`, 'MA_BAC_SI');
+  const staff = evidence.selectedStaff || config.staffById.get(staffId);
+  const nhanSuText = formatStaffDisplay(staff, staffId);
   if (!staff) return fail('WARNING', `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} trong danh mục để kết luận.`, 'MA_BAC_SI');
   if (staff.activeStatus === false) return fail('REJECT', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} đang ở trạng thái không hoạt động.`, 'MA_BAC_SI');
 
@@ -1839,10 +1841,10 @@ const checkInternalApproval = ({ rule, line, claim, config }) => {
 const checkStaffPracticeTime = ({ rule, line, claim, config }) => {
   if (config.staffById.size === 0) return pass();
   const evidence = resolveStaffEvidence(line, config);
-  line = evidence.selectedId ? { ...line, maBacSi: evidence.selectedId } : line;
-  if (isEmpty(line.maBacSi)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu thời gian hành nghề.`, 'MA_BAC_SI');
-  const staff = config.staffById.get(line.maBacSi);
-  const nhanSuText = formatStaffDisplay(staff, line.maBacSi);
+  const staffId = evidence.selectedId || line.maBacSi;
+  if (isEmpty(staffId)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu thời gian hành nghề.`, 'MA_BAC_SI');
+  const staff = evidence.selectedStaff || config.staffById.get(staffId);
+  const nhanSuText = formatStaffDisplay(staff, staffId);
   if (!staff) return fail('WARNING', `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} trong danh mục để đối chiếu.`, 'MA_BAC_SI');
   if (staff.activeStatus === false) return fail('REJECT', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} đang ở trạng thái không hoạt động.`, 'MA_BAC_SI');
   if (!staff.macchn) return fail('WARNING', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} thiếu MACCHN/GPHN trong danh mục.`, 'MACCHN');
