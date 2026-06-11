@@ -1,7 +1,7 @@
 /**
- * Seed danh muc ICD10 duoc ke don thuoc ngoai tru tren 30 ngay tu file Excel nguon.
- * Nguon: c:\\Users\\admin\\Documents\\Google Drive\\BHYT\\danh muc benh vien\\Rule\\danh muc icd ke don tren 30 ngay.xlsx
- * Cap nhat: 2026-03-30
+ * Seed danh mục 252 bệnh/nhóm bệnh được kê đơn thuốc ngoại trú trên 30 ngày.
+ * Nguồn: Phụ lục VII Thông tư 26/2025/TT-BYT (hiệu lực 01/07/2025).
+ * Cập nhật: 2026-03-30
  */
 
 export const PHIEN_BAN_DANH_MUC_ICD10_KE_DON_TREN_30_NGAY = '2026-03-30-icd10-ke-don-tren-30-ngay-seed-252';

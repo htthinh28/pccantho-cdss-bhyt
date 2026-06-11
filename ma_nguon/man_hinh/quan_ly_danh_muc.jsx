@@ -49,6 +49,12 @@ import {
   demMaCoTT06TheoBoLoc,
   locDongIcd10TheoTT06,
 } from '../tien_ich/icd10_tt06_loc_danh_muc';
+import {
+  BO_LOC_ICD10_KE_DON_TT26,
+  PHIEN_BAN_ICD10_KE_DON_TT26,
+  demMaKeDonTren30TheoBoLoc,
+  locDongKeDonTren30TheoTT26,
+} from '../tien_ich/icd10_tt26_ke_don_loc_danh_muc';
 import { chuanTenSheetInAn, inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import TimKiemPhanTrangBang from '../thanh_phan/tim_kiem_phan_trang_bang';
 import {
@@ -117,6 +123,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   const [tuKhoaTim, setTuKhoaTim] = useState('');
   /** Tab DANH_MUC_ICD10 — lọc theo cờ TT 06 (ICD-TT06-CAM-CHINH, …) */
   const [locTT06, setLocTT06] = useState('');
+  /** Tab DANH_MUC_ICD10_KE_DON_TREN_30_NGAY — lọc theo Phụ lục VII TT 26/2025 */
+  const [locTT26KeDon, setLocTT26KeDon] = useState('');
   /** Dòng cần xóa hàng loạt — theo `indexGoc` trong mảng `data` (ổn định dù tìm/ phân trang). */
   const [dauChonDong, setDauChonDong] = useState(() => new Set());
 
@@ -139,12 +147,21 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => { columnsRef.current = columns; }, [columns]);
   useEffect(() => { danhMucRef.current = danhMucHienTai; }, [danhMucHienTai]);
   const demTT06TheoBoLoc = useMemo(() => demMaCoTT06TheoBoLoc(), []);
+  const demTT26KeDonTheoBoLoc = useMemo(
+    () => demMaKeDonTren30TheoBoLoc(danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' ? data : undefined),
+    [data, danhMucHienTai],
+  );
 
   const hangLocChiSo = useMemo(() => {
     const sauTuKhoa = locDongTheoTuKhoa(data, columns, tuKhoaTim);
-    if (danhMucHienTai !== 'DANH_MUC_ICD10' || !locTT06) return sauTuKhoa;
-    return locDongIcd10TheoTT06(sauTuKhoa, columns, locTT06);
-  }, [data, columns, tuKhoaTim, danhMucHienTai, locTT06]);
+    if (danhMucHienTai === 'DANH_MUC_ICD10' && locTT06) {
+      return locDongIcd10TheoTT06(sauTuKhoa, columns, locTT06);
+    }
+    if (danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' && locTT26KeDon) {
+      return locDongKeDonTren30TheoTT26(sauTuKhoa, locTT26KeDon);
+    }
+    return sauTuKhoa;
+  }, [data, columns, tuKhoaTim, danhMucHienTai, locTT06, locTT26KeDon]);
   const nSauLoc = hangLocChiSo.length;
 
   const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
@@ -160,12 +177,13 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
     setTrangHienTai(1);
     setTuKhoaTim('');
     setLocTT06('');
+    setLocTT26KeDon('');
     setDauChonDong(new Set());
   }, [danhMucHienTai]);
 
   useEffect(() => {
     setTrangHienTai(1);
-  }, [tuKhoaTim, locTT06, soDongMotTrang]);
+  }, [tuKhoaTim, locTT06, locTT26KeDon, soDongMotTrang]);
 
   const layKhoaCotDanhMuc = (key) => `COLS_${key}`;
   const dinhDangThoiGianMeta = (value) => {
@@ -1188,6 +1206,42 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
                       <Text style={[styles.chu_nut_loc_tt06, active && styles.chu_nut_loc_tt06_active]}>
                         {opt.id ? opt.id.replace('ICD-TT06-', '') : opt.label}
                         {demBang != null ? ` (${demBang.toLocaleString('vi-VN')})` : ''}
+                      </Text>
+                      {opt.moTa ? (
+                        <Text style={[styles.chu_mo_ta_loc_tt06, active && styles.chu_mo_ta_loc_tt06_active]} numberOfLines={2}>
+                          {opt.moTa}
+                        </Text>
+                      ) : null}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null}
+          {danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' ? (
+            <View style={styles.khung_loc_tt06}>
+              <Text style={styles.chu_tieu_de_loc_tt06}>
+                TT 26/2025 Phụ lục VII — kê đơn ngoại trú &gt;30 ngày ({PHIEN_BAN_ICD10_KE_DON_TT26})
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.cuon_loc_tt06}
+              >
+                {BO_LOC_ICD10_KE_DON_TT26.map((opt) => {
+                  const active = locTT26KeDon === opt.id;
+                  const demBang = demTT26KeDonTheoBoLoc[opt.id] ?? (opt.id ? 0 : data.length);
+                  return (
+                    <TouchableOpacity
+                      key={opt.id || 'tat-ca-tt26'}
+                      style={[styles.nut_loc_tt06, active && styles.nut_loc_tt06_active]}
+                      onPress={() => setLocTT26KeDon(opt.id)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={[styles.chu_nut_loc_tt06, active && styles.chu_nut_loc_tt06_active]}>
+                        {opt.label}
+                        {` (${Number(demBang).toLocaleString('vi-VN')})`}
                       </Text>
                       {opt.moTa ? (
                         <Text style={[styles.chu_mo_ta_loc_tt06, active && styles.chu_mo_ta_loc_tt06_active]} numberOfLines={2}>

@@ -66,11 +66,9 @@
     "chuyen-de:prepare-build": "npm run chuyen-de:sync-placeholder-registry && npm run chuyen-de:sync-rollout-plan && npm run chuyen-de:sync-eligible-scan && npm run qa:chuyen-de-placeholder",
     "qa:chuyen-de-thuc-chien": "node ./scripts/qa_chuyen_de_thuc_chien.mjs",
     "qa:config-versioning": "node ./scripts/qa_config_versioning_unit.mjs",
-<<<<<<< HEAD
     "qa:cv302-lcs": "node ./scripts/qa_cv302_lcs.mjs",
-=======
     "qa:dvkt-staff-lookup": "node ./scripts/qa_dvkt_staff_lookup.mjs",
->>>>>>> cursor/fix-staff-macchn-lookup-e6c3
+    "qa:icd10-tt26-ke-don-loc": "node ./scripts/qa_icd10_tt26_ke_don_loc.mjs",
     "qa:audit-all": "npm run chuyen-de:prepare-build && npm run tai_lieu:index-huan-luyen && npm run qa:audit-fixtures && npm run qa:on-off-match && npm run qa:rule-schema && npm run qa:rule-trang-thai && npm run qa:claim-audit-smoke && npm run qa:danh-muc-xml-mau && npm run qa:chuyen-de-thuc-chien && npm run tai_lieu:prepare",
     "chuyen-de:rollout-verify": "node ./scripts/chuyen_de_rollout_verify.mjs",
     "tai_lieu:danh-muc-off": "node ./scripts/gen_danh_muc_off_placeholder.mjs && npm run tai_lieu:prepare",
