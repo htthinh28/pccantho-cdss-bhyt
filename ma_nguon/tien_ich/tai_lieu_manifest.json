@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T02:53:46.241Z",
+  "generatedAt": "2026-06-11T03:05:41.826Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -1121,6 +1121,17 @@
         "the_tri_thuc",
         "ai_huan_luyen",
         "phap_ly"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_ICD10_TT06_danh_muc_co_AI.md",
+      "relPath": "The_tri_thuc_ICD10_TT06_danh_muc_co_AI.html",
+      "title": "THẺ TRI THỨC: ICD-10 THEO THÔNG TƯ 06/2026/TT-BYT — DANH MỤC CỜ HƯỚNG DẪN MÃ HÓA",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
       ]
     },
     {
