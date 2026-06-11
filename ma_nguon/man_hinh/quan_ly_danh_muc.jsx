@@ -43,6 +43,12 @@ import {
   timNhomTrungTrongBang,
 } from '../tien_ich/danh_muc_trung_lap';
 import { locDongTheoTuKhoa, tinhChiSoPhanTrang } from '../tien_ich/bo_loc_bang_du_lieu';
+import {
+  BO_LOC_ICD10_TT06,
+  PHIEN_BAN_ICD10_TT06,
+  demMaCoTT06TheoBoLoc,
+  locDongIcd10TheoTT06,
+} from '../tien_ich/icd10_tt06_loc_danh_muc';
 import { chuanTenSheetInAn, inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import TimKiemPhanTrangBang from '../thanh_phan/tim_kiem_phan_trang_bang';
 import {
@@ -109,6 +115,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   /** Import Excel: có dòng trùng khóa — chọn ghi đè / bỏ qua */
   const [modalImportTrung, setModalImportTrung] = useState(null);
   const [tuKhoaTim, setTuKhoaTim] = useState('');
+  /** Tab DANH_MUC_ICD10 — lọc theo cờ TT 06 (ICD-TT06-CAM-CHINH, …) */
+  const [locTT06, setLocTT06] = useState('');
   /** Dòng cần xóa hàng loạt — theo `indexGoc` trong mảng `data` (ổn định dù tìm/ phân trang). */
   const [dauChonDong, setDauChonDong] = useState(() => new Set());
 
@@ -130,10 +138,13 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { columnsRef.current = columns; }, [columns]);
   useEffect(() => { danhMucRef.current = danhMucHienTai; }, [danhMucHienTai]);
-  const hangLocChiSo = useMemo(
-    () => locDongTheoTuKhoa(data, columns, tuKhoaTim),
-    [data, columns, tuKhoaTim],
-  );
+  const demTT06TheoBoLoc = useMemo(() => demMaCoTT06TheoBoLoc(), []);
+
+  const hangLocChiSo = useMemo(() => {
+    const sauTuKhoa = locDongTheoTuKhoa(data, columns, tuKhoaTim);
+    if (danhMucHienTai !== 'DANH_MUC_ICD10' || !locTT06) return sauTuKhoa;
+    return locDongIcd10TheoTT06(sauTuKhoa, columns, locTT06);
+  }, [data, columns, tuKhoaTim, danhMucHienTai, locTT06]);
   const nSauLoc = hangLocChiSo.length;
 
   const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
@@ -148,12 +159,13 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => {
     setTrangHienTai(1);
     setTuKhoaTim('');
+    setLocTT06('');
     setDauChonDong(new Set());
   }, [danhMucHienTai]);
 
   useEffect(() => {
     setTrangHienTai(1);
-  }, [tuKhoaTim, soDongMotTrang]);
+  }, [tuKhoaTim, locTT06, soDongMotTrang]);
 
   const layKhoaCotDanhMuc = (key) => `COLS_${key}`;
   const dinhDangThoiGianMeta = (value) => {
@@ -1152,6 +1164,42 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
             chiSoBatDau={chiSoBatDau}
             chiSoKetThuc={chiSoKetThuc}
           />
+          {danhMucHienTai === 'DANH_MUC_ICD10' ? (
+            <View style={styles.khung_loc_tt06}>
+              <Text style={styles.chu_tieu_de_loc_tt06}>
+                TT 06/2026 — lọc cờ mã hóa ({PHIEN_BAN_ICD10_TT06})
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.cuon_loc_tt06}
+              >
+                {BO_LOC_ICD10_TT06.map((opt) => {
+                  const active = locTT06 === opt.id;
+                  const demBang = opt.id ? (demTT06TheoBoLoc[opt.id] ?? 0) : null;
+                  return (
+                    <TouchableOpacity
+                      key={opt.id || 'tat-ca'}
+                      style={[styles.nut_loc_tt06, active && styles.nut_loc_tt06_active]}
+                      onPress={() => setLocTT06(opt.id)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={[styles.chu_nut_loc_tt06, active && styles.chu_nut_loc_tt06_active]}>
+                        {opt.id ? opt.id.replace('ICD-TT06-', '') : opt.label}
+                        {demBang != null ? ` (${demBang.toLocaleString('vi-VN')})` : ''}
+                      </Text>
+                      {opt.moTa ? (
+                        <Text style={[styles.chu_mo_ta_loc_tt06, active && styles.chu_mo_ta_loc_tt06_active]} numberOfLines={2}>
+                          {opt.moTa}
+                        </Text>
+                      ) : null}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null}
           {danhMucHienTai === 'DANH_MUC_TUONG_TAC_THUOC' &&
           soDongMotTrang > 0 &&
           data.length > soDongMotTrang ? (
@@ -1626,6 +1674,59 @@ const styles = StyleSheet.create({
     color: CD.brand.mauDam,
     fontFamily: CD.font.family,
     lineHeight: 20,
+  },
+  khung_loc_tt06: {
+    paddingHorizontal: 12,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass,
+    gap: 8,
+  },
+  chu_tieu_de_loc_tt06: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+  },
+  cuon_loc_tt06: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  nut_loc_tt06: {
+    minWidth: 132,
+    maxWidth: 200,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    backgroundColor: CD.bg.glass_input,
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  nut_loc_tt06_active: {
+    borderColor: CD.brand.mauDam,
+    backgroundColor: CD.brand.mauPhu,
+  },
+  chu_nut_loc_tt06: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: CD.text.primary,
+    fontFamily: CD.font.family,
+  },
+  chu_nut_loc_tt06_active: {
+    color: CD.brand.mauDam,
+  },
+  chu_mo_ta_loc_tt06: {
+    marginTop: 4,
+    fontSize: 11,
+    fontWeight: '600',
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+    lineHeight: 15,
+  },
+  chu_mo_ta_loc_tt06_active: {
+    color: CD.text.primary,
   },
   nhom_phan_trang: {
     flexDirection: 'row',
