@@ -181,7 +181,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-DVKT-*', ten_quy_tac: 'Lâm sàng XML3: thời điểm khám vs DVKT (CLN-DVKT-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-01', ten_quy_tac: 'No-code DVKT: ICD chỉ định phù hợp' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-02', ten_quy_tac: 'No-code DVKT: ICD chống chỉ định' },
-  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề (NGUOI_THUC_HIEN; giường bệnh miễn)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-04', ten_quy_tac: 'No-code DVKT: Trang thiết bị' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-05', ten_quy_tac: 'No-code DVKT: Đơn giá' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-06', ten_quy_tac: 'No-code DVKT: Hiệu lực danh mục' },

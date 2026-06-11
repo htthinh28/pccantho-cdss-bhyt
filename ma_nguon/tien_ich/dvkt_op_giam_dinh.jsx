@@ -113,7 +113,7 @@ const BUILTIN_ENGINE_TABLES = {
 const DEFAULT_DVKT_RULES = [
   { RULE_CODE: 'DVKT-OP-01', RULE_NAME: 'Chỉ định ICD10 phù hợp', OPERATOR: 'CHECK_ICD_INDICATION', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Chỉ định ICD-10 không phù hợp với loại DVKT.' },
   { RULE_CODE: 'DVKT-OP-02', RULE_NAME: 'Chống chỉ định ICD10', OPERATOR: 'CHECK_ICD_CONTRAINDICATION', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT bị chống chỉ định theo mã bệnh ICD-10.' },
-  { RULE_CODE: 'DVKT-OP-03', RULE_NAME: 'Phạm vi hành nghề', OPERATOR: 'CHECK_PHAMVI', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Người thực hiện không đúng phạm vi chuyên môn cho DVKT.' },
+  { RULE_CODE: 'DVKT-OP-03', RULE_NAME: 'Phạm vi hành nghề (NGUOI_THUC_HIEN)', OPERATOR: 'CHECK_PHAMVI', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'NGUOI_THUC_HIEN không đúng phạm vi chuyên môn cho DVKT (MA_BAC_SI không bắt buộc đối chiếu phạm vi; DVKT giường bệnh miễn kiểm tra).' },
   { RULE_CODE: 'DVKT-OP-04', RULE_NAME: 'Máy móc thiết bị', OPERATOR: 'CHECK_EQUIPMENT', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'CSKCB không có thiết bị hợp lệ để thực hiện DVKT.' },
   { RULE_CODE: 'DVKT-OP-05', RULE_NAME: 'Giá DVKT', OPERATOR: 'CHECK_PRICE', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Đơn giá DVKT vượt giá BHYT phê duyệt.' },
   { RULE_CODE: 'DVKT-OP-06', RULE_NAME: 'Hiệu lực DVKT', OPERATOR: 'CHECK_VALIDITY', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT ngoài khoảng hiệu lực áp dụng.' },
@@ -1659,15 +1659,57 @@ const checkIcdContraindication = ({ rule, line, claim, config }) => {
   return pass();
 };
 
+/** DVKT giường bệnh: không bắt buộc đối chiếu phạm vi hành nghề (bác sĩ / điều dưỡng). */
+const laDichVuGiuongMienPhamViHanhNghe = (line, config) => {
+  if (!line) return false;
+  const tenNorm = normalizeText(line.tenDvkt || '');
+  if (tenNorm.includes('GIUONG')) return true;
+  const dmRow = config?.dmktByCode?.get(line.maTuongDuong);
+  const effectivePrefix = line.maChuyenKhoa || line.prefix || dmRow?.maChuyenKhoa;
+  const nhomDvkt = normalizeText(config?.nhomDvktByPrefix?.get(effectivePrefix) || '');
+  if (nhomDvkt.includes('GIUONG')) return true;
+  const mn = String(line.maNhom || '').trim().replace(/^0+(?=\d)/, '');
+  if (mn === OP09_XML3_MA_NHOM_GIUONG) return true;
+  const maDvNorm = normalizeText(line.maTuongDuong || '');
+  if (maDvNorm.includes('GIUONG')) return true;
+  if (!isEmpty(line.maGiuong)) return true;
+  if (/^K\d+\./i.test(String(line.maTuongDuong || ''))) return true;
+  return false;
+};
+
 const checkPhamVi = ({ rule, line, config }) => {
   if (config.staffById.size === 0) return pass();
+  if (laDichVuGiuongMienPhamViHanhNghe(line, config)) return pass();
+
   const evidence = resolveStaffEvidence(line, config);
-  const staffId = evidence.selectedId || line.maBacSi;
-  if (isEmpty(staffId)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu phạm vi hành nghề.`, 'MA_BAC_SI');
-  const staff = evidence.selectedStaff || findStaffByActorCode(config, staffId);
+  const nguoiThucHienCandidates = parseList(line?.nguoiThucHien).map((id) => toUpper(id)).filter(Boolean);
+  // MA_BAC_SI: không bắt buộc đúng phạm vi hành nghề — chỉ kiểm tra khi có NGUOI_THUC_HIEN.
+  if (nguoiThucHienCandidates.length === 0) return pass();
+
+  const staffId = evidence.nguoiThucHienId;
+  if (isEmpty(staffId)) {
+    return fail(
+      'WARNING',
+      `${rule.ALERT_MESSAGE} Thiếu NGUOI_THUC_HIEN hợp lệ trong danh mục nhân sự để đối chiếu phạm vi hành nghề.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
+  const staff = evidence.nguoiThucHienStaff || findStaffByActorCode(config, staffId);
   const nhanSuText = formatStaffDisplay(staff, staffId);
-  if (!staff) return fail('WARNING', `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} trong danh mục để kết luận.`, 'MA_BAC_SI');
-  if (staff.activeStatus === false) return fail('REJECT', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} đang ở trạng thái không hoạt động.`, 'MA_BAC_SI');
+  if (!staff) {
+    return fail(
+      'WARNING',
+      `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} (NGUOI_THUC_HIEN) trong danh mục để kết luận.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
+  if (staff.activeStatus === false) {
+    return fail(
+      'REJECT',
+      `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} (NGUOI_THUC_HIEN) đang ở trạng thái không hoạt động.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
 
   const dmRow = config.dmktByCode.get(line.maTuongDuong);
   // Ưu tiên: (1) 2 ký tự đầu MA_DICH_VU từ dòng hồ sơ (áp dụng cả công khám) → (2) prefix dòng DVKT → (3) mapping danh mục.
@@ -1689,25 +1731,25 @@ const checkPhamVi = ({ rule, line, config }) => {
 
   const titleCandidates = getStaffAllowedTitleCandidates(staff);
   if (allowedTitles.size > 0 && titleCandidates.size === 0) {
-    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} thiếu CHUCDANH_NN để đối chiếu nhóm DVKT ${nhomDvkt}.`, 'CHUCDANH_NN');
+    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} (NGUOI_THUC_HIEN) thiếu CHUCDANH_NN để đối chiếu nhóm DVKT ${nhomDvkt}.`, 'CHUCDANH_NN');
   }
   if (allowedTitles.size > 0 && !hasIntersectionSet(titleCandidates, allowedTitles)) {
     return fail(
       'REJECT',
-      `${rule.ALERT_MESSAGE} ${nhanSuText} có CHUCDANH_NN=${staff.chucDanhNorm}, không thuộc nhóm được phép [${Array.from(allowedTitles).join(', ')}] cho DVKT ${nhomDvkt}.`,
-      'CHUCDANH_NN'
+      `${rule.ALERT_MESSAGE} ${nhanSuText} (NGUOI_THUC_HIEN) có CHUCDANH_NN=${staff.chucDanhNorm}, không thuộc nhóm được phép [${Array.from(allowedTitles).join(', ')}] cho DVKT ${nhomDvkt}.`,
+      'CHUCDANH_NN',
     );
   }
 
   if (!allowedScopes || allowedScopes.size === 0) return pass();
   if (!staff.scopes || staff.scopes.size === 0) {
-    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} thiếu PHAMVI_CM/PHAMVI_CMBS để đối chiếu DVKT ${nhomDvkt}.`, 'PHAMVI_CM');
+    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} (NGUOI_THUC_HIEN) thiếu PHAMVI_CM/PHAMVI_CMBS để đối chiếu DVKT ${nhomDvkt}.`, 'PHAMVI_CM');
   }
   if (hasIntersectionSet(staff.scopes, allowedScopes)) return pass();
   return fail(
     'REJECT',
-    `${rule.ALERT_MESSAGE} ${nhanSuText} không có phạm vi hành nghề phù hợp cho DVKT ${nhomDvkt}; yêu cầu [${Array.from(allowedScopes).join(', ')}].`,
-    'PHAMVI_CM'
+    `${rule.ALERT_MESSAGE} ${nhanSuText} (NGUOI_THUC_HIEN) không có phạm vi hành nghề phù hợp cho DVKT ${nhomDvkt}; yêu cầu [${Array.from(allowedScopes).join(', ')}].`,
+    'PHAMVI_CM',
   );
 };
 
