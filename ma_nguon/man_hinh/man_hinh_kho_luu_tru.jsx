@@ -19,7 +19,15 @@ import * as FileSystem from 'expo-file-system';
 // --- IMPORT CÁC HÀM TỪ KHO DỮ LIỆU ĐỂ THAY THẾ LÕI CŨ ---
 import * as DocumentPicker from 'expo-document-picker';
 import { xuatExcelBaoCao } from '../dich_vu/bao_cao_xuat_file';
-import { layTatCaHoSoTuKho, luuHoSoVaoKho, xoaHoSoKhoiKho } from '../tien_ich/kho_du_lieu';
+import {
+  layLichSuImportXml,
+  layLichSuPhienGiamDinhTheoMaLK,
+  layRawXmlImport,
+  layTatCaHoSoTuKho,
+  luuBanGhiImportXml,
+  luuHoSoVaoKho,
+  xoaHoSoKhoiKho,
+} from '../tien_ich/kho_du_lieu';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import { xuLyFileXML130Va4210 } from '../tien_ich/xml_helper';
@@ -199,6 +207,8 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'thoi_gian', direction: 'desc' });
   const [hoSoDangSua, setHoSoDangSua] = useState(null);
   const [maLKGoc, setMaLKGoc] = useState(null);
+  const [lichSuImportChiTiet, setLichSuImportChiTiet] = useState([]);
+  const [lichSuPhienChiTiet, setLichSuPhienChiTiet] = useState([]);
 
   useEffect(() => {
     taiDuLieuKho();
@@ -229,7 +239,29 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
         safeAlert('Lỗi', 'Không trích được hồ sơ. Cần file XML đúng định dạng gói 130 (QĐ 3176).');
         return;
       }
-      await luuHoSoVaoKho(ds, 'Import XML gói 130');
+      const tenFile = String(asset?.name || 'import.xml');
+      const dsChuan = ds.map((hs) => {
+        const x1 = hs?.xml1 || hs?.XML1 || {};
+        const maLK = String(hs?.ma_lk || x1.MA_LK || x1.ma_lk || '').trim();
+        return { ...hs, ma_lk: maLK || hs.ma_lk };
+      }).filter((hs) => Boolean(hs.ma_lk));
+      const maLKChinh = dsChuan[0]?.ma_lk;
+      let recImport = null;
+      if (maLKChinh) {
+        recImport = await luuBanGhiImportXml({
+          ma_lk: maLKChinh,
+          ten_file: tenFile,
+          raw_xml: raw,
+          nguon: 'kho_import_130',
+        });
+      }
+      const thoiGian = new Date().toLocaleString('vi-VN');
+      await luuHoSoVaoKho(dsChuan.map((hs) => ({
+        ...hs,
+        ten_file_goc: tenFile,
+        xml_import_id: recImport?.id || '',
+        thoi_gian: thoiGian,
+      })));
       await taiDuLieuKho();
       safeAlert('Thành công', `Đã nhập ${ds.length} hồ sơ vào kho.`);
     } catch (e) {
@@ -256,6 +288,37 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
     if (!hs) return { raw: {}, x1: {}, x2: [], x3: [], x4: [], x5: [], x6: [] };
     return layDuLieuXmlChiTiet(hs);
   };
+
+  useEffect(() => {
+    if (!hoSoDangXem) {
+      setLichSuImportChiTiet([]);
+      setLichSuPhienChiTiet([]);
+      return;
+    }
+    const { x1 } = getSafeXML(hoSoDangXem);
+    const maLK = String(hoSoDangXem.ma_lk || x1.MA_LK || '').trim();
+    if (!maLK) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const [imp, phien] = await Promise.all([
+          layLichSuImportXml({ ma_lk: maLK, gioiHan: 24 }),
+          layLichSuPhienGiamDinhTheoMaLK(maLK),
+        ]);
+        if (!cancelled) {
+          setLichSuImportChiTiet(Array.isArray(imp) ? imp : []);
+          setLichSuPhienChiTiet(Array.isArray(phien?.cac_phien) ? phien.cac_phien : []);
+        }
+      } catch (e) {
+        console.warn('[KhoLuuTru] Không tải được lịch sử import/phiên kiểm tra:', e);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hoSoDangXem]);
 
   const chuyenDanhSachHoSoThanhHangBaoCao = (arr) =>
     (Array.isArray(arr) ? arr : []).map((hs, index) => {
@@ -563,6 +626,23 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
   /**
    * PHÂN HỆ: CHI TIẾT HỒ SƠ & TRUY VẾT THAY ĐỔI (JCI AUDIT TRAIL)
    */
+  const taiXuatXmlGoc = async (meta = {}) => {
+    if (Platform.OS !== 'web') {
+      safeAlert('Thông báo', 'Tải file XML gốc chỉ hỗ trợ trên Web.');
+      return;
+    }
+    const raw = await layRawXmlImport({ id: meta.id, ma_lk: meta.ma_lk });
+    if (!raw) {
+      safeAlert('Thông báo', 'Không còn bản XML gốc trong kho (có thể chỉ lưu metadata từ phiên cũ).');
+      return;
+    }
+    const blob = new Blob([raw], { type: 'text/xml;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = String(meta.ten_file || meta.tenFile || `XML_${meta.ma_lk || 'goc'}.xml`);
+    link.click();
+  };
+
   const renderChiTietHoSo = () => {
     if (!hoSoDangXem) return null;
 
@@ -600,6 +680,54 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>BHYT Thanh toán:</Text> {Number(x1.T_BHTT || 0).toLocaleString()} VNĐ</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>BN Thanh toán:</Text> {Number(x1.T_BNTT || 0).toLocaleString()} VNĐ</Text>
             <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Trạng thái:</Text> {hoSoDangXem.ket_qua_giam_dinh?.length > 0 ? `⚠️ Có ${hoSoDangXem.ket_qua_giam_dinh.length} lỗi` : '✅ Hợp lệ 100%'}</Text>
+            {hoSoDangXem.ten_file_goc ? (
+              <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>File XML gốc:</Text> {hoSoDangXem.ten_file_goc}</Text>
+            ) : null}
+          </View>
+
+          <View style={styles.phan_muc}>
+            <Text style={[styles.tieu_de_muc, { color: '#CE93D8', borderColor: 'rgba(206,147,216,0.35)' }]}>📥 LỊCH SỬ FILE XML ĐÃ IMPORT (KHO CHÍNH THỨC)</Text>
+            {lichSuImportChiTiet.length > 0 ? lichSuImportChiTiet.map((imp) => (
+              <View key={imp.id || `${imp.ma_lk}_${imp.ghi_luc_iso}`} style={styles.dong_nhat_ky}>
+                <Text style={styles.chu_thuong}>
+                  • <Text style={styles.chu_dam}>{imp.ngay_giam_dinh || imp.ghi_luc_iso}:</Text> {imp.ten_file || imp.tenFile || '—'}
+                </Text>
+                <Text style={styles.chu_nho}>
+                  Nguồn: {imp.nguon || 'nhap_xml'}
+                  {imp.co_raw_xml ? ` | ${Math.round((imp.kich_thuoc_bytes || 0) / 1024)} KB` : ' | (chỉ metadata)'}
+                </Text>
+                {imp.co_raw_xml ? (
+                  <TouchableOpacity style={styles.btn_sua_loi_truc_tiep} onPress={() => void taiXuatXmlGoc(imp)}>
+                    <Text style={styles.txt_btn_lien_ket_xml}>Tải XML gốc</Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            )) : (
+              <Text style={styles.chu_nho}>Chưa có bản ghi import XML trong kho chính thức cho MA_LK này.</Text>
+            )}
+          </View>
+
+          <View style={styles.phan_muc}>
+            <Text style={[styles.tieu_de_muc, { color: '#80CBC4', borderColor: 'rgba(128,203,196,0.35)' }]}>🕘 LỊCH SỬ PHIÊN KIỂM TRA ĐÃ LƯU</Text>
+            {lichSuPhienChiTiet.length > 0 ? lichSuPhienChiTiet.map((phien) => {
+              const tt = phien.tom_tat || {};
+              const dem = tt.dem_muc_do || {};
+              return (
+                <View key={phien.id_phien} style={styles.dong_nhat_ky}>
+                  <Text style={styles.chu_thuong}>
+                    • <Text style={styles.chu_dam}>{phien.ghi_luc_iso}:</Text> {tt.so_dong_canh_bao || 0} cảnh báo
+                    {` · E:${dem.Error || 0} W:${dem.Warning || 0} I:${dem.Info || 0}`}
+                  </Text>
+                  <Text style={styles.chu_nho}>
+                    {phien.ten_file_goc ? `File: ${phien.ten_file_goc} · ` : ''}
+                    {tt.so_ma_luat_khac_biet || 0} mã luật
+                    {phien.so_dong_bi_cat > 0 ? ` · snapshot cắt ${phien.so_dong_bi_cat} dòng` : ''}
+                  </Text>
+                </View>
+              );
+            }) : (
+              <Text style={styles.chu_nho}>Chưa có phiên kiểm tra nào được ghi sau khi lưu kho.</Text>
+            )}
           </View>
 
           <View style={styles.phan_muc}>

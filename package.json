@@ -70,6 +70,7 @@
     "qa:dvkt-staff-lookup": "node ./scripts/qa_dvkt_staff_lookup.mjs",
     "qa:icd10-tt26-ke-don-loc": "node ./scripts/qa_icd10_tt26_ke_don_loc.mjs",
     "qa:cln-thuoc-06": "node ./scripts/qa_cln_thuoc_06_ke_don_30.mjs",
+    "qa:kho-chinh-thuc": "node ./scripts/qa_kho_chinh_thuc_luu.mjs",
     "qa:audit-all": "npm run chuyen-de:prepare-build && npm run tai_lieu:index-huan-luyen && npm run qa:audit-fixtures && npm run qa:on-off-match && npm run qa:rule-schema && npm run qa:rule-trang-thai && npm run qa:claim-audit-smoke && npm run qa:danh-muc-xml-mau && npm run qa:chuyen-de-thuc-chien && npm run tai_lieu:prepare",
     "chuyen-de:rollout-verify": "node ./scripts/chuyen_de_rollout_verify.mjs",
     "tai_lieu:danh-muc-off": "node ./scripts/gen_danh_muc_off_placeholder.mjs && npm run tai_lieu:prepare",

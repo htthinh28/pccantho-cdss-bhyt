@@ -14,9 +14,13 @@
  * sang IndexedDB trong lần chạy đầu tiên, giải phóng toàn bộ localStorage cho
  * các module khác (Quản lý luật, v.v.).
  *
- * Lịch sử phiên kiểm tra (tóm tắt + danh sách MA_LUAT theo từng lần lưu kho):
+ * Lịch sử phiên kiểm tra (tóm tắt + snapshot cảnh báo theo từng lần lưu kho):
  *   store `lich_su_phien_gd` (web) / key `CDSS_LSGDMLK_*` (mobile). Không xóa
  *   khi xóa kho làm việc; có API xóa tập trung nếu cần reset quyền riêng tư.
+ *
+ * Kho XML đầu vào (file gốc đã import — không dùng AsyncStorage tạm):
+ *   store `xml_import` (web) / key `CDSS_XMLIMP_*` (mobile). Lưu raw XML + metadata;
+ *   thay thế `CDSS_LICH_SU_XML` (migrate một lần).
  * ============================================================================
  */
 
@@ -38,9 +42,13 @@ const IDB_STORE_DANH_MUC = 'danh_muc';
 const IDB_STORE_LICH_SU = 'lich_su_bn';
 /** Từng phiên chạy engine theo MA_LK (append khi `luuHoSoVaoKho` có `ket_qua_giam_dinh`). */
 const IDB_STORE_PHIEN_GD = 'lich_su_phien_gd';
-const IDB_VERSION = 4;
+/** File XML gốc đã import (raw + metadata) — kho chính thức, không xóa khi xóa kho làm việc. */
+const IDB_STORE_XML_IMPORT = 'xml_import';
+const IDB_VERSION = 5;
 const MAX_LAN_LICH_SU_PER_BN = 48;
 const MAX_PHIEN_GD_PER_MA_LK = 48;
+const MAX_XML_IMPORT_RECORDS = 600;
+const MAX_PHIEN_KET_QUA_SNAPSHOT = 300;
 
 let _dbCache = null;
 
@@ -77,6 +85,9 @@ const _openDB = () => {
       }
       if (!db.objectStoreNames.contains(IDB_STORE_PHIEN_GD)) {
         db.createObjectStore(IDB_STORE_PHIEN_GD, { keyPath: 'ma_lk' });
+      }
+      if (!db.objectStoreNames.contains(IDB_STORE_XML_IMPORT)) {
+        db.createObjectStore(IDB_STORE_XML_IMPORT, { keyPath: 'id' });
       }
     };
     req.onsuccess = (e) => {
@@ -240,6 +251,54 @@ const idbPhienGd = {
   },
 };
 
+const idbXmlImport = {
+  put: async (record) => {
+    const db = await _openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE_XML_IMPORT, 'readwrite');
+      tx.objectStore(IDB_STORE_XML_IMPORT).put(record);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  get: async (id) => {
+    const db = await _openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE_XML_IMPORT, 'readonly');
+      const req = tx.objectStore(IDB_STORE_XML_IMPORT).get(id);
+      req.onsuccess = () => resolve(req.result || null);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  getAll: async () => {
+    const db = await _openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE_XML_IMPORT, 'readonly');
+      const req = tx.objectStore(IDB_STORE_XML_IMPORT).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  delete: async (id) => {
+    const db = await _openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE_XML_IMPORT, 'readwrite');
+      tx.objectStore(IDB_STORE_XML_IMPORT).delete(id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  clear: async () => {
+    const db = await _openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE_XML_IMPORT, 'readwrite');
+      tx.objectStore(IDB_STORE_XML_IMPORT).clear();
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+};
+
 const idbDanhMuc = {
   put: async (record) => {
     const db = await _openDB();
@@ -345,6 +404,299 @@ const chuanHoaBanGhiHoSo = (hoSo) => chuanHoaHoSoCanhBao(hoSo);
 const PREFIX_LICH_SU_MOBILE = 'CDSS_LSBN_';
 const KHO_LICH_SU_INDEX_MOBILE = 'CDSS_LSBN_INDEX_MA_BN';
 const PREFIX_PHIEN_GD_MOBILE = 'CDSS_LSGDMLK_';
+const PREFIX_XML_IMPORT_MOBILE = 'CDSS_XMLIMP_META_';
+const PREFIX_XML_IMPORT_RAW_MOBILE = 'CDSS_XMLIMP_RAW_';
+const KHO_XML_IMPORT_INDEX_MOBILE = 'CDSS_XMLIMP_INDEX_IDS';
+const FLAG_XML_IMPORT_MIGRATED = 'CDSS_XMLIMP_MIGRATED_V1';
+
+const chuanHoaMaLKImport = (giaTri) => String(giaTri || '').trim().toUpperCase();
+
+const taoIdBanGhiImportXml = () => `xmlimp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+const rutGonMetaImportXml = (rec = {}) => ({
+  id: String(rec.id || ''),
+  ma_lk: chuanHoaMaLKImport(rec.ma_lk),
+  tenFile: String(rec.ten_file || rec.tenFile || '').slice(0, 260),
+  ten_file: String(rec.ten_file || rec.tenFile || '').slice(0, 260),
+  ngay_giam_dinh: String(rec.ngay_giam_dinh || ''),
+  ghi_luc_iso: String(rec.ghi_luc_iso || ''),
+  nguon: String(rec.nguon || ''),
+  kich_thuoc_bytes: Number(rec.kich_thuoc_bytes) || 0,
+  co_raw_xml: Boolean(rec.co_raw_xml),
+});
+
+const luuRawXmlImportMobile = async (id, rawXml = '') => {
+  const baseKey = `${PREFIX_XML_IMPORT_RAW_MOBILE}${id}`;
+  const payload = String(rawXml || '');
+  if (!payload) {
+    await xoaJsonChunkTheoKhoa(baseKey).catch(() => {});
+    return;
+  }
+  const keyMeta = `${baseKey}_CHUNKS`;
+  const oldChunkCount = Number(await AsyncStorage.getItem(keyMeta)) || 0;
+  if (payload.length <= DETAIL_CHUNK_BYTES) {
+    await AsyncStorage.setItem(baseKey, payload);
+    const dsCanXoa = [keyMeta];
+    for (let i = 0; i < oldChunkCount; i += 1) {
+      dsCanXoa.push(`${baseKey}_CHUNK_${i}`);
+    }
+    if (dsCanXoa.length > 0) await AsyncStorage.multiRemove(dsCanXoa);
+    return;
+  }
+  const chunks = tachThanhChunkText(payload, DETAIL_CHUNK_BYTES);
+  const pairs = [[keyMeta, String(chunks.length)]];
+  chunks.forEach((chunk, index) => {
+    pairs.push([`${baseKey}_CHUNK_${index}`, chunk]);
+  });
+  await AsyncStorage.multiSet(pairs);
+  const dsCanXoa = [baseKey];
+  for (let index = chunks.length; index < oldChunkCount; index += 1) {
+    dsCanXoa.push(`${baseKey}_CHUNK_${index}`);
+  }
+  if (dsCanXoa.length > 0) await AsyncStorage.multiRemove(dsCanXoa);
+};
+
+const docRawXmlImportMobile = async (id) => {
+  const baseKey = `${PREFIX_XML_IMPORT_RAW_MOBILE}${id}`;
+  const keyMeta = `${baseKey}_CHUNKS`;
+  const chunkCount = Number(await AsyncStorage.getItem(keyMeta)) || 0;
+  if (chunkCount > 0) {
+    const chunkKeys = Array.from({ length: chunkCount }, (_, index) => `${baseKey}_CHUNK_${index}`);
+    const chunkPairs = await AsyncStorage.multiGet(chunkKeys);
+    let payload = '';
+    chunkPairs.forEach(([, raw]) => {
+      if (raw) payload += String(raw);
+    });
+    return payload;
+  }
+  return String(await AsyncStorage.getItem(baseKey) || '');
+};
+
+const docDanhSachIdImportXmlMobile = async () => {
+  const raw = await AsyncStorage.getItem(KHO_XML_IMPORT_INDEX_MOBILE);
+  return Array.isArray(parseJsonAnToan(raw)) ? parseJsonAnToan(raw) : [];
+};
+
+const ghiDanhSachIdImportXmlMobile = async (ids = []) => {
+  const unique = Array.from(new Set((Array.isArray(ids) ? ids : []).filter(Boolean)));
+  await AsyncStorage.setItem(KHO_XML_IMPORT_INDEX_MOBILE, JSON.stringify(unique));
+  return unique;
+};
+
+const catGiamLichSuImportXml = async () => {
+  try {
+    if (Platform.OS === 'web') {
+      const all = await idbXmlImport.getAll();
+      if (all.length <= MAX_XML_IMPORT_RECORDS) return;
+      const sorted = [...all].sort((a, b) => String(b.ghi_luc_iso || '').localeCompare(String(a.ghi_luc_iso || '')));
+      const canXoa = sorted.slice(MAX_XML_IMPORT_RECORDS);
+      for (const rec of canXoa) {
+        if (rec?.id) await idbXmlImport.delete(rec.id);
+      }
+      return;
+    }
+    const ids = await docDanhSachIdImportXmlMobile();
+    if (ids.length <= MAX_XML_IMPORT_RECORDS) return;
+    const metas = [];
+    for (const id of ids) {
+      const raw = await AsyncStorage.getItem(`${PREFIX_XML_IMPORT_MOBILE}${id}`);
+      const meta = raw ? parseJsonAnToan(raw) : null;
+      if (meta?.id) metas.push(meta);
+    }
+    metas.sort((a, b) => String(b.ghi_luc_iso || '').localeCompare(String(a.ghi_luc_iso || '')));
+    const giu = new Set(metas.slice(0, MAX_XML_IMPORT_RECORDS).map((m) => m.id));
+    for (const meta of metas) {
+      if (giu.has(meta.id)) continue;
+      await AsyncStorage.removeItem(`${PREFIX_XML_IMPORT_MOBILE}${meta.id}`).catch(() => {});
+      await xoaJsonChunkTheoKhoa(`${PREFIX_XML_IMPORT_RAW_MOBILE}${meta.id}`).catch(() => {});
+    }
+    await ghiDanhSachIdImportXmlMobile([...giu]);
+  } catch (e) {
+    console.warn('[KHO_DU_LIEU] catGiamLichSuImportXml:', e?.message || e);
+  }
+};
+
+let migrateXmlImportPromise = null;
+
+/** Migrate metadata cũ từ `CDSS_LICH_SU_XML` (AsyncStorage tạm) sang kho chính thức. */
+export const damBaoMigrateLichSuXmlSangKhoChinhThuc = async () => {
+  if (migrateXmlImportPromise) return migrateXmlImportPromise;
+
+  migrateXmlImportPromise = (async () => {
+    try {
+      const daMigrate = await AsyncStorage.getItem(FLAG_XML_IMPORT_MIGRATED);
+      if (daMigrate === '1') return { ok: true, migrated: 0, skipped: true };
+
+      const stored = await AsyncStorage.getItem('CDSS_LICH_SU_XML');
+      if (!stored) {
+        await AsyncStorage.setItem(FLAG_XML_IMPORT_MIGRATED, '1');
+        return { ok: true, migrated: 0 };
+      }
+
+      let items = [];
+      try {
+        items = JSON.parse(stored);
+      } catch {
+        items = [];
+      }
+
+      let migrated = 0;
+      for (const item of Array.isArray(items) ? items : []) {
+        const ma = chuanHoaMaLKImport(item?.ma_lk);
+        if (!ma) continue;
+        await luuBanGhiImportXml({
+          ma_lk: ma,
+          ten_file: item?.tenFile || item?.ten_file || '',
+          raw_xml: '',
+          nguon: 'legacy_migrate',
+          ngay_giam_dinh: item?.ngay_giam_dinh || '',
+        });
+        migrated += 1;
+      }
+
+      await AsyncStorage.removeItem('CDSS_LICH_SU_XML').catch(() => {});
+      await AsyncStorage.setItem(FLAG_XML_IMPORT_MIGRATED, '1');
+      return { ok: true, migrated };
+    } catch (e) {
+      console.warn('[KHO_DU_LIEU] damBaoMigrateLichSuXmlSangKhoChinhThuc:', e?.message || e);
+      return { ok: false, migrated: 0, error: e };
+    } finally {
+      migrateXmlImportPromise = null;
+    }
+  })();
+
+  return migrateXmlImportPromise;
+};
+
+/** Lưu file XML gốc vào kho chính thức (IndexedDB / AsyncStorage chunked). */
+export const luuBanGhiImportXml = async ({
+  ma_lk,
+  ten_file = '',
+  raw_xml = '',
+  nguon = 'nhap_xml',
+  ngay_giam_dinh = '',
+} = {}) => {
+  const maChuan = chuanHoaMaLKImport(ma_lk);
+  if (!maChuan || ['KHONG_XAC_DINH', 'LOI', 'LOI_DUNG_LUONG'].includes(maChuan)) return null;
+
+  const id = taoIdBanGhiImportXml();
+  const ghi_luc_iso = new Date().toISOString();
+  const record = {
+    id,
+    ma_lk: maChuan,
+    ten_file: String(ten_file || '').slice(0, 260),
+    ghi_luc_iso,
+    ngay_giam_dinh: String(ngay_giam_dinh || new Date().toLocaleString('vi-VN')),
+    nguon: String(nguon || 'nhap_xml'),
+    kich_thuoc_bytes: String(raw_xml || '').length,
+    co_raw_xml: Boolean(raw_xml),
+  };
+
+  if (Platform.OS === 'web') {
+    await idbXmlImport.put({ ...record, raw_xml: String(raw_xml || '') });
+  } else {
+    await AsyncStorage.setItem(`${PREFIX_XML_IMPORT_MOBILE}${id}`, JSON.stringify(record));
+    await luuRawXmlImportMobile(id, raw_xml);
+    const ids = await docDanhSachIdImportXmlMobile();
+    if (!ids.includes(id)) {
+      ids.unshift(id);
+      await ghiDanhSachIdImportXmlMobile(ids);
+    }
+  }
+
+  await catGiamLichSuImportXml();
+  return record;
+};
+
+/** Danh sách lịch sử import XML (metadata, không trả raw_xml để nhẹ UI). */
+export const layLichSuImportXml = async ({ ma_lk = '', gioiHan = 300 } = {}) => {
+  await damBaoMigrateLichSuXmlSangKhoChinhThuc();
+  const maLoc = chuanHoaMaLKImport(ma_lk);
+  const limit = Math.max(1, Math.min(Number(gioiHan) || 300, MAX_XML_IMPORT_RECORDS));
+
+  try {
+    if (Platform.OS === 'web') {
+      const all = await idbXmlImport.getAll();
+      const filtered = maLoc
+        ? all.filter((r) => chuanHoaMaLKImport(r?.ma_lk) === maLoc)
+        : all;
+      return filtered
+        .sort((a, b) => String(b.ghi_luc_iso || '').localeCompare(String(a.ghi_luc_iso || '')))
+        .slice(0, limit)
+        .map(rutGonMetaImportXml);
+    }
+
+    const ids = await docDanhSachIdImportXmlMobile();
+    const metas = [];
+    for (const id of ids) {
+      const raw = await AsyncStorage.getItem(`${PREFIX_XML_IMPORT_MOBILE}${id}`);
+      const meta = raw ? parseJsonAnToan(raw) : null;
+      if (!meta?.id) continue;
+      if (maLoc && chuanHoaMaLKImport(meta.ma_lk) !== maLoc) continue;
+      metas.push(rutGonMetaImportXml(meta));
+    }
+    return metas
+      .sort((a, b) => String(b.ghi_luc_iso || '').localeCompare(String(a.ghi_luc_iso || '')))
+      .slice(0, limit);
+  } catch (e) {
+    console.warn('[KHO_DU_LIEU] layLichSuImportXml:', e?.message || e);
+    return [];
+  }
+};
+
+/** Lấy raw XML gốc mới nhất theo MA_LK (hoặc theo id bản ghi). */
+export const layRawXmlImport = async ({ ma_lk = '', id = '' } = {}) => {
+  await damBaoMigrateLichSuXmlSangKhoChinhThuc();
+  const maLoc = chuanHoaMaLKImport(ma_lk);
+  const idLoc = String(id || '').trim();
+
+  try {
+    if (Platform.OS === 'web') {
+      if (idLoc) {
+        const rec = await idbXmlImport.get(idLoc);
+        return rec?.raw_xml ? String(rec.raw_xml) : '';
+      }
+      if (!maLoc) return '';
+      const all = await idbXmlImport.getAll();
+      const newest = all
+        .filter((r) => chuanHoaMaLKImport(r?.ma_lk) === maLoc && r?.co_raw_xml)
+        .sort((a, b) => String(b.ghi_luc_iso || '').localeCompare(String(a.ghi_luc_iso || '')))[0];
+      return newest?.raw_xml ? String(newest.raw_xml) : '';
+    }
+
+    if (idLoc) {
+      return docRawXmlImportMobile(idLoc);
+    }
+    if (!maLoc) return '';
+    const lichSu = await layLichSuImportXml({ ma_lk: maLoc, gioiHan: 1 });
+    const top = lichSu[0];
+    if (!top?.id || !top.co_raw_xml) return '';
+    return docRawXmlImportMobile(top.id);
+  } catch (e) {
+    console.warn('[KHO_DU_LIEU] layRawXmlImport:', e?.message || e);
+    return '';
+  }
+};
+
+/** Xóa toàn bộ kho XML import (quyền riêng tư). Không xóa khi xóa kho làm việc. */
+export const xoaToanBoLichSuImportXml = async () => {
+  try {
+    if (Platform.OS === 'web') {
+      await idbXmlImport.clear();
+      return true;
+    }
+    const ids = await docDanhSachIdImportXmlMobile();
+    for (const id of ids) {
+      await AsyncStorage.removeItem(`${PREFIX_XML_IMPORT_MOBILE}${id}`).catch(() => {});
+      await xoaJsonChunkTheoKhoa(`${PREFIX_XML_IMPORT_RAW_MOBILE}${id}`).catch(() => {});
+    }
+    await AsyncStorage.removeItem(KHO_XML_IMPORT_INDEX_MOBILE).catch(() => {});
+    return true;
+  } catch (e) {
+    console.error('[KHO_DU_LIEU] xoaToanBoLichSuImportXml:', e);
+    return false;
+  }
+};
 
 const parseNgayXml130 = (val) => {
   const digits = String(val || '').replace(/\D/g, '');
@@ -429,6 +781,15 @@ const ghiMotLanLichSu = async (hoSo) => {
   }
 };
 
+const rutGonDongKetQuaPhien = (row = {}) => ({
+  ma_luat: String(row.ma_luat || row.MA_LUAT || '').trim(),
+  muc_do: String(row.muc_do || row.MUC_DO || '').trim(),
+  truong_loi: String(row.truong_loi || row.TRUONG_LOI || '').trim(),
+  phan_he: String(row.phan_he || row.PHAN_HE || '').trim(),
+  canh_bao: String(row.canh_bao || row.CANH_BAO || row.message || '').slice(0, 360),
+  index: Number.isFinite(row.index) ? row.index : undefined,
+});
+
 const tomTatPhienGiamDinh = (ketQuaGiamDinh) => {
   const ds = Array.isArray(ketQuaGiamDinh) ? ketQuaGiamDinh : [];
   const demMucDo = { Error: 0, Warning: 0, Info: 0, Khac: 0 };
@@ -458,10 +819,15 @@ const ghiMotPhienGiamDinh = async (hoSoChuan) => {
   const kq = hoSoChuan?.ket_qua_giam_dinh;
   if (!ma_lk || !Array.isArray(kq)) return;
 
+  const snapshot = kq.slice(0, MAX_PHIEN_KET_QUA_SNAPSHOT).map(rutGonDongKetQuaPhien);
   const phien = {
     id_phien: `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
     ghi_luc_iso: new Date().toISOString(),
     tom_tat: tomTatPhienGiamDinh(kq),
+    ket_qua_snapshot: snapshot,
+    so_dong_bi_cat: kq.length > MAX_PHIEN_KET_QUA_SNAPSHOT ? kq.length - MAX_PHIEN_KET_QUA_SNAPSHOT : 0,
+    xml_import_id: String(hoSoChuan?.xml_import_id || '').trim() || undefined,
+    ten_file_goc: String(hoSoChuan?.ten_file_goc || hoSoChuan?._ten_file || '').slice(0, 260) || undefined,
   };
 
   if (Platform.OS === 'web') {
@@ -786,7 +1152,12 @@ export const luuHoSoVaoKho = async (danhSachHoSoMoi) => {
         if (!maLK) continue;
         // Loại bỏ trường _raw (luôn rỗng) để tiết kiệm không gian
         const { _raw, ...hoSoLuu } = hoSo;
-        dsCanLuu.push(chuanHoaBanGhiHoSo({ ...hoSoLuu, ma_lk: maLK }));
+        const banGhi = chuanHoaBanGhiHoSo({
+          ...hoSoLuu,
+          ma_lk: maLK,
+          thoi_gian: hoSoLuu.thoi_gian || new Date().toLocaleString('vi-VN'),
+        });
+        dsCanLuu.push(banGhi);
       }
       await idb.bulkPut(dsCanLuu);
     } else {
@@ -796,7 +1167,11 @@ export const luuHoSoVaoKho = async (danhSachHoSoMoi) => {
         const maLK = hoSo.ma_lk || hoSo.XML1?.MA_LK || hoSo.xml1?.MA_LK;
         if (!maLK) continue;
         const { _raw, ...hoSoLuu } = hoSo;
-        await luuChiTietHoSoMobile(maLK, chuanHoaBanGhiHoSo({ ...hoSoLuu, ma_lk: maLK }));
+        await luuChiTietHoSoMobile(maLK, chuanHoaBanGhiHoSo({
+          ...hoSoLuu,
+          ma_lk: maLK,
+          thoi_gian: hoSoLuu.thoi_gian || new Date().toLocaleString('vi-VN'),
+        }));
         if (!dsMaLK.includes(maLK)) dsMaLK.push(maLK);
       }
       await AsyncStorage.setItem(KHO_INDEX_KEY, JSON.stringify(chuanHoaDanhSachMaLK(dsMaLK)));
@@ -940,7 +1315,7 @@ export const phanTichKhoangCachDieuTri = async (hoSo) => {
 
 /**
  * Lịch sử các phiên kiểm tra đã lưu (theo MA_LK): mới nhất trước, tối đa MAX_PHIEN_GD_PER_MA_LK.
- * Mỗi phiên: id_phien, ghi_luc_iso, tom_tat { so_dong_canh_bao, dem_muc_do, ma_luat_lap }.
+ * Mỗi phiên: id_phien, ghi_luc_iso, tom_tat, ket_qua_snapshot (tối đa MAX_PHIEN_KET_QUA_SNAPSHOT dòng).
  */
 export const layLichSuPhienGiamDinhTheoMaLK = async (ma_lk) => {
   const m = String(ma_lk || '').trim();
@@ -1151,6 +1526,11 @@ const KhoDuLieu = {
   phanTichKhoangCachDieuTri,
   xoaToanBoLichSuDieuTri,
   xoaToanBoLichSuPhienGiamDinh,
+  luuBanGhiImportXml,
+  layLichSuImportXml,
+  layRawXmlImport,
+  damBaoMigrateLichSuXmlSangKhoChinhThuc,
+  xoaToanBoLichSuImportXml,
   layDanhMuc,
   docDanhMucTuKho,
   capNhatDanhMuc,
