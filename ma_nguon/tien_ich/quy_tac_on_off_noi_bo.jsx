@@ -179,6 +179,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'DMBV-DVKT-*', ten_quy_tac: 'Chất lượng danh mục DVKT BV (DMBV-DVKT-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-CDHA-*', ten_quy_tac: 'Lâm sàng CDHA/DVKT (CLN-CDHA-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-DVKT-*', ten_quy_tac: 'Lâm sàng XML3: thời điểm khám vs DVKT (CLN-DVKT-*)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-*', ten_quy_tac: 'Thanh toán BHYT theo Công văn 4262/BHXH-CSYT (CV4262-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-01', ten_quy_tac: 'No-code DVKT: ICD chỉ định phù hợp' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-02', ten_quy_tac: 'No-code DVKT: ICD chống chỉ định' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề (NGUOI_THUC_HIEN; giường bệnh miễn)' },
@@ -236,6 +237,12 @@ const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
   { tab_id: 'LUAT_GIUONG', ma_luat: 'CLN-GIUONG-01', ten_quy_tac: 'Đối chiếu số ngày giường với số ngày điều trị' },
   { tab_id: 'LUAT_HOP_DONG', ma_luat: 'CLN-CHI-01', ten_quy_tac: 'Đối chiếu tổng tiền thuốc' },
   { tab_id: 'LUAT_HOP_DONG', ma_luat: 'CLN-CHI-02', ten_quy_tac: 'Đối chiếu T_VTYT với tổng XML3 (DVKT)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-01', ten_quy_tac: 'CV4262 §1.1: DVKT chỉ định sẵn — không công khám' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-02', ten_quy_tac: 'CV4262 §1.2: Một chuyên khoa — một công khám/lượt' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-21', ten_quy_tac: 'CV4262 §2.1: CT ngực+bụng có cản quang (1 ống)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-23', ten_quy_tac: 'CV4262 §2.3: Bóp bóng Ambu — hồi sức sơ sinh' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-25', ten_quy_tac: 'CV4262 §2.5: Nội soi TMH gói vs đơn lẻ' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-PL01-05', ten_quy_tac: 'CV4262 PL01: Quy trình PT/NS — không Hút đờm' },
 ]);
 
 const taoDanhMucQuyTacNoiBo = () => {

@@ -67,6 +67,7 @@
     "qa:chuyen-de-thuc-chien": "node ./scripts/qa_chuyen_de_thuc_chien.mjs",
     "qa:config-versioning": "node ./scripts/qa_config_versioning_unit.mjs",
     "qa:cv302-lcs": "node ./scripts/qa_cv302_lcs.mjs",
+    "qa:cv4262-thanhtoan": "node ./scripts/qa_cv4262_thanhtoan.mjs",
     "qa:dvkt-staff-lookup": "node ./scripts/qa_dvkt_staff_lookup.mjs",
     "qa:dvkt-phamvi-nguoi-thuc-hien": "node ./scripts/qa_dvkt_phamvi_nguoi_thuc_hien.mjs",
     "qa:icd10-tt26-ke-don-loc": "node ./scripts/qa_icd10_tt26_ke_don_loc.mjs",

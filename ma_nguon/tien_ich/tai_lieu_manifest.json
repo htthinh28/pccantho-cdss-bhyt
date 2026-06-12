@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T03:05:41.826Z",
+  "generatedAt": "2026-06-12T08:38:47.341Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -929,6 +929,16 @@
         "the_tri_thuc",
         "ai_huan_luyen",
         "thuoc"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_Cong_van_4262_BHXH_CSYT_thanh_toan.md",
+      "relPath": "The_tri_thuc_Cong_van_4262_BHXH_CSYT_thanh_toan.html",
+      "title": "Thẻ tri thức: Công văn 4262/BHXH-CSYT — thanh toán chi phí KCB BHYT",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
       ]
     },
     {
