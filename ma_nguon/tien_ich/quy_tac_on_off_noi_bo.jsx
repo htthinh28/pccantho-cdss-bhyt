@@ -180,6 +180,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-CDHA-*', ten_quy_tac: 'Lâm sàng CDHA/DVKT (CLN-CDHA-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-DVKT-*', ten_quy_tac: 'Lâm sàng XML3: thời điểm khám vs DVKT (CLN-DVKT-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-*', ten_quy_tac: 'Thanh toán BHYT theo Công văn 4262/BHXH-CSYT (CV4262-*)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-*', ten_quy_tac: 'Phạm vi hành nghề & thanh toán theo Công văn 3231/BYT-KCB (CV3231-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-01', ten_quy_tac: 'No-code DVKT: ICD chỉ định phù hợp' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-02', ten_quy_tac: 'No-code DVKT: ICD chống chỉ định' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề (NGUOI_THUC_HIEN; giường bệnh miễn)' },
@@ -243,6 +244,9 @@ const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-23', ten_quy_tac: 'CV4262 §2.3: Bóp bóng Ambu — hồi sức sơ sinh' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-25', ten_quy_tac: 'CV4262 §2.5: Nội soi TMH gói vs đơn lẻ' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-PL01-05', ten_quy_tac: 'CV4262 PL01: Quy trình PT/NS — không Hút đờm' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-02', ten_quy_tac: 'CV3231 §2: Điều dưỡng hạng IV — không TT DVKT điều trị/PHCN' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-13', ten_quy_tac: 'CV3231 §1.3: BS YHCT/RHM được khám bệnh' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-18', ten_quy_tac: 'CV3231 §1.8: Ghi đủ mã NVYT trong ekip' },
 ]);
 
 const taoDanhMucQuyTacNoiBo = () => {

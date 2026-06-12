@@ -15,6 +15,12 @@ import { DANH_MUC_NHAN_SU } from '../thanh_phan/nhan_su';
 import { DANH_MUC_TRANG_THIET_BI_M06 } from '../thanh_phan/trang_thiet_bi';
 import { DU_LIEU_DVKT_PHAMVI_MAPPING } from './dvkt_phamvi_mapping_seed';
 import {
+  coVanBanChoPhepDvkt,
+  laBacSiHoacYSy,
+  laDongCongKhamXml3,
+  moRongPhamViNhanSuCv3231,
+} from './du_lieu_cv3231_phamvi';
+import {
     danhGiaTruocKhiTaiDvktDataset,
     ghiNhatKyAuditConfigSync,
     hydrateDvktTableFromFirebase,
@@ -1028,7 +1034,8 @@ const buildEngineConfig = async () => {
       ...collectFieldValues(row, STAFF_LOOKUP_ID_KEYS),
       ...parseList(pickValue(row, ['ALIAS_IDS', 'IDS'])),
     ].map((x) => toUpper(x)).filter(Boolean);
-    const scopes = new Set(collectListValues(row, ['PHAMVI_CM', 'PHAMVI', 'PHAMVI_CMBS']).map((v) => normalizeToken(v)));
+    const scopes = new Set(collectListValues(row, ['PHAMVI_CM', 'PHAMVI']).map((v) => normalizeToken(v)).filter((v) => /^\d+$/.test(v)));
+    collectListValues(row, ['PHAMVI_CMBS']).map((v) => normalizeToken(v)).filter((v) => /^\d+$/.test(v)).forEach((v) => scopes.add(v));
     const practiceFromKey = dateToKey(pickValue(row, ['TU_NGAY', 'NGAY_HL_TU', 'NGAY_BAT_DAU', 'NGAY_HIEU_LUC_TU', 'NGAYCAP_CCHN']));
     const practiceToKey = dateToKey(pickValue(row, ['DEN_NGAY', 'NGAY_HL_DEN', 'NGAY_KET_THUC', 'NGAY_HIEU_LUC_DEN', 'NGAYHET_CCHN']));
     const licenseIssueKey = dateToKey(pickValue(row, ['NGAYCAP_CCHN', 'NGAY_CAP_CCHN', 'NGAYCAP']));
@@ -1741,11 +1748,18 @@ const checkPhamVi = ({ rule, line, config }) => {
     );
   }
 
+  if (coVanBanChoPhepDvkt(staff, line.maTuongDuong)) return pass();
+
+  // CV 3231/BYT-KCB §1.2–§1.3: BS/Y sỹ được khám bệnh & thanh toán công khám.
+  if (laDongCongKhamXml3(line, config.dmKhamSet) && laBacSiHoacYSy(staff)) return pass();
+
+  const scopesHieuLuc = moRongPhamViNhanSuCv3231(staff);
+
   if (!allowedScopes || allowedScopes.size === 0) return pass();
-  if (!staff.scopes || staff.scopes.size === 0) {
+  if (!scopesHieuLuc || scopesHieuLuc.size === 0) {
     return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} (NGUOI_THUC_HIEN) thiếu PHAMVI_CM/PHAMVI_CMBS để đối chiếu DVKT ${nhomDvkt}.`, 'PHAMVI_CM');
   }
-  if (hasIntersectionSet(staff.scopes, allowedScopes)) return pass();
+  if (hasIntersectionSet(scopesHieuLuc, allowedScopes)) return pass();
   return fail(
     'REJECT',
     `${rule.ALERT_MESSAGE} ${nhanSuText} (NGUOI_THUC_HIEN) không có phạm vi hành nghề phù hợp cho DVKT ${nhomDvkt}; yêu cầu [${Array.from(allowedScopes).join(', ')}].`,
