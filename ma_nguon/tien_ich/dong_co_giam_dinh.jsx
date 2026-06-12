@@ -52,6 +52,7 @@ import { damBaoSeedLuatThuocMuc8 } from './seed_luat_thuoc_muc8';
 import { laCapCuuTheoXml1, viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_cap_cuu';
 import { giamDinhCv302Bhyt } from './giam_dinh_cv302_bhyt';
 import { giamDinhCv4262Bhyt } from './giam_dinh_cv4262_bhyt';
+import { giamDinhCv3231Bhyt } from './giam_dinh_cv3231_bhyt';
 import { laMotLanKcbDuoi15PhanTramLcs as laMotLanKcbDuoi15PhanTramLCS } from './muc_luong_co_so_bhyt';
 import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
@@ -557,6 +558,7 @@ const CO_SO_PHAP_LY_THEO_PREFIX_MA_LUAT = Object.freeze({
     'CLN-CDHA-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-DVKT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CV4262-': 'Công văn 4262/BHXH-CSYT (28/10/2016) — thanh toán chi phí KCB BHYT',
+    'CV3231-': 'Công văn 3231/BYT-KCB (27/05/2025) — phạm vi hành nghề & thanh toán KCB BHYT',
     'CLN-GIUONG-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-PTTT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-CT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
@@ -6573,6 +6575,7 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     allLỗi = allLỗi.concat(giamDinhNguoiThucHienKhamVaDvktXml3(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhCongKhamTmhVaNoiSoiTrungMocXml3(hoSo));
     allLỗi = allLỗi.concat(giamDinhCv4262Bhyt(hoSo, danhMuc));
+    allLỗi = allLỗi.concat(giamDinhCv3231Bhyt(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhGiuong(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhPTTT(hoSo));
     allLỗi = allLỗi.concat(giamDinhChuyenTuyen(hoSo));

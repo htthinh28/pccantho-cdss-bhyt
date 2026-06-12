@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T08:38:47.341Z",
+  "generatedAt": "2026-06-12T10:00:25.453Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -929,6 +929,16 @@
         "the_tri_thuc",
         "ai_huan_luyen",
         "thuoc"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_Cong_van_3231_BYT_KCB_pham_vi_thanh_toan.md",
+      "relPath": "The_tri_thuc_Cong_van_3231_BYT_KCB_pham_vi_thanh_toan.html",
+      "title": "Thẻ tri thức: Công văn 3231/BYT-KCB — phạm vi hành nghề & thanh toán BHYT",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
       ]
     },
     {
