@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+    ActivityIndicator,
     Alert,
     Modal,
     Platform,
@@ -23,7 +24,14 @@ import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import { capNhatTaiKhoanTheoEmail, docDanhSachTaiKhoan, ghiNhatKyHeThong, layNhatKyHeThong, luuDanhSachTaiKhoan, themTaiKhoanMoi } from '../tien_ich/nhat_ky_he_thong';
 import { docPhienDangNhap } from '../tien_ich/phien_dang_nhap';
+import { laMoiTruongWeb } from '../tien_ich/luu_tru_he_thong';
 import {
+    docPhieuBanTuFileWeb,
+    phucHoiPhieuBanTaiKhoanRbac,
+    xuatPhieuBanTaiKhoanRbacWeb,
+} from '../tien_ich/sao_luu_tai_khoan_rbac';
+import {
+    damBaoMigratePhanQuyen,
     dongBoLegacyAclTheoRBAC,
     kiemTraQuyen,
     luuRBAC,
@@ -142,6 +150,8 @@ export default function ManHinhPhanQuyen({ navigation }) {
   const [mkAdminXacNhan, setMkAdminXacNhan] = useState('');
   const [buocDoiSauDoiAdmin, setBuocDoiSauDoiAdmin] = useState(true);
   const [dangLuuMatKhauAdmin, setDangLuuMatKhauAdmin] = useState(false);
+  const [dangXuatBackupTaiKhoan, setDangXuatBackupTaiKhoan] = useState(false);
+  const [dangPhucHoiBackupTaiKhoan, setDangPhucHoiBackupTaiKhoan] = useState(false);
 
   const selectedUser = useMemo(
     () => users.find((u) => u.email === selectedUserEmail) || null,
@@ -369,8 +379,72 @@ export default function ManHinhPhanQuyen({ navigation }) {
   }, []);
   /* eslint-enable react-hooks/exhaustive-deps */
 
+  const xuatBackupTaiKhoanRbac = async () => {
+    if (dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan) return;
+    if (!laMoiTruongWeb()) {
+      Alert.alert('Sao lưu', 'Xuất file JSON chỉ hỗ trợ trên trình duyệt web.');
+      return;
+    }
+    setDangXuatBackupTaiKhoan(true);
+    try {
+      const ketQua = await xuatPhieuBanTaiKhoanRbacWeb({ reason: 'PHAN_QUYEN_EXPORT' });
+      if (!ketQua?.ok) {
+        Alert.alert('Sao lưu', ketQua?.message || 'Không thể xuất file sao lưu.');
+        return;
+      }
+      Alert.alert(
+        'Sao lưu thành công',
+        `Đã xuất ${ketQua.account_count || 0} tài khoản + cấu hình RBAC ra file ${ketQua.fileName}.`
+      );
+    } catch (e) {
+      Alert.alert('Sao lưu', e?.message || 'Không thể xuất file sao lưu.');
+    } finally {
+      setDangXuatBackupTaiKhoan(false);
+    }
+  };
+
+  const xuLyPhucHoiBackupTaiKhoanRbac = async (event) => {
+    const file = event?.target?.files?.[0];
+    if (!file) return;
+    event.target.value = null;
+    if (dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan) return;
+
+    Alert.alert(
+      'Phục hồi sao lưu',
+      'File sẽ ghi đè danh sách tài khoản và cấu hình phân quyền hiện tại. Tiếp tục?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Phục hồi',
+          style: 'destructive',
+          onPress: async () => {
+            setDangPhucHoiBackupTaiKhoan(true);
+            try {
+              const payload = await docPhieuBanTuFileWeb(file);
+              const ketQua = await phucHoiPhieuBanTaiKhoanRbac(payload, {
+                nguoiThucHien: adminEmail || 'ADMIN',
+                ghiDe: true,
+              });
+              if (!ketQua?.ok) {
+                Alert.alert('Phục hồi', ketQua?.message || 'Không thể phục hồi từ file.');
+                return;
+              }
+              await khoiTao();
+              Alert.alert('Phục hồi thành công', ketQua.message || 'Đã phục hồi tài khoản và phân quyền.');
+            } catch (e) {
+              Alert.alert('Phục hồi', e?.message || 'Không thể phục hồi từ file.');
+            } finally {
+              setDangPhucHoiBackupTaiKhoan(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const khoiTao = async () => {
     try {
+      await damBaoMigratePhanQuyen();
       const session = await docPhienDangNhap();
       const role = session.role;
       const account = session.email;
@@ -1064,6 +1138,46 @@ export default function ManHinhPhanQuyen({ navigation }) {
         </View>
       </View>
 
+      <View style={styles.backupRow}>
+        <Text style={styles.hint}>
+          Tài khoản và phân quyền lưu trong IndexedDB — không mất khi build mới. Nên xuất file JSON định kỳ để phòng khi xóa dữ liệu trình duyệt.
+        </Text>
+        <View style={styles.formRow}>
+          <TouchableOpacity
+            style={[styles.minorBtn, (dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan) && styles.btnDisabled]}
+            onPress={xuatBackupTaiKhoanRbac}
+            disabled={dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan}
+          >
+            {dangXuatBackupTaiKhoan
+              ? <ActivityIndicator color={CD.text.primary} />
+              : <Text style={styles.minorBtnText}>Xuất sao lưu JSON</Text>}
+          </TouchableOpacity>
+          {Platform.OS === 'web' && (
+            <>
+              <input
+                type="file"
+                accept=".json,application/json"
+                onChange={xuLyPhucHoiBackupTaiKhoanRbac}
+                style={{ display: 'none' }}
+                id="import-tai-khoan-rbac-backup"
+              />
+              <TouchableOpacity
+                style={[styles.minorBtn, (dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan) && styles.btnDisabled]}
+                onPress={() => {
+                  const input = document.getElementById('import-tai-khoan-rbac-backup');
+                  if (input) input.click();
+                }}
+                disabled={dangXuatBackupTaiKhoan || dangPhucHoiBackupTaiKhoan}
+              >
+                {dangPhucHoiBackupTaiKhoan
+                  ? <ActivityIndicator color={CD.text.primary} />
+                  : <Text style={styles.minorBtnText}>Phục hồi từ JSON</Text>}
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+
       <View style={styles.formRow}>
         <TextInput
           style={styles.input}
@@ -1715,6 +1829,14 @@ const styles = StyleSheet.create({
   sectionLabel: { color: CD.text.primary, fontSize: 18, fontWeight: '800', marginTop: 10, marginBottom: 6 },
 
   summaryRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10, marginBottom: 10 },
+  backupRow: {
+    marginBottom: 10,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
   summaryCard: {
     minWidth: 150,
     borderRadius: 12,

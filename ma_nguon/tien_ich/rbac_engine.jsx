@@ -1,5 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
+import {
+  damBaoMigrateKhoaHeThong,
+  docChuoiHeThong,
+  ghiChuoiHeThong,
+  KHOA_PHIEN_EMAIL,
+  KHOA_PHIEN_ROLE,
+  layKhoaLegacyAcl,
+  voiKhoaGhiHeThong,
+  xoaChuoiHeThong,
+} from './luu_tru_he_thong';
 
 export const RBAC_KEYS = {
   RESOURCES: 'RBAC_RESOURCES_V1',
@@ -11,52 +19,19 @@ export const RBAC_KEYS = {
 
 export const RBAC_ACTIONS = ['VIEW', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT'];
 
-const laMoiTruongWeb = () => Platform.OS === 'web' && typeof window !== 'undefined' && !!window.localStorage;
+const docStorage = (key) => docChuoiHeThong(key);
+const ghiStorage = (key, value) => ghiChuoiHeThong(key, value);
+const xoaStorage = (key) => xoaChuoiHeThong(key);
 
-const docStorage = async (key) => {
-  if (laMoiTruongWeb()) {
-    try {
-      const localValue = window.localStorage.getItem(key);
-      if (localValue !== null && localValue !== undefined) return localValue;
-    } catch {
-      // fallback AsyncStorage
-    }
-  }
-
-  return AsyncStorage.getItem(key);
-};
-
-const ghiStorage = async (key, value) => {
-  const normalizedValue = String(value || '');
-  const tasks = [AsyncStorage.setItem(key, normalizedValue).catch(() => {})];
-
-  if (laMoiTruongWeb()) {
-    tasks.push((async () => {
-      try {
-        window.localStorage.setItem(key, normalizedValue);
-      } catch {
-        // ignore localStorage write error
-      }
-    })());
-  }
-
-  await Promise.all(tasks);
-};
-
-const xoaStorage = async (key) => {
-  const tasks = [AsyncStorage.removeItem(key).catch(() => {})];
-
-  if (laMoiTruongWeb()) {
-    tasks.push((async () => {
-      try {
-        window.localStorage.removeItem(key);
-      } catch {
-        // ignore localStorage remove error
-      }
-    })());
-  }
-
-  await Promise.all(tasks);
+/** Migrate RBAC + ACL legacy sang IndexedDB — gọi khi mở phân quyền / đăng nhập. */
+export const damBaoMigratePhanQuyen = async () => {
+  const keys = [
+    ...Object.values(RBAC_KEYS),
+    KHOA_PHIEN_EMAIL,
+    KHOA_PHIEN_ROLE,
+    ...layKhoaLegacyAcl(),
+  ];
+  return damBaoMigrateKhoaHeThong(keys);
 };
 
 export const xoaLegacyAclTheoEmail = async (email) => {
@@ -354,7 +329,7 @@ export const taiRBAC = async () => {
   return { resources, roles, groups, matrix: matrixAdmin, userBindings };
 };
 
-export const luuRBAC = async (cfg) => {
+export const luuRBAC = async (cfg) => voiKhoaGhiHeThong(async () => {
   const userBindings = {};
   Object.entries(cfg?.userBindings || {}).forEach(([email, binding]) => {
     const emailChuan = String(email || '').trim().toLowerCase();
@@ -383,8 +358,14 @@ export const luuRBAC = async (cfg) => {
     ghiStorage(RBAC_KEYS.USER_BINDINGS, JSON.stringify(payload.userBindings || {})),
   ]);
 
-  return taiRBAC();
-};
+  const saved = await taiRBAC();
+  const soBindingGhi = Object.keys(userBindings).length;
+  const soBindingDoc = Object.keys(saved?.userBindings || {}).length;
+  if (soBindingGhi > 0 && soBindingDoc < soBindingGhi) {
+    throw new Error('Không thể xác nhận dữ liệu phân quyền sau khi lưu vào storage.');
+  }
+  return saved;
+});
 
 const layBindingNguoiDung = (cfg, email, fallbackRole = 'USER') => {
   const emailChuan = String(email || '').trim().toLowerCase();
