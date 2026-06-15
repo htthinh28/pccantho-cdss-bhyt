@@ -27,6 +27,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
+import KhuVucCuonCoThanhCuon from '../thanh_phan/khu_vuc_cuon_co_thanh_cuon';
 import KhungTroLyTriThucChat from '../thanh_phan/khung_tro_ly_tri_thuc_chat';
 import { BoChonChuDe, CD } from '../tien_ich/chu_de_giao_dien';
 import {
@@ -1269,7 +1270,7 @@ ${phanDongKhoi.join('\n')}
               </Text>
             </View>
           ) : null}
-          <ScrollView style={styles.sidebar_scroll} showsVerticalScrollIndicator={false}>
+          <KhuVucCuonCoThanhCuon style={styles.sidebar_scroll}>
             <View style={styles.module_grid_sidebar}>
               {menuSidebar.map((item) => {
                 const cfg = MODULE_ICONS[item.id] || { icon: '📦', mau: '#607D8B', mauNhat: '#ECEFF1' };
@@ -1335,10 +1336,10 @@ ${phanDongKhoi.join('\n')}
                 </Pressable>
               </View>
             </View>
-          </ScrollView>
+          </KhuVucCuonCoThanhCuon>
         </View>
 
-        <ScrollView style={styles.dashboard_main} showsVerticalScrollIndicator={false}>
+        <KhuVucCuonCoThanhCuon style={styles.dashboard_main}>
 
         {/* ── 4. KHU VỰC VẬN HÀNH THỐNG NHẤT (thẻ nạp gọn) ── */}
         <View style={[styles.section_block, styles.section_block_import_tight]}>
@@ -1879,7 +1880,7 @@ ${phanDongKhoi.join('\n')}
 
           <ChanTrangUngDung style={{ marginBottom: 28 }} />
 
-        </ScrollView>
+        </KhuVucCuonCoThanhCuon>
       </View>
 
       {menuTriThucPopup.length > 0 ? (
