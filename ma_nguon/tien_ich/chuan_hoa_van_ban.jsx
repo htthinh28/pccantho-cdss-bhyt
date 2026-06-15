@@ -134,8 +134,6 @@ export const chuanHoaVanBanLoiFont = (input) => {
   return badScore(afterFragments) <= bestScore ? afterFragments : best;
 };
 
-import { rutGonPhanHoiQuyTac } from './rut_gon_phan_hoi_quy_tac';
-
 export const chuanHoaCanhBaoGiamDinh = (item) => {
   if (!item || typeof item !== 'object') return item;
   const next = { ...item };
