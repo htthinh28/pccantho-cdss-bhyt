@@ -29,6 +29,7 @@ import * as XLSX from 'xlsx';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
 import KhuVucCuonCoThanhCuon from '../thanh_phan/khu_vuc_cuon_co_thanh_cuon';
 import KhungTroLyTriThucChat from '../thanh_phan/khung_tro_ly_tri_thuc_chat';
+import ThanhDieuKhienPanel, { stylePanelGhim } from '../thanh_phan/thanh_dieu_khien_panel';
 import { BoChonChuDe, CD } from '../tien_ich/chu_de_giao_dien';
 import {
   CHE_DO_GIAM_DINH,
@@ -72,6 +73,12 @@ import NhapFileXML, {
   xuLyMotFileXmlChoBanGiamDinh,
 } from '../tien_ich/nhap_file_xml';
 import { BREAKPOINTS, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
+import {
+  luuTuyChonPanelTongQuan,
+  PANEL_TONG_QUAN,
+  taiTuyChonPanelTongQuan,
+  trangThaiPanelMacDinh,
+} from '../tien_ich/tong_quan_panel_prefs';
 
 const LOGO_PC = 'https://i.ibb.co/nNr9SQYr/logo-pc.png';
 
@@ -399,6 +406,9 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [importCardMoChiTietKt, setImportCardMoChiTietKt] = useState(false);
   const [importCardMoNangCao, setImportCardMoNangCao] = useState(false);
   const [popupTriThucVisible, setPopupTriThucVisible] = useState(false);
+  /** Ẩn/hiện + ghim thẻ Điều hướng và bộ lọc QPS (lưu AsyncStorage) */
+  const [panelUi, setPanelUi] = useState(trangThaiPanelMacDinh);
+  const panelUiRef = useRef(panelUi);
   /** menu: chọn Trợ lý / Tri thức GD · chat: cửa sổ chat RAG */
   const [triThucModalPhan, setTriThucModalPhan] = useState('menu');
   const animTriThucBackdrop = useRef(new Animated.Value(0)).current;
@@ -454,6 +464,37 @@ const ManHinhTongQuan = ({ navigation }) => {
       console.error("Lỗi tải phân quyền:", e);
     }
   };
+
+  const capNhatPanelUi = (panelId, patch) => {
+    setPanelUi((prev) => {
+      const next = {
+        ...prev,
+        [panelId]: { ...prev[panelId], ...patch },
+      };
+      panelUiRef.current = next;
+      void luuTuyChonPanelTongQuan(next);
+      return next;
+    });
+  };
+
+  const chuyenTrangThaiAnPanel = (panelId) => {
+    capNhatPanelUi(panelId, { an: !panelUiRef.current[panelId]?.an });
+  };
+
+  const chuyenTrangThaiGhimPanel = (panelId) => {
+    capNhatPanelUi(panelId, { ghim: !panelUiRef.current[panelId]?.ghim });
+  };
+
+  useEffect(() => {
+    let huy = false;
+    (async () => {
+      const prefs = await taiTuyChonPanelTongQuan();
+      if (huy) return;
+      panelUiRef.current = prefs;
+      setPanelUi(prefs);
+    })();
+    return () => { huy = true; };
+  }, []);
 
   useEffect(() => {
     fetchThongTinHeThong();
@@ -1254,14 +1295,29 @@ ${phanDongKhoi.join('\n')}
           dungSidebarTrai
             ? { width: rongSidebarDash }
             : styles.sidebar_dashboard_compact,
+          panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an && styles.panel_card_collapsed,
+          panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an && !dungSidebarTrai && { maxHeight: undefined },
+          stylePanelGhim(panelUi[PANEL_TONG_QUAN.DIEU_HUONG].ghim),
         ]}>
           <View style={styles.sidebar_header}>
             <View style={[styles.sidebar_header_accent, { backgroundColor: CD.brand.mauChinh }]} />
             <View style={styles.sidebar_header_inner}>
-              <Text style={styles.sidebar_title}>Điều hướng</Text>
-              <Text style={styles.sidebar_subtitle}>Module nghiệp vụ</Text>
+              <ThanhDieuKhienPanel
+                tieuDe="Điều hướng"
+                phuDe="Module nghiệp vụ"
+                an={panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an}
+                ghim={panelUi[PANEL_TONG_QUAN.DIEU_HUONG].ghim}
+                onToggleAn={() => chuyenTrangThaiAnPanel(PANEL_TONG_QUAN.DIEU_HUONG)}
+                onToggleGhim={() => chuyenTrangThaiGhimPanel(PANEL_TONG_QUAN.DIEU_HUONG)}
+              />
             </View>
           </View>
+          {panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an ? (
+            <View style={styles.panel_collapsed_body}>
+              <Text style={styles.panel_collapsed_hint}>Thẻ điều hướng đang ẩn — bấm 👁 để mở lại.</Text>
+            </View>
+          ) : (
+            <>
           {Platform.OS === 'web' ? (
             <View style={styles.sidebar_hint_pill}>
               <Text style={styles.sidebar_hint_bullet}>●</Text>
@@ -1337,6 +1393,8 @@ ${phanDongKhoi.join('\n')}
               </View>
             </View>
           </KhuVucCuonCoThanhCuon>
+            </>
+          )}
         </View>
 
         <KhuVucCuonCoThanhCuon style={styles.dashboard_main}>
@@ -1511,7 +1569,27 @@ ${phanDongKhoi.join('\n')}
             </View>
           </View>
 
-          <View style={styles.rule_filter_panel}>
+          <View style={[
+            styles.rule_filter_panel,
+            panelUi[PANEL_TONG_QUAN.LOC_QPS].an && styles.panel_card_collapsed,
+            stylePanelGhim(panelUi[PANEL_TONG_QUAN.LOC_QPS].ghim),
+          ]}>
+            <View style={styles.rule_filter_panel_head}>
+              <ThanhDieuKhienPanel
+                tieuDe="Bộ lọc vi phạm"
+                phuDe="Ưu tiên · nhóm nghiệp vụ · loại KCB · khoa"
+                an={panelUi[PANEL_TONG_QUAN.LOC_QPS].an}
+                ghim={panelUi[PANEL_TONG_QUAN.LOC_QPS].ghim}
+                onToggleAn={() => chuyenTrangThaiAnPanel(PANEL_TONG_QUAN.LOC_QPS)}
+                onToggleGhim={() => chuyenTrangThaiGhimPanel(PANEL_TONG_QUAN.LOC_QPS)}
+              />
+            </View>
+            {panelUi[PANEL_TONG_QUAN.LOC_QPS].an ? (
+              <Text style={styles.panel_collapsed_hint_dark}>
+                Bộ lọc đang ẩn — bấm 👁 trên thanh tiêu đề để hiện lại.
+              </Text>
+            ) : (
+            <>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator
@@ -1666,6 +1744,8 @@ ${phanDongKhoi.join('\n')}
             <Text style={styles.rule_filter_status}>
               Hiển thị {danhMucDaLoc.length}/{thongKe.danhMuc.length} quy tắc · {danhSachLoiChiTietSauLocXuat.length} dòng lỗi khớp lọc (Excel/XML)
             </Text>
+            </>
+            )}
           </View>
 
           <View style={styles.table_card}>
@@ -2255,6 +2335,30 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginTop: 4,
     fontFamily: CD.font.family,
+  },
+  panel_card_collapsed: {
+    maxHeight: undefined,
+  },
+  panel_collapsed_body: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingBottom: 14,
+  },
+  panel_collapsed_hint: {
+    fontSize: 12,
+    color: '#94A3B8',
+    fontFamily: CD.font.family,
+    lineHeight: 18,
+  },
+  panel_collapsed_hint_dark: {
+    fontSize: 12,
+    color: CD.text.muted,
+    fontFamily: CD.font.family,
+    lineHeight: 18,
+    opacity: 0.9,
+  },
+  rule_filter_panel_head: {
+    marginBottom: 2,
   },
   sidebar_hint_pill: {
     flexDirection: 'row',
