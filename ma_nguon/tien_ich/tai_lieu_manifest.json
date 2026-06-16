@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T10:00:25.453Z",
+  "generatedAt": "2026-06-16T14:19:01.073Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -1141,6 +1141,17 @@
         "the_tri_thuc",
         "ai_huan_luyen",
         "phap_ly"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_ICD10_ma_kep_dau_gam_dau_sao.md",
+      "relPath": "The_tri_thuc_ICD10_ma_kep_dau_gam_dau_sao.html",
+      "title": "THẺ TRI THỨC: ICD-10 — HỆ THỐNG MÃ KÉP († DẤU GĂM / * DẤU SAO)",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
       ]
     },
     {

@@ -216,6 +216,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_THUOC', ma_luat: 'THUOC*', ten_quy_tac: 'Tất cả mã THUOC_* (luật thuốc seed / NoCode XML2)' },
   { tab_id: 'LUAT_DU_LIEU', ma_luat: 'XML*', ten_quy_tac: 'Tất cả mã XML_* (kiểm tra số học / cấu trúc XML130)' },
   { tab_id: 'LUAT_DU_LIEU', ma_luat: 'STRUCT*', ten_quy_tac: 'Tất cả mã STRUCT-*' },
+  { tab_id: 'LUAT_DU_LIEU', ma_luat: 'ICD-KEP-*', ten_quy_tac: 'ICD-10 mã kép †/* (phân loại kép)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT*', ten_quy_tac: 'Tất cả mã DVKT_*' },
 ]);
 
