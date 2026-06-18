@@ -1,5 +1,6 @@
 import { chuanHoaCanhBaoGiamDinh } from './chuan_hoa_van_ban';
 import { suyRaNamespaceVaNguonQuyTac } from './dong_co_giam_dinh';
+import { loiKhopBoLocIcd10ViPham } from './icd10_loc_vi_pham';
 import { DANH_MUC_QUY_TAC_NOI_BO, khopMaLuatTheoMau, suyRaThongTinQuanTriQuyTac } from './quy_tac_on_off_noi_bo';
 
 export const THU_TU_UU_TIEN_CANH_BAO = Object.freeze({
@@ -851,6 +852,7 @@ export const locDanhSachLoiChiTiet = (danhSachChiTiet = [], boLoc = {}) => {
   const nhomViPhamLoc = String(boLoc?.nhomViPham || NHOM_VI_PHAM_TAT_CA).trim();
   const nhomCapLoaiKcbLoc = String(boLoc?.nhomCapLoaiKcb802 ?? NHOM_VI_PHAM_TAT_CA).trim();
   const maKhoaLoc = String(boLoc?.maKhoa ?? NHOM_VI_PHAM_TAT_CA).trim();
+  const boLocIcd10 = String(boLoc?.boLocIcd10 ?? '').trim();
 
   return (Array.isArray(danhSachChiTiet) ? danhSachChiTiet : []).filter((item) => {
     if (loaiHienThi !== 'TAT_CA' && item.loai_hien_thi !== loaiHienThi) return false;
@@ -864,6 +866,7 @@ export const locDanhSachLoiChiTiet = (danhSachChiTiet = [], boLoc = {}) => {
       const mk = item.ma_khoa_chuan || 'KHONG_RO';
       if (mk !== maKhoaLoc) return false;
     }
+    if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(item, boLocIcd10)) return false;
     if (!tuKhoa) return true;
 
     const noiDungTim = chuanHoaTokenThongKeLoi([

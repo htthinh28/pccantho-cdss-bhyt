@@ -56,6 +56,13 @@ import {
   phangHoaDanhSachLoiChiTiet,
   tongHopQuyTacTuDanhSachChiTiet,
 } from '../tien_ich/thong_ke_loi_dung_chung';
+import {
+  BO_LOC_ICD10_VI_PHAM,
+  BO_LOC_ICD10_VI_PHAM_TAT_CA,
+  demLoiTheoBoLocIcd10,
+  loiKhopBoLocIcd10ViPham,
+  PHIEN_BAN_ICD10_TT06,
+} from '../tien_ich/icd10_loc_vi_pham';
 
 // [CẬP NHẬT LÕI]: Thống nhất dùng kho_du_lieu để đồng bộ với man_hinh_kho_luu_tru
 import { gomTrungLapCanhBaoTheoMaLuatVaNoiDung, xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
@@ -379,6 +386,7 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [boLocNhomViPham, setBoLocNhomViPham] = useState(NHOM_VI_PHAM_TAT_CA);
   const [boLocNhomCapLoaiKcb, setBoLocNhomCapLoaiKcb] = useState(NHOM_VI_PHAM_TAT_CA);
   const [boLocMaKhoa, setBoLocMaKhoa] = useState(NHOM_VI_PHAM_TAT_CA);
+  const [boLocIcd10, setBoLocIcd10] = useState(BO_LOC_ICD10_VI_PHAM_TAT_CA);
   const [tuKhoaLocQuyTac, setTuKhoaLocQuyTac] = useState('');
   const [tuKhoaLocHoSo, setTuKhoaLocHoSo] = useState('');
   const [tuKhoaTraCuuChiTiet, setTuKhoaTraCuuChiTiet] = useState('');
@@ -556,6 +564,11 @@ const ManHinhTongQuan = ({ navigation }) => {
         if (!khopKhoa) return false;
       }
 
+      if (boLocIcd10) {
+        const khopIcd = (item.chi_tiet_phat_sinh || []).some((ct) => loiKhopBoLocIcd10ViPham(ct, boLocIcd10));
+        if (!khopIcd) return false;
+      }
+
       const chuoiQuyTac = chuanHoaToken([
         item.ma_luat,
         item.ten_quy_tac,
@@ -579,7 +592,7 @@ const ManHinhTongQuan = ({ navigation }) => {
   };
 
   const danhMucDaLoc = locDanhMucQuyTac(thongKe.danhMuc);
-  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
+  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || boLocIcd10 !== BO_LOC_ICD10_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
   const danhSachLoiChiTietDashboard = useMemo(() => phangHoaDanhSachLoiChiTiet(rawDanhSach), [rawDanhSach]);
 
   /** Từng dòng lỗi (chi tiết) sau bộ lọc QPS — dùng chung xuất Excel / XML, khớp ưu tiên, nhóm NV, loại KCB, khoa, 2 ô từ khóa. */
@@ -590,6 +603,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       nhomViPham: boLocNhomViPham,
       nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
       maKhoa: boLocMaKhoa,
+      boLocIcd10,
       tuKhoa: '',
     });
     const q1 = chuanHoaToken(tuKhoaLocQuyTac);
@@ -605,7 +619,12 @@ const ManHinhTongQuan = ({ navigation }) => {
       }
       return true;
     });
-  }, [rawDanhSach, boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, tuKhoaLocQuyTac, tuKhoaLocHoSo]);
+  }, [rawDanhSach, boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10, tuKhoaLocQuyTac, tuKhoaLocHoSo]);
+
+  const demIcd10TheoBoLoc = useMemo(
+    () => demLoiTheoBoLocIcd10(danhSachLoiChiTietDashboard),
+    [danhSachLoiChiTietDashboard],
+  );
 
   const thaKhoaTuDuLieu = useMemo(() => {
     const map = new Map();
@@ -625,7 +644,8 @@ const ManHinhTongQuan = ({ navigation }) => {
     nhomViPham: boLocNhomViPham,
     nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
     maKhoa: boLocMaKhoa,
-  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+    boLocIcd10,
+  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
   const ketQuaTraCuuChiTietHienThi = ketQuaTraCuuChiTiet.slice(0, 60);
 
   useEffect(() => {
@@ -637,7 +657,7 @@ const ManHinhTongQuan = ({ navigation }) => {
     if (!daTonTai) {
       setKhoaQuyTacDangChon(danhMucDaLoc[0].khoa);
     }
-  }, [boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
+  }, [boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
 
   const tinhToanDashboard = (danhSachHoSo) => {
     const tongSo = danhSachHoSo.length;
@@ -657,9 +677,10 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     });
-  }, [quyTacDangChon, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacDangChon, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const chiTietModalDaLoc = useMemo(() => {
     const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
@@ -667,6 +688,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     });
     const q = chuanHoaToken(tuKhoaLocChiTietModal).trim();
@@ -685,7 +707,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       ].filter(Boolean).join(' | '));
       return s.includes(q);
     });
-  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const tongCaModalSauLocBoLoc = useMemo(() => {
     const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
@@ -693,9 +715,10 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     }).length;
-  }, [quyTacChoModalChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacChoModalChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const timHoSoTrongKhoTheoMaLK = (maLK) => {
     const m = chuanHoaMaLK(maLK);
@@ -1577,7 +1600,7 @@ ${phanDongKhoi.join('\n')}
             <View style={styles.rule_filter_panel_head}>
               <ThanhDieuKhienPanel
                 tieuDe="Bộ lọc vi phạm"
-                phuDe="Ưu tiên · nhóm nghiệp vụ · loại KCB · khoa"
+                phuDe="Ưu tiên · nhóm NV · loại KCB · khoa · ICD-10"
                 an={panelUi[PANEL_TONG_QUAN.LOC_QPS].an}
                 ghim={panelUi[PANEL_TONG_QUAN.LOC_QPS].ghim}
                 onToggleAn={() => chuyenTrangThaiAnPanel(PANEL_TONG_QUAN.LOC_QPS)}
@@ -1709,6 +1732,41 @@ ${phanDongKhoi.join('\n')}
                   ))}
                 </View>
               </View>
+              <View style={styles.rule_filter_group_sep} />
+              <View style={[styles.rule_filter_group, styles.rule_filter_group_icd]}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={2}>
+                  ICD-10 (TT 06 & lỗi liên quan)
+                </Text>
+                <Text style={styles.rule_filter_section_hint} numberOfLines={1}>
+                  {PHIEN_BAN_ICD10_TT06}
+                </Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  {BO_LOC_ICD10_VI_PHAM.map((opt) => {
+                    const active = boLocIcd10 === opt.id;
+                    const dem = demIcd10TheoBoLoc[opt.id];
+                    return (
+                      <TouchableOpacity
+                        key={`icd10_${opt.id || 'tat-ca'}`}
+                        style={[
+                          styles.rule_filter_chip,
+                          styles.rule_filter_chip_icd,
+                          active && styles.rule_filter_chip_active,
+                          opt.nhom === 'TT06' && styles.rule_filter_chip_icd_tt06,
+                        ]}
+                        onPress={() => setBoLocIcd10(opt.id)}
+                      >
+                        <Text style={[
+                          styles.rule_filter_chip_txt,
+                          active && styles.rule_filter_chip_txt_active,
+                        ]} numberOfLines={2}>
+                          {opt.label}
+                          {dem != null ? ` (${dem})` : ''}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
             </ScrollView>
             <View style={styles.rule_filter_input_row}>
               <TextInput
@@ -1733,6 +1791,7 @@ ${phanDongKhoi.join('\n')}
                     setBoLocNhomViPham(NHOM_VI_PHAM_TAT_CA);
                     setBoLocNhomCapLoaiKcb(NHOM_VI_PHAM_TAT_CA);
                     setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA);
+                    setBoLocIcd10(BO_LOC_ICD10_VI_PHAM_TAT_CA);
                     setTuKhoaLocQuyTac('');
                     setTuKhoaLocHoSo('');
                   }}
@@ -3546,6 +3605,18 @@ const styles = StyleSheet.create({
   rule_filter_chip_nhom: {
     paddingVertical: 6,
     paddingHorizontal: 10,
+  },
+  rule_filter_group_icd: {
+    minWidth: 280,
+    maxWidth: 520,
+  },
+  rule_filter_chip_icd: {
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+    borderColor: 'rgba(129,199,132,0.35)',
+  },
+  rule_filter_chip_icd_tt06: {
+    borderColor: 'rgba(100,181,246,0.4)',
   },
   rule_filter_section_hint: {
     fontSize: 11,

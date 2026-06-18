@@ -73,6 +73,7 @@
     "qa:dvkt-staff-lookup": "node ./scripts/qa_dvkt_staff_lookup.mjs",
     "qa:dvkt-phamvi-nguoi-thuc-hien": "node ./scripts/qa_dvkt_phamvi_nguoi_thuc_hien.mjs",
     "qa:icd10-tt26-ke-don-loc": "node ./scripts/qa_icd10_tt26_ke_don_loc.mjs",
+    "qa:icd10-loc-vi-pham": "node ./scripts/qa_icd10_loc_vi_pham.mjs",
     "qa:cln-thuoc-06": "node ./scripts/qa_cln_thuoc_06_ke_don_30.mjs",
     "qa:kho-chinh-thuc": "node ./scripts/qa_kho_chinh_thuc_luu.mjs",
     "qa:tai-khoan-storage": "node ./scripts/qa_tai_khoan_storage.mjs",
