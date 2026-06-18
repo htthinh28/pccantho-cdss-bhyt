@@ -14,10 +14,14 @@ const nhapSrc = readFileSync(join(root, 'ma_nguon/tien_ich/nhap_file_xml.jsx'), 
 const khoUiSrc = readFileSync(join(root, 'ma_nguon/man_hinh/man_hinh_kho_luu_tru.jsx'), 'utf8');
 
 assert.match(khoSrc, /IDB_STORE_XML_IMPORT\s*=\s*'xml_import'/);
-assert.match(khoSrc, /IDB_VERSION\s*=\s*5/);
+assert.match(khoSrc, /IDB_STORE_HO_SO_GD_LUU_TRU\s*=\s*'ho_so_gd_luu_tru'/);
+assert.match(khoSrc, /IDB_VERSION\s*=\s*6/);
 assert.match(khoSrc, /export const luuBanGhiImportXml/);
 assert.match(khoSrc, /export const layLichSuImportXml/);
 assert.match(khoSrc, /export const layRawXmlImport/);
+assert.match(khoSrc, /export const layDanhSachHoSoGiamDinhLuuTru/);
+assert.match(khoSrc, /export const khoiPhucHoSoGiamDinhVaoKho/);
+assert.match(khoSrc, /ho_so_snapshot/);
 assert.match(khoSrc, /ket_qua_snapshot/);
 assert.match(khoSrc, /MAX_PHIEN_KET_QUA_SNAPSHOT/);
 assert.doesNotMatch(nhapSrc, /CDSS_LICH_SU_XML/);
@@ -26,6 +30,8 @@ assert.match(nhapSrc, /layLichSuImportXml/);
 assert.match(nhapSrc, /raw_xml:\s*rawXML/);
 assert.match(khoUiSrc, /layLichSuImportXml/);
 assert.match(khoUiSrc, /layLichSuPhienGiamDinhTheoMaLK/);
+assert.match(khoUiSrc, /layDanhSachHoSoGiamDinhLuuTru/);
+assert.match(khoUiSrc, /Lịch sử đã giám định/);
 assert.match(khoUiSrc, /LỊCH SỬ FILE XML ĐÃ IMPORT/);
 
 const rutGonDongKetQuaPhien = (row = {}) => ({

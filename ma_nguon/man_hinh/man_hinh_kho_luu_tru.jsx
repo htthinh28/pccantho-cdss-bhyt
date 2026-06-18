@@ -20,13 +20,19 @@ import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { xuatExcelBaoCao } from '../dich_vu/bao_cao_xuat_file';
 import {
+  khoiPhucHoSoGiamDinhVaoKho,
+  layDanhSachHoSoGiamDinhLuuTru,
+  layHoSoGiamDinhLuuTruTheoId,
   layLichSuImportXml,
   layLichSuPhienGiamDinhTheoMaLK,
   layRawXmlImport,
   layTatCaHoSoTuKho,
   luuBanGhiImportXml,
   luuHoSoVaoKho,
+  luuThuCongHoSoGiamDinhVaoLichSu,
+  xoaHoSoGiamDinhLuuTru,
   xoaHoSoKhoiKho,
+  xoaToanBoHoSoGiamDinhLuuTru,
 } from '../tien_ich/kho_du_lieu';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
@@ -50,6 +56,14 @@ const safeAlert = (title, message) => {
 };
 
 const DANH_SACH_XML_HO_SO = ['XML1', 'XML2', 'XML3', 'XML4', 'XML5', 'XML6'];
+
+const TAB_KHO_LAM_VIEC = 'KHO_LAM_VIEC';
+const TAB_LICH_SU_GD = 'LICH_SU_GD';
+
+const DANH_SACH_THE_KHO = Object.freeze([
+  { id: TAB_KHO_LAM_VIEC, label: 'Kho làm việc', icon: '🗄️', hint: 'Hồ sơ đang kiểm tra — có thể xóa khi làm mới kho' },
+  { id: TAB_LICH_SU_GD, label: 'Lịch sử đã giám định', icon: '🕘', hint: 'Lưu bền trên ổ đĩa — không mất khi làm mới kho' },
+]);
 
 const TEN_HIEN_THI_XML = {
   XML1: 'Thông tin hành chính',
@@ -209,10 +223,30 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
   const [maLKGoc, setMaLKGoc] = useState(null);
   const [lichSuImportChiTiet, setLichSuImportChiTiet] = useState([]);
   const [lichSuPhienChiTiet, setLichSuPhienChiTiet] = useState([]);
+  const [tabHienTai, setTabHienTai] = useState(TAB_KHO_LAM_VIEC);
+  const [danhSachLichSuGd, setDanhSachLichSuGd] = useState([]);
+  const [tuKhoaLichSuGd, setTuKhoaLichSuGd] = useState('');
+  const [banGhiLichSuDangXem, setBanGhiLichSuDangXem] = useState(null);
 
   useEffect(() => {
     taiDuLieuKho();
   }, []);
+
+  const taiDanhSachLichSuGd = async () => {
+    try {
+      const ds = await layDanhSachHoSoGiamDinhLuuTru();
+      setDanhSachLichSuGd(Array.isArray(ds) ? ds : []);
+    } catch (e) {
+      console.warn('[KhoLuuTru] Không tải được lịch sử giám định:', e);
+      setDanhSachLichSuGd([]);
+    }
+  };
+
+  useEffect(() => {
+    if (tabHienTai === TAB_LICH_SU_GD) {
+      void taiDanhSachLichSuGd();
+    }
+  }, [tabHienTai]);
 
   const handleNhapXmlGoi130VaoKho = async () => {
     try {
@@ -349,6 +383,77 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
       return ma.includes(searchStr) || ten.includes(searchStr) || loai.includes(searchStr) || maLoaiRaw.includes(searchStr);
     });
   }, [danhSachKho, tuKhoa]);
+
+  const danhSachLichSuGdLoc = useMemo(() => {
+    const searchStr = String(tuKhoaLichSuGd).toLowerCase().trim();
+    return (Array.isArray(danhSachLichSuGd) ? danhSachLichSuGd : []).filter((rec) => {
+      if (!searchStr) return true;
+      const ma = String(rec.ma_lk || '').toLowerCase();
+      const ten = String(rec.ten_bn || '').toLowerCase();
+      const file = String(rec.ten_file_goc || '').toLowerCase();
+      const cd = String(rec.chan_doan_rv || '').toLowerCase();
+      return ma.includes(searchStr) || ten.includes(searchStr) || file.includes(searchStr) || cd.includes(searchStr);
+    });
+  }, [danhSachLichSuGd, tuKhoaLichSuGd]);
+
+  const handleLuuTatCaHoSoGdVaoLichSu = () => {
+    const coGd = danhSachKho.filter((hs) => Array.isArray(hs.ket_qua_giam_dinh));
+    if (coGd.length === 0) {
+      safeAlert('Thông báo', 'Kho làm việc không có hồ sơ đã chạy giám định (chưa có ket_qua_giam_dinh).');
+      return;
+    }
+    safeConfirm(
+      'Lưu vào lịch sử',
+      `Ghi ${coGd.length} hồ sơ đã giám định vào kho lịch sử bền?\n(Dữ liệu không bị xóa khi làm mới kho trên Dashboard.)`,
+      async () => {
+        const dem = await luuThuCongHoSoGiamDinhVaoLichSu(coGd);
+        await taiDanhSachLichSuGd();
+        safeAlert('Thành công', `Đã lưu ${dem} hồ sơ vào lịch sử giám định.`);
+        setTabHienTai(TAB_LICH_SU_GD);
+      },
+    );
+  };
+
+  const handleKhoiPhucTuLichSu = (id) => {
+    safeConfirm('Khôi phục', 'Đưa bản lưu này vào kho làm việc? (Hồ sơ trùng MA_LK sẽ được ghi đè.)', async () => {
+      const ketQua = await khoiPhucHoSoGiamDinhVaoKho(id);
+      if (!ketQua?.ok) {
+        safeAlert('Lỗi', ketQua?.loi || 'Không khôi phục được.');
+        return;
+      }
+      await taiDuLieuKho();
+      safeAlert('Thành công', `Đã khôi phục hồ sơ ${ketQua.ma_lk || ''} vào kho làm việc.`);
+      setTabHienTai(TAB_KHO_LAM_VIEC);
+    });
+  };
+
+  const handleXoaBanGhiLichSu = (id, maLK) => {
+    safeConfirm('Xóa bản lưu', `Xóa vĩnh viễn bản lưu giám định MA_LK ${maLK} khỏi lịch sử?`, async () => {
+      await xoaHoSoGiamDinhLuuTru(id);
+      setBanGhiLichSuDangXem(null);
+      await taiDanhSachLichSuGd();
+      safeAlert('Thành công', 'Đã xóa bản lưu.');
+    });
+  };
+
+  const handleXoaToanBoLichSuGd = () => {
+    if (danhSachLichSuGd.length === 0) return;
+    safeConfirm(
+      'Xóa toàn bộ lịch sử',
+      `Xóa vĩnh viễn ${danhSachLichSuGd.length} bản lưu giám định?\n(Không ảnh hưởng kho làm việc hiện tại.)`,
+      async () => {
+        await xoaToanBoHoSoGiamDinhLuuTru();
+        setBanGhiLichSuDangXem(null);
+        await taiDanhSachLichSuGd();
+        safeAlert('Thành công', 'Đã xóa toàn bộ lịch sử giám định.');
+      },
+    );
+  };
+
+  const handleXemChiTietLichSuGd = async (meta) => {
+    const full = await layHoSoGiamDinhLuuTruTheoId(meta?.id);
+    setBanGhiLichSuDangXem(full || meta);
+  };
 
   const handleMoSuaTheoXml = (maLK, xmlKey, dongIndex = 0, truongLoi = '') => {
     setHoSoDangXem(null);
@@ -876,6 +981,158 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
     );
   };
 
+  const renderModalChiTietLichSuGd = () => {
+    if (!banGhiLichSuDangXem) return null;
+    const rec = banGhiLichSuDangXem;
+    const snap = rec.ho_so_snapshot || {};
+    const dsLoi = Array.isArray(snap.ket_qua_giam_dinh) ? snap.ket_qua_giam_dinh : [];
+    const tt = rec.tom_tat || {};
+    const dem = tt.dem_muc_do || {};
+
+    return (
+      <View style={styles.khung_modal}>
+        <View style={styles.header_modal}>
+          <Text style={styles.tieu_de_modal}>LỊCH SỬ GIÁM ĐỊNH: {String(rec.ten_bn || rec.ma_lk || '').toUpperCase()}</Text>
+          <TouchableOpacity onPress={() => setBanGhiLichSuDangXem(null)} style={styles.btn_dong_modal}>
+            <Text style={styles.txt_btn_dong}>ĐÓNG [X]</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={styles.noi_dung_modal}>
+          <View style={styles.thong_tin_hanh_chinh}>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Mã LK:</Text> {rec.ma_lk}</Text>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Lưu lúc:</Text> {rec.thoi_gian || rec.ghi_luc_iso}</Text>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Loại KCB:</Text> {rec.ma_loai_kcb || '—'}</Text>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Chẩn đoán RV:</Text> {rec.chan_doan_rv || '—'}</Text>
+            <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>Số lỗi:</Text> {rec.so_loi || 0} (E:{dem.Error || 0} W:{dem.Warning || 0} I:{dem.Info || 0})</Text>
+            {rec.ten_file_goc ? (
+              <Text style={styles.chu_thuong}><Text style={styles.chu_dam}>File gốc:</Text> {rec.ten_file_goc}</Text>
+            ) : null}
+          </View>
+
+          <View style={styles.phan_muc}>
+            <Text style={[styles.tieu_de_muc, { color: '#80CBC4', borderColor: 'rgba(128,203,196,0.35)' }]}>📋 CẢNH BÁO ĐÃ LƯU (TỐI ĐA HIỂN THỊ 80 DÒNG)</Text>
+            {dsLoi.length > 0 ? dsLoi.slice(0, 80).map((loi, idx) => (
+              <View key={`${loi.ma_luat || idx}_${idx}`} style={styles.dong_nhat_ky}>
+                <Text style={styles.chu_thuong}>
+                  • <Text style={styles.chu_dam}>{loi.ma_luat || '—'}:</Text> {String(loi.canh_bao || loi.message || '').slice(0, 280)}
+                </Text>
+                <Text style={styles.chu_nho}>
+                  {loi.phan_he || '—'} · {loi.truong_loi || '—'} · {loi.muc_do || '—'}
+                </Text>
+              </View>
+            )) : (
+              <Text style={styles.chu_nho}>Không có cảnh báo trong bản lưu.</Text>
+            )}
+            {dsLoi.length > 80 ? (
+              <Text style={styles.chu_nho}>… và {dsLoi.length - 80} dòng khác (mở khôi phục vào kho để xem đủ).</Text>
+            ) : null}
+          </View>
+
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
+            <TouchableOpacity
+              style={[styles.btn_xem, { paddingHorizontal: 16, paddingVertical: 10 }]}
+              onPress={() => handleKhoiPhucTuLichSu(rec.id)}
+            >
+              <Text style={styles.txt_btn_nho}>↩ Khôi phục vào kho</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btn_xoa, { paddingHorizontal: 16, paddingVertical: 10 }]}
+              onPress={() => handleXoaBanGhiLichSu(rec.id, rec.ma_lk)}
+            >
+              <Text style={styles.txt_btn_nho}>🗑 Xóa bản lưu</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </View>
+    );
+  };
+
+  const renderTabLichSuGiamDinh = () => (
+    <React.Fragment>
+      <View style={styles.khung_canh_bao_lich_su}>
+        <Text style={styles.chu_canh_bao_lich_su}>
+          Lịch sử giám định lưu trên IndexedDB / bộ nhớ máy — không bị xóa khi bấm «Làm mới kho» trên Dashboard.
+          Mỗi lần lưu hồ sơ đã chạy engine sẽ tự ghi thêm bản lưu.
+        </Text>
+      </View>
+      <View style={styles.thanh_cong_cu}>
+        <TextInput
+          style={styles.o_tim_kiem}
+          placeholder="🔍 Mã LK, tên BN, file XML, chẩn đoán…"
+          placeholderTextColor="rgba(255,255,255,0.4)"
+          value={tuKhoaLichSuGd}
+          onChangeText={setTuKhoaLichSuGd}
+          outlineStyle="none"
+        />
+        <TouchableOpacity
+          onPress={handleLuuTatCaHoSoGdVaoLichSu}
+          style={[styles.nut_quay_lai, { backgroundColor: 'rgba(56,142,60,0.35)', borderColor: 'rgba(129,199,132,0.55)' }]}
+        >
+          <Text style={styles.chu_nut_header}>💾 Lưu kho hiện tại</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => void taiDanhSachLichSuGd()}
+          style={[styles.nut_quay_lai, { backgroundColor: 'rgba(25,118,210,0.35)', borderColor: 'rgba(100,181,246,0.55)' }]}
+        >
+          <Text style={styles.chu_nut_header}>🔄 Tải lại</Text>
+        </TouchableOpacity>
+        {danhSachLichSuGd.length > 0 ? (
+          <TouchableOpacity
+            onPress={handleXoaToanBoLichSuGd}
+            style={[styles.nut_quay_lai, { backgroundColor: 'rgba(198,40,40,0.3)', borderColor: 'rgba(239,83,80,0.5)' }]}
+          >
+            <Text style={styles.chu_nut_header}>🗑 Xóa toàn bộ LS</Text>
+          </TouchableOpacity>
+        ) : null}
+        <Text style={styles.thong_ke}>
+          Lịch sử: {danhSachLichSuGd.length} bản lưu
+          {danhSachLichSuGdLoc.length !== danhSachLichSuGd.length ? ` · Hiển thị: ${danhSachLichSuGdLoc.length}` : ''}
+        </Text>
+      </View>
+
+      <View style={styles.khung_bang_ngang}>
+        <View style={styles.dong_tieu_de_bang}>
+          <Text style={[styles.o_header, { width: 140 }]}>MÃ LK</Text>
+          <Text style={[styles.o_header, { width: 200 }]}>BỆNH NHÂN</Text>
+          <Text style={[styles.o_header, { width: 90 }]}>LOẠI KCB</Text>
+          <Text style={[styles.o_header, { flex: 1 }]}>CHẨN ĐOÁN RV</Text>
+          <Text style={[styles.o_header, { width: 90 }]}>SỐ LỖI</Text>
+          <Text style={[styles.o_header, { width: 180 }]}>THỜI ĐIỂM LƯU</Text>
+          <Text style={[styles.o_header, { width: 220, textAlign: 'center' }]}>THAO TÁC</Text>
+        </View>
+        <ScrollView style={{ flex: 1 }}>
+          {danhSachLichSuGdLoc.map((rec, idx) => (
+            <View key={rec.id || `${rec.ma_lk}_${idx}`} style={[styles.dong_du_lieu, idx % 2 === 0 ? styles.dong_chan : styles.dong_le]}>
+              <Text style={[styles.o_cell, { width: 140, fontWeight: 'bold', color: '#F48FB1' }]} numberOfLines={1}>{rec.ma_lk}</Text>
+              <Text style={[styles.o_cell, { width: 200, color: '#90CAF9' }]} numberOfLines={1}>{String(rec.ten_bn || '—').toUpperCase()}</Text>
+              <Text style={[styles.o_cell, { width: 90 }]} numberOfLines={1}>{rec.ma_loai_kcb || '—'}</Text>
+              <Text style={[styles.o_cell, { flex: 1 }]} numberOfLines={2}>{rec.chan_doan_rv || '—'}</Text>
+              <Text style={[styles.o_cell, { width: 90, color: rec.so_loi > 0 ? '#FF6B6B' : '#81C784', fontWeight: 'bold' }]}>{rec.so_loi || 0}</Text>
+              <Text style={[styles.o_cell, { width: 180 }]} numberOfLines={2}>{rec.thoi_gian || rec.ghi_luc_iso}</Text>
+              <View style={[styles.o_cell, { width: 220, flexDirection: 'row', justifyContent: 'center', gap: 8 }]}>
+                <TouchableOpacity style={styles.btn_xem} onPress={() => void handleXemChiTietLichSuGd(rec)}>
+                  <Text style={styles.txt_btn_nho}>Xem</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btn_xem} onPress={() => handleKhoiPhucTuLichSu(rec.id)}>
+                  <Text style={styles.txt_btn_nho}>↩ Kho</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btn_xoa} onPress={() => handleXoaBanGhiLichSu(rec.id, rec.ma_lk)}>
+                  <Text style={styles.txt_btn_nho}>🗑</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+          {danhSachLichSuGdLoc.length === 0 && (
+            <Text style={styles.chu_trong}>
+              Chưa có bản lưu giám định. Lưu hồ sơ sau khi chạy kiểm tra (Dashboard) hoặc bấm «Lưu kho hiện tại».
+            </Text>
+          )}
+        </ScrollView>
+      </View>
+    </React.Fragment>
+  );
+
   return (
     <SafeAreaView style={styles.vung_an_toan}>
       <View style={styles.thanh_tieu_de}>
@@ -901,7 +1158,34 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
       </View>
 
       <View style={styles.khung_chinh}>
-        {hoSoDangSua ? renderModalSua() : hoSoDangXem ? renderChiTietHoSo() : (
+        <View style={styles.thanh_the_kho}>
+          {DANH_SACH_THE_KHO.map((tab) => {
+            const active = tabHienTai === tab.id;
+            return (
+              <TouchableOpacity
+                key={tab.id}
+                style={[styles.the_kho, active && styles.the_kho_active]}
+                onPress={() => {
+                  setTabHienTai(tab.id);
+                  setHoSoDangXem(null);
+                  setHoSoDangSua(null);
+                  setBanGhiLichSuDangXem(null);
+                }}
+              >
+                <Text style={[styles.chu_the_kho, active && styles.chu_the_kho_active]}>
+                  {tab.icon} {tab.label}
+                </Text>
+                <Text style={styles.chu_the_kho_phu}>{tab.hint}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {banGhiLichSuDangXem ? renderModalChiTietLichSuGd()
+          : hoSoDangSua ? renderModalSua()
+          : hoSoDangXem ? renderChiTietHoSo()
+          : tabHienTai === TAB_LICH_SU_GD ? renderTabLichSuGiamDinh()
+          : (
           <React.Fragment>
             <View style={styles.thanh_cong_cu}>
               <TextInput
@@ -914,6 +1198,12 @@ const ManHinhKhoLuuTru = ({ navigation }) => {
               />
               <TouchableOpacity onPress={handleNhapXmlGoi130VaoKho} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(106,27,154,0.35)', borderColor: 'rgba(186,104,200,0.5)' }]}>
                 <Text style={styles.chu_nut_header}>📥 Import XML 130</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleLuuTatCaHoSoGdVaoLichSu}
+                style={[styles.nut_quay_lai, { backgroundColor: 'rgba(0,105,92,0.35)', borderColor: 'rgba(128,203,196,0.55)' }]}
+              >
+                <Text style={styles.chu_nut_header}>🕘 Lưu LS giám định</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => void handleXuatExcelBaoCao()} style={[styles.nut_quay_lai, { backgroundColor: 'rgba(56,142,60,0.35)', borderColor: 'rgba(129,199,132,0.55)' }]}>
                 <Text style={styles.chu_nut_header}>📊 Excel báo cáo</Text>
@@ -1033,6 +1323,57 @@ const styles = StyleSheet.create({
     ...Platform.select({ web: { backdropFilter: CD.web.blur_input, outlineStyle: 'none' } }),
   },
   thong_ke: { fontSize: 20, fontWeight: '700', color: CD.brand.mauNhat, fontFamily: CD.font.family },
+
+  thanh_the_kho: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+    flexWrap: 'wrap',
+  },
+  the_kho: {
+    flex: 1,
+    minWidth: 260,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    backgroundColor: CD.bg.glass_input,
+  },
+  the_kho_active: {
+    borderColor: 'rgba(233,30,99,0.65)',
+    backgroundColor: 'rgba(233,30,99,0.14)',
+  },
+  chu_the_kho: {
+    fontFamily: CD.font.family,
+    fontSize: 22,
+    fontWeight: '800',
+    color: CD.text.secondary,
+  },
+  chu_the_kho_active: {
+    color: CD.text.primary,
+  },
+  chu_the_kho_phu: {
+    fontFamily: CD.font.family,
+    fontSize: 16,
+    color: CD.text.muted,
+    marginTop: 4,
+    lineHeight: 22,
+  },
+  khung_canh_bao_lich_su: {
+    marginBottom: 14,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(128,203,196,0.35)',
+    backgroundColor: 'rgba(0,105,92,0.12)',
+  },
+  chu_canh_bao_lich_su: {
+    fontFamily: CD.font.family,
+    fontSize: 18,
+    color: '#B2DFDB',
+    lineHeight: 28,
+  },
 
   // ── BẢNG DỮ LIỆU ──
   khung_bang_ngang: {
