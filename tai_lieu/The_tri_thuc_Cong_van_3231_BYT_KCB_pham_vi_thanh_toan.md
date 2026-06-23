@@ -28,7 +28,7 @@ Công văn trả lời vướng mắc BHXH về **xác định phạm vi hành n
 |----|----------|
 | `CV3231-02` | §2 — Điều dưỡng hạng IV thực hiện DVKT điều trị/PHCN: không thanh toán |
 | `CV3231-13` | §1.3 — BS YHCT/RHM được khám & TT công khám (Info) |
-| `CV3231-18` | §1.8 — Gợi ý ghi đủ mã NGUOI_THUC_HIEN trong ekip |
+| `CV3231-18` | §1.8 — Gợi ý ghi đủ mã NGUOI_THUC_HIEN trong ekip (không áp dụng công khám) |
 
 ## Tích hợp engine
 

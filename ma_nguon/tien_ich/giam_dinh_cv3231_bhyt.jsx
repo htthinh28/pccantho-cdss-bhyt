@@ -118,19 +118,21 @@ export const giamDinhCv3231Bhyt = (hoSo, dm = {}) => {
       }
     }
 
-    // §1.8 — Gợi ý ghi đủ mã NVYT trong ekip (PT/NS/CLS phức tạp)
-    const ten = UPPER(line.tenDvkt);
-    const laKyThuatEkip = /PHAU THUAT|NOI SOI|THU THUAT|CHAN DOAN HINH ANH|CHUP|SIEM|NOI SOI/i.test(ten)
-      || /^0[23]\./.test(ma) || /^1[58]\./.test(ma) || /^20\./.test(ma);
-    if (laKyThuatEkip && nguoiThucHien.length === 1 && !nguoiThucHien[0].includes(';')) {
-      addLoi({
-        index,
-        ma_luat: 'CV3231-18',
-        ten_quy_tac: 'Ghi đủ mã NVYT trong ekip (§1.8)',
-        muc_do: 'Info',
-        truong_loi: 'NGUOI_THUC_HIEN',
-        canh_bao: `ℹ️ [CV3231 §1.8]: DVKT [${ma}] có thể do nhiều NVYT cùng thực hiện — nên ghi đủ mã NGUOI_THUC_HIEN, cách nhau bằng dấu ";".`,
-      });
+    // §1.8 — Gợi ý ghi đủ mã NVYT trong ekip (PT/NS/CLS phức tạp); không áp dụng công khám
+    if (!laDongCongKhamXml3(line, dmKham)) {
+      const ten = UPPER(line.tenDvkt);
+      const laKyThuatEkip = /PHAU THUAT|NOI SOI|THU THUAT|CHAN DOAN HINH ANH|CHUP|SIEM|NOI SOI/i.test(ten)
+        || /^0[23]\./.test(ma) || /^1[58]\./.test(ma) || /^20\./.test(ma);
+      if (laKyThuatEkip && nguoiThucHien.length === 1 && !nguoiThucHien[0].includes(';')) {
+        addLoi({
+          index,
+          ma_luat: 'CV3231-18',
+          ten_quy_tac: 'Ghi đủ mã NVYT trong ekip (§1.8)',
+          muc_do: 'Info',
+          truong_loi: 'NGUOI_THUC_HIEN',
+          canh_bao: `ℹ️ [CV3231 §1.8]: DVKT [${ma}] có thể do nhiều NVYT cùng thực hiện — nên ghi đủ mã NGUOI_THUC_HIEN, cách nhau bằng dấu ";".`,
+        });
+      }
     }
   });
 

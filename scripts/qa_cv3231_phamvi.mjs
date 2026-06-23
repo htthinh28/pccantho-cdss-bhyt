@@ -68,8 +68,9 @@ assert(loi.some((x) => x.ma_luat === 'CV3231-02'), 'engine mirror CV3231-02');
 // Source integration
 assert(srcDuLieu.includes('moRongPhamViNhanSuCv3231'), 'helpers exported');
 assert(srcEngine.includes('giamDinhCv3231Bhyt'), 'engine exported');
+assert(srcEngine.includes('!laDongCongKhamXml3(line, dmKham)'), 'CV3231-18 skip công khám');
 assert(srcDvkt.includes('du_lieu_cv3231_phamvi'), 'dvkt_op integrated');
 assert(srcDvkt.includes('laDongCongKhamXml3'), 'khám BS pass');
 assert(srcDongCo.includes('giamDinhCv3231Bhyt'), 'dong_co integrated');
 
-console.log(JSON.stringify({ ok: true, tests: 6 }, null, 2));
+console.log(JSON.stringify({ ok: true, tests: 7 }, null, 2));
