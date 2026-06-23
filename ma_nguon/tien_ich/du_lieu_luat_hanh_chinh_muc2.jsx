@@ -1,5 +1,5 @@
-/** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) + HC_251 (CV 38/BYT-BH, NQ 261/2025/QH15) */
-export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-04-23_HC_doc_xml_130_3176_4210_7464';
+/** AUTO-GENERATED from DuLieu_LUAT_HANH_CHINH (7).xlsx + HC_249; HC_13…HC_205 mức hưởng theo QĐ 1018/QĐ-BHXH (ký tự thứ 3 thẻ) + HC_251 (CV 38) + HC_302 (CV 302/CSYT-CĐ, LCS 2.530.000 từ 01/7/2026) */
+export const PHIEN_BAN_SEED_LUAT_HANH_CHINH_MUC2 = '2026-06-11_cv302_lcs_2530000';
 export const COT_SEED_LUAT_HANH_CHINH_MUC2 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
   {
@@ -53,9 +53,9 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "HC_06",
     "TEN_QUY_TAC": "Chi phí thấp (Dưới 15% LCS)",
-    "DIEU_KIEN": "XML1.T_TONGCHI_BH < (0.15 * 2340000) AND XML1.T_BNCCT > 0 AND XML1.MA_LOAI_KCB NOT IN ('1', '01')",
-    "CANH_BAO": "⛔ [THU SAI]: Chi phí đợt điều trị dưới 351.000đ (15% LCS), BN phải được hưởng 100%. Cơ sở không được thu tiền cùng chi trả.",
-    "GHI_CHU": "2026-04: Không áp MA_LOAI_KCB 1/01 (khám/ngoại trú) — kê đơn và tổng chi khác nội trú; giảm dương tính giả.",
+    "DIEU_KIEN": "((SUBSTR(XML1.NGAY_VAO, 1, 8) < '20260701' AND XML1.T_TONGCHI_BH < (0.15 * 2340000)) OR (SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND XML1.T_TONGCHI_BH < (0.15 * 2530000))) AND XML1.T_BNCCT > 0 AND XML1.MA_LOAI_KCB NOT IN ('1', '01')",
+    "CANH_BAO": "⛔ [THU SAI]: Chi phí đợt điều trị dưới ngưỡng 15% LCS (351.000đ trước 01/7/2026; 379.500đ từ 01/7/2026), BN phải được hưởng 100%. Cơ sở không được thu tiền cùng chi trả.",
+    "GHI_CHU": "CV 302/CSYT-CĐ + NĐ 161/2026. Không áp MA_LOAI_KCB 1/01 (khám/ngoại trú).",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {
@@ -81,8 +81,8 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "TRANG_THAI": "OFF",
     "MA_LUAT": "HC_09",
     "TEN_QUY_TAC": "Miễn cùng chi trả (5 năm LT)",
-    "DIEU_KIEN": "XML1.MA_DK_BD == '1' AND XML1.T_BNCCT_LUY_KE > (6 * 2340000) AND (XML1.T_BHTT < XML1.T_TONGCHI_BH OR XML1.T_BNCCT > 0)",
-    "CANH_BAO": "⛔ [QUYỀN LỢI 5 NĂM]: BN đã đủ điều kiện miễn cùng chi trả (lũy kế > 14.040.000đ). Cơ sở thu tiền cùng chi trả là sai quy định.",
+    "DIEU_KIEN": "XML1.MA_DK_BD == '1' AND ((SUBSTR(XML1.NGAY_VAO, 1, 8) < '20260701' AND XML1.T_BNCCT_LUY_KE > (6 * 2340000)) OR (SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND XML1.T_BNCCT_LUY_KE > (6 * 2530000))) AND (XML1.T_BHTT < XML1.T_TONGCHI_BH OR XML1.T_BNCCT > 0)",
+    "CANH_BAO": "⛔ [QUYỀN LỢI 5 NĂM]: BN đã đủ điều kiện miễn cùng chi trả (lũy kế > 14.040.000đ trước 01/7/2026; > 15.180.000đ từ 01/7/2026). Cơ sở thu tiền cùng chi trả là sai quy định.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_HANH_CHINH (7).xlsx"
   },
   {
@@ -2334,5 +2334,14 @@ export const DU_LIEU_SEED_LUAT_HANH_CHINH_MUC2 = [
     "DIEU_KIEN": "XML1.MA_THE_BHYT STARTS_WITH 'LH' AND VI_PHAM_TYLE_T_BHTT_TONGCHI_BH(XML1)",
     "CANH_BAO": "⛔ [LH / mức quyền lợi]: Từ 01/01/2026 theo NQ 261/2025/QH15 và Công văn 38/BYT-BH (06/01/2026), đối tượng LH được chuyển mã quyền lợi từ 4 (80%) sang 2 (100%) trong phạm vi chi trả; engine suy tỷ lệ theo `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` (kể cả khi ký tự thứ 3 trên XML còn 4). Trước 01/01/2026 vẫn theo QĐ 1018 — mức 4 → 80%. T_BHTT chưa khớp tỷ lệ so với T_TONGCHI_BH.",
     "NGUON_DU_LIEU": "dong_co_giam_dinh.jsx (KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT) + Công văn 38/BYT-BH"
+  },
+  {
+    "id": "SEED_HANHCHINH_302",
+    "TRANG_THAI": "ON",
+    "MA_LUAT": "HC_302",
+    "TEN_QUY_TAC": "Mở rộng quyền lợi tự đến KCB ngoại trú 50% (CV 302)",
+    "DIEU_KIEN": "SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND XML1.MA_DOITUONG_KCB IN ('1.13', '1.14', '1.18') AND XML1.T_BHTT <= 0 AND XML1.T_TONGCHI_BH > 0",
+    "CANH_BAO": "⚠️ [CV 302]: Từ 01/7/2026, mã đối tượng KCB tự đến ngoại trú (1.13/1.14/1.18) được hưởng 50% phạm vi với bệnh ngoài Phụ lục 02/01 TT 01/2025 — hồ sơ có chi phí BHYT nhưng T_BHTT = 0, rà soát mức hưởng/MUC_HUONG.",
+    "NGUON_DU_LIEU": "Công văn CV 302/CSYT-CĐ + PL10 BYT"
   }
 ];

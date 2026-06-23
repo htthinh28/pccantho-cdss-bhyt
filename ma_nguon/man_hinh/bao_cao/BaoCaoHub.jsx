@@ -33,6 +33,7 @@ import BangMoHinhMuc5 from './BangMoHinhMuc5';
 import BieuDoGiftedBarNgang from './BieuDoGiftedBarNgang';
 import BieuDoGiftedCotDoc from './BieuDoGiftedCotDoc';
 import HeatmapCm00 from './HeatmapCm00';
+import { useLayoutMode } from '../../tien_ich/diem_anh_man_hinh';
 
 const NHANH = [
   {
@@ -466,6 +467,7 @@ const KPI_LINEAGE = {
 
 export default function BaoCaoHub() {
   const navigation = useNavigation();
+  const { dungBoCucDoc } = useLayoutMode();
   const [nhanh, setNhanh] = useState('QUAN_TRI');
   const [quanTriThe, setQuanTriThe] = useState('M5');
   const [tai, setTai] = useState({
@@ -1166,9 +1168,9 @@ export default function BaoCaoHub() {
         )}
       </View>
 
-      <View style={styles.bodyRow}>
+      <View style={[styles.bodyRow, dungBoCucDoc && styles.bodyRowDoc]}>
         <ScrollView
-          style={styles.sidebarScroll}
+          style={[styles.sidebarScroll, dungBoCucDoc && styles.sidebarScrollDoc]}
           contentContainerStyle={styles.sidebarInner}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -2258,6 +2260,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     backgroundColor: BG,
   },
+  bodyRowDoc: {
+    flexDirection: 'column',
+  },
   sidebarScroll: {
     width: 188,
     maxWidth: 200,
@@ -2278,6 +2283,15 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
       },
     }),
+  },
+  sidebarScrollDoc: {
+    width: '100%',
+    maxWidth: '100%',
+    maxHeight: 200,
+    flexGrow: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: SIDEBAR_EDGE,
   },
   sidebarInner: {
     paddingVertical: 10,
@@ -2419,14 +2433,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   chartRow: {
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
     marginBottom: 8,
   },
   chartHalf: {
     flex: 1,
-    minWidth: Platform.OS === 'web' ? 280 : undefined,
+    minWidth: 280,
     maxWidth: '100%',
   },
   kpiHeroRow: {

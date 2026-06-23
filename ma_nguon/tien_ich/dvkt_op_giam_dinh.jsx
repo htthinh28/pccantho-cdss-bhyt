@@ -15,6 +15,12 @@ import { DANH_MUC_NHAN_SU } from '../thanh_phan/nhan_su';
 import { DANH_MUC_TRANG_THIET_BI_M06 } from '../thanh_phan/trang_thiet_bi';
 import { DU_LIEU_DVKT_PHAMVI_MAPPING } from './dvkt_phamvi_mapping_seed';
 import {
+  coVanBanChoPhepDvkt,
+  laBacSiHoacYSy,
+  laDongCongKhamXml3,
+  moRongPhamViNhanSuCv3231,
+} from './du_lieu_cv3231_phamvi';
+import {
     danhGiaTruocKhiTaiDvktDataset,
     ghiNhatKyAuditConfigSync,
     hydrateDvktTableFromFirebase,
@@ -53,6 +59,8 @@ const DVKT_OP09_CATALOG_STORAGE_KEY = 'DANH_MUC_GIUONG_BAN_KHAM_BV';
 /** XML3.MA_NHOM (nhóm chi phí): 1 — phí khám; 15 — phí giường (đồng bộ rule DVKT-OP-16 / tiền giường). */
 const OP09_XML3_MA_NHOM_KHAM = '1';
 const OP09_XML3_MA_NHOM_GIUONG = '15';
+/** Mọi khóa định danh nhân sự cần index trong staffById (XML thường gửi MACCHN làm MA_BAC_SI). */
+const STAFF_LOOKUP_ID_KEYS = ['MA_BAC_SI', 'MA_BHXH', 'MACCHN', 'SO_CCHN', 'SO_GPHN', 'MA_NV', 'ID', 'SO_CCCD', 'SO_DINH_DANH'];
 
 const DVKT_SYNC_TABLES = [
   { datasetKey: DVKT_ENGINE_STORAGE_KEYS.RULES, fallbackKey: 'CDSS_DATA_LUAT_CDHA' },
@@ -112,7 +120,7 @@ const BUILTIN_ENGINE_TABLES = {
 const DEFAULT_DVKT_RULES = [
   { RULE_CODE: 'DVKT-OP-01', RULE_NAME: 'Chỉ định ICD10 phù hợp', OPERATOR: 'CHECK_ICD_INDICATION', STATUS: 'ON', SEVERITY: 'WARNING', ALERT_MESSAGE: 'Chỉ định ICD-10 không phù hợp với loại DVKT.' },
   { RULE_CODE: 'DVKT-OP-02', RULE_NAME: 'Chống chỉ định ICD10', OPERATOR: 'CHECK_ICD_CONTRAINDICATION', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT bị chống chỉ định theo mã bệnh ICD-10.' },
-  { RULE_CODE: 'DVKT-OP-03', RULE_NAME: 'Phạm vi hành nghề', OPERATOR: 'CHECK_PHAMVI', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Người thực hiện không đúng phạm vi chuyên môn cho DVKT.' },
+  { RULE_CODE: 'DVKT-OP-03', RULE_NAME: 'Phạm vi hành nghề (NGUOI_THUC_HIEN)', OPERATOR: 'CHECK_PHAMVI', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'NGUOI_THUC_HIEN không đúng phạm vi chuyên môn cho DVKT (MA_BAC_SI không bắt buộc đối chiếu phạm vi; DVKT giường bệnh miễn kiểm tra).' },
   { RULE_CODE: 'DVKT-OP-04', RULE_NAME: 'Máy móc thiết bị', OPERATOR: 'CHECK_EQUIPMENT', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'CSKCB không có thiết bị hợp lệ để thực hiện DVKT.' },
   { RULE_CODE: 'DVKT-OP-05', RULE_NAME: 'Giá DVKT', OPERATOR: 'CHECK_PRICE', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'Đơn giá DVKT vượt giá BHYT phê duyệt.' },
   { RULE_CODE: 'DVKT-OP-06', RULE_NAME: 'Hiệu lực DVKT', OPERATOR: 'CHECK_VALIDITY', STATUS: 'ON', SEVERITY: 'REJECT', ALERT_MESSAGE: 'DVKT ngoài khoảng hiệu lực áp dụng.' },
@@ -1024,12 +1032,14 @@ const buildEngineConfig = async () => {
   const op09DmktByTenNorm = buildOp09DmktByTenNorm(giuongBkMapped, op09DmktByCode);
 
   const staffById = new Map();
+  const staffByMacchn = new Map();
   (Array.isArray(staff) ? staff : []).forEach((row) => {
     const ids = [
-      pickValue(row, ['MA_BAC_SI', 'MA_BHXH', 'MACCHN', 'MA_NV', 'ID', 'SO_CCCD', 'SO_DINH_DANH']),
+      ...collectFieldValues(row, STAFF_LOOKUP_ID_KEYS),
       ...parseList(pickValue(row, ['ALIAS_IDS', 'IDS'])),
     ].map((x) => toUpper(x)).filter(Boolean);
-    const scopes = new Set(collectListValues(row, ['PHAMVI_CM', 'PHAMVI', 'PHAMVI_CMBS']).map((v) => normalizeToken(v)));
+    const scopes = new Set(collectListValues(row, ['PHAMVI_CM', 'PHAMVI']).map((v) => normalizeToken(v)).filter((v) => /^\d+$/.test(v)));
+    collectListValues(row, ['PHAMVI_CMBS']).map((v) => normalizeToken(v)).filter((v) => /^\d+$/.test(v)).forEach((v) => scopes.add(v));
     const practiceFromKey = dateToKey(pickValue(row, ['TU_NGAY', 'NGAY_HL_TU', 'NGAY_BAT_DAU', 'NGAY_HIEU_LUC_TU', 'NGAYCAP_CCHN']));
     const practiceToKey = dateToKey(pickValue(row, ['DEN_NGAY', 'NGAY_HL_DEN', 'NGAY_KET_THUC', 'NGAY_HIEU_LUC_DEN', 'NGAYHET_CCHN']));
     const licenseIssueKey = dateToKey(pickValue(row, ['NGAYCAP_CCHN', 'NGAY_CAP_CCHN', 'NGAYCAP']));
@@ -1058,6 +1068,9 @@ const buildEngineConfig = async () => {
     ids.forEach((id) => {
       if (!staffById.has(id)) staffById.set(id, { ...staffEntry, lookupId: id });
     });
+    if (staffEntry.macchn && !staffByMacchn.has(staffEntry.macchn)) {
+      staffByMacchn.set(staffEntry.macchn, { ...staffEntry, lookupId: staffEntry.macchn });
+    }
   });
 
   const staffIdsByName = new Map();
@@ -1114,6 +1127,7 @@ const buildEngineConfig = async () => {
     op09InternalApprovalByCode,
     op09DmktByTenNorm,
     staffById,
+    staffByMacchn,
     equipmentByPrefix,
     equipmentByCode,
     servicePractitionerByCode,
@@ -1498,7 +1512,7 @@ const appendLegalBasisIfMissing = (message, legalBasis) => {
   const normText = normalizeText(text);
   const normBasis = normalizeText(legalBasis);
   if (normText && normBasis && normText.includes(normBasis)) return text;
-  return `${text} Can cu: ${legalBasis}.`.trim();
+  return `${text}\nCăn cứ: ${legalBasis}`.trim();
 };
 const formatStaffDisplay = (staff, fallbackId = '') => {
   const license = toUpper(staff?.macchn || staff?.soGphn || '');
@@ -1533,25 +1547,32 @@ const collectActorCandidateIds = (line) => {
   parseList(line?.nguoiThucHien).forEach(pushId);
   return ids;
 };
+/** XML3 MA_BAC_SI / NGUOI_THUC_HIEN đối chiếu cột MACCHN danh mục nhân sự; khớp = tìm thấy. */
+const findStaffByActorCode = (config, actorCode) => {
+  const id = toUpper(actorCode);
+  if (!id || !config) return null;
+  const byMacchn = config.staffByMacchn?.get(id);
+  if (byMacchn) return byMacchn;
+  return config.staffById?.get(id) || null;
+};
 const resolveStaffEvidence = (line, config) => {
   const maBacSiClaimId = toUpper(line?.maBacSi);
   const nguoiThucHienCandidates = parseList(line?.nguoiThucHien).map((id) => toUpper(id)).filter(Boolean);
   const actorCandidateIds = collectActorCandidateIds(line);
   const servicePractitionerEntry = findServicePractitionerEntry(line, config);
   const preferredActorId = servicePractitionerEntry
-    ? actorCandidateIds.find((id) => servicePractitionerEntry.allowedStaffIds.has(id) && config?.staffById?.has(id))
+    ? actorCandidateIds.find((id) => servicePractitionerEntry.allowedStaffIds.has(id) && findStaffByActorCode(config, id))
     : '';
   const nguoiThucHienId = (
     preferredActorId
     || (
-    (maBacSiClaimId && nguoiThucHienCandidates.includes(maBacSiClaimId) && config?.staffById?.has(maBacSiClaimId) && maBacSiClaimId)
-    || nguoiThucHienCandidates.find((id) => config?.staffById?.has(id))
-    || nguoiThucHienCandidates[0]
+    (maBacSiClaimId && nguoiThucHienCandidates.includes(maBacSiClaimId) && findStaffByActorCode(config, maBacSiClaimId) && maBacSiClaimId)
+    || nguoiThucHienCandidates.find((id) => findStaffByActorCode(config, id))
     || ''
     )
   );
-  const nguoiThucHienStaff = nguoiThucHienId ? config?.staffById?.get(nguoiThucHienId) : null;
-  const maBacSiStaff = maBacSiClaimId ? config?.staffById?.get(maBacSiClaimId) : null;
+  const nguoiThucHienStaff = nguoiThucHienId ? findStaffByActorCode(config, nguoiThucHienId) : null;
+  const maBacSiStaff = maBacSiClaimId ? findStaffByActorCode(config, maBacSiClaimId) : null;
   const selectedStaff = nguoiThucHienStaff || maBacSiStaff || null;
   const selectedId = nguoiThucHienStaff
     ? nguoiThucHienId
@@ -1649,15 +1670,57 @@ const checkIcdContraindication = ({ rule, line, claim, config }) => {
   return pass();
 };
 
+/** DVKT giường bệnh: không bắt buộc đối chiếu phạm vi hành nghề (bác sĩ / điều dưỡng). */
+const laDichVuGiuongMienPhamViHanhNghe = (line, config) => {
+  if (!line) return false;
+  const tenNorm = normalizeText(line.tenDvkt || '');
+  if (tenNorm.includes('GIUONG')) return true;
+  const dmRow = config?.dmktByCode?.get(line.maTuongDuong);
+  const effectivePrefix = line.maChuyenKhoa || line.prefix || dmRow?.maChuyenKhoa;
+  const nhomDvkt = normalizeText(config?.nhomDvktByPrefix?.get(effectivePrefix) || '');
+  if (nhomDvkt.includes('GIUONG')) return true;
+  const mn = String(line.maNhom || '').trim().replace(/^0+(?=\d)/, '');
+  if (mn === OP09_XML3_MA_NHOM_GIUONG) return true;
+  const maDvNorm = normalizeText(line.maTuongDuong || '');
+  if (maDvNorm.includes('GIUONG')) return true;
+  if (!isEmpty(line.maGiuong)) return true;
+  if (/^K\d+\./i.test(String(line.maTuongDuong || ''))) return true;
+  return false;
+};
+
 const checkPhamVi = ({ rule, line, config }) => {
   if (config.staffById.size === 0) return pass();
+  if (laDichVuGiuongMienPhamViHanhNghe(line, config)) return pass();
+
   const evidence = resolveStaffEvidence(line, config);
-  line = evidence.selectedId ? { ...line, maBacSi: evidence.selectedId } : line;
-  if (isEmpty(line.maBacSi)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu phạm vi hành nghề.`, 'MA_BAC_SI');
-  const staff = config.staffById.get(line.maBacSi);
-  const nhanSuText = formatStaffDisplay(staff, line.maBacSi);
-  if (!staff) return fail('WARNING', `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} trong danh mục để kết luận.`, 'MA_BAC_SI');
-  if (staff.activeStatus === false) return fail('REJECT', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} đang ở trạng thái không hoạt động.`, 'MA_BAC_SI');
+  const nguoiThucHienCandidates = parseList(line?.nguoiThucHien).map((id) => toUpper(id)).filter(Boolean);
+  // MA_BAC_SI: không bắt buộc đúng phạm vi hành nghề — chỉ kiểm tra khi có NGUOI_THUC_HIEN.
+  if (nguoiThucHienCandidates.length === 0) return pass();
+
+  const staffId = evidence.nguoiThucHienId;
+  if (isEmpty(staffId)) {
+    return fail(
+      'WARNING',
+      `${rule.ALERT_MESSAGE} Thiếu NGUOI_THUC_HIEN hợp lệ trong danh mục nhân sự để đối chiếu phạm vi hành nghề.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
+  const staff = evidence.nguoiThucHienStaff || findStaffByActorCode(config, staffId);
+  const nhanSuText = formatStaffDisplay(staff, staffId);
+  if (!staff) {
+    return fail(
+      'WARNING',
+      `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} (NGUOI_THUC_HIEN) trong danh mục để kết luận.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
+  if (staff.activeStatus === false) {
+    return fail(
+      'REJECT',
+      `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} (NGUOI_THUC_HIEN) đang ở trạng thái không hoạt động.`,
+      'NGUOI_THUC_HIEN',
+    );
+  }
 
   const dmRow = config.dmktByCode.get(line.maTuongDuong);
   // Ưu tiên: (1) 2 ký tự đầu MA_DICH_VU từ dòng hồ sơ (áp dụng cả công khám) → (2) prefix dòng DVKT → (3) mapping danh mục.
@@ -1679,25 +1742,32 @@ const checkPhamVi = ({ rule, line, config }) => {
 
   const titleCandidates = getStaffAllowedTitleCandidates(staff);
   if (allowedTitles.size > 0 && titleCandidates.size === 0) {
-    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} thiếu CHUCDANH_NN để đối chiếu nhóm DVKT ${nhomDvkt}.`, 'CHUCDANH_NN');
+    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} (NGUOI_THUC_HIEN) thiếu CHUCDANH_NN để đối chiếu nhóm DVKT ${nhomDvkt}.`, 'CHUCDANH_NN');
   }
   if (allowedTitles.size > 0 && !hasIntersectionSet(titleCandidates, allowedTitles)) {
     return fail(
       'REJECT',
-      `${rule.ALERT_MESSAGE} ${nhanSuText} có CHUCDANH_NN=${staff.chucDanhNorm}, không thuộc nhóm được phép [${Array.from(allowedTitles).join(', ')}] cho DVKT ${nhomDvkt}.`,
-      'CHUCDANH_NN'
+      `${rule.ALERT_MESSAGE} ${nhanSuText} (NGUOI_THUC_HIEN) có CHUCDANH_NN=${staff.chucDanhNorm}, không thuộc nhóm được phép [${Array.from(allowedTitles).join(', ')}] cho DVKT ${nhomDvkt}.`,
+      'CHUCDANH_NN',
     );
   }
 
+  if (coVanBanChoPhepDvkt(staff, line.maTuongDuong)) return pass();
+
+  // CV 3231/BYT-KCB §1.2–§1.3: BS/Y sỹ được khám bệnh & thanh toán công khám.
+  if (laDongCongKhamXml3(line, config.dmKhamSet) && laBacSiHoacYSy(staff)) return pass();
+
+  const scopesHieuLuc = moRongPhamViNhanSuCv3231(staff);
+
   if (!allowedScopes || allowedScopes.size === 0) return pass();
-  if (!staff.scopes || staff.scopes.size === 0) {
-    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} thiếu PHAMVI_CM/PHAMVI_CMBS để đối chiếu DVKT ${nhomDvkt}.`, 'PHAMVI_CM');
+  if (!scopesHieuLuc || scopesHieuLuc.size === 0) {
+    return fail('WARNING', `${rule.ALERT_MESSAGE} Danh mục nhân sự của ${nhanSuText} (NGUOI_THUC_HIEN) thiếu PHAMVI_CM/PHAMVI_CMBS để đối chiếu DVKT ${nhomDvkt}.`, 'PHAMVI_CM');
   }
-  if (hasIntersectionSet(staff.scopes, allowedScopes)) return pass();
+  if (hasIntersectionSet(scopesHieuLuc, allowedScopes)) return pass();
   return fail(
     'REJECT',
-    `${rule.ALERT_MESSAGE} ${nhanSuText} không có phạm vi hành nghề phù hợp cho DVKT ${nhomDvkt}; yêu cầu [${Array.from(allowedScopes).join(', ')}].`,
-    'PHAMVI_CM'
+    `${rule.ALERT_MESSAGE} ${nhanSuText} (NGUOI_THUC_HIEN) không có phạm vi hành nghề phù hợp cho DVKT ${nhomDvkt}; yêu cầu [${Array.from(allowedScopes).join(', ')}].`,
+    'PHAMVI_CM',
   );
 };
 
@@ -1843,10 +1913,10 @@ const checkInternalApproval = ({ rule, line, claim, config }) => {
 const checkStaffPracticeTime = ({ rule, line, claim, config }) => {
   if (config.staffById.size === 0) return pass();
   const evidence = resolveStaffEvidence(line, config);
-  line = evidence.selectedId ? { ...line, maBacSi: evidence.selectedId } : line;
-  if (isEmpty(line.maBacSi)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu thời gian hành nghề.`, 'MA_BAC_SI');
-  const staff = config.staffById.get(line.maBacSi);
-  const nhanSuText = formatStaffDisplay(staff, line.maBacSi);
+  const staffId = evidence.selectedId || line.maBacSi;
+  if (isEmpty(staffId)) return fail('WARNING', `${rule.ALERT_MESSAGE} Thiếu MA_BAC_SI để đối chiếu thời gian hành nghề.`, 'MA_BAC_SI');
+  const staff = evidence.selectedStaff || findStaffByActorCode(config, staffId);
+  const nhanSuText = formatStaffDisplay(staff, staffId);
   if (!staff) return fail('WARNING', `${rule.ALERT_MESSAGE} Không tìm thấy nhân viên ${nhanSuText} trong danh mục để đối chiếu.`, 'MA_BAC_SI');
   if (staff.activeStatus === false) return fail('REJECT', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} đang ở trạng thái không hoạt động.`, 'MA_BAC_SI');
   if (!staff.macchn) return fail('WARNING', `${rule.ALERT_MESSAGE} Nhân viên ${nhanSuText} thiếu MACCHN/GPHN trong danh mục.`, 'MACCHN');

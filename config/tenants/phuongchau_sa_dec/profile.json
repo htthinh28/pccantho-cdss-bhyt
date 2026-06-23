@@ -1,0 +1,35 @@
+{
+  "orgId": "phuongchau_sa_dec",
+  "tenHienThi": "Phương Châu Sa Đéc",
+  "tenDayDu": "Bệnh viện Phương Châu Sa Đéc",
+  "maCskcb": "87189",
+  "appName": "CDSS BHYT Phương Châu Sa Đéc",
+  "firebaseOrgId": "phuongchau_sa_dec",
+  "legacyOrgAliases": [],
+  "deploy": {
+    "mode": "vercel",
+    "vercelProject": "cdss-phuongchau-sa-dec"
+  },
+  "his": {
+    "enabled": false,
+    "orgCode": "phuongchau_sa_dec"
+  },
+  "thongTinCoSo": {
+    "MA_CSKCB": "87189",
+    "TEN_CSKCB": "Bệnh viện Phương Châu Sa Đéc",
+    "DON_VI_THU_HUONG": "Công Ty TNHH MTV Phương Châu",
+    "CAP_CHUYEN_MON": "Cơ bản",
+    "TUYEN_CHUYEN_MON": "Huyện",
+    "DIEM_XEP_CAP": 48,
+    "MO_HINH_TO_CHUC": "Ngoài công lập",
+    "HINH_THUC_TO_CHUC": "Bệnh viện đa khoa",
+    "GIA_AP_DUNG": "Tư nhân theo giá công lập",
+    "DIA_CHI": "Sa Đéc, Đồng Tháp",
+    "DIEN_THOAI": "",
+    "EMAIL": "",
+    "GIAM_DOC": "",
+    "NGUOI_CHIU_TRACH_NHIEM_CM": "",
+    "GIUONG_PHE_DUYET": 0,
+    "SO_BAN_KHAM": 0
+  }
+}

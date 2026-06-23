@@ -1,0 +1,35 @@
+{
+  "orgId": "phuongchau_can_tho",
+  "tenHienThi": "Phương Châu Cần Thơ",
+  "tenDayDu": "Bệnh viện Quốc tế Phương Châu Cần Thơ",
+  "maCskcb": "92114",
+  "appName": "CDSS BHYT Phương Châu Cần Thơ",
+  "firebaseOrgId": "phuongchau_can_tho",
+  "legacyOrgAliases": [],
+  "deploy": {
+    "mode": "vercel",
+    "vercelProject": "cdss-phuongchau-can-tho"
+  },
+  "his": {
+    "enabled": false,
+    "orgCode": "phuongchau_can_tho"
+  },
+  "thongTinCoSo": {
+    "MA_CSKCB": "92114",
+    "TEN_CSKCB": "Bệnh viện Quốc tế Phương Châu Cần Thơ",
+    "DON_VI_THU_HUONG": "Công Ty TNHH MTV Phương Châu",
+    "CAP_CHUYEN_MON": "Cơ bản",
+    "TUYEN_CHUYEN_MON": "Tỉnh",
+    "DIEM_XEP_CAP": 48,
+    "MO_HINH_TO_CHUC": "Ngoài công lập",
+    "HINH_THUC_TO_CHUC": "Bệnh viện đa khoa",
+    "GIA_AP_DUNG": "Tư nhân theo giá công lập",
+    "DIA_CHI": "Cần Thơ",
+    "DIEN_THOAI": "",
+    "EMAIL": "",
+    "GIAM_DOC": "",
+    "NGUOI_CHIU_TRACH_NHIEM_CM": "",
+    "GIUONG_PHE_DUYET": 0,
+    "SO_BAN_KHAM": 0
+  }
+}

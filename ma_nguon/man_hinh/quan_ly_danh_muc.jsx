@@ -19,10 +19,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { rongSidebarCap, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
@@ -43,6 +43,18 @@ import {
   timNhomTrungTrongBang,
 } from '../tien_ich/danh_muc_trung_lap';
 import { locDongTheoTuKhoa, tinhChiSoPhanTrang } from '../tien_ich/bo_loc_bang_du_lieu';
+import {
+  BO_LOC_ICD10_TT06,
+  PHIEN_BAN_ICD10_TT06,
+  demMaCoTT06TheoBoLoc,
+  locDongIcd10TheoTT06,
+} from '../tien_ich/icd10_tt06_loc_danh_muc';
+import {
+  BO_LOC_ICD10_KE_DON_TT26,
+  PHIEN_BAN_ICD10_KE_DON_TT26,
+  demMaKeDonTren30TheoBoLoc,
+  locDongKeDonTren30TheoTT26,
+} from '../tien_ich/icd10_tt26_ke_don_loc_danh_muc';
 import { chuanTenSheetInAn, inHoacChiaSePdfTuBang } from '../tien_ich/in_an_chung';
 import TimKiemPhanTrangBang from '../thanh_phan/tim_kiem_phan_trang_bang';
 import {
@@ -98,8 +110,8 @@ const DANH_SACH_TAB_DONG_BO = DANH_SACH_TAB.map((tab) => ({
 }));
 
 const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
-  const { width: winW } = useWindowDimensions();
-  const rongSidebar = winW < 420 ? 196 : winW < 768 ? 232 : 292;
+  const { dungBoCucDoc, width: winW } = useLayoutMode();
+  const rongSidebar = rongSidebarCap(winW);
   const [danhMucHienTai, setDanhMucHienTai] = useState(DANH_SACH_TAB[0].id); 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -109,6 +121,10 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   /** Import Excel: có dòng trùng khóa — chọn ghi đè / bỏ qua */
   const [modalImportTrung, setModalImportTrung] = useState(null);
   const [tuKhoaTim, setTuKhoaTim] = useState('');
+  /** Tab DANH_MUC_ICD10 — lọc theo cờ TT 06 (ICD-TT06-CAM-CHINH, …) */
+  const [locTT06, setLocTT06] = useState('');
+  /** Tab DANH_MUC_ICD10_KE_DON_TREN_30_NGAY — lọc theo Phụ lục VII TT 26/2025 */
+  const [locTT26KeDon, setLocTT26KeDon] = useState('');
   /** Dòng cần xóa hàng loạt — theo `indexGoc` trong mảng `data` (ổn định dù tìm/ phân trang). */
   const [dauChonDong, setDauChonDong] = useState(() => new Set());
 
@@ -130,10 +146,22 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { columnsRef.current = columns; }, [columns]);
   useEffect(() => { danhMucRef.current = danhMucHienTai; }, [danhMucHienTai]);
-  const hangLocChiSo = useMemo(
-    () => locDongTheoTuKhoa(data, columns, tuKhoaTim),
-    [data, columns, tuKhoaTim],
+  const demTT06TheoBoLoc = useMemo(() => demMaCoTT06TheoBoLoc(), []);
+  const demTT26KeDonTheoBoLoc = useMemo(
+    () => demMaKeDonTren30TheoBoLoc(danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' ? data : undefined),
+    [data, danhMucHienTai],
   );
+
+  const hangLocChiSo = useMemo(() => {
+    const sauTuKhoa = locDongTheoTuKhoa(data, columns, tuKhoaTim);
+    if (danhMucHienTai === 'DANH_MUC_ICD10' && locTT06) {
+      return locDongIcd10TheoTT06(sauTuKhoa, columns, locTT06);
+    }
+    if (danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' && locTT26KeDon) {
+      return locDongKeDonTren30TheoTT26(sauTuKhoa, locTT26KeDon);
+    }
+    return sauTuKhoa;
+  }, [data, columns, tuKhoaTim, danhMucHienTai, locTT06, locTT26KeDon]);
   const nSauLoc = hangLocChiSo.length;
 
   const { tongSoTrang, trangDangXem, chiSoBatDau, chiSoKetThuc } = useMemo(
@@ -148,12 +176,14 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
   useEffect(() => {
     setTrangHienTai(1);
     setTuKhoaTim('');
+    setLocTT06('');
+    setLocTT26KeDon('');
     setDauChonDong(new Set());
   }, [danhMucHienTai]);
 
   useEffect(() => {
     setTrangHienTai(1);
-  }, [tuKhoaTim, soDongMotTrang]);
+  }, [tuKhoaTim, locTT06, locTT26KeDon, soDongMotTrang]);
 
   const layKhoaCotDanhMuc = (key) => `COLS_${key}`;
   const dinhDangThoiGianMeta = (value) => {
@@ -1046,8 +1076,8 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.khung_chinh_dm}>
-        <View style={[styles.sidebar, { width: rongSidebar }]}>
+      <View style={[styles.khung_chinh_dm, dungBoCucDoc && styles.khung_chinh_dm_doc]}>
+        <View style={[styles.sidebar, dungBoCucDoc ? styles.sidebar_doc : { width: rongSidebar }]}>
           <Text style={styles.chu_sidebar_tieu_de}>Chọn danh mục</Text>
           <ScrollView
             style={styles.sidebar_scroll}
@@ -1152,6 +1182,78 @@ const ManHinhQuanLyDanhMuc = ({ navigation, route }) => {
             chiSoBatDau={chiSoBatDau}
             chiSoKetThuc={chiSoKetThuc}
           />
+          {danhMucHienTai === 'DANH_MUC_ICD10' ? (
+            <View style={styles.khung_loc_tt06}>
+              <Text style={styles.chu_tieu_de_loc_tt06}>
+                TT 06/2026 — lọc cờ mã hóa ({PHIEN_BAN_ICD10_TT06})
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.cuon_loc_tt06}
+              >
+                {BO_LOC_ICD10_TT06.map((opt) => {
+                  const active = locTT06 === opt.id;
+                  const demBang = opt.id ? (demTT06TheoBoLoc[opt.id] ?? 0) : null;
+                  return (
+                    <TouchableOpacity
+                      key={opt.id || 'tat-ca'}
+                      style={[styles.nut_loc_tt06, active && styles.nut_loc_tt06_active]}
+                      onPress={() => setLocTT06(opt.id)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={[styles.chu_nut_loc_tt06, active && styles.chu_nut_loc_tt06_active]}>
+                        {opt.id ? opt.id.replace('ICD-TT06-', '') : opt.label}
+                        {demBang != null ? ` (${demBang.toLocaleString('vi-VN')})` : ''}
+                      </Text>
+                      {opt.moTa ? (
+                        <Text style={[styles.chu_mo_ta_loc_tt06, active && styles.chu_mo_ta_loc_tt06_active]} numberOfLines={2}>
+                          {opt.moTa}
+                        </Text>
+                      ) : null}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null}
+          {danhMucHienTai === 'DANH_MUC_ICD10_KE_DON_TREN_30_NGAY' ? (
+            <View style={styles.khung_loc_tt06}>
+              <Text style={styles.chu_tieu_de_loc_tt06}>
+                TT 26/2025 Phụ lục VII — kê đơn ngoại trú &gt;30 ngày ({PHIEN_BAN_ICD10_KE_DON_TT26})
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.cuon_loc_tt06}
+              >
+                {BO_LOC_ICD10_KE_DON_TT26.map((opt) => {
+                  const active = locTT26KeDon === opt.id;
+                  const demBang = demTT26KeDonTheoBoLoc[opt.id] ?? (opt.id ? 0 : data.length);
+                  return (
+                    <TouchableOpacity
+                      key={opt.id || 'tat-ca-tt26'}
+                      style={[styles.nut_loc_tt06, active && styles.nut_loc_tt06_active]}
+                      onPress={() => setLocTT26KeDon(opt.id)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={[styles.chu_nut_loc_tt06, active && styles.chu_nut_loc_tt06_active]}>
+                        {opt.label}
+                        {` (${Number(demBang).toLocaleString('vi-VN')})`}
+                      </Text>
+                      {opt.moTa ? (
+                        <Text style={[styles.chu_mo_ta_loc_tt06, active && styles.chu_mo_ta_loc_tt06_active]} numberOfLines={2}>
+                          {opt.moTa}
+                        </Text>
+                      ) : null}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null}
           {danhMucHienTai === 'DANH_MUC_TUONG_TAC_THUOC' &&
           soDongMotTrang > 0 &&
           data.length > soDongMotTrang ? (
@@ -1328,6 +1430,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     minWidth: 0,
   },
+  khung_chinh_dm_doc: {
+    flexDirection: 'column',
+  },
   sidebar: {
     alignSelf: 'stretch',
     flexDirection: 'column',
@@ -1338,6 +1443,13 @@ const styles = StyleSheet.create({
     borderRightColor: CD.border.glass_md,
     backgroundColor: 'rgba(0,0,0,0.22)',
     ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  sidebar_doc: {
+    width: '100%',
+    maxHeight: 260,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass_md,
   },
   chu_sidebar_tieu_de: {
     fontSize: 14,
@@ -1616,6 +1728,59 @@ const styles = StyleSheet.create({
     color: CD.brand.mauDam,
     fontFamily: CD.font.family,
     lineHeight: 20,
+  },
+  khung_loc_tt06: {
+    paddingHorizontal: 12,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass,
+    gap: 8,
+  },
+  chu_tieu_de_loc_tt06: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+  },
+  cuon_loc_tt06: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  nut_loc_tt06: {
+    minWidth: 132,
+    maxWidth: 200,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: CD.border.glass_md,
+    backgroundColor: CD.bg.glass_input,
+    ...Platform.select({ web: { cursor: 'pointer' } }),
+  },
+  nut_loc_tt06_active: {
+    borderColor: CD.brand.mauDam,
+    backgroundColor: CD.brand.mauPhu,
+  },
+  chu_nut_loc_tt06: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: CD.text.primary,
+    fontFamily: CD.font.family,
+  },
+  chu_nut_loc_tt06_active: {
+    color: CD.brand.mauDam,
+  },
+  chu_mo_ta_loc_tt06: {
+    marginTop: 4,
+    fontSize: 11,
+    fontWeight: '600',
+    color: CD.text.secondary,
+    fontFamily: CD.font.family,
+    lineHeight: 15,
+  },
+  chu_mo_ta_loc_tt06_active: {
+    color: CD.text.primary,
   },
   nhom_phan_trang: {
     flexDirection: 'row',

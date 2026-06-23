@@ -27,7 +27,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
+import KhuVucCuonCoThanhCuon from '../thanh_phan/khu_vuc_cuon_co_thanh_cuon';
 import KhungTroLyTriThucChat from '../thanh_phan/khung_tro_ly_tri_thuc_chat';
+import ThanhDieuKhienPanel, { stylePanelGhim } from '../thanh_phan/thanh_dieu_khien_panel';
 import { BoChonChuDe, CD } from '../tien_ich/chu_de_giao_dien';
 import {
   CHE_DO_GIAM_DINH,
@@ -52,8 +54,17 @@ import {
   NHOM_VI_PHAM_TAT_CA,
   locDanhSachLoiChiTiet,
   phangHoaDanhSachLoiChiTiet,
+  taoMetaXuatBacSiTuChiTietLoi,
   tongHopQuyTacTuDanhSachChiTiet,
 } from '../tien_ich/thong_ke_loi_dung_chung';
+import {
+  BO_LOC_ICD10_VI_PHAM,
+  BO_LOC_ICD10_VI_PHAM_TAT_CA,
+  demLoiTheoBoLocIcd10,
+  loiKhopBoLocIcd10ViPham,
+  PHIEN_BAN_ICD10_TT06,
+} from '../tien_ich/icd10_loc_vi_pham';
+import { layMapHoTenNhanSuChoXuatBaoCao } from '../tien_ich/dinh_dang_cchn_bao_cao';
 
 // [CẬP NHẬT LÕI]: Thống nhất dùng kho_du_lieu để đồng bộ với man_hinh_kho_luu_tru
 import { gomTrungLapCanhBaoTheoMaLuatVaNoiDung, xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
@@ -70,6 +81,13 @@ import NhapFileXML, {
   taiNguonPhuThuocNhapXml,
   xuLyMotFileXmlChoBanGiamDinh,
 } from '../tien_ich/nhap_file_xml';
+import { BREAKPOINTS, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
+import {
+  luuTuyChonPanelTongQuan,
+  PANEL_TONG_QUAN,
+  taiTuyChonPanelTongQuan,
+  trangThaiPanelMacDinh,
+} from '../tien_ich/tong_quan_panel_prefs';
 
 const LOGO_PC = 'https://i.ibb.co/nNr9SQYr/logo-pc.png';
 
@@ -102,7 +120,7 @@ const phangDongXmlChoOExcel = (row) => {
   return o;
 };
 
-const taoCacDongXuatXmlGocSangNhomTheoPhanHe = (danhSachChiTietLoc, timHoSo) => {
+const taoCacDongXuatXmlGocSangNhomTheoPhanHe = (danhSachChiTietLoc, timHoSo, mapHoTen = null) => {
   const theoPhanHe = new Map();
   (Array.isArray(danhSachChiTietLoc) ? danhSachChiTietLoc : []).forEach((detail, stt) => {
     const loi = detail.doi_tuong_goc || {};
@@ -125,6 +143,7 @@ const taoCacDongXuatXmlGocSangNhomTheoPhanHe = (danhSachChiTietLoc, timHoSo) => 
       _XUAT_BANG_XML: phan,
       _XUAT_INDEX_DONG: loi.index,
       _XUAT_TRUONG_LOI: String(loi.truong_loi || '').trim(),
+      ...taoMetaXuatBacSiTuChiTietLoi(detail, loi, hs, mapHoTen),
     };
     if (row && typeof row === 'object' && !Array.isArray(row) && Object.keys(row).length > 0) {
       nhom.push({ ...metaDau, ...phangDongXmlChoOExcel(row) });
@@ -359,6 +378,8 @@ const layKetQuaGiamDinhCoSan = (hoSo = {}) => {
 };
 
 const ManHinhTongQuan = ({ navigation }) => {
+  const { dungSidebarTrai, width: beRongCuaSo } = useLayoutMode();
+  const rongSidebarDash = beRongCuaSo >= BREAKPOINTS.xl ? 300 : 260;
   const [dangTai, setDangTai] = useState(false);
   const [thongBaoDangTai, setThongBaoDangTai] = useState('Đang kiểm tra hồ sơ...');
   const [thongKe, setThongKe] = useState({ tong: 0, sach: 0, loi: 0, giamDinhLai: 0, danhMuc: [] });
@@ -368,6 +389,7 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [boLocNhomViPham, setBoLocNhomViPham] = useState(NHOM_VI_PHAM_TAT_CA);
   const [boLocNhomCapLoaiKcb, setBoLocNhomCapLoaiKcb] = useState(NHOM_VI_PHAM_TAT_CA);
   const [boLocMaKhoa, setBoLocMaKhoa] = useState(NHOM_VI_PHAM_TAT_CA);
+  const [boLocIcd10, setBoLocIcd10] = useState(BO_LOC_ICD10_VI_PHAM_TAT_CA);
   const [tuKhoaLocQuyTac, setTuKhoaLocQuyTac] = useState('');
   const [tuKhoaLocHoSo, setTuKhoaLocHoSo] = useState('');
   const [tuKhoaTraCuuChiTiet, setTuKhoaTraCuuChiTiet] = useState('');
@@ -395,6 +417,9 @@ const ManHinhTongQuan = ({ navigation }) => {
   const [importCardMoChiTietKt, setImportCardMoChiTietKt] = useState(false);
   const [importCardMoNangCao, setImportCardMoNangCao] = useState(false);
   const [popupTriThucVisible, setPopupTriThucVisible] = useState(false);
+  /** Ẩn/hiện + ghim thẻ Điều hướng và bộ lọc QPS (lưu AsyncStorage) */
+  const [panelUi, setPanelUi] = useState(trangThaiPanelMacDinh);
+  const panelUiRef = useRef(panelUi);
   /** menu: chọn Trợ lý / Tri thức GD · chat: cửa sổ chat RAG */
   const [triThucModalPhan, setTriThucModalPhan] = useState('menu');
   const animTriThucBackdrop = useRef(new Animated.Value(0)).current;
@@ -450,6 +475,37 @@ const ManHinhTongQuan = ({ navigation }) => {
       console.error("Lỗi tải phân quyền:", e);
     }
   };
+
+  const capNhatPanelUi = (panelId, patch) => {
+    setPanelUi((prev) => {
+      const next = {
+        ...prev,
+        [panelId]: { ...prev[panelId], ...patch },
+      };
+      panelUiRef.current = next;
+      void luuTuyChonPanelTongQuan(next);
+      return next;
+    });
+  };
+
+  const chuyenTrangThaiAnPanel = (panelId) => {
+    capNhatPanelUi(panelId, { an: !panelUiRef.current[panelId]?.an });
+  };
+
+  const chuyenTrangThaiGhimPanel = (panelId) => {
+    capNhatPanelUi(panelId, { ghim: !panelUiRef.current[panelId]?.ghim });
+  };
+
+  useEffect(() => {
+    let huy = false;
+    (async () => {
+      const prefs = await taiTuyChonPanelTongQuan();
+      if (huy) return;
+      panelUiRef.current = prefs;
+      setPanelUi(prefs);
+    })();
+    return () => { huy = true; };
+  }, []);
 
   useEffect(() => {
     fetchThongTinHeThong();
@@ -511,6 +567,11 @@ const ManHinhTongQuan = ({ navigation }) => {
         if (!khopKhoa) return false;
       }
 
+      if (boLocIcd10) {
+        const khopIcd = (item.chi_tiet_phat_sinh || []).some((ct) => loiKhopBoLocIcd10ViPham(ct, boLocIcd10));
+        if (!khopIcd) return false;
+      }
+
       const chuoiQuyTac = chuanHoaToken([
         item.ma_luat,
         item.ten_quy_tac,
@@ -534,7 +595,7 @@ const ManHinhTongQuan = ({ navigation }) => {
   };
 
   const danhMucDaLoc = locDanhMucQuyTac(thongKe.danhMuc);
-  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
+  const coBoLocDangBat = boLocLoaiUuTien !== 'TAT_CA' || boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA || boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA || boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA || boLocIcd10 !== BO_LOC_ICD10_VI_PHAM_TAT_CA || tuKhoaLocQuyTac.trim() !== '' || tuKhoaLocHoSo.trim() !== '';
   const danhSachLoiChiTietDashboard = useMemo(() => phangHoaDanhSachLoiChiTiet(rawDanhSach), [rawDanhSach]);
 
   /** Từng dòng lỗi (chi tiết) sau bộ lọc QPS — dùng chung xuất Excel / XML, khớp ưu tiên, nhóm NV, loại KCB, khoa, 2 ô từ khóa. */
@@ -545,6 +606,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       nhomViPham: boLocNhomViPham,
       nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
       maKhoa: boLocMaKhoa,
+      boLocIcd10,
       tuKhoa: '',
     });
     const q1 = chuanHoaToken(tuKhoaLocQuyTac);
@@ -560,7 +622,12 @@ const ManHinhTongQuan = ({ navigation }) => {
       }
       return true;
     });
-  }, [rawDanhSach, boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, tuKhoaLocQuyTac, tuKhoaLocHoSo]);
+  }, [rawDanhSach, boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10, tuKhoaLocQuyTac, tuKhoaLocHoSo]);
+
+  const demIcd10TheoBoLoc = useMemo(
+    () => demLoiTheoBoLocIcd10(danhSachLoiChiTietDashboard),
+    [danhSachLoiChiTietDashboard],
+  );
 
   const thaKhoaTuDuLieu = useMemo(() => {
     const map = new Map();
@@ -580,7 +647,8 @@ const ManHinhTongQuan = ({ navigation }) => {
     nhomViPham: boLocNhomViPham,
     nhomCapLoaiKcb802: boLocNhomCapLoaiKcb,
     maKhoa: boLocMaKhoa,
-  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+    boLocIcd10,
+  }), [danhSachLoiChiTietDashboard, loaiTraCuuChiTiet, tuKhoaTraCuuChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
   const ketQuaTraCuuChiTietHienThi = ketQuaTraCuuChiTiet.slice(0, 60);
 
   useEffect(() => {
@@ -592,7 +660,7 @@ const ManHinhTongQuan = ({ navigation }) => {
     if (!daTonTai) {
       setKhoaQuyTacDangChon(danhMucDaLoc[0].khoa);
     }
-  }, [boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
+  }, [boLocLoaiUuTien, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10, danhMucDaLoc, khoaQuyTacDangChon, tuKhoaLocHoSo, tuKhoaLocQuyTac]);
 
   const tinhToanDashboard = (danhSachHoSo) => {
     const tongSo = danhSachHoSo.length;
@@ -612,9 +680,10 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     });
-  }, [quyTacDangChon, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacDangChon, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const chiTietModalDaLoc = useMemo(() => {
     const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
@@ -622,6 +691,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     });
     const q = chuanHoaToken(tuKhoaLocChiTietModal).trim();
@@ -640,7 +710,7 @@ const ManHinhTongQuan = ({ navigation }) => {
       ].filter(Boolean).join(' | '));
       return s.includes(q);
     });
-  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacChoModalChiTiet, tuKhoaLocChiTietModal, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const tongCaModalSauLocBoLoc = useMemo(() => {
     const rawAll = quyTacChoModalChiTiet?.chi_tiet_phat_sinh || [];
@@ -648,9 +718,10 @@ const ManHinhTongQuan = ({ navigation }) => {
       if (boLocNhomViPham !== NHOM_VI_PHAM_TAT_CA && c.nhom_vi_pham !== boLocNhomViPham) return false;
       if (boLocNhomCapLoaiKcb !== NHOM_VI_PHAM_TAT_CA && (c.nhom_cap_loai_kcb || layNhomCapLoaiKcb802(c.ma_loai_kcb_chuan)) !== boLocNhomCapLoaiKcb) return false;
       if (boLocMaKhoa !== NHOM_VI_PHAM_TAT_CA && (c.ma_khoa_chuan || 'KHONG_RO') !== boLocMaKhoa) return false;
+      if (boLocIcd10 && !loiKhopBoLocIcd10ViPham(c, boLocIcd10)) return false;
       return true;
     }).length;
-  }, [quyTacChoModalChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa]);
+  }, [quyTacChoModalChiTiet, boLocNhomViPham, boLocNhomCapLoaiKcb, boLocMaKhoa, boLocIcd10]);
 
   const timHoSoTrongKhoTheoMaLK = (maLK) => {
     const m = chuanHoaMaLK(maLK);
@@ -1031,7 +1102,8 @@ const ManHinhTongQuan = ({ navigation }) => {
       return;
     }
 
-    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK);
+    const mapHoTen = await layMapHoTenNhanSuChoXuatBaoCao();
+    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK, mapHoTen);
     const wb = XLSX.utils.book_new();
     const daDung = new Set();
     theoPhanHe.forEach((rows, phan) => {
@@ -1065,7 +1137,8 @@ const ManHinhTongQuan = ({ navigation }) => {
       return;
     }
 
-    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK);
+    const mapHoTen = await layMapHoTenNhanSuChoXuatBaoCao();
+    const theoPhanHe = taoCacDongXuatXmlGocSangNhomTheoPhanHe(danhSachLoiChiTietSauLocXuat, timHoSoTrongKhoTheoMaLK, mapHoTen);
     const phanDongKhoi = [];
     let sttG = 0;
     theoPhanHe.forEach((rows, phan) => {
@@ -1083,7 +1156,7 @@ const ManHinhTongQuan = ({ navigation }) => {
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <BaoCaoViPhamQPS xmlns="urn:cdss-bhyt:bao-cao-vi-pham" phien_ban="1.0" tao_luc="${escapeXmlBaoCaoViPham(new Date().toISOString())}" so_dong="${sttG}">
-  <GhiChu>Chỉ các dòng dữ liệu gốc XML tương ứng từng cảnh báo (bảng XML2, XML3, …) sau lọc; cột _XUAT_* là phần cảnh báo/lỗi tham chiếu.</GhiChu>
+  <GhiChu>Chỉ các dòng dữ liệu gốc XML tương ứng từng cảnh báo (bảng XML2, XML3, …) sau lọc; cột _XUAT_* là phần cảnh báo/lỗi tham chiếu (BS: Họ tên (Số CCHN) từ DM nhân sự; _XUAT_PC/_XUAT_MA_BN = MA_BN XML1 cho lỗi thuốc XML2).</GhiChu>
 ${phanDongKhoi.join('\n')}
 </BaoCaoViPhamQPS>
 `;
@@ -1244,15 +1317,35 @@ ${phanDongKhoi.join('\n')}
         </View>
       </View>
 
-      <View style={styles.dashboard_layout}>
-        <View style={styles.sidebar_dashboard}>
+      <View style={[styles.dashboard_layout, dungSidebarTrai ? styles.dashboard_layout_row : styles.dashboard_layout_col]}>
+        <View style={[
+          styles.sidebar_dashboard,
+          dungSidebarTrai
+            ? { width: rongSidebarDash }
+            : styles.sidebar_dashboard_compact,
+          panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an && styles.panel_card_collapsed,
+          panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an && !dungSidebarTrai && { maxHeight: undefined },
+          stylePanelGhim(panelUi[PANEL_TONG_QUAN.DIEU_HUONG].ghim),
+        ]}>
           <View style={styles.sidebar_header}>
             <View style={[styles.sidebar_header_accent, { backgroundColor: CD.brand.mauChinh }]} />
             <View style={styles.sidebar_header_inner}>
-              <Text style={styles.sidebar_title}>Điều hướng</Text>
-              <Text style={styles.sidebar_subtitle}>Module nghiệp vụ</Text>
+              <ThanhDieuKhienPanel
+                tieuDe="Điều hướng"
+                phuDe="Module nghiệp vụ"
+                an={panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an}
+                ghim={panelUi[PANEL_TONG_QUAN.DIEU_HUONG].ghim}
+                onToggleAn={() => chuyenTrangThaiAnPanel(PANEL_TONG_QUAN.DIEU_HUONG)}
+                onToggleGhim={() => chuyenTrangThaiGhimPanel(PANEL_TONG_QUAN.DIEU_HUONG)}
+              />
             </View>
           </View>
+          {panelUi[PANEL_TONG_QUAN.DIEU_HUONG].an ? (
+            <View style={styles.panel_collapsed_body}>
+              <Text style={styles.panel_collapsed_hint}>Thẻ điều hướng đang ẩn — bấm 👁 để mở lại.</Text>
+            </View>
+          ) : (
+            <>
           {Platform.OS === 'web' ? (
             <View style={styles.sidebar_hint_pill}>
               <Text style={styles.sidebar_hint_bullet}>●</Text>
@@ -1261,7 +1354,7 @@ ${phanDongKhoi.join('\n')}
               </Text>
             </View>
           ) : null}
-          <ScrollView style={styles.sidebar_scroll} showsVerticalScrollIndicator={false}>
+          <KhuVucCuonCoThanhCuon style={styles.sidebar_scroll}>
             <View style={styles.module_grid_sidebar}>
               {menuSidebar.map((item) => {
                 const cfg = MODULE_ICONS[item.id] || { icon: '📦', mau: '#607D8B', mauNhat: '#ECEFF1' };
@@ -1327,10 +1420,12 @@ ${phanDongKhoi.join('\n')}
                 </Pressable>
               </View>
             </View>
-          </ScrollView>
+          </KhuVucCuonCoThanhCuon>
+            </>
+          )}
         </View>
 
-        <ScrollView style={styles.dashboard_main} showsVerticalScrollIndicator={false}>
+        <KhuVucCuonCoThanhCuon style={styles.dashboard_main}>
 
         {/* ── 4. KHU VỰC VẬN HÀNH THỐNG NHẤT (thẻ nạp gọn) ── */}
         <View style={[styles.section_block, styles.section_block_import_tight]}>
@@ -1502,7 +1597,27 @@ ${phanDongKhoi.join('\n')}
             </View>
           </View>
 
-          <View style={styles.rule_filter_panel}>
+          <View style={[
+            styles.rule_filter_panel,
+            panelUi[PANEL_TONG_QUAN.LOC_QPS].an && styles.panel_card_collapsed,
+            stylePanelGhim(panelUi[PANEL_TONG_QUAN.LOC_QPS].ghim),
+          ]}>
+            <View style={styles.rule_filter_panel_head}>
+              <ThanhDieuKhienPanel
+                tieuDe="Bộ lọc vi phạm"
+                phuDe="Ưu tiên · nhóm NV · loại KCB · khoa · ICD-10"
+                an={panelUi[PANEL_TONG_QUAN.LOC_QPS].an}
+                ghim={panelUi[PANEL_TONG_QUAN.LOC_QPS].ghim}
+                onToggleAn={() => chuyenTrangThaiAnPanel(PANEL_TONG_QUAN.LOC_QPS)}
+                onToggleGhim={() => chuyenTrangThaiGhimPanel(PANEL_TONG_QUAN.LOC_QPS)}
+              />
+            </View>
+            {panelUi[PANEL_TONG_QUAN.LOC_QPS].an ? (
+              <Text style={styles.panel_collapsed_hint_dark}>
+                Bộ lọc đang ẩn — bấm 👁 trên thanh tiêu đề để hiện lại.
+              </Text>
+            ) : (
+            <>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator
@@ -1622,6 +1737,41 @@ ${phanDongKhoi.join('\n')}
                   ))}
                 </View>
               </View>
+              <View style={styles.rule_filter_group_sep} />
+              <View style={[styles.rule_filter_group, styles.rule_filter_group_icd]}>
+                <Text style={styles.rule_filter_group_label} numberOfLines={2}>
+                  ICD-10 (TT 06 & lỗi liên quan)
+                </Text>
+                <Text style={styles.rule_filter_section_hint} numberOfLines={1}>
+                  {PHIEN_BAN_ICD10_TT06}
+                </Text>
+                <View style={styles.rule_filter_chips_wrap}>
+                  {BO_LOC_ICD10_VI_PHAM.map((opt) => {
+                    const active = boLocIcd10 === opt.id;
+                    const dem = demIcd10TheoBoLoc[opt.id];
+                    return (
+                      <TouchableOpacity
+                        key={`icd10_${opt.id || 'tat-ca'}`}
+                        style={[
+                          styles.rule_filter_chip,
+                          styles.rule_filter_chip_icd,
+                          active && styles.rule_filter_chip_active,
+                          opt.nhom === 'TT06' && styles.rule_filter_chip_icd_tt06,
+                        ]}
+                        onPress={() => setBoLocIcd10(opt.id)}
+                      >
+                        <Text style={[
+                          styles.rule_filter_chip_txt,
+                          active && styles.rule_filter_chip_txt_active,
+                        ]} numberOfLines={2}>
+                          {opt.label}
+                          {dem != null ? ` (${dem})` : ''}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
             </ScrollView>
             <View style={styles.rule_filter_input_row}>
               <TextInput
@@ -1646,6 +1796,7 @@ ${phanDongKhoi.join('\n')}
                     setBoLocNhomViPham(NHOM_VI_PHAM_TAT_CA);
                     setBoLocNhomCapLoaiKcb(NHOM_VI_PHAM_TAT_CA);
                     setBoLocMaKhoa(NHOM_VI_PHAM_TAT_CA);
+                    setBoLocIcd10(BO_LOC_ICD10_VI_PHAM_TAT_CA);
                     setTuKhoaLocQuyTac('');
                     setTuKhoaLocHoSo('');
                   }}
@@ -1657,6 +1808,8 @@ ${phanDongKhoi.join('\n')}
             <Text style={styles.rule_filter_status}>
               Hiển thị {danhMucDaLoc.length}/{thongKe.danhMuc.length} quy tắc · {danhSachLoiChiTietSauLocXuat.length} dòng lỗi khớp lọc (Excel/XML)
             </Text>
+            </>
+            )}
           </View>
 
           <View style={styles.table_card}>
@@ -1871,7 +2024,7 @@ ${phanDongKhoi.join('\n')}
 
           <ChanTrangUngDung style={{ marginBottom: 28 }} />
 
-        </ScrollView>
+        </KhuVucCuonCoThanhCuon>
       </View>
 
       {menuTriThucPopup.length > 0 ? (
@@ -2180,14 +2333,16 @@ const styles = StyleSheet.create({
   // ── DASHBOARD LAYOUT ──
   dashboard_layout: {
     flex: 1,
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     gap: 12,
     padding: 12,
   },
+  dashboard_layout_row: {
+    flexDirection: 'row',
+  },
+  dashboard_layout_col: {
+    flexDirection: 'column',
+  },
   sidebar_dashboard: {
-    ...(Platform.OS === 'web'
-      ? { width: 300 }
-      : { width: '100%', maxHeight: 300 }),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -2207,6 +2362,10 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
     }),
+  },
+  sidebar_dashboard_compact: {
+    width: '100%',
+    maxHeight: 360,
   },
   sidebar_header: {
     flexDirection: 'row',
@@ -2240,6 +2399,30 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginTop: 4,
     fontFamily: CD.font.family,
+  },
+  panel_card_collapsed: {
+    maxHeight: undefined,
+  },
+  panel_collapsed_body: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingBottom: 14,
+  },
+  panel_collapsed_hint: {
+    fontSize: 12,
+    color: '#94A3B8',
+    fontFamily: CD.font.family,
+    lineHeight: 18,
+  },
+  panel_collapsed_hint_dark: {
+    fontSize: 12,
+    color: CD.text.muted,
+    fontFamily: CD.font.family,
+    lineHeight: 18,
+    opacity: 0.9,
+  },
+  rule_filter_panel_head: {
+    marginBottom: 2,
   },
   sidebar_hint_pill: {
     flexDirection: 'row',
@@ -3427,6 +3610,18 @@ const styles = StyleSheet.create({
   rule_filter_chip_nhom: {
     paddingVertical: 6,
     paddingHorizontal: 10,
+  },
+  rule_filter_group_icd: {
+    minWidth: 280,
+    maxWidth: 520,
+  },
+  rule_filter_chip_icd: {
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+    borderColor: 'rgba(129,199,132,0.35)',
+  },
+  rule_filter_chip_icd_tt06: {
+    borderColor: 'rgba(100,181,246,0.4)',
   },
   rule_filter_section_hint: {
     fontSize: 11,

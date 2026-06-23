@@ -53,6 +53,7 @@ const tinhTangPhanLapGon = (row) => {
   if (/^HC-|^HC_/.test(ma)) return 'L1';
   if (/^DVKT-OP-/.test(ma)) return 'L5';
   if (/^ICD-TT06-/.test(ma)) return 'L23';
+  if (/^ICD-KEP-/.test(ma)) return 'L23';
   if (
     /^CLN-/.test(ma)
     || /^THUOC_/.test(ma)

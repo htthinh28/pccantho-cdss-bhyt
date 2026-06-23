@@ -8,13 +8,17 @@
  * ============================================================
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { xuLyFileXML130Va4210 } from '../dich_vu/his_api';
 import { chayBoMayGiamDinhV3 } from './dong_co_giam_dinh';
-import { layDanhSachMaLKTuKho } from './kho_du_lieu';
+import {
+  damBaoMigrateLichSuXmlSangKhoChinhThuc,
+  layDanhSachMaLKTuKho,
+  layLichSuImportXml,
+  luuBanGhiImportXml,
+} from './kho_du_lieu';
 import { kiemTraDinhDangXML } from './kiem_tra_xml';
 
 const TRANG_THAI_FILE = {
@@ -72,46 +76,6 @@ const hienThongBao = (tieuDe, noiDung) => {
   Alert.alert(tieuDe, noiDung);
 };
 
-const gioiHanLichSuGiamDinh = (danhSach = [], gioiHan = 300) => {
-  if (!Array.isArray(danhSach) || danhSach.length <= gioiHan) return Array.isArray(danhSach) ? danhSach : [];
-  return danhSach.slice(danhSach.length - gioiHan);
-};
-
-const rutGonMucLichSuGiamDinh = (item = {}) => ({
-  ma_lk: chuanHoaMaLK(item?.ma_lk),
-  tenFile: String(item?.tenFile || '').slice(0, 160),
-  ngay_giam_dinh: String(item?.ngay_giam_dinh || ''),
-});
-
-const laLoiVuotQuotaLuuTru = (error) => {
-  const thongDiep = String(error?.message || error || '').trim().toLowerCase();
-  return thongDiep.includes('quota') || thongDiep.includes('storage full');
-};
-
-const luuLichSuGiamDinhAnToan = async (danhSach = []) => {
-  const cacMocThuGon = [120, 60, 20, 10];
-
-  for (const gioiHan of cacMocThuGon) {
-    const duLieuThu = gioiHanLichSuGiamDinh(danhSach, gioiHan).map(rutGonMucLichSuGiamDinh);
-    try {
-      await AsyncStorage.setItem('CDSS_LICH_SU_XML', JSON.stringify(duLieuThu));
-      return duLieuThu;
-    } catch (storageError) {
-      if (!laLoiVuotQuotaLuuTru(storageError)) {
-        throw storageError;
-      }
-    }
-  }
-
-  try {
-    await AsyncStorage.removeItem('CDSS_LICH_SU_XML');
-  } catch (_) {
-    // Bỏ qua vì mục tiêu là không làm gián đoạn luồng nhập hồ sơ.
-  }
-
-  return [];
-};
-
 const DEFAULT_TEXT_BUTTON = '📂 CHỌN HỒ SƠ XML ĐỂ KIỂM TRA';
 
 const taoKhoaGopFile = (file = {}) => {
@@ -162,8 +126,8 @@ const hopNhatDanhSachFile = (danhSachCu = [], danhSachMoi = [], { multiple = tru
  */
 export const taiNguonPhuThuocNhapXml = async () => {
   try {
-    const stored = await AsyncStorage.getItem('CDSS_LICH_SU_XML');
-    const lichSuGiamDinh = stored ? JSON.parse(stored) : [];
+    await damBaoMigrateLichSuXmlSangKhoChinhThuc();
+    const lichSuGiamDinh = await layLichSuImportXml({ gioiHan: 400 });
     const dsMaLKTrongKho = await layDanhSachMaLKTuKho();
     const danhSachMaLKDaCo = Array.from(
       new Set(
@@ -237,6 +201,21 @@ export const xuLyMotFileXmlChoBanGiamDinh = (file, { lichSuGiamDinh = [], danhSa
         let coCanhBao = false;
         let coTheChuyenTiep = false;
 
+        let xmlImportId = null;
+        if (maLK !== 'KHONG_XAC_DINH' && maLKChuan) {
+          try {
+            const recImport = await luuBanGhiImportXml({
+              ma_lk: maLKChuan,
+              ten_file: file.name,
+              raw_xml: rawXML,
+              nguon: 'quyet_scan',
+            });
+            xmlImportId = recImport?.id || null;
+          } catch (storageError) {
+            console.warn('[NhapFileXML] Không lưu được XML gốc vào kho chính thức:', storageError?.message || storageError);
+          }
+        }
+
         if (maLK === 'KHONG_XAC_DINH') {
           trangThai = TRANG_THAI_FILE.LOI;
           lyDoLoi = 'Không tìm thấy thẻ <MA_LK> (Mã liên kết).';
@@ -268,7 +247,14 @@ export const xuLyMotFileXmlChoBanGiamDinh = (file, { lichSuGiamDinh = [], danhSa
           tenFile: file.name,
           kichThuoc: (file.size / 1024).toFixed(1) + ' KB',
           ma_lk: maLK,
-          duLieu: arr.map((hs) => ({ ...hs, _ten_file: file.name, _ds_loi: dsLoi })),
+          xmlImportId,
+          duLieu: arr.map((hs) => ({
+            ...hs,
+            _ten_file: file.name,
+            _ds_loi: dsLoi,
+            ten_file_goc: file.name,
+            xml_import_id: xmlImportId,
+          })),
           ngayGiamDinhCu: hoSoCu?.ngay_giam_dinh || null,
           trangThai,
           coTrungLap,
@@ -313,6 +299,9 @@ export const chuyenKetQuaFileSangMangHoSoKho = (f) => {
       return {
         ...hoSo,
         ma_lk: maLKHoSo,
+        ten_file_goc: hoSo.ten_file_goc || f.tenFile || hoSo._ten_file || '',
+        xml_import_id: hoSo.xml_import_id || f.xmlImportId || '',
+        thoi_gian: new Date().toLocaleString('vi-VN'),
         _tu_dong_ghi_de: laHoSoTrungLap(f),
         _trang_thai_nhap: f.trangThai,
         _co_canh_bao_nhap: Boolean(f.coCanhBao),
@@ -339,8 +328,8 @@ const NhapFileXML = ({ onDuLieuSanSang, multiple = true, styleButton, textButton
   useEffect(() => {
     const taiLichSu = async () => {
       try {
-        const stored = await AsyncStorage.getItem('CDSS_LICH_SU_XML');
-        const lichSuDaLuu = stored ? JSON.parse(stored) : [];
+        await damBaoMigrateLichSuXmlSangKhoChinhThuc();
+        const lichSuDaLuu = await layLichSuImportXml({ gioiHan: 400 });
         setLichSuGiamDinh(lichSuDaLuu);
 
         const dsMaLKTrongKho = await layDanhSachMaLKTuKho();
@@ -438,20 +427,23 @@ const NhapFileXML = ({ onDuLieuSanSang, multiple = true, styleButton, textButton
     setDangGuiDuLieu(true);
     try {
       const thoiGian = new Date().toLocaleString('vi-VN');
-      let lichSuMoi = [...lichSuGiamDinh];
-      dsDuocDuyet.forEach(f => {
+      for (const f of dsDuocDuyet) {
         const maLKChuan = chuanHoaMaLK(f.ma_lk);
-        lichSuMoi = lichSuMoi.filter(hs => chuanHoaMaLK(hs?.ma_lk) !== maLKChuan);
-        lichSuMoi.push({ ma_lk: f.ma_lk, tenFile: f.tenFile, ngay_giam_dinh: thoiGian });
-      });
-      const lichSuRutGon = gioiHanLichSuGiamDinh(lichSuMoi);
-      try {
-        const lichSuDaLuu = await luuLichSuGiamDinhAnToan(lichSuRutGon);
-        setLichSuGiamDinh(lichSuDaLuu);
-      } catch (storageError) {
-        console.warn('[NhapFileXML] Không thể lưu lịch sử kiểm tra, tiếp tục chuyển dữ liệu:', storageError);
-        setLichSuGiamDinh([]);
+        if (!maLKChuan || f.xmlImportId) continue;
+        try {
+          await luuBanGhiImportXml({
+            ma_lk: maLKChuan,
+            ten_file: f.tenFile,
+            raw_xml: '',
+            nguon: 'chuyen_du_lieu',
+            ngay_giam_dinh: thoiGian,
+          });
+        } catch (storageError) {
+          console.warn('[NhapFileXML] Không ghi metadata import khi chuyển dữ liệu:', storageError);
+        }
       }
+      const lichSuDaLuu = await layLichSuImportXml({ gioiHan: 400 });
+      setLichSuGiamDinh(lichSuDaLuu);
       setDanhSachMaLKDaCo((prev) => Array.from(new Set([
         ...prev,
         ...dsDuocDuyet.map((f) => chuanHoaMaLK(f.ma_lk)),

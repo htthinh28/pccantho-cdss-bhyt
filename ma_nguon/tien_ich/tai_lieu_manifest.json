@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T14:51:35.090Z",
+  "generatedAt": "2026-06-23T01:26:51.824Z",
   "items": [
     {
       "id": "txt:_extract_cv266/PL1_plain.txt",
@@ -932,6 +932,47 @@
       ]
     },
     {
+      "id": "md:The_tri_thuc_CK59_BS_mot_CCHN_nhieu_cong_kham.md",
+      "relPath": "The_tri_thuc_CK59_BS_mot_CCHN_nhieu_cong_kham.html",
+      "title": "Thẻ tri thức: CK_59 — BS một CCHN, nhiều loại công khám",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "hanh_chinh"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_Cong_van_3231_BYT_KCB_pham_vi_thanh_toan.md",
+      "relPath": "The_tri_thuc_Cong_van_3231_BYT_KCB_pham_vi_thanh_toan.html",
+      "title": "Thẻ tri thức: Công văn 3231/BYT-KCB — phạm vi hành nghề & thanh toán BHYT",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_Cong_van_4262_BHXH_CSYT_thanh_toan.md",
+      "relPath": "The_tri_thuc_Cong_van_4262_BHXH_CSYT_thanh_toan.html",
+      "title": "Thẻ tri thức: Công văn 4262/BHXH-CSYT — thanh toán chi phí KCB BHYT",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_CV_302_BHYT_LCS_AI.md",
+      "relPath": "The_tri_thuc_CV_302_BHYT_LCS_AI.html",
+      "title": "THẺ TRI THỨC: CÔNG VĂN CV 302/CSYT-CĐ — QUY ĐỊNH BHYT TỪ 01/7/2026",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen"
+      ]
+    },
+    {
       "id": "md:The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.md",
       "relPath": "The_tri_thuc_CV_38_BYT_BH_ma_quyen_loi_the_CN_LH_AI.html",
       "title": "THẺ TRI THỨC: CÔNG VĂN 38/BYT-BH — CHUYỂN MÃ QUYỀN LỢI THẺ BHYT (CN, LH) CHO AI KIỂM TRA",
@@ -1111,6 +1152,28 @@
         "the_tri_thuc",
         "ai_huan_luyen",
         "phap_ly"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_ICD10_ma_kep_dau_gam_dau_sao.md",
+      "relPath": "The_tri_thuc_ICD10_ma_kep_dau_gam_dau_sao.html",
+      "title": "THẺ TRI THỨC: ICD-10 — HỆ THỐNG MÃ KÉP († DẤU GĂM / * DẤU SAO)",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
+      ]
+    },
+    {
+      "id": "md:The_tri_thuc_ICD10_TT06_danh_muc_co_AI.md",
+      "relPath": "The_tri_thuc_ICD10_TT06_danh_muc_co_AI.html",
+      "title": "THẺ TRI THỨC: ICD-10 THEO THÔNG TƯ 06/2026/TT-BYT — DANH MỤC CỜ HƯỚNG DẪN MÃ HÓA",
+      "nguon": "markdown",
+      "tags": [
+        "the_tri_thuc",
+        "ai_huan_luyen",
+        "icd_chuyen_mon"
       ]
     },
     {

@@ -21,6 +21,7 @@ import tuongTacThuocSeed from '../chuyen_mon/tuong_tac_thuoc/du_lieu_tuong_tac_t
 import seedIcdDrugContraBhyt from './seed_icd_drug_contra_bhyt.json';
 import { DANH_MUC_ICD10_CAP_CUU } from '../thanh_phan/icd10_nhap_vien_cap_cuu';
 import { BANG_ICD10_TT06, PHIEN_BAN_ICD10_TT06 } from '../thanh_phan/icd10_tt06_bang_ma';
+import { giamDinhIcd10MaKep } from './icd10_ma_kep_giam_dinh';
 import { giamDinhCdssDmMatchingUpgrade } from './cdss_dm_matching_upgrade';
 import { CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13 as TT_12_2026_BTC_DIEU10_K1 } from './co_so_phap_ly_tt12_2026';
 import { docDanhMucTuKho } from './kho_du_lieu';
@@ -51,8 +52,14 @@ import { damBaoSeedLuatHanhChinhMuc2 } from './seed_luat_hanh_chinh_muc2';
 import { damBaoSeedLuatPtttMuc11 } from './seed_luat_pttt_muc11';
 import { damBaoSeedLuatThuocMuc8 } from './seed_luat_thuoc_muc8';
 import { laCapCuuTheoXml1, viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_cap_cuu';
+import { giamDinhCv302Bhyt } from './giam_dinh_cv302_bhyt';
+import { giamDinhCv4262Bhyt } from './giam_dinh_cv4262_bhyt';
+import { giamDinhCv3231Bhyt } from './giam_dinh_cv3231_bhyt';
+import { giamDinhBsMotCchnNhieuChuyenKhoaCongKham } from './giam_dinh_cong_kham_cchn';
+import { laMotLanKcbDuoi15PhanTramLcs as laMotLanKcbDuoi15PhanTramLCS } from './muc_luong_co_so_bhyt';
 import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
+import { chuanHoaKhoaCanhBaoDedupe, rutGonPhanHoiQuyTac } from './rut_gon_phan_hoi_quy_tac';
 
 // ============================================================
 // [PHẦN 1] CACHE VÀ HÀM TIỆN ÍCH CƠ BẢN
@@ -145,9 +152,6 @@ const SUBSTR = (val, start, length) => {
  * trên thẻ — CN (hộ cận nghèo) từ 3→2; LH (≥75 tuổi, trợ cấp hưu trí xã hội) từ 4→2 kể từ 01/01/2026.
  * Hồ sơ XML có thể còn ký tự thứ 3 in cũ; `KY_HIEU_SO_THU_BA_THE_CHO_TYLE_TT` quy đổi khi suy tỷ lệ T_BHTT.
  */
-const DONG_LUONG_CO_SO_BHYT_MM = 2340000;
-const NGUONG_MOT_LAN_KCB_15_PHAN_TRAM_LCS = 0.15 * DONG_LUONG_CO_SO_BHYT_MM;
-
 const KY_HIEU_SO_THU_BA_THE_BHYT = (xml1) => String(SUBSTR(xml1?.MA_THE_BHYT, 3, 1) || '').trim();
 
 /** YYYYMMDD từ NGAY_VAO / NGAY_RA / NGAY_TTOAN — so sánh chuỗi với mốc pháp lý. */
@@ -199,11 +203,6 @@ const TY_LE_KCB_BHYT_THEO_SO3 = (xml1) => {
     if (d === '3') return 0.95;
     if (d === '4') return 0.8;
     return -1;
-};
-
-const laMotLanKcbDuoi15PhanTramLCS = (xml1) => {
-    const tt = TO_NUMBER(xml1?.T_TONGCHI_BH);
-    return tt > 0 && tt < NGUONG_MOT_LAN_KCB_15_PHAN_TRAM_LCS;
 };
 
 /** Heuristic tuyến xã / trạm y tế / PK khu vực — không thay DM CSKCB. */
@@ -562,12 +561,15 @@ const CO_SO_PHAP_LY_THEO_PREFIX_MA_LUAT = Object.freeze({
     'CLN-THUOC-': CO_SO_PHAP_LY_THUOC.KE_DON_NGOAI_TRU,
     'CLN-CDHA-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-DVKT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
+    'CV4262-': 'Công văn 4262/BHXH-CSYT (28/10/2016) — thanh toán chi phí KCB BHYT',
+    'CV3231-': 'Công văn 3231/BYT-KCB (27/05/2025) — phạm vi hành nghề & thanh toán KCB BHYT',
     'CLN-GIUONG-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-PTTT-': CO_SO_PHAP_LY_DVKT.DANH_MUC_NOI_BO,
     'CLN-CT-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.TT_01} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
     'CLN-CHI-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
     'CLN-XDC-': `${VAN_BAN_HANH_CHINH_HIEN_HANH.QD_130} ${VAN_BAN_HANH_CHINH_HIEN_HANH.ND_188} ${TT_12_2026_BTC_DIEU10_K1}`,
     'ICD-TT06-': `Thông tư 06/2026/TT-BYT: Phụ lục danh mục mã bệnh ICD-10 (hướng dẫn mã hóa — không dùng làm bệnh chính, mã cụ thể hơn, giới tính...). ${TT_12_2026_BTC_DIEU10_K1}`,
+    'ICD-KEP-': 'Quy định mã hóa bệnh tật ICD-10: hệ thống mã kép — mã dấu găm (†) và mã dấu sao (*).',
     'CLN-KCB-': CO_SO_PHAP_LY_KCB.CHUYEN_MON,
     'CLN-TT-': CO_SO_PHAP_LY_KCB.CHUYEN_MON,
     'TUONGTAC_': CO_SO_PHAP_LY_KCB.CHUYEN_MON,
@@ -619,6 +621,7 @@ export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => 
     if (nguonGd === 'PYTHON_SERVICE') return 'L5';
 
     if (/^ICD-TT06-/.test(maLuat)) return 'L23';
+    if (/^ICD-KEP-/.test(maLuat)) return 'L23';
 
     if (/^(DM-THUOC-|DMBV-THUOC-|DM-DVKT-|DMBV-DVKT-|DM-VTYT-|DMBV-VTYT-|DM-KHOA-)/.test(maLuat)) {
         return 'L23';
@@ -649,6 +652,7 @@ export const suyRaTangV15TuCanhBao = (loi = {}, namespaceQuyTacDaSuyRa = '') => 
         CDHA_HARDCODED: 'L4',
         XDC_BUILTIN: 'L4',
         ICD10_TT06_BUILTIN: 'L23',
+        ICD10_MA_KEP_BUILTIN: 'L23',
         DVKT_DANH_MUC: 'L23',
         GIAM_DINH_CHUYEN_DE: 'L4',
         PYTHON_SERVICE: 'L5',
@@ -705,6 +709,8 @@ export const suyRaNamespaceVaNguonQuyTac = (loi = {}) => {
         ganMeta('XDC_BUILTIN', 'dong_co_giam_dinh', 'XML1↔XML2 đa tầng / đa biến', 'LUAT_DU_LIEU');
     } else if (/^ICD-TT06-/.test(maLuat)) {
         ganMeta('ICD10_TT06_BUILTIN', 'dong_co_giam_dinh', 'XML1 MA_BENH — TT 06/2026/BYT (danh mục ICD-10)', 'LUAT_DU_LIEU');
+    } else if (/^ICD-KEP-/.test(maLuat)) {
+        ganMeta('ICD10_MA_KEP_BUILTIN', 'icd10_ma_kep_giam_dinh', 'XML1 MA_BENH — mã kép ICD-10 (†/*)', 'LUAT_DU_LIEU');
     } else if (/^(DMBV-DVKT-|DM-DVKT-)/.test(maLuat)) {
         ganMeta('DVKT_DANH_MUC', 'dong_co_giam_dinh', 'XML3 -> kiểm tra danh mục DVKT', 'LUAT_CDHA');
     } else if (/^CHUYEN_DE[_-]/.test(maLuat)) {
@@ -1230,10 +1236,7 @@ const layLỗiCauTrucTienXuLy = (hoSo) => {
     });
 };
 
-const chuanHoaChuoiGomCanhBao = (s) => String(s || '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\s+/g, ' ')
-    .trim();
+const chuanHoaChuoiGomCanhBao = (s) => chuanHoaKhoaCanhBaoDedupe(s);
 
 /**
  * Gộp các dòng cảnh báo trùng trên cùng một hồ sơ: cùng mã luật + cùng nội dung cảnh báo (sau chuẩn hóa),
@@ -2947,6 +2950,41 @@ const isClaimAllowedPrescriptionOver30Days = (xml1, dm) => {
     return icdCodes.some((code) => isIcdInAllowed30DayCatalog(code, ruleSet));
 };
 
+const layRuleSetKeDon30Ngay = (dm) => dm?.BO_QUY_TAC_ICD10_KE_DON_TREN_30_NGAY;
+
+const tatCaMaIcdThuocDanhMucKeDon30Ngay = (codes, ruleSet) => {
+    const arr = Array.isArray(codes) ? codes : [];
+    if (arr.length === 0) return false;
+    return arr.every((code) => isIcdInAllowed30DayCatalog(code, ruleSet));
+};
+
+/**
+ * Hồ sơ phải kê đơn >30 ngày theo Phụ lục VII TT 26/2025:
+ * - Chỉ bệnh chính thuộc danh mục, không có bệnh kèm; hoặc
+ * - Bệnh chính và mọi mã bệnh kèm theo đều thuộc danh mục.
+ */
+const hoSoPhaiKeDonTren30NgayTheoDmTT26 = (xml1, dm) => {
+    const ruleSet = layRuleSetKeDon30Ngay(dm);
+    if ((!ruleSet?.exact || ruleSet.exact.size === 0) && (!Array.isArray(ruleSet?.ranges) || ruleSet.ranges.length === 0)) {
+        return false;
+    }
+    const maChinh = extractIcdCodesFromClaim(xml1?.MA_BENH_CHINH);
+    const maKem = extractIcdCodesFromClaim(xml1?.MA_BENH_KT, xml1?.MA_BENHKEM, xml1?.MA_BENHKT);
+    if (!tatCaMaIcdThuocDanhMucKeDon30Ngay(maChinh, ruleSet)) return false;
+    if (maKem.length === 0) return true;
+    return tatCaMaIcdThuocDanhMucKeDon30Ngay(maKem, ruleSet);
+};
+
+const moTaDieuKienKeDon30NgayTT26 = (xml1) => {
+    const maChinh = String(xml1?.MA_BENH_CHINH || '').trim() || 'N/A';
+    const maKemRaw = String(xml1?.MA_BENH_KT || xml1?.MA_BENHKEM || '').trim();
+    const maKem = extractIcdCodesFromClaim(xml1?.MA_BENH_KT, xml1?.MA_BENHKEM, xml1?.MA_BENHKT);
+    if (maKem.length === 0) {
+        return `bệnh chính [${maChinh}] thuộc danh mục Phụ lục VII TT 26/2025 và không có bệnh kèm theo`;
+    }
+    return `bệnh chính [${maChinh}] và bệnh kèm theo [${maKemRaw || 'N/A'}] đều thuộc danh mục Phụ lục VII TT 26/2025`;
+};
+
 /**
  * Đường dùng tiêm / chích / truyền theo XML2 (MA_DUONG_DUNG PL BYT — nhóm 2.x; bổ sung từ khóa DUONG_DUNG).
  * Dùng để ngoại lệ gợi ý kê đơn >30 ngày theo danh mục ICD (thuốc tiêm thường tách luồng nghiệp vụ).
@@ -3063,7 +3101,7 @@ const giamDinhQuyenLoiTheoDoiTuongVaThe = (hoSo, dm) => {
         const allHigher = mucHuongValues.every((value) => value >= expected + 5);
         const allLower = mucHuongValues.every((value) => value <= expected - 5);
         if (allHigher || allLower) {
-            // Ngoại lệ (cùng khung QĐ BHXH / CV 38): một lần KCB có T_TONGCHI_BH < 15% LCS (2.340.000đ) → trong phạm vi được chi trả 100%;
+            // Ngoại lệ (QĐ BHXH / CV 38 / CV 302): một lần KCB < 15% LCS theo ngày KCB → 100% phạm vi;
             // MUC_HUONG chi tiết ~100% với thẻ mức 4 (80%) không coi là lệch HC-06d.
             if (!(allHigher && laMotLanKcbDuoi15PhanTramLCS(xml1))) {
                 const huongThucTe = Math.round((mucHuongValues.reduce((sum, value) => sum + value, 0) / mucHuongValues.length) * 10) / 10;
@@ -3076,6 +3114,28 @@ const giamDinhQuyenLoiTheoDoiTuongVaThe = (hoSo, dm) => {
                     rule.legalBasis || layCoSoPhapLyHanhChinh('HC-06')
                 );
             }
+        }
+    }
+
+    if (
+        rule.factor === 0.5
+        && !rule.independentFromCard
+        && thongTinThe.benefitPercent !== null
+        && mucHuongValues.length > 0
+        && coPhatSinhThanhToanBHYT
+    ) {
+        const expectedPercent = Math.round(thongTinThe.benefitPercent * 0.5 * 10) / 10;
+        const allHigher = mucHuongValues.every((value) => value >= expectedPercent + 10);
+        if (allHigher) {
+            const huongThucTe = Math.round((mucHuongValues.reduce((sum, value) => sum + value, 0) / mucHuongValues.length) * 10) / 10;
+            addLỗi(
+                'HC-06f',
+                'Quyền lợi BHYT 50% (CV 302)',
+                `Mã đối tượng KCB [${rule.code}] từ 01/7/2026 được hưởng 50% phạm vi theo mức hưởng thẻ (kỳ vọng ~${expectedPercent}% với thẻ mức ${thongTinThe.benefitCode} = ${thongTinThe.benefitPercent}%), nhưng mức hưởng chi tiết đang quanh ${huongThucTe}%.`,
+                'Warning',
+                'MUC_HUONG',
+                rule.legalBasis || 'Công văn CV 302/CSYT-CĐ; Khoản 4 Điều 22 Luật BHYT; NĐ 188/2025/NĐ-CP',
+            );
         }
     }
 
@@ -3168,7 +3228,7 @@ const boSungChiTietCanhBaoGiaiTrinh = (hoSo, dsLỗi, dm) => (Array.isArray(dsL�
     const phanHe = UPPER(loi?.phan_he || '');
     const truong = UPPER(loi?.truong_loi || '');
     const maLuat = UPPER(loi?.ma_luat || '');
-    let canhBao = lamSachChuoiHienThi(loi?.canh_bao || '');
+    let canhBao = rutGonPhanHoiQuyTac(lamSachChuoiHienThi(loi?.canh_bao || ''));
     const dong = layDongTheoLỗi(hoSo, loi);
 
     if (dong && phanHe === 'XML2') {
@@ -3210,7 +3270,7 @@ const boSungChiTietCanhBaoGiaiTrinh = (hoSo, dsLỗi, dm) => (Array.isArray(dsL�
 
     return {
         ...loi,
-        canh_bao: canhBao,
+        canh_bao: rutGonPhanHoiQuyTac(canhBao),
     };
 });
 
@@ -3289,7 +3349,8 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         if (/^DMBV-/.test(ma)) return false;
         if (ma === 'HC-06' && laDoiTuongKcbHopLeMoRong(xml1.MA_DOITUONG_KCB, dm)) return false;
         /* HC_06 (seed): chi phí < 15% LCS — khám ngoại trú (1/01) thường khác cơ chế kê đơn/tổng chi so với nội trú; tránh dương tính giả */
-        if (ma === 'HC_06' && /351\.000|15%\s*LCS/i.test(canhBao) && MATCH_ANY_MA_LOAI_KCB(xml1?.MA_LOAI_KCB, '1', '01')) return false;
+        if (ma === 'HC_06' && /351\.000|379\.500|15%\s*LCS/i.test(canhBao) && MATCH_ANY_MA_LOAI_KCB(xml1?.MA_LOAI_KCB, '1', '01')) return false;
+        if ((ma === 'HC-302A' || ma === 'HC_302A') && MATCH_ANY_MA_LOAI_KCB(xml1?.MA_LOAI_KCB, '1', '01')) return false;
         if (ma === 'XML_19' && coHc171) return false;
         if (ma === 'XML_21' && !coSauNgayRa) return false;
         if (ma === 'XML_47' && (tatCaMucHuong100 || (Math.abs(cctKyVong - bncctKhaiBao) <= 10 && bncctKhaiBao <= 10))) return false;
@@ -3509,7 +3570,7 @@ const giamDinhHanhChinh = (hoSo, dm) => {
             addLỗi('HC-10', 'Cân bằng tài chính BH', `T_TONGCHI_BH [${tTongBH.toLocaleString()}] không bằng BHTT+BNCCT [${tongThanhToanBH.toLocaleString()}]. Chênh: ${chenh.toLocaleString()}đ.`, 'Warning', 'T_TONGCHI_BH');
     }
 
-    return ds.concat(giamDinhQuyenLoiTheoDoiTuongVaThe(hoSo, dm));
+    return ds.concat(giamDinhQuyenLoiTheoDoiTuongVaThe(hoSo, dm)).concat(giamDinhCv302Bhyt(hoSo, dm));
 };
 
 // ============================================================
@@ -3746,6 +3807,12 @@ const layGiaTriDanhMuc = (row, danhSachKhoa = []) => {
 
 const lamSachChuoiHienThi = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 
+const lamSachChuoiHienThiCoXuongDong = (value) => String(value || '')
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
 const taoNhomChiTietDuyNhat = (items = []) => {
     const seen = new Set();
     const out = [];
@@ -3761,14 +3828,14 @@ const taoNhomChiTietDuyNhat = (items = []) => {
 };
 
 const dinhKemChiTietCanhBao = (message = '', label = 'Chi tiết', details = []) => {
-    const text = lamSachChuoiHienThi(message);
+    const text = lamSachChuoiHienThiCoXuongDong(message);
     const chiTiet = taoNhomChiTietDuyNhat(details).join('; ');
     if (!chiTiet) return text;
     const tokenMessage = UPPER(text).replace(/[^A-Z0-9]/g, '');
     const tokenDetail = UPPER(chiTiet).replace(/[^A-Z0-9]/g, '');
     if (tokenMessage && tokenDetail && tokenMessage.includes(tokenDetail)) return text;
-    const ketThuc = text.endsWith('.') ? text : `${text}.`;
-    return `${ketThuc} ${label}: ${chiTiet}.`;
+    const ketThuc = text.endsWith('.') || text.endsWith('\n') ? text : `${text}.`;
+    return `${ketThuc}\n${label}: ${chiTiet}`;
 };
 
 const dinhDangMaTen = (ma = '', ten = '', fallback = '') => {
@@ -4128,6 +4195,7 @@ const giamDinhThuoc = (hoSo, dm) => {
     const laNgoaiTru = _laHoSoNgoaiTru(xml1);
     const laNoiTru = _laHoSoNoiTru(xml1);
     const duocKeDonQua30Ngay = laNgoaiTru && !laNoiTru && isClaimAllowedPrescriptionOver30Days(xml1, dm);
+    const phaiKeDonTren30Ngay = laNgoaiTru && !laNoiTru && hoSoPhaiKeDonTren30NgayTheoDmTT26(xml1, dm);
     const coTiêmChíchBHYT = coBHYTThuocTiêmChíchTrongHoSo(hoSo);
     let daGhiClnThuoc05 = false;
     const maThuocMap = new Map();
@@ -4165,6 +4233,19 @@ const giamDinhThuoc = (hoSo, dm) => {
                 canh_bao: `Thuốc [${ma || 'N/A'}] có số ngày sử dụng ${soNgaySuDung} (>30 ngày) nhưng hồ sơ không thuộc danh mục ICD10 được phép kê ngoại trú quá 30 ngày.`,
                 muc_do: 'Warning', ma_luat: 'CLN-THUOC-04', ten_quy_tac: 'Số ngày sử dụng thuốc', dieu_kien: 'BUILT-IN',
                 co_so_phap_ly: CO_SO_PHAP_LY_THUOC.SO_NGAY_SU_DUNG });
+
+        if (phaiKeDonTren30Ngay && soNgaySuDung > 0 && soNgaySuDung <= 30)
+            ds.push({
+                phan_he: 'XML2',
+                index: idx,
+                truong_loi: 'SO_NGAY',
+                canh_bao: `Thuốc [${ma || 'N/A'}] có số ngày sử dụng ${soNgaySuDung} (≤30 ngày) trong khi ${moTaDieuKienKeDon30NgayTT26(xml1)} — cần kê đơn trên 30 ngày (tối đa 90 ngày theo lâm sàng).`,
+                muc_do: 'Warning',
+                ma_luat: 'CLN-THUOC-06',
+                ten_quy_tac: 'Kê đơn ≤30 ngày — bệnh chính (± kèm theo) trong danh mục TT26 >30 ngày',
+                dieu_kien: 'BUILT-IN',
+                co_so_phap_ly: CO_SO_PHAP_LY_THUOC.SO_NGAY_SU_DUNG,
+            });
 
         if (
             laNgoaiTru
@@ -6514,12 +6595,16 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     allLỗi = allLỗi.concat(giamDinhCDHA(hoSo));
     allLỗi = allLỗi.concat(giamDinhNguoiThucHienKhamVaDvktXml3(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhCongKhamTmhVaNoiSoiTrungMocXml3(hoSo));
+    allLỗi = allLỗi.concat(giamDinhCv4262Bhyt(hoSo, danhMuc));
+    allLỗi = allLỗi.concat(giamDinhCv3231Bhyt(hoSo, danhMuc));
+    allLỗi = allLỗi.concat(giamDinhBsMotCchnNhieuChuyenKhoaCongKham(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhGiuong(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhPTTT(hoSo));
     allLỗi = allLỗi.concat(giamDinhChuyenTuyen(hoSo));
     allLỗi = allLỗi.concat(giamDinhTongChiPhi(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhChatCheoDaBien(hoSo));
     allLỗi = allLỗi.concat(giamDinhIcd10TheoTT06(hoSo));
+    allLỗi = allLỗi.concat(giamDinhIcd10MaKep(hoSo));
 
     // LAYER 5: Luật động theo tab + DVKT-OP
     allLỗi = allLỗi.concat(await chayBoMayGiamDinhV3(hoSo));

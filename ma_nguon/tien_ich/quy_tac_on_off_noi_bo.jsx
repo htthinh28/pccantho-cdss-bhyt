@@ -179,9 +179,11 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'DMBV-DVKT-*', ten_quy_tac: 'Chất lượng danh mục DVKT BV (DMBV-DVKT-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-CDHA-*', ten_quy_tac: 'Lâm sàng CDHA/DVKT (CLN-CDHA-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'CLN-DVKT-*', ten_quy_tac: 'Lâm sàng XML3: thời điểm khám vs DVKT (CLN-DVKT-*)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-*', ten_quy_tac: 'Thanh toán BHYT theo Công văn 4262/BHXH-CSYT (CV4262-*)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-*', ten_quy_tac: 'Phạm vi hành nghề & thanh toán theo Công văn 3231/BYT-KCB (CV3231-*)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-01', ten_quy_tac: 'No-code DVKT: ICD chỉ định phù hợp' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-02', ten_quy_tac: 'No-code DVKT: ICD chống chỉ định' },
-  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-03', ten_quy_tac: 'No-code DVKT: Phạm vi hành nghề (NGUOI_THUC_HIEN; giường bệnh miễn)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-04', ten_quy_tac: 'No-code DVKT: Trang thiết bị' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-05', ten_quy_tac: 'No-code DVKT: Đơn giá' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT-OP-06', ten_quy_tac: 'No-code DVKT: Hiệu lực danh mục' },
@@ -198,6 +200,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'CHUYEN_DE*', ten_quy_tac: 'Bảng luật Kiểm tra chuyên đề nạp từ Excel (CHUYEN_DE*)' },
 
   { tab_id: 'LUAT_CONG_KHAM', ma_luat: 'CK-*', ten_quy_tac: 'Bảng luật Công khám nạp từ Excel (CK-*)' },
+  { tab_id: 'LUAT_CONG_KHAM', ma_luat: 'CK_59', ten_quy_tac: 'BS một CCHN — nhiều loại công khám / chuyên khoa (CK_59)' },
 
   { tab_id: 'LUAT_NHAN_SU', ma_luat: 'NS-*', ten_quy_tac: 'Bảng luật Nhân sự nạp từ Excel (NS-*)' },
 
@@ -214,6 +217,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_THUOC', ma_luat: 'THUOC*', ten_quy_tac: 'Tất cả mã THUOC_* (luật thuốc seed / NoCode XML2)' },
   { tab_id: 'LUAT_DU_LIEU', ma_luat: 'XML*', ten_quy_tac: 'Tất cả mã XML_* (kiểm tra số học / cấu trúc XML130)' },
   { tab_id: 'LUAT_DU_LIEU', ma_luat: 'STRUCT*', ten_quy_tac: 'Tất cả mã STRUCT-*' },
+  { tab_id: 'LUAT_DU_LIEU', ma_luat: 'ICD-KEP-*', ten_quy_tac: 'ICD-10 mã kép †/* (phân loại kép)' },
   { tab_id: 'LUAT_CDHA', ma_luat: 'DVKT*', ten_quy_tac: 'Tất cả mã DVKT_*' },
 ]);
 
@@ -224,6 +228,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
   { tab_id: 'LUAT_HANH_CHINH', ma_luat: 'HC-06d', ten_quy_tac: 'Đối chiếu mức hưởng theo mã thẻ BHYT' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-04', ten_quy_tac: 'Kê đơn ngoại trú quá 30 ngày ngoài danh mục cho phép' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-05', ten_quy_tac: 'Gợi ý ICD danh mục cho phép kê đơn >30 ngày (ngoại trú)' },
+  { tab_id: 'LUAT_THUOC', ma_luat: 'CLN-THUOC-06', ten_quy_tac: 'Kê đơn ≤30 ngày khi bệnh chính (± kèm theo) thuộc danh mục TT26 >30 ngày' },
   { tab_id: 'LUAT_THUOC', ma_luat: 'THUOC_DKTT_01', ten_quy_tac: 'Thuốc [27.67] Lysin + vitamin + khoáng chất — điều kiện ICD/chẩn đoán/tuổi' },
   {
     tab_id: 'LUAT_THUOC',
@@ -235,6 +240,15 @@ const DANH_MUC_QUY_TAC_NOI_BO_CHI_TIET = Object.freeze([
   { tab_id: 'LUAT_GIUONG', ma_luat: 'CLN-GIUONG-01', ten_quy_tac: 'Đối chiếu số ngày giường với số ngày điều trị' },
   { tab_id: 'LUAT_HOP_DONG', ma_luat: 'CLN-CHI-01', ten_quy_tac: 'Đối chiếu tổng tiền thuốc' },
   { tab_id: 'LUAT_HOP_DONG', ma_luat: 'CLN-CHI-02', ten_quy_tac: 'Đối chiếu T_VTYT với tổng XML3 (DVKT)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-01', ten_quy_tac: 'CV4262 §1.1: DVKT chỉ định sẵn — không công khám' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-02', ten_quy_tac: 'CV4262 §1.2: Một chuyên khoa — một công khám/lượt' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-21', ten_quy_tac: 'CV4262 §2.1: CT ngực+bụng có cản quang (1 ống)' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-23', ten_quy_tac: 'CV4262 §2.3: Bóp bóng Ambu — hồi sức sơ sinh' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-25', ten_quy_tac: 'CV4262 §2.5: Nội soi TMH gói vs đơn lẻ' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV4262-PL01-05', ten_quy_tac: 'CV4262 PL01: Quy trình PT/NS — không Hút đờm' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-02', ten_quy_tac: 'CV3231 §2: Điều dưỡng hạng IV — không TT DVKT điều trị/PHCN' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-13', ten_quy_tac: 'CV3231 §1.3: BS YHCT/RHM được khám bệnh' },
+  { tab_id: 'LUAT_CDHA', ma_luat: 'CV3231-18', ten_quy_tac: 'CV3231 §1.8: Ghi đủ mã NVYT trong ekip' },
 ]);
 
 const taoDanhMucQuyTacNoiBo = () => {

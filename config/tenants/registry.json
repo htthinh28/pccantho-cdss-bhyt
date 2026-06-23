@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "tenants": [
+    {
+      "orgId": "phuongchau_soc_trang",
+      "tenHienThi": "Phương Châu Sóc Trăng",
+      "tenDayDu": "Bệnh viện Quốc tế Phương Châu Sóc Trăng",
+      "maCskcb": "94170"
+    },
+    {
+      "orgId": "phuongchau_can_tho",
+      "tenHienThi": "Phương Châu Cần Thơ",
+      "tenDayDu": "Bệnh viện Quốc tế Phương Châu Cần Thơ",
+      "maCskcb": "92114"
+    },
+    {
+      "orgId": "phuongchau_sa_dec",
+      "tenHienThi": "Phương Châu Sa Đéc",
+      "tenDayDu": "Bệnh viện Phương Châu Sa Đéc",
+      "maCskcb": "87189"
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import * as XLSX from 'xlsx';
+import { BREAKPOINTS } from '../tien_ich/diem_anh_man_hinh';
 import { xoaCacheBoMayGiamDinh } from '../tien_ich/dong_co_giam_dinh';
 import { quayLaiAnToan } from '../tien_ich/dieu_huong_an_toan';
 import {
@@ -46,7 +47,7 @@ const MODULES_CONFIG = [
 ];
 
 /** ≥ breakpoint này: sidebar trái; nhỏ hơn: thanh phụ lục ngang (cuộn) để không chèn bảng. */
-const RONG_SIDEBAR_BYT = 860;
+const RONG_SIDEBAR_BYT = BREAKPOINTS.md;
 
 const DanhMucBYTMain = ({ navigation }) => {
   const { width: beRongCuaSo } = useWindowDimensions();
@@ -332,15 +333,21 @@ const DanhMucBYTMain = ({ navigation }) => {
   // ENGINE TÍNH TOÁN KÍCH THƯỚC ĐỘNG (Dùng cho lần load đầu)
   // ============================================================
   const getColumnStyle = (colName) => {
-    const upperCol = String(colName).toUpperCase();
-    const isSuperWide = upperCol.includes('ĐIỀU KIỆN') || upperCol.includes('DIEU_KIEN') || upperCol.includes('CẢNH BÁO') || upperCol.includes('CANH_BAO') || upperCol.includes('MÔ TẢ') || upperCol.includes('QUY TẮC') || upperCol.includes('QUY_TAC');
-    const isWide = upperCol.includes('TEN') || upperCol.includes('TÊN') || upperCol.includes('NAME') || upperCol.includes('GHI_CHU') || upperCol.includes('GHI CHÚ') || upperCol.includes('CHỈ SỐ') || upperCol.includes('DUONG_DUNG_DANG_DUNG') || upperCol.includes('HOAT_CHAT');
-    const isCode = upperCol.includes('MA_') || upperCol.includes('MÃ');
+    const upperCol = String(colName).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const isSuperWide = upperCol.includes('DIEU KIEN') || upperCol.includes('CANH BAO') || upperCol.includes('MO TA')
+      || upperCol.includes('QUY TAC') || upperCol.includes('QUY DINH');
+    const isWide = upperCol.includes('TEN') || upperCol.includes('NAME') || upperCol.includes('GHI CHU')
+      || upperCol.includes('CHI SO') || upperCol.includes('DUONG_DUNG_DANG_DUNG') || upperCol.includes('HOAT_CHAT')
+      || upperCol.includes('TRUONG HOP') || upperCol.includes('CHAN DOAN');
+    const isNarrowNum = upperCol.includes('MUC HUONG') || upperCol.includes('(%)') || upperCol.includes('DON GIA')
+      || upperCol.includes('GIA ') || upperCol.includes('HANG BV') || upperCol.includes('THE TICH');
+    const isCode = upperCol.includes('MA_') || upperCol.includes('MA ') || upperCol.includes('SO_DANG_KY');
 
-    if (isSuperWide) return { flex: 4, minWidth: 480 };
-    if (isWide) return { flex: 2.5, minWidth: 300 };
-    if (isCode) return { flex: 1.5, minWidth: 160 };
-    return { flex: 1.2, minWidth: 150 };                
+    if (isSuperWide) return { flex: 3.2, minWidth: 320 };
+    if (isWide) return { flex: 2.4, minWidth: 260 };
+    if (isNarrowNum) return { flex: 0.85, minWidth: 128, maxWidth: 168 };
+    if (isCode) return { flex: 1.1, minWidth: 148, maxWidth: 200 };
+    return { flex: 1.15, minWidth: 140 };
   };
 
   // HÀM RENDER HEADER CELL CÓ KHẢ NĂNG KÉO GIÃN (RESIZE)
@@ -353,18 +360,18 @@ const DanhMucBYTMain = ({ navigation }) => {
           styles.o_tieu_de,
           defaultStyle,
           // Chỉ cho phép override width nếu là cột nội dung (không phải cột cố định)
-          !isUtilityCol && colWidths[key] ? { width: colWidths[key], flex: 0 } : {},
-          // Chỉ bật Resize cho cột nội dung, KHÔNG cho cột STT/STATUS/XÓA
-          !isUtilityCol && Platform.OS === 'web' && { resize: 'horizontal', overflow: 'hidden' }
+          !isUtilityCol && colWidths[key] ? { width: Math.max(colWidths[key], defaultStyle.minWidth || 120), flex: 0 } : {},
+          !isUtilityCol && Platform.OS === 'web' && { resize: 'horizontal', overflow: 'auto', minWidth: defaultStyle.minWidth || 120 }
         ]}
         onLayout={(e) => {
           const newWidth = e.nativeEvent.layout.width;
-          if (!isUtilityCol && (!colWidths[key] || Math.abs(colWidths[key] - newWidth) > 5)) {
-            setColWidths(prev => ({ ...prev, [key]: newWidth }));
+          const minW = defaultStyle.minWidth || 120;
+          if (!isUtilityCol && newWidth >= minW && (!colWidths[key] || Math.abs(colWidths[key] - newWidth) > 8)) {
+            setColWidths((prev) => ({ ...prev, [key]: Math.max(newWidth, minW) }));
           }
         }}
       >
-        {content ? content : <Text style={styles.chu_o_tieu_de} numberOfLines={1}>{label}</Text>}
+        {content ? content : <Text style={styles.chu_o_tieu_de}>{label}</Text>}
       </View>
     );
   };
@@ -475,18 +482,17 @@ const DanhMucBYTMain = ({ navigation }) => {
                           key={globalIndex} 
                           style={[
                             styles.dong_du_lieu, 
-                            isOff && {opacity: 0.5}, 
-                            isSelected && {backgroundColor: '#E3F2FD'},
-                            // Áp dụng chiều cao nếu người dùng kéo giãn Row
-                            rowHeights[globalIndex] ? { height: rowHeights[globalIndex] } : {},
-                            // Bật CSS Resize Vertical cho Row
-                            Platform.OS === 'web' && { resize: 'vertical', overflow: 'hidden' }
+                            isOff && { opacity: 0.5 }, 
+                            isSelected && { backgroundColor: '#E3F2FD' },
+                            rowHeights[globalIndex] ? { minHeight: rowHeights[globalIndex] } : {},
+                            Platform.OS === 'web' && { resize: 'vertical', overflow: 'visible', minHeight: 76 }
                           ]}
                           onLayout={(e) => {
-                              const newHeight = e.nativeEvent.layout.height;
-                              if (!rowHeights[globalIndex] || Math.abs(rowHeights[globalIndex] - newHeight) > 5) {
-                                  setRowHeights(prev => ({ ...prev, [globalIndex]: newHeight }));
-                              }
+                            const newHeight = e.nativeEvent.layout.height;
+                            const cur = rowHeights[globalIndex];
+                            if (!cur || newHeight > cur + 12) {
+                              setRowHeights((prev) => ({ ...prev, [globalIndex]: newHeight }));
+                            }
                           }}
                         >
                             
@@ -517,10 +523,15 @@ const DanhMucBYTMain = ({ navigation }) => {
                                     ]}
                                 >
                                   <TextInput
-                                      style={styles.o_du_lieu}
+                                      style={[
+                                        styles.o_du_lieu,
+                                        getColumnStyle(col).minWidth >= 260 && styles.o_du_lieu_van_ban_dai,
+                                      ]}
                                       value={String(row[col] || '')}
                                       onChangeText={(text) => handleCellChange(text, globalIndex, col)}
-                                      multiline={true}
+                                      multiline
+                                      scrollEnabled={false}
+                                      textAlignVertical="top"
                                       outlineStyle="none"
                                   />
                                 </View>
@@ -749,20 +760,79 @@ const styles = StyleSheet.create({
   bang_chinh: { flex: 1 },
 
   // Header Cột 
-  dong_tieu_de: { flexDirection: 'row', backgroundColor: '#BBDEFB', borderBottomWidth: 2, borderColor: '#1976D2' },
-  o_tieu_de: { paddingVertical: 18, paddingHorizontal: 14, borderRightWidth: 1, borderColor: '#90CAF9', justifyContent: 'center' },
-  chu_o_tieu_de: { fontWeight: 'bold', fontSize: 16, color: '#000000', fontFamily: 'Arial', textAlign: 'center' },
+  dong_tieu_de: { flexDirection: 'row', backgroundColor: '#BBDEFB', borderBottomWidth: 2, borderColor: '#1976D2', alignItems: 'stretch' },
+  o_tieu_de: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRightWidth: 1,
+    borderColor: '#90CAF9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 58,
+  },
+  chu_o_tieu_de: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#000000',
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    flexShrink: 1,
+  },
   
   scroll_doc: { flex: 1 },
   
   // Dòng dữ liệu
-  dong_du_lieu: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#EEEEEE', minHeight: 70, alignItems: 'stretch' },
-  o_du_lieu_stt: { borderRightWidth: 1, borderColor: '#EEEEEE', backgroundColor: '#E3F2FD', alignItems: 'center', justifyContent: 'center' },
+  dong_du_lieu: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#EEEEEE',
+    minHeight: 76,
+    alignItems: 'stretch',
+  },
+  o_du_lieu_stt: {
+    borderRightWidth: 1,
+    borderColor: '#EEEEEE',
+    backgroundColor: '#E3F2FD',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    alignSelf: 'stretch',
+  },
   
-  // Wrapper bọc ô TextInput để truyền Width
-  o_wrapper: { borderRightWidth: 1, borderColor: '#EEEEEE', justifyContent: 'flex-start' },
-  // Khung nhập liệu điền đầy Wrapper
-  o_du_lieu: { flex: 1, paddingVertical: 12, paddingHorizontal: 12, fontSize: 16, color: '#333333', fontFamily: 'Arial', textAlignVertical: 'top' },
+  o_wrapper: {
+    borderRightWidth: 1,
+    borderColor: '#EEEEEE',
+    justifyContent: 'flex-start',
+    alignSelf: 'stretch',
+    paddingVertical: 4,
+  },
+  o_du_lieu: {
+    flex: 1,
+    width: '100%',
+    minHeight: 44,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#333333',
+    fontFamily: 'Arial',
+    textAlignVertical: 'top',
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none',
+        resize: 'none',
+        overflow: 'hidden',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+      },
+      default: {},
+    }),
+  },
+  o_du_lieu_van_ban_dai: {
+    minHeight: 56,
+    lineHeight: 23,
+  },
   
   checkbox: { width: 22, height: 22, borderWidth: 2, borderColor: '#0D47A1', borderRadius: 4 },
   checkbox_active: { backgroundColor: '#0D47A1' },

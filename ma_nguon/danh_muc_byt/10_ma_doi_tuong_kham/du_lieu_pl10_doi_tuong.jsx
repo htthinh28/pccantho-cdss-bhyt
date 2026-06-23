@@ -4,7 +4,7 @@
  * Cap nhat: 2026-03-30
  */
 
-export const PHIEN_BAN_BYT_PL10_DOI_TUONG = '2026-03-30-byt-pl10-seed-32';
+export const PHIEN_BAN_BYT_PL10_DOI_TUONG = '2026-06-11-cv302-pl10-1.13';
 
 export const COT_BYT_PL10_DOI_TUONG = [
   "MÃ ĐỐI TƯỢNG",
@@ -97,11 +97,11 @@ export const DU_LIEU_BYT_PL10_DOI_TUONG = [
   },
   {
     "TRANG_THAI_SU_DUNG": "ON",
-    "MÃ ĐỐI TƯỢNG": "",
-    "TÊN ĐỐI TƯỢNG": "",
+    "MÃ ĐỐI TƯỢNG": "1.13",
+    "TÊN ĐỐI TƯỢNG": "Tự đến KCB ngoại trú tại cơ sở KCB cấp cơ bản đạt số điểm từ 50 - 70 điểm (trừ trường hợp các bệnh thuộc Phụ lục II ban hành kèm theo Thông tư số 01/2025/TT-BYT)",
     "MỨC HƯỞNG (%)": 0.5,
     "GHI CHÚ": " Từ ngày 01/7/2026: 50% chi phí KCB theo phạm vi quyền lợi, mức hưởng",
-    "Quy định": ""
+    "Quy định": "Khoản 2 Điều 19 Nghị định số 188/2025/NĐ-CP; Công văn CV 302/CSYT-CĐ"
   },
   {
     "TRANG_THAI_SU_DUNG": "ON",

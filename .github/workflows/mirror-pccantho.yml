@@ -1,0 +1,22 @@
+name: Mirror to pccantho-cdss-bhyt
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror ung-dung-cdss-bhyt → pccantho-cdss-bhyt
+        env:
+          PAT: ${{ secrets.PCCANTHO_MIRROR_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PAT:-}" ]; then
+            echo "Thiếu secret PCCANTHO_MIRROR_TOKEN."
+            echo "Tạo PAT (repo read+write) trên htthinh28, thêm vào Settings → Secrets → Actions của ung-dung-cdss-bhyt."
+            exit 1
+          fi
+          git clone --bare "https://x-access-token:${PAT}@github.com/htthinh28/ung-dung-cdss-bhyt.git" repo.git
+          cd repo.git
+          git push --mirror "https://x-access-token:${PAT}@github.com/htthinh28/pccantho-cdss-bhyt.git"

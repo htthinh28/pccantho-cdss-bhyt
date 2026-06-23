@@ -1,5 +1,5 @@
-/** AUTO-GENERATED from DuLieu_LUAT_DU_LIEU (12).xlsx */
-export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-04-23_muc1_doc_xml_130_3176_4210_7464';
+/** AUTO-GENERATED from DuLieu_LUAT_DU_LIEU (12).xlsx + CV 302 ngưỡng LCS 01/7/2026 */
+export const PHIEN_BAN_SEED_LUAT_DU_LIEU_MUC1 = '2026-06-11_cv302_xml_lcs';
 export const COT_SEED_LUAT_DU_LIEU_MUC1 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","DIEU_KIEN (Toán tử No-Code)","GHI_CHU_SUA","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
   {
@@ -425,8 +425,8 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "XML_47",
     "TEN_QUY_TAC": "Kiểm tra tỷ lệ hưởng 80%",
-    "DIEU_KIEN": "SUBSTR(XML1.MA_THE_BHYT, 3, 1) == '4' && TO_NUMBER(XML1.T_TONGCHI_BH) >= 351000 && ABS(TO_NUMBER(XML1.T_BNCCT) - (TO_NUMBER(XML1.T_TONGCHI_BH) * 0.20)) > 10",
-    "CANH_BAO": "⚠️ [KẾ TOÁN]: Thẻ mức 4 (hưởng 80%) nhưng số tiền Cùng chi trả lệch quá 10đ so với công thức 20%.",
+    "DIEU_KIEN": "SUBSTR(XML1.MA_THE_BHYT, 3, 1) == '4' && ((SUBSTR(XML1.NGAY_VAO, 1, 8) < '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) >= 351000) OR (SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) >= 379500)) && ABS(TO_NUMBER(XML1.T_BNCCT) - (TO_NUMBER(XML1.T_TONGCHI_BH) * 0.20)) > 10",
+    "CANH_BAO": "⚠️ [KẾ TOÁN]: Thẻ mức 4 (hưởng 80%) nhưng số tiền Cùng chi trả lệch quá 10đ so với công thức 20% (ngưỡng miễn CCT 15% LCS: 351.000đ / 379.500đ).",
     "DIEU_KIEN (Toán tử No-Code)": "",
     "GHI_CHU_SUA": "✏️ [Rà soát] Math.abs→ABS",
     "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"
@@ -436,8 +436,8 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "XML_48",
     "TEN_QUY_TAC": "Kiểm tra tỷ lệ hưởng 95%",
-    "DIEU_KIEN": "SUBSTR(XML1.MA_THE_BHYT, 3, 1) == '3' && TO_NUMBER(XML1.T_TONGCHI_BH) >= 351000 && ABS(TO_NUMBER(XML1.T_BNCCT) - (TO_NUMBER(XML1.T_TONGCHI_BH) * 0.05)) > 10",
-    "CANH_BAO": "⚠️ [KẾ TOÁN]: Thẻ mức 3 (hưởng 95%) nhưng số tiền Cùng chi trả lệch quá 10đ so với công thức 5%.",
+    "DIEU_KIEN": "SUBSTR(XML1.MA_THE_BHYT, 3, 1) == '3' && ((SUBSTR(XML1.NGAY_VAO, 1, 8) < '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) >= 351000) OR (SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) >= 379500)) && ABS(TO_NUMBER(XML1.T_BNCCT) - (TO_NUMBER(XML1.T_TONGCHI_BH) * 0.05)) > 10",
+    "CANH_BAO": "⚠️ [KẾ TOÁN]: Thẻ mức 3 (hưởng 95%) nhưng số tiền Cùng chi trả lệch quá 10đ so với công thức 5% (ngưỡng miễn CCT 15% LCS: 351.000đ / 379.500đ).",
     "DIEU_KIEN (Toán tử No-Code)": "",
     "GHI_CHU_SUA": "✏️ [Rà soát] Math.abs→ABS",
     "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"
@@ -513,8 +513,8 @@ export const DU_LIEU_SEED_LUAT_DU_LIEU_MUC1 = [
     "TRANG_THAI": "ON",
     "MA_LUAT": "XML_57",
     "TEN_QUY_TAC": "Miễn Cùng chi trả (15% LCS)",
-    "DIEU_KIEN": "TO_NUMBER(XML1.T_TONGCHI_BH) < 351000 && TO_NUMBER(XML1.T_BNCCT) > 0",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: Tổng chi phí BHYT < 351.000đ (15% lương cơ sở), người bệnh phải được hưởng 100% (BNCCT = 0).",
+    "DIEU_KIEN": "((SUBSTR(XML1.NGAY_VAO, 1, 8) < '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) < 351000) OR (SUBSTR(XML1.NGAY_VAO, 1, 8) >= '20260701' AND TO_NUMBER(XML1.T_TONGCHI_BH) < 379500)) && TO_NUMBER(XML1.T_BNCCT) > 0",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: Tổng chi phí BHYT dưới 15% LCS (351.000đ trước 01/7/2026; 379.500đ từ 01/7/2026), người bệnh phải được hưởng 100% (BNCCT = 0).",
     "DIEU_KIEN (Toán tử No-Code)": "",
     "GHI_CHU_SUA": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_DU_LIEU (12).xlsx"

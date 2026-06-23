@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { rongSidebarTheoMan, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { EbmPhuSidebarContext } from '../chuyen_mon/ebm_phu_sidebar_context';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -24,8 +25,8 @@ const PHAN_HE_CHUYEN_MON = [
 ];
 
 const QuanLyChuyenMon = ({ navigation }) => {
-  const { width: winW } = useWindowDimensions();
-  const rongSidebar = Math.min(320, Math.max(220, Math.round((winW || 400) * 0.28)));
+  const { dungBoCucDoc, width: winW } = useLayoutMode();
+  const rongSidebar = rongSidebarTheoMan(winW, { min: 220, max: 320, ratio: 0.28 });
   const [tabHienTai, setTabHienTai] = useState(PHAN_HE_CHUYEN_MON[0].id);
   const [noiDungPhuSidebar, setNoiDungPhuSidebar] = useState(null);
   const datNoiDungPhu = useCallback((node) => setNoiDungPhuSidebar(node), []);
@@ -56,9 +57,12 @@ const QuanLyChuyenMon = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <EbmPhuSidebarContext.Provider value={{ datNoiDungPhu }}>
-        <View style={styles.khung_chinh}>
+        <View style={[styles.khung_chinh, dungBoCucDoc && styles.khung_chinh_doc]}>
           <ScrollView
-            style={[styles.sidebar, { width: rongSidebar, maxWidth: rongSidebar }]}
+            style={[
+              styles.sidebar,
+              dungBoCucDoc ? styles.sidebar_doc : { width: rongSidebar, maxWidth: rongSidebar },
+            ]}
             contentContainerStyle={styles.sidebar_content}
             showsVerticalScrollIndicator
             keyboardShouldPersistTaps="handled"
@@ -126,6 +130,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     minWidth: 0,
   },
+  khung_chinh_doc: {
+    flexDirection: 'column',
+  },
 
   sidebar: {
     flexGrow: 0,
@@ -134,6 +141,14 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: CD.border.header,
     ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  sidebar_doc: {
+    width: '100%',
+    maxWidth: '100%',
+    maxHeight: 220,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.header,
   },
 
   sidebar_content: {

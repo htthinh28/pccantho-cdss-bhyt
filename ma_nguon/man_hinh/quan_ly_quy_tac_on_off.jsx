@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, ScrollView, SectionList, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, ScrollView, SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -119,9 +120,8 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
   const khoaDieuHuongGanNhat = useRef('');
   /** Chỉ lần tải đầu tiên hiện spinner toàn màn; các lần làm mới sau (ẩn quy tắc, import…) không chặn UI. */
   const dangTaiLanDauRef = useRef(true);
-  const { width: windowW } = useWindowDimensions();
+  const { dungBoCucDoc } = useLayoutMode();
   const { font: fontScale } = useScaleGiaoDien();
-  const hepWeb = Platform.OS === 'web' && windowW < 960;
 
   useEffect(() => {
     const t = setTimeout(() => setTuKhoaTimDebounced(tuKhoaTimKiem), 280);
@@ -970,8 +970,8 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View style={[styles.bo_cuc_chinh, hepWeb && styles.bo_cuc_chinh_doc]}>
-        <ScrollView style={[styles.sidebar_trai, hepWeb && styles.sidebar_trai_full]} contentContainerStyle={styles.sidebar_trai_content}>
+      <View style={[styles.bo_cuc_chinh, dungBoCucDoc && styles.bo_cuc_chinh_doc]}>
+        <ScrollView style={[styles.sidebar_trai, dungBoCucDoc && styles.sidebar_trai_full]} contentContainerStyle={styles.sidebar_trai_content}>
           <View style={styles.khung_tong_quan}>
             <Text style={styles.txt_thong_ke}>Đang bật: {tongTatCa.dangBat}/{tongTatCa.tong} quy tắc</Text>
             <TextInput
@@ -1154,7 +1154,7 @@ const QuanLyQuyTacOnOff = ({ navigation, route }) => {
           </View>
         </ScrollView>
 
-        <View style={[styles.khu_vuc_phai, hepWeb && styles.khu_vuc_phai_full]}>
+        <View style={[styles.khu_vuc_phai, dungBoCucDoc && styles.khu_vuc_phai_full]}>
           <SectionList
             style={styles.rules_scroll}
             contentContainerStyle={styles.noi_dung}

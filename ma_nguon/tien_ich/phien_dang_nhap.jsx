@@ -1,8 +1,6 @@
 import { Platform } from 'react-native';
+import { KHOA_PHIEN_EMAIL, KHOA_PHIEN_ROLE } from './luu_tru_he_thong';
 import { tenantGetItem, tenantRemoveItem, tenantSetItem } from './tenant_storage';
-
-const SESSION_ACCOUNT_KEY = 'USER_ACCOUNT';
-const SESSION_ROLE_KEY = 'USER_ROLE';
 
 const laMoiTruongWeb = () => Platform.OS === 'web' && typeof window !== 'undefined' && !!window.localStorage;
 
@@ -55,8 +53,8 @@ const xoaGiaTriPhien = async (key) => {
 
 export const docPhienDangNhap = async () => {
   const [email, role] = await Promise.all([
-    docGiaTriPhien(SESSION_ACCOUNT_KEY),
-    docGiaTriPhien(SESSION_ROLE_KEY),
+    docGiaTriPhien(KHOA_PHIEN_EMAIL),
+    docGiaTriPhien(KHOA_PHIEN_ROLE),
   ]);
 
   return {
@@ -74,15 +72,15 @@ export const luuPhienDangNhap = async (email, role) => {
   const normalizedEmail = String(email || '').trim().toLowerCase();
   const normalizedRole = String(role || 'USER').trim().toUpperCase() || 'USER';
   await Promise.all([
-    ghiGiaTriPhien(SESSION_ACCOUNT_KEY, normalizedEmail),
-    ghiGiaTriPhien(SESSION_ROLE_KEY, normalizedRole),
+    ghiGiaTriPhien(KHOA_PHIEN_EMAIL, normalizedEmail),
+    ghiGiaTriPhien(KHOA_PHIEN_ROLE, normalizedRole),
   ]);
   return { email: normalizedEmail, role: normalizedRole };
 };
 
 export const xoaPhienDangNhap = async () => {
   await Promise.all([
-    xoaGiaTriPhien(SESSION_ACCOUNT_KEY),
-    xoaGiaTriPhien(SESSION_ROLE_KEY),
+    xoaGiaTriPhien(KHOA_PHIEN_EMAIL),
+    xoaGiaTriPhien(KHOA_PHIEN_ROLE),
   ]);
 };

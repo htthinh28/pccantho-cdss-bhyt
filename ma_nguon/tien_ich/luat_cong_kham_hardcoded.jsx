@@ -1,6 +1,6 @@
 /**
  * CODE CỨNG DỮ LIỆU BẢNG LUẬT: LUAT_CONG_KHAM
- * Nguồn: File Excel (58 quy tắc)
+ * Nguồn: File Excel (59 quy tắc — CK_59 runtime built-in LAYER 4)
  * Đã lọc trùng: 0 dòng
  * ON/OFF: kiểm soát qua màn hình Quản lý Quy tắc ON/OFF
  * KHÔNG CẬP NHẬT THỦ CÔNG - dùng Import hoặc chạy lại script gen_hardcoded_rules.js
@@ -77,6 +77,7 @@ AND !IS_EMPTY(XML1.GT_THE_DEN) AND (
   { id: 'CK-056', MA_LUAT: 'CK_56', TEN_QUY_TAC: `Khám bệnh kèm Hội chẩn`, DIEU_KIEN: `COUNT_IF(XML3, item => item.MA_DV IN (DM_KHAM)) > 0 AND COUNT_IF(XML3, item => item.MA_DV IN (DM_HOI_CHAN)) > 0`, CANH_BAO: `⛔ [XUẤT TOÁN]: Đã tính công khám thì không tính tiền hội chẩn chuyên khoa cho cùng một bác sĩ thực hiện.`, TRANG_THAI: 'ON' },
   { id: 'CK-057', MA_LUAT: 'CK_57', TEN_QUY_TAC: `Khám bệnh trong ngày ra viện nội trú`, DIEU_KIEN: `XML1.MA_LOAI_KCB == '3' AND COUNT_IF(XML3, item => item.MA_DV IN (DM_KHAM) AND SUBSTR(item.NGAY_YL, 1, 8) == SUBSTR(XML1.NGAY_RA, 1, 8)) > 0`, CANH_BAO: `⛔ [XUẤT TOÁN]: Không tính công khám nhóm khám bệnh/điều trị ngoại trú trong ngày người bệnh làm thủ tục ra viện từ đợt điều trị nội trú (mã 03/09) tại cùng một cơ sở.`, TRANG_THAI: 'ON' },
   { id: 'CK-058', MA_LUAT: 'CK_58', TEN_QUY_TAC: `Khám nhiều chuyên khoa cùng Khoa`, DIEU_KIEN: `COUNT_DISTINCT(XML3, item => (item.MA_DV IN (DM_KHAM) AND !IS_EMPTY(item.MA_KHOA) AND item.MA_KHOA != 'KHOA_KHAM_BENH') ? (item.MA_KHOA + '|' + item.MA_DV) : '') > COUNT_DISTINCT(XML3, item => (item.MA_DV IN (DM_KHAM) AND !IS_EMPTY(item.MA_KHOA) AND item.MA_KHOA != 'KHOA_KHAM_BENH') ? item.MA_KHOA : '')`, CANH_BAO: `⛔ [XUẤT TOÁN]: Trong cùng một khoa lâm sàng chỉ được tính 01 lần khám bệnh (trừ khoa Khám bệnh đa khoa).`, TRANG_THAI: 'ON' },
+  { id: 'CK-059', MA_LUAT: 'CK_59', TEN_QUY_TAC: `BS một CCHN — nhiều loại công khám / chuyên khoa`, DIEU_KIEN: `BUILT-IN: giamDinhBsMotCchnNhieuChuyenKhoaCongKham (dong_co LAYER 4)`, CANH_BAO: `⛔ [XUẤT TOÁN] [CK_59]: Một bác sỹ với một CCHN thực hiện nhiều loại công khám (chuyên khoa) trong cùng lượt khám — rủi ro xuất toán phạm vi hành nghề.`, TRANG_THAI: 'ON' },
 ]);
 
 export const layDanhSachLuatCongKhamHardcoded = () => CACHE_RULES_HARDCODED.map((row) => ({ ...row }));

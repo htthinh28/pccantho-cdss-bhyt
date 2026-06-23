@@ -1,5 +1,5 @@
 /** AUTO-GENERATED from DuLieu_LUAT_THUOC (9).xlsx */
-export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-05-01_THUOC540_HCT_chong_chi_dinh';
+export const PHIEN_BAN_SEED_LUAT_THUOC_MUC8 = '2026-06-15_canh_bao_gon';
 export const COT_SEED_LUAT_THUOC_MUC8 = ["TRANG_THAI","MA_LUAT","TEN_QUY_TAC","DIEU_KIEN","CANH_BAO","GHI_CHU","NGUON_DU_LIEU"];
 export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
   {
@@ -28,7 +28,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_03",
     "TEN_QUY_TAC": "[Acetyl leucin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.685' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(CHÓNG MẶT|RỐI LOẠN TIỀN ĐÌNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Acetyl leucin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Gikanin chỉ được thanh toán cho chẩn đoán Chóng mặt (H81, R42).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Acetyl leucin] — ICD/XML1 không khớp chỉ định. Chỉ định: Gikanin — Chóng mặt (H81, R42).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -58,7 +58,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_06",
     "TEN_QUY_TAC": "[Aciclovir] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.260' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(HERPES|NHIỄM HERPES|ZONA)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Aciclovir] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Acyclovir chỉ được thanh toán cho chẩn đoán nhiễm Herpes (B00) hoặc Zona (B02).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Aciclovir] — ICD/XML1 không khớp chỉ định. Chỉ định: Acyclovir — nhiễm Herpes (B00) hoặc Zona (B02).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -98,7 +98,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_10",
     "TEN_QUY_TAC": "[Adrenalin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.86' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(CHẢY MÁU SAU THỦ THUẬT|SỐC|NGỪNG TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Adrenalin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Adrenalin là thuốc cấp cứu Sốc phản vệ, Ngưng tim (T81.1, R57, I46).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Adrenalin] — ICD/XML1 không khớp chỉ định. Chỉ định: Adrenalin — cấp cứu Sốc phản vệ, Ngưng tim (T81.1, R57, I46).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -138,7 +138,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_14",
     "TEN_QUY_TAC": "[Alfuzosin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.412' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(PHÌ ĐẠI TUYẾN TIỀN LIỆT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Alfuzosin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Alanboss XL 10 chỉ được thanh toán cho chẩn đoán Phì đại tuyến tiền liệt lành tính (N40).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Alfuzosin] — ICD/XML1 không khớp chỉ định. Chỉ định: Alanboss XL 10 — Phì đại tuyến tiền liệt lành tính (N40).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -208,7 +208,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_21",
     "TEN_QUY_TAC": "[Allopurinol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.59' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(GÚT|GOUT|BỆNH GÚT|SỎI THẬN)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Allopurinol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Agigout 300 chỉ được thanh toán cho Gout mãn tính (M10) hoặc Sỏi thận Acid Uric (N20).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Allopurinol] — ICD/XML1 không khớp chỉ định. Chỉ định: Agigout 300 — Gout mãn tính (M10) hoặc Sỏi thận Acid Uric (N20).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -248,7 +248,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_25",
     "TEN_QUY_TAC": "[Ambroxol HCl] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.988' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM ĐƯỜNG HÔ HẤP TRÊN|VIÊM HỌNG|NHIỄM TRÙNG HÔ HẤP|VIÊM PHẾ QUẢN|HO)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ambroxol HCl] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Ambroxol chỉ được thanh toán cho chẩn đoán Viêm hô hấp (J06, J20) hoặc Ho (R05).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ambroxol HCl] — ICD/XML1 không khớp chỉ định. Chỉ định: Ambroxol — Viêm hô hấp (J06, J20) hoặc Ho (R05).",
     "GHI_CHU": "Đã gộp dòng trùng [Ambroxol] Kiểm tra ICD-10 (cùng MA_LUAT + DIEU_KIEN)",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -278,7 +278,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_28",
     "TEN_QUY_TAC": "[Amiodaron] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.483' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NHỊP NHANH KỊCH PHÁT|LOẠN NHỊP|RUNG NHĨ|CUỒNG NHĨ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amiodaron] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc BFS - Amiron chỉ được thanh toán cho chẩn đoán Rối loạn nhịp nhanh (I47, I48).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amiodaron] — ICD/XML1 không khớp chỉ định. Chỉ định: BFS - Amiron — Rối loạn nhịp nhanh (I47, I48).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -298,7 +298,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_30",
     "TEN_QUY_TAC": "[Amitriptylin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.961' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TRẦM CẢM|ĐAU MẠN TÍNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amitriptylin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Amitriptylin chỉ được thanh toán cho chẩn đoán Trầm cảm (F32) hoặc Đau nguồn gốc thần kinh (R52.2).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amitriptylin] — ICD/XML1 không khớp chỉ định. Chỉ định: Amitriptylin — Trầm cảm (F32) hoặc Đau nguồn gốc thần kinh (R52.2).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -328,7 +328,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_33",
     "TEN_QUY_TAC": "[Amlodipin + valsartan] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.30.501' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipin + valsartan] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Wamlox 5mg/80mg chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipin + valsartan] — ICD/XML1 không khớp chỉ định. Chỉ định: Wamlox 5mg/80mg — Tăng huyết áp vô căn (I10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -358,7 +358,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_36",
     "TEN_QUY_TAC": "[Amlodipin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.491' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Amlodipine Stella 10 mg chỉ được thanh toán cho chẩn đoán Tăng huyết áp (I10) hoặc Đau thắt ngực (I20).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipin] — ICD/XML1 không khớp chỉ định. Chỉ định: Amlodipine Stella 10 mg — Tăng huyết áp (I10) hoặc Đau thắt ngực (I20).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -378,7 +378,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_38",
     "TEN_QUY_TAC": "[Amlodipine + Lisinopril] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.30.497' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipine + Lisinopril] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Lisonorm chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amlodipine + Lisinopril] — ICD/XML1 không khớp chỉ định. Chỉ định: Lisonorm — Tăng huyết áp vô căn (I10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -438,7 +438,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_44",
     "TEN_QUY_TAC": "[Amoxicillin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.154' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM AMIDAN|VIÊM HỌNG|VIÊM ĐƯỜNG HÔ HẤP TRÊN|NHIỄM TRÙNG HÔ HẤP|VIÊM PHỔI|VIÊM PHẾ QUẢN|VIÊM TỦY RĂNG|ÁP XE RĂNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amoxicillin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Moxacin 500 mg chỉ được thanh toán cho chẩn đoán Nhiễm khuẩn hô hấp (J01-J20) hoặc Viêm tủy răng (K04).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Amoxicillin] — ICD/XML1 không khớp chỉ định. Chỉ định: Moxacin 500 mg — Nhiễm khuẩn hô hấp (J01-J20) hoặc Viêm tủy răng (K04).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -478,7 +478,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_48",
     "TEN_QUY_TAC": "[Atorvastatin + ezetimibe] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.30.567' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atorvastatin + ezetimibe] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Atovze 40/10 chỉ được thanh toán cho chẩn đoán Rối loạn Lipoprotein máu (E78.0, E78.1, E78.2).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atorvastatin + ezetimibe] — ICD/XML1 không khớp chỉ định. Chỉ định: Atovze 40/10 — Rối loạn Lipoprotein máu (E78.0, E78.1, E78.2).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -508,7 +508,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_51",
     "TEN_QUY_TAC": "[Atorvastatin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.549' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atorvastatin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Dorotor 20mg chỉ được thanh toán cho chẩn đoán Rối loạn Lipoprotein máu (E78.0, E78.1, E78.2...).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atorvastatin] — ICD/XML1 không khớp chỉ định. Chỉ định: Dorotor 20mg — Rối loạn Lipoprotein máu (E78.0, E78.1, E78.2...).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -538,7 +538,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_54",
     "TEN_QUY_TAC": "[Atropin sulfat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.96' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NHỊP TIM CHẬM|NGỘ ĐỘC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atropin sulfat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Atropin chỉ thanh toán cho chẩn đoán Nhịp chậm xoang (R00.1) hoặc Ngộ độc (T60).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Atropin sulfat] — ICD/XML1 không khớp chỉ định. Chỉ định: Atropin — Nhịp chậm xoang (R00.1) hoặc Ngộ độc (T60).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -578,7 +578,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_58",
     "TEN_QUY_TAC": "[Azithromycin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.219' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM AMIDAN|VIÊM HỌNG|VIÊM PHỔI|VIÊM PHẾ QUẢN|CHLAMYDIA|VIÊM TAI GIỮA|CHỐC|NHIỄM TRÙNG DA|ÁP XE DA|NHỌT|VIÊM MÔ TẾ BÀO)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Azithromycin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Zaromax 500 chỉ được thanh toán cho chẩn đoán Nhiễm khuẩn hô hấp (J01, J03, J15, J20) hoặc Chlamydia (A56).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Azithromycin] — ICD/XML1 không khớp chỉ định. Chỉ định: Zaromax 500 — Nhiễm khuẩn hô hấp (J01, J03, J15, J20) hoặc Chlamydia (A56).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -608,7 +608,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_61",
     "TEN_QUY_TAC": "[Bacillus clausii] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.719' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TIÊU CHẢY|RỐI LOẠN NHU ĐỘNG RUỘT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Bacillus clausii] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Enterogolds chỉ được thanh toán cho chẩn đoán Tiêu chảy (A09), Loạn khuẩn ruột (K59.1, R19.7).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Bacillus clausii] — ICD/XML1 không khớp chỉ định. Chỉ định: Enterogolds — Tiêu chảy (A09), Loạn khuẩn ruột (K59.1, R19.7).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -668,7 +668,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_67",
     "TEN_QUY_TAC": "[Betahistin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.899' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(CHÓNG MẶT|RỐI LOẠN TIỀN ĐÌNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Betahistin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Betahistin chỉ được thanh toán cho chẩn đoán Rối loạn tiền đình, Chóng mặt (H81).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Betahistin] — ICD/XML1 không khớp chỉ định. Chỉ định: Betahistin — Rối loạn tiền đình, Chóng mặt (H81).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -718,7 +718,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_72",
     "TEN_QUY_TAC": "[Bromhexin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.989' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM PHẾ QUẢN|HO)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Bromhexin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Novahexin 8 chỉ được thanh toán cho chẩn đoán Viêm phế quản (J20) hoặc Ho đờm (R05).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Bromhexin] — ICD/XML1 không khớp chỉ định. Chỉ định: Novahexin 8 — Viêm phế quản (J20) hoặc Ho đờm (R05).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -818,7 +818,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_82",
     "TEN_QUY_TAC": "[Carvedilol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.497' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC|SUY TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Carvedilol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc CarlolAPC 12.5 chỉ được thanh toán cho Tăng huyết áp (I10), Đau thắt ngực (I20) hoặc Suy tim (I50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Carvedilol] — ICD/XML1 không khớp chỉ định. Chỉ định: CarlolAPC 12.5 — Tăng huyết áp (I10), Đau thắt ngực (I20) hoặc Suy tim (I50).",
     "GHI_CHU": "Đã gộp dòng trùng [Carvedilol] ICD-10 (2 dòng cùng thuốc khác tên)",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -848,7 +848,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_85",
     "TEN_QUY_TAC": "[Cefazolin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.166' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM PHỔI|CHỐC|NHIỄM TRÙNG DA|VIÊM XƯƠNG TỦY|DỰ PHÒNG NHIỄM TRÙNG|DỰ PHÒNG PHẪU THUẬT|DỰ PHÒNG THỦ THUẬT)' AND XML1.CHAN_DOAN_VAO NOT REGEXP '(?i)(VIÊM PHỔI|CHỐC|NHIỄM TRÙNG DA|VIÊM XƯƠNG TỦY|DỰ PHÒNG NHIỄM TRÙNG|DỰ PHÒNG PHẪU THUẬT|DỰ PHÒNG THỦ THUẬT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefazolin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA và CHẨN ĐOÁN VÀO đều không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Zolifast 2000 chỉ được thanh toán cho nhiễm khuẩn hô hấp (J15), da (L01), xương (M86) hoặc dự phòng phẫu thuật/thủ thuật (Z29.2).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefazolin] — ICD/XML1 không khớp chỉ định (kể cả ngoại lệ). Chỉ định: Zolifast 2000 — nhiễm khuẩn hô hấp (J15), da (L01), xương (M86) hoặc dự phòng phẫu thuật/thủ thuật (Z29.2).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -888,7 +888,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_89",
     "TEN_QUY_TAC": "[Cefdinir] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.167' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM AMIDAN|VIÊM HỌNG|VIÊM PHỔI|VIÊM PHẾ QUẢN|CHỐC|NHIỄM TRÙNG DA)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefdinir] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Osvimec 300 / Cefdinir 125 chỉ được thanh toán cho Nhiễm khuẩn hô hấp (J01-J20) hoặc Nhiễm khuẩn da (L01).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefdinir] — ICD/XML1 không khớp chỉ định. Chỉ định: Osvimec 300 / Cefdinir 125 — Nhiễm khuẩn hô hấp (J01-J20) hoặc Nhiễm khuẩn da (L01).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -918,7 +918,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_92",
     "TEN_QUY_TAC": "[Cefixim] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.169' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM AMIDAN|VIÊM HỌNG|VIÊM ĐƯỜNG HÔ HẤP TRÊN|NHIỄM TRÙNG HÔ HẤP|VIÊM PHỔI|VIÊM THẬN BỂ THẬN|VIÊM BÀNG QUANG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefixim] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc IMEXIME 50 chỉ được thanh toán cho Nhiễm khuẩn hô hấp (J01-J15) hoặc Nhiễm khuẩn tiết niệu (N10, N30).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cefixim] — ICD/XML1 không khớp chỉ định. Chỉ định: IMEXIME 50 — Nhiễm khuẩn hô hấp (J01-J15) hoặc Nhiễm khuẩn tiết niệu (N10, N30).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -978,7 +978,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_98",
     "TEN_QUY_TAC": "[Celecoxib] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.28' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THO\u00c1I H\u00d3A KH\u1edaP|THO\u00c1I HO\u00c1 KH\u1edaP|VI\u00caM X\u01af\u01a0NG KH\u1edaP|VI\u00caM KH\u1edaP D\u1ea0NG TH\u1ea4P|VI\u00caM C\u1ed8T S\u1ed0NG D\u00cdNH|VI\u00caM C\u1ed8T S\u1ed0NG D\u00cd|\u0110AU KH\u1edaP|G\u00daT|GOUT|B\u1ec6NH G\u00daT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Celecoxib] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): thoái hoá khớp, viêm khớp (bao gồm viêm khớp dạng thấp), viêm cột sống, gút — mã Celecoxib 40.28.",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Celecoxib] — ICD/XML1 không khớp chỉ định. Chỉ định: thoái hoá khớp, viêm khớp (bao gồm viêm khớp dạng thấp), viêm cột sống, gút — mã Celecoxib 40.28.",
     "GHI_CHU": "2026-04-20: Ch\u1ec9 \u0111\u1ecbnh ICD theo catalog_mapping ICD_DRUG (\u0111\u1ed3ng b\u1ed9 th\u1ebb Mapping nghi\u1ec7p v\u1ee5). Quy t\u1eafc ch\u1ec9 k\u00edch ho\u1ea1t khi \u0111\u00e3 c\u00f3 d\u00f2ng mapping h\u1ee3p l\u1ec7 cho m\u00e3 40.28 + gi\u1eef REGEXP CHAN_DOAN_RV.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1018,7 +1018,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_102",
     "TEN_QUY_TAC": "[Cetirizin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.79' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM MŨI DỊ ỨNG|MÀY ĐAY)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cetirizin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Kacerin chỉ được thanh toán cho chẩn đoán Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cetirizin] — ICD/XML1 không khớp chỉ định. Chỉ định: Kacerin — Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1038,7 +1038,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_104",
     "TEN_QUY_TAC": "[Cinnarizin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.80' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(CHÓNG MẶT|RỐI LOẠN TIỀN ĐÌNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cinnarizin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Cinnarizin chỉ được thanh toán cho chẩn đoán Rối loạn tiền đình (H81, R42).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Cinnarizin] — ICD/XML1 không khớp chỉ định. Chỉ định: Cinnarizin — Rối loạn tiền đình (H81, R42).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1068,7 +1068,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_107",
     "TEN_QUY_TAC": "[Clindamycin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.217' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM AMIDAN|VIÊM HỌNG|CHỐC|NHIỄM TRÙNG DA|ÁP XE DA|NHỌT|VIÊM MÔ TẾ BÀO)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clindamycin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Clyodas 300 chỉ được thanh toán cho Nhiễm khuẩn hô hấp (J01, J03) hoặc Nhiễm khuẩn da, mô mềm (L01-L03).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clindamycin] — ICD/XML1 không khớp chỉ định. Chỉ định: Clyodas 300 — Nhiễm khuẩn hô hấp (J01, J03) hoặc Nhiễm khuẩn da, mô mềm (L01-L03).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1108,7 +1108,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_111",
     "TEN_QUY_TAC": "[Clopidogrel] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.540' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NHỒI MÁU CƠ TIM|ĐỘT QUỴ|NHỒI MÁU NÃO|TAI BIẾN MẠCH MÁU NÃO|XƠ VỮA ĐỘNG MẠCH|XƠ VỮA ĐM|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC|BỆNH TIM THIẾU MÁU|THIẾU MÁU CỤC BỘ CƠ TIM|TẮC ĐỘNG MẠCH|HẸP ĐỘNG MẠCH|THUYÊN TẮC|HUYẾT KHỐI ĐỘNG MẠCH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clopidogrel] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc DogrelSaVi chỉ được thanh toán cho chẩn đoán NMCT (I21), Đột quỵ (I63), Xơ vữa ĐM (I70), Đau thắt ngực (I20), Bệnh tim thiếu máu cục bộ mạn (I25).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clopidogrel] — ICD/XML1 không khớp chỉ định. Chỉ định: DogrelSaVi — NMCT (I21), Đột quỵ (I63), Xơ vữa ĐM (I70), Đau thắt ngực (I20), Bệnh tim thiếu máu cục bộ mạn (I25).",
     "GHI_CHU": "SỬA 21/03/2026: Bổ sung I25 (Bệnh tim thiếu máu cục bộ mạn tính) - dự phòng tim mạch cho BN đa yếu tố nguy cơ",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1128,7 +1128,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_113",
     "TEN_QUY_TAC": "[Clotrimazol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.593' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NẤM DA|NẤM|NẤM NÔNG|NẤM CANDIDA|NHIỄM NẤM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clotrimazol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Cafunten chỉ được thanh toán cho chẩn đoán Nấm da (B35-B37).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Clotrimazol] — ICD/XML1 không khớp chỉ định. Chỉ định: Cafunten — Nấm da (B35-B37).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1158,7 +1158,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_116",
     "TEN_QUY_TAC": "[Colchicin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.61' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(GÚT|GOUT|BỆNH GÚT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Colchicin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Colchicin chỉ được thanh toán cho chẩn đoán Gout (M10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Colchicin] — ICD/XML1 không khớp chỉ định. Chỉ định: Colchicin — Gout (M10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1228,7 +1228,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_123",
     "TEN_QUY_TAC": "[Diacerein] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.63' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|THOÁI HÓA KHỚP GỐI|THOÁI HOÁ KHỚP GỐI)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diacerein] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Cytan chỉ được thanh toán cho chẩn đoán Thoái hóa khớp (M15, M17).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diacerein] — ICD/XML1 không khớp chỉ định. Chỉ định: Cytan — Thoái hóa khớp (M15, M17).",
     "GHI_CHU": "SỬA 21/03/2026: Bổ sung M17 (Thoái hóa khớp gối) - phát hiện từ rà soát HĐ thực tế BN TRƯƠNG THANH TÂM (401929)",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1268,7 +1268,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_126",
     "TEN_QUY_TAC": "[Diệp hạ châu đắng...] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '05C.28.2' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(BỆNH GAN DO THUỐC|TỔN THƯƠNG GAN|VIÊM GAN MẠN|GAN NHIỄM MỠ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diệp hạ châu đắng...] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc ATILIVER DIỆP HẠ CHÂU chỉ thanh toán cho chẩn đoán Viêm gan (K71, K73) hoặc Gan nhiễm mỡ (K76.0).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diệp hạ châu đắng...] — ICD/XML1 không khớp chỉ định. Chỉ định: ATILIVER DIỆP HẠ CHÂU — Viêm gan (K71, K73) hoặc Gan nhiễm mỡ (K76.0).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1288,7 +1288,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_128",
     "TEN_QUY_TAC": "[Diosmectit] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.722' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TIÊU CHẢY|VIÊM RUỘT|VIÊM ĐẠI TRÀNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diosmectit] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Cezmeta chỉ được thanh toán cho chẩn đoán Tiêu chảy (A09, K52.9).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diosmectit] — ICD/XML1 không khớp chỉ định. Chỉ định: Cezmeta — Tiêu chảy (A09, K52.9).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1318,7 +1318,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_131",
     "TEN_QUY_TAC": "[Diosmin; Hesperidin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.736' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(GIÃN TĨNH MẠCH|SUY TĨNH MẠCH CHI DƯỚI|TRĨ|SUY TĨNH MẠCH|TĨNH MẠCH MẠN)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diosmin; Hesperidin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Bividios chỉ thanh toán cho Suy tĩnh mạch, Trĩ (I83, I84, I87).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diosmin; Hesperidin] — ICD/XML1 không khớp chỉ định. Chỉ định: Bividios — Suy tĩnh mạch, Trĩ (I83, I84, I87).",
     "GHI_CHU": "SỬA 21/03/2026: Bổ sung I87.2 vào điều kiện MA_BENH_CHINH - phát hiện từ rà soát HĐ BN DƯƠNG THỊ HUỆ (401961). Lưu ý: I87.2 đã được bắt bởi LIKE '%I87%', quy tắc không cần sửa điều kiện LIKE. Vấn đề chính là BN THIẾU mã I87 trong hồ sơ.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1358,7 +1358,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_135",
     "TEN_QUY_TAC": "[Diphenhydramin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.84' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(DỊ ỨNG|PHẢN VỆ|SỐC PHẢN VỆ|MÀY ĐAY)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diphenhydramin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Dimedrol chỉ thanh toán cho chẩn đoán Dị ứng, Mày đay (T78.4, L50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Diphenhydramin] — ICD/XML1 không khớp chỉ định. Chỉ định: Dimedrol — Dị ứng, Mày đay (T78.4, L50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1458,7 +1458,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_145",
     "TEN_QUY_TAC": "[Eperison HCl] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.829' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|ĐAU LƯNG|ĐAU THẮT LƯNG|ĐAU CỘT SỐNG|BỆNH LÝ CỘT SỐNG|CĂNG CƠ|CO CƠ QUÁ MỨC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Eperison HCl] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Ryzonal chỉ được thanh toán cho chẩn đoán Co thắt cơ / Đau cột sống / Căng cơ (M15, M53, M54, M62.6).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Eperison HCl] — ICD/XML1 không khớp chỉ định. Chỉ định: Ryzonal — Co thắt cơ / Đau cột sống / Căng cơ (M15, M53, M54, M62.6).",
     "GHI_CHU": "SỬA 21/03/2026: Bổ sung M62.6 (Căng cơ quá mức) - phát hiện từ rà soát HĐ BN HUỲNH THỊ PHƯƠNG (401925)",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1508,7 +1508,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_150",
     "TEN_QUY_TAC": "[Esomeprazol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.678' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TRÀO NGƯỢC DẠ DÀY|GERD|LOÉT DẠ DÀY|LOÉT TÁ TRÀNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Esomeprazol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Stadnex 20 CAP chỉ được thanh toán cho chẩn đoán Trào ngược dạ dày thực quản (K21) hoặc Loét (K25, K26).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Esomeprazol] — ICD/XML1 không khớp chỉ định. Chỉ định: Stadnex 20 CAP — Trào ngược dạ dày thực quản (K21) hoặc Loét (K25, K26).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1538,7 +1538,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_153",
     "TEN_QUY_TAC": "[Etifoxin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.934' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(RỐI LOẠN LO ÂU|LO ÂU LAN TỎA|LO ÂU VÀ TRẦM CẢM|RỐI LOẠN THẦN KINH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Etifoxin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Stresam chỉ được thanh toán cho Rối loạn lo âu, Suy nhược thần kinh (F41.1, F41.2, F48.9).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Etifoxin] — ICD/XML1 không khớp chỉ định. Chỉ định: Stresam — Rối loạn lo âu, Suy nhược thần kinh (F41.1, F41.2, F48.9).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1568,7 +1568,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_156",
     "TEN_QUY_TAC": "[Etoricoxib] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.33' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|VIÊM KHỚP DẠNG THẤP|VIÊM CỘT SỐNG DÍNH|VIÊM CỘT SỐNG DÍ|GÚT|GOUT|BỆNH GÚT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Etoricoxib] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Exibapc 120 chỉ được thanh toán cho Thoái hóa khớp (M15), Viêm khớp dạng thấp (M05), Cột sống dính khớp (M45) hoặc Gout cấp (M10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Etoricoxib] — ICD/XML1 không khớp chỉ định. Chỉ định: Exibapc 120 — Thoái hóa khớp (M15), Viêm khớp dạng thấp (M05), Cột sống dính khớp (M45) hoặc Gout cấp (M10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1608,7 +1608,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_160",
     "TEN_QUY_TAC": "[Famotidin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.666' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TRÀO NGƯỢC DẠ DÀY|GERD|LOÉT DẠ DÀY|LOÉT TÁ TRÀNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Famotidin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc A.T Famotidine 40 inj chỉ được thanh toán cho chẩn đoán Trào ngược GERD (K21) hoặc Loét dạ dày - tá tràng (K25, K26).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Famotidin] — ICD/XML1 không khớp chỉ định. Chỉ định: A.T Famotidine 40 inj — Trào ngược GERD (K21) hoặc Loét dạ dày - tá tràng (K25, K26).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1648,7 +1648,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_164",
     "TEN_QUY_TAC": "[Felodipin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.502' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Felodipin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Felodipine Stella 5 mg retard chỉ được thanh toán cho chẩn đoán Tăng huyết áp (I10) hoặc Đau thắt ngực (I20).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Felodipin] — ICD/XML1 không khớp chỉ định. Chỉ định: Felodipine Stella 5 mg retard — Tăng huyết áp (I10) hoặc Đau thắt ngực (I20).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1678,7 +1678,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_167",
     "TEN_QUY_TAC": "[Fenofibrat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.553' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fenofibrat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Mibefen NT 145 chỉ được thanh toán cho chẩn đoán Rối loạn Lipoprotein máu (E78).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fenofibrat] — ICD/XML1 không khớp chỉ định. Chỉ định: Mibefen NT 145 — Rối loạn Lipoprotein máu (E78).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1718,7 +1718,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_171",
     "TEN_QUY_TAC": "[Fexofenadin hydroclorid] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.87' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM MŨI DỊ ỨNG|MÀY ĐAY)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fexofenadin hydroclorid] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Danapha-Telfadin chỉ được thanh toán cho chẩn đoán Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fexofenadin hydroclorid] — ICD/XML1 không khớp chỉ định. Chỉ định: Danapha-Telfadin — Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1758,7 +1758,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_175",
     "TEN_QUY_TAC": "[Fluconazol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.288' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NẤM DA|NẤM|NẤM NÔNG|NẤM CANDIDA|NHIỄM NẤM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fluconazol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Flupaz 50 chỉ được thanh toán cho chẩn đoán Nấm niêm mạc, Nấm da (B35, B36, B37).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Fluconazol] — ICD/XML1 không khớp chỉ định. Chỉ định: Flupaz 50 — Nấm niêm mạc, Nấm da (B35, B36, B37).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1778,7 +1778,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_177",
     "TEN_QUY_TAC": "[Flunarizin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.336' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐAU NỬA ĐẦU|MIGRAINE|CHÓNG MẶT|RỐI LOẠN TIỀN ĐÌNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Flunarizin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Flunarizin 10mg chỉ được thanh toán cho chẩn đoán Đau nửa đầu (G43) hoặc Chóng mặt (H81).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Flunarizin] — ICD/XML1 không khớp chỉ định. Chỉ định: Flunarizin 10mg — Đau nửa đầu (G43) hoặc Chóng mặt (H81).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1848,7 +1848,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_184",
     "TEN_QUY_TAC": "[Furosemid] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.659' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(SUY TIM|TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|HỘI CHỨNG THẬN HƯ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Furosemid] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Vinzix (20mg/40mg) chỉ thanh toán cho Suy tim, THA, Phù/Hội chứng thận hư (I50, I10, N04).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Furosemid] — ICD/XML1 không khớp chỉ định. Chỉ định: Vinzix (20mg/40mg) — Suy tim, THA, Phù/Hội chứng thận hư (I50, I10, N04).",
     "GHI_CHU": "Đã gộp dòng trùng [Furosemide] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1888,7 +1888,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_188",
     "TEN_QUY_TAC": "[Gabapentin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.132' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐỘNG KINH|ĐAU DÂY THẦN KINH|VIÊM DÂY THẦN KINH|VIÊM DÂY THẦN KINH SAU ZONA)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Gabapentin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Neupencap chỉ được thanh toán cho chẩn đoán Động kinh (G40) hoặc Đau dây thần kinh (M79.2, G53.0).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Gabapentin] — ICD/XML1 không khớp chỉ định. Chỉ định: Neupencap — Động kinh (G40) hoặc Đau dây thần kinh (M79.2, G53.0).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1968,7 +1968,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_196",
     "TEN_QUY_TAC": "[Gliclazid] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.800' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐÁI THÁO ĐƯỜNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Gliclazid] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Dorocron MR 60mg chỉ được thanh toán cho chẩn đoán Đái tháo đường Tuýp 2 (E11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Gliclazid] — ICD/XML1 không khớp chỉ định. Chỉ định: Dorocron MR 60mg — Đái tháo đường Tuýp 2 (E11).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -1988,7 +1988,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_198",
     "TEN_QUY_TAC": "[Glimepiride] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.801' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐÁI THÁO ĐƯỜNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Glimepiride] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Glumerif 2 chỉ được thanh toán cho chẩn đoán Đái tháo đường Tuýp 2 (E11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Glimepiride] — ICD/XML1 không khớp chỉ định. Chỉ định: Glumerif 2 — Đái tháo đường Tuýp 2 (E11).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2078,7 +2078,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_207",
     "TEN_QUY_TAC": "[Húng chanh, Núc nác, Cineol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '05C.150' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC)",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Húng chanh, Núc nác, Cineol] — Thuốc trong danh mục BV; có thẻ ICD_DRUG nhưng mã ICD chính/kèm không khớp nhóm chỉ định đã khai báo trong Module Mapping. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Hoastex chỉ được thanh toán cho chẩn đoán Viêm hô hấp trên (J06), Viêm phế quản (J20) hoặc Ho (R05).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Húng chanh, Núc nác, Cineol] — Thuốc trong danh mục BV; có thẻ ICD_DRUG nhưng mã ICD chính/kèm không khớp nhóm chỉ định đã khai báo trong Module Mapping. Chỉ định: Hoastex — Viêm hô hấp trên (J06), Viêm phế quản (J20) hoặc Ho (R05).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2138,7 +2138,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_213",
     "TEN_QUY_TAC": "[Ibuprofen] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.37' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(SỐT|ĐAU|VIÊM KHỚP DẠNG THẤP|THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ibuprofen] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc A.T Ibuprofen Syrup chỉ được thanh toán cho chẩn đoán Sốt, Đau (R50, R52) hoặc Viêm/Thoái hóa khớp (M06, M15).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ibuprofen] — ICD/XML1 không khớp chỉ định. Chỉ định: A.T Ibuprofen Syrup — Sốt, Đau (R50, R52) hoặc Viêm/Thoái hóa khớp (M06, M15).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2168,7 +2168,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_216",
     "TEN_QUY_TAC": "[Insulin glargine] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.806' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐÁI THÁO ĐƯỜNG TÝP 1|ĐÁI THÁO ĐƯỜNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Insulin glargine] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Basaglar chỉ được thanh toán cho chẩn đoán Đái tháo đường Tuýp 1 và Tuýp 2 (E10, E11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Insulin glargine] — ICD/XML1 không khớp chỉ định. Chỉ định: Basaglar — Đái tháo đường Tuýp 1 và Tuýp 2 (E10, E11).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2188,7 +2188,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_218",
     "TEN_QUY_TAC": "[Isosorbid mononitrat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.479' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC|SUY TIM|BỆNH TIM THIẾU MÁU|THIẾU MÁU CỤC BỘ CƠ TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Isosorbid mononitrat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Imidu 60mg chỉ được thanh toán cho chẩn đoán Đau thắt ngực (I20) hoặc Suy tim (I50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Isosorbid mononitrat] — ICD/XML1 không khớp chỉ định. Chỉ định: Imidu 60mg — Đau thắt ngực (I20) hoặc Suy tim (I50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2228,7 +2228,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_222",
     "TEN_QUY_TAC": "[Kali chloride] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.567' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(HẠ KALI|RỐI LOẠN KALI)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Kali chloride] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Potassium Chloride Proamp chỉ được thanh toán cho chẩn đoán Hạ Kali máu (E87.6).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Kali chloride] — ICD/XML1 không khớp chỉ định. Chỉ định: Potassium Chloride Proamp — Hạ Kali máu (E87.6).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2258,7 +2258,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_225",
     "TEN_QUY_TAC": "[Kẽm gluconat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.725' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TIÊU CHẢY|THIẾU KẼM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Kẽm gluconat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Bosuzinc chỉ được thanh toán cho chẩn đoán Tiêu chảy (A09) hoặc Bổ sung thiếu Kẽm (E60).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Kẽm gluconat] — ICD/XML1 không khớp chỉ định. Chỉ định: Bosuzinc — Tiêu chảy (A09) hoặc Bổ sung thiếu Kẽm (E60).",
     "GHI_CHU": "Đã gộp dòng trùng [Kẽm gluconat] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2288,7 +2288,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_228",
     "TEN_QUY_TAC": "[Ketoprofen] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.39' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐAU|ĐAU LƯNG|ĐAU THẮT LƯNG|ĐAU CỘT SỐNG|MỔ LẤY THAI|SINH MỔ|CHĂM SÓC SAU PHẪU THUẬT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ketoprofen] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Fastum Gel chỉ được thanh toán cho chẩn đoán Đau cột sống, Đau cơ, Viêm khớp (M54, M79, M06, T14).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Ketoprofen] — ICD/XML1 không khớp chỉ định. Chỉ định: Fastum Gel — Đau cột sống, Đau cơ, Viêm khớp (M54, M79, M06, T14).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2358,7 +2358,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_235",
     "TEN_QUY_TAC": "[Lá sen,Vông nem...] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '05C.135.5' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(MẤT NGỦ|RỐI LOẠN GIẤC NGỦ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Lá sen,Vông nem...] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Mimosa viên an thần chỉ được thanh toán cho chẩn đoán Mất ngủ (F51.0, G47.0).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Lá sen,Vông nem...] — ICD/XML1 không khớp chỉ định. Chỉ định: Mimosa viên an thần — Mất ngủ (F51.0, G47.0).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2408,7 +2408,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_240",
     "TEN_QUY_TAC": "[Levocetirizin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.90' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM MŨI DỊ ỨNG|MÀY ĐAY)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Levocetirizin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc ACRITEL-10 chỉ được thanh toán cho chẩn đoán Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Levocetirizin] — ICD/XML1 không khớp chỉ định. Chỉ định: ACRITEL-10 — Viêm mũi dị ứng (J30) hoặc Mày đay (L50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2428,7 +2428,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_242",
     "TEN_QUY_TAC": "[Levofloxacin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.229' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM XOANG|VIÊM PHỔI|VIÊM PHẾ QUẢN|VIÊM THẬN BỂ THẬN|VIÊM BÀNG QUANG|VIÊM TUYẾN TIỀN LIỆT)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Levofloxacin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc LEVODHG 500 chỉ được thanh toán cho chẩn đoán Nhiễm khuẩn hô hấp, tiết niệu, tiền liệt tuyến (J01, J15, N10...).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Levofloxacin] — ICD/XML1 không khớp chỉ định. Chỉ định: LEVODHG 500 — Nhiễm khuẩn hô hấp, tiết niệu, tiền liệt tuyến (J01, J15, N10...).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2478,7 +2478,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_247",
     "TEN_QUY_TAC": "[Lidocain] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.12' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND COUNT_IF(XML3, LOAI_PTTT IN ('1', '2', '3', '4')) == 0",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Lidocain] — Thuốc có trong danh mục nội bộ nhưng trên hồ sơ không có dòng XML3 phẫu thuật/thủ thuật (LOAI_PTTT 1–4) đúng nhóm kỳ vọng khi kê thuốc theo phác đồ xuất toán. Tham khảo chỉ định lâm sàng: Thuốc Vinlido 200mg chỉ được thanh toán cho chẩn đoán Khám chuyên khoa, Thủ thuật (Z01.8, T81.0).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Lidocain] — Thuốc có trong danh mục nội bộ nhưng trên hồ sơ không có dòng XML3 phẫu thuật/thủ thuật (LOAI_PTTT 1–4) đúng nhóm kỳ vọng khi kê thuốc theo phác đồ xuất toán. Chỉ định: Thuốc Vinlido 200mg chỉ được thanh toán cho chẩn đoán Khám chuyên khoa, Thủ thuật (Z01.8, T81.0).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2558,7 +2558,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_255",
     "TEN_QUY_TAC": "[Meloxicam] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.41' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THOÁI HÓA KHỚP|THOÁI HOÁ KHỚP|VIÊM XƯƠNG KHỚP|VIÊM KHỚP DẠNG THẤP|VIÊM CỘT SỐNG DÍNH|VIÊM CỘT SỐNG DÍ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Meloxicam] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Reumokam / Mebilax 15 chỉ được thanh toán cho chẩn đoán Thoái hóa khớp, Viêm khớp dạng thấp, Cột sống dính khớp (M15, M05, M06, M45).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Meloxicam] — ICD/XML1 không khớp chỉ định. Chỉ định: Reumokam / Mebilax 15 — Thoái hóa khớp, Viêm khớp dạng thấp, Cột sống dính khớp (M15, M05, M06, M45).",
     "GHI_CHU": "Đã gộp dòng trùng [Meloxicam] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2598,7 +2598,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_259",
     "TEN_QUY_TAC": "[Mesalamin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.748' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(BỆNH CROHN|VIÊM LOÉT ĐẠI TRÀNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Mesalamin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Vinsalamin 400 chỉ được thanh toán cho chẩn đoán Crohn (K50) hoặc Viêm loét đại tràng (K51).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Mesalamin] — ICD/XML1 không khớp chỉ định. Chỉ định: Vinsalamin 400 — Crohn (K50) hoặc Viêm loét đại tràng (K51).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2628,7 +2628,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_262",
     "TEN_QUY_TAC": "[Metformin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.807' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐÁI THÁO ĐƯỜNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metformin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Metformin Stella 850 mg chỉ được thanh toán cho chẩn đoán Đái tháo đường Tuýp 2 (E11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metformin] — ICD/XML1 không khớp chỉ định. Chỉ định: Metformin Stella 850 mg — Đái tháo đường Tuýp 2 (E11).",
     "GHI_CHU": "Đã gộp 3 dòng trùng [Metformin] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2698,7 +2698,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_269",
     "TEN_QUY_TAC": "[Metoclopramid] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.690' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(BUỒN NÔN|NÔN)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metoclopramid] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Vincomid chỉ được thanh toán cho chẩn đoán Nôn, Buồn nôn (R11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metoclopramid] — ICD/XML1 không khớp chỉ định. Chỉ định: Vincomid — Nôn, Buồn nôn (R11).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2728,7 +2728,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_272",
     "TEN_QUY_TAC": "[Metoprolol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.515' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC|SUY TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metoprolol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Carmotop (25mg/50mg) chỉ được thanh toán cho chẩn đoán Tăng huyết áp (I10), Đau thắt ngực (I20), Suy tim (I50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metoprolol] — ICD/XML1 không khớp chỉ định. Chỉ định: Carmotop (25mg/50mg) — Tăng huyết áp (I10), Đau thắt ngực (I20), Suy tim (I50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2768,7 +2768,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_276",
     "TEN_QUY_TAC": "[Metronidazol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.212' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(AMÍP|NHIỄM TRÙNG RUỘT|LOÉT DẠ DÀY|LOÉT TÁ TRÀNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metronidazol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Metronidazol Kabi chỉ thanh toán cho Lỵ amip (A06), Viêm ruột (A04) hoặc Loét dạ dày H.pylori (K25, K26).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Metronidazol] — ICD/XML1 không khớp chỉ định. Chỉ định: Metronidazol Kabi — Lỵ amip (A06), Viêm ruột (A04) hoặc Loét dạ dày H.pylori (K25, K26).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2818,7 +2818,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_281",
     "TEN_QUY_TAC": "[N-Acetylcystein] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.998' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(VIÊM PHẾ QUẢN|BỆNH PHỔI TẮC NGHẼN|COPD|HO)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [N-Acetylcystein] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc ANC chỉ được thanh toán cho chẩn đoán Viêm phế quản, COPD (J20, J44) hoặc Ho đờm (R05).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [N-Acetylcystein] — ICD/XML1 không khớp chỉ định. Chỉ định: ANC — Viêm phế quản, COPD (J20, J44) hoặc Ho đờm (R05).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2868,7 +2868,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_286",
     "TEN_QUY_TAC": "[Naloxon] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.114' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NGỘ ĐỘC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Naloxon] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc BFS-Naloxone chỉ được thanh toán cho chẩn đoán Ngộ độc Opioid (T40).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Naloxon] — ICD/XML1 không khớp chỉ định. Chỉ định: BFS-Naloxone — Ngộ độc Opioid (T40).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2888,7 +2888,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_288",
     "TEN_QUY_TAC": "[Natri bicarbonat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.116' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NHIỄM TOAN)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Natri bicarbonat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc BFS-Nabica 8,4% chỉ được thanh toán cho chẩn đoán Toan chuyển hóa (E87.2).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Natri bicarbonat] — ICD/XML1 không khớp chỉ định. Chỉ định: BFS-Nabica 8,4% — Toan chuyển hóa (E87.2).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2908,7 +2908,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_290",
     "TEN_QUY_TAC": "[Natri montelukast] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.979' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(HEN|HEN SUYỄN|HEN PHẾ QUẢN|VIÊM MŨI DỊ ỨNG)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Natri montelukast] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Ingair 10mg chỉ được thanh toán cho chẩn đoán Hen phế quản (J45) hoặc Viêm mũi dị ứng (J30).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Natri montelukast] — ICD/XML1 không khớp chỉ định. Chỉ định: Ingair 10mg — Hen phế quản (J45) hoặc Viêm mũi dị ứng (J30).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2928,7 +2928,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_292",
     "TEN_QUY_TAC": "[Nebivolol] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.517' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|SUY TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nebivolol] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Neginol 5 chỉ được thanh toán cho chẩn đoán Tăng huyết áp (I10) hoặc Suy tim (I50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nebivolol] — ICD/XML1 không khớp chỉ định. Chỉ định: Neginol 5 — Tăng huyết áp (I10) hoặc Suy tim (I50).",
     "GHI_CHU": "Đã gộp dòng trùng [Nebivolol] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2968,7 +2968,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_296",
     "TEN_QUY_TAC": "[Nefopam] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.47' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐAU|ĐAU MẠN TÍNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nefopam] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Acupan chỉ được thanh toán cho chẩn đoán Đau cấp/mãn tính (R52, G89).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nefopam] — ICD/XML1 không khớp chỉ định. Chỉ định: Acupan — Đau cấp/mãn tính (R52, G89).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -2988,7 +2988,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_298",
     "TEN_QUY_TAC": "[Neostigmin methylsulfat] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.832' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(NHƯỢC CƠ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Neostigmin methylsulfat] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Antigmin chỉ được thanh toán cho chẩn đoán Nhược cơ (G70).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Neostigmin methylsulfat] — ICD/XML1 không khớp chỉ định. Chỉ định: Antigmin — Nhược cơ (G70).",
     "GHI_CHU": "Đã gộp dòng trùng [Neostigmin] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3058,7 +3058,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_305",
     "TEN_QUY_TAC": "[Nifedipin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.519' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC|TĂNG HUYẾT ÁP THAI KỲ|TIỀN SẢN GIẬT|SẢN GIẬT|TĂNG HUYẾT ÁP THAI|DỌA SINH NON)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nifedipin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Nifehexal 30 LA chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10) hoặc Đau thắt ngực (I20).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Nifedipin] — ICD/XML1 không khớp chỉ định. Chỉ định: Nifehexal 30 LA — Tăng huyết áp vô căn (I10) hoặc Đau thắt ngực (I20).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3158,7 +3158,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_315",
     "TEN_QUY_TAC": "[Perindopril + amlodipin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.521' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Perindopril + amlodipin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc VT-Amlopril chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Perindopril + amlodipin] — ICD/XML1 không khớp chỉ định. Chỉ định: VT-Amlopril — Tăng huyết áp vô căn (I10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3188,7 +3188,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_318",
     "TEN_QUY_TAC": "[Piracetam] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.576' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(SA SÚT TRÍ TUỆ|THIẾU MÁU NÃO THOÁNG QUA|CHÓNG MẶT|RỐI LOẠN TIỀN ĐÌNH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Piracetam] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Maxxviton 1200 chỉ được thanh toán cho Suy giảm nhận thức (F03), Thiếu máu não (G45), Chóng mặt (H81).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Piracetam] — ICD/XML1 không khớp chỉ định. Chỉ định: Maxxviton 1200 — Suy giảm nhận thức (F03), Thiếu máu não (G45), Chóng mặt (H81).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3298,7 +3298,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_329",
     "TEN_QUY_TAC": "[Rosuvastatin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.558' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG CHOLESTEROL|RỐI LOẠN LIPID|TĂNG TRIGLYCERID|TĂNG LIPID MÁU HỖN HỢP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Rosuvastatin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Rosuvastatin chỉ được thanh toán cho chẩn đoán Rối loạn Lipoprotein máu (E78).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Rosuvastatin] — ICD/XML1 không khớp chỉ định. Chỉ định: Rosuvastatin — Rối loạn Lipoprotein máu (E78).",
     "GHI_CHU": "Đối chiếu T3_chuagui OP26005115: MA_BENH_KT=E78;... phải khớp mã E78 không phụ (token), không chỉ E78.0–E78.9 trong chuỗi LIKE.",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3318,7 +3318,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_331",
     "TEN_QUY_TAC": "[Rotundin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.937' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(MẤT NGỦ|RỐI LOẠN GIẤC NGỦ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Rotundin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Rotundin 60 / Gliclada chỉ được thanh toán cho chẩn đoán Mất ngủ (G47) hoặc Đái tháo đường Tuýp 2 (E11).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Rotundin] — ICD/XML1 không khớp chỉ định. Chỉ định: Rotundin 60 / Gliclada — Mất ngủ (G47) hoặc Đái tháo đường Tuýp 2 (E11).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3408,7 +3408,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_340",
     "TEN_QUY_TAC": "[Sắt (III)] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.433' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THIẾU MÁU THIẾU SẮT|SUY DINH DƯỠNG THAI KỲ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Sắt (III)] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Ferovin chỉ được thanh toán cho Thiếu máu thiếu sắt (D50), Thiếu dinh dưỡng thai kỳ (O25).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Sắt (III)] — ICD/XML1 không khớp chỉ định. Chỉ định: Ferovin — Thiếu máu thiếu sắt (D50), Thiếu dinh dưỡng thai kỳ (O25).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3428,7 +3428,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_342",
     "TEN_QUY_TAC": "[Sắt fumarat + Acid Folic] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.429' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THIẾU MÁU THIẾU SẮT|SUY DINH DƯỠNG THAI KỲ)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Sắt fumarat + Acid Folic] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Prodertonic chỉ được thanh toán cho chẩn đoán Thiếu máu thiếu sắt (D50) hoặc Bổ sung thai kỳ (O25).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Sắt fumarat + Acid Folic] — ICD/XML1 không khớp chỉ định. Chỉ định: Prodertonic — Thiếu máu thiếu sắt (D50) hoặc Bổ sung thai kỳ (O25).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3538,7 +3538,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_353",
     "TEN_QUY_TAC": "[Telmisartan + hydroclorothiazid] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.527' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Telmisartan + hydroclorothiazid] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Telmisartan 80 mg and Hydrochlorothiazide 12.5mg Tablets chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Telmisartan + hydroclorothiazid] — ICD/XML1 không khớp chỉ định. Chỉ định: Telmisartan 80 mg and Hydrochlorothiazide 12.5mg Tablets — Tăng huyết áp vô căn (I10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3558,7 +3558,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_355",
     "TEN_QUY_TAC": "[Telmisartan] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.526' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Telmisartan] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc SaVi Telmisartan 40 chỉ được thanh toán cho chẩn đoán Tăng huyết áp vô căn (I10).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Telmisartan] — ICD/XML1 không khớp chỉ định. Chỉ định: SaVi Telmisartan 40 — Tăng huyết áp vô căn (I10).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3588,7 +3588,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_358",
     "TEN_QUY_TAC": "[Terbutalin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.983' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(HEN|HEN SUYỄN|HEN PHẾ QUẢN|BỆNH PHỔI TẮC NGHẼN|COPD)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Terbutalin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Vinterlin chỉ được thanh toán cho chẩn đoán Hen phế quản (J45) hoặc COPD (J44).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Terbutalin] — ICD/XML1 không khớp chỉ định. Chỉ định: Vinterlin — Hen phế quản (J45) hoặc COPD (J44).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3638,7 +3638,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_363",
     "TEN_QUY_TAC": "[Trimetazidin] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.481' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(ĐAU THẮT NGỰC|CƠN ĐAU THẮT NGỰC)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Trimetazidin] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Vastec 35 MR chỉ được thanh toán cho chẩn đoán Đau thắt ngực (I20).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Trimetazidin] — ICD/XML1 không khớp chỉ định. Chỉ định: Vastec 35 MR — Đau thắt ngực (I20).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3688,7 +3688,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_368",
     "TEN_QUY_TAC": "[Valsartan] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.528' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(TĂNG HUYẾT ÁP|CAO HUYẾT ÁP|SUY TIM)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Valsartan] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc ValtimAPC 80 chỉ được thanh toán cho chẩn đoán Tăng huyết áp (I10) hoặc Suy tim (I50).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Valsartan] — ICD/XML1 không khớp chỉ định. Chỉ định: ValtimAPC 80 — Tăng huyết áp (I10) hoặc Suy tim (I50).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3788,7 +3788,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_378",
     "TEN_QUY_TAC": "[Vitamin C] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.1057' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THIẾU VITAMIN C|THIẾU MÁU)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Vitamin C] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Kingdomin vita C chỉ được thanh toán cho chẩn đoán Scorbut (E54) hoặc Thiếu máu (D64).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Vitamin C] — ICD/XML1 không khớp chỉ định. Chỉ định: Kingdomin vita C — Scorbut (E54) hoặc Thiếu máu (D64).",
     "GHI_CHU": "",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },
@@ -3818,7 +3818,7 @@ export const DU_LIEU_SEED_LUAT_THUOC_MUC8 = [
     "MA_LUAT": "THUOC_381",
     "TEN_QUY_TAC": "[Vitamin E] Kiểm tra Chỉ định ICD-10",
     "DIEU_KIEN": "XML2.MA_THUOC == '40.1061' AND CO_THUOC_TRONG_DM_BV(XML2.MA_THUOC) AND CO_CO_DONG_MAPPING_ICD_THUOC(XML2.MA_THUOC) AND NOT CO_ICD_KHOP_MAPPING_THUOC(XML2.MA_THUOC) AND XML1.CHAN_DOAN_RV NOT REGEXP '(?i)(THIẾU VITAMIN|THIẾU KẼM|VÔ SINH)'",
-    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Vitamin E] — Thuốc trong danh mục BV; BV đã khai báo thẻ ICD_DRUG nhưng ICD/XML1 không khớp chỉ định trong mapping; đồng thời CHẨN ĐOÁN RA không chứa từ khóa ngoại lệ đã cấu hình trong quy tắc. Tham khảo chỉ định (đối chiếu TT/BYT): Thuốc Incepavit 400 Capsule chỉ thanh toán cho Thiếu hụt dinh dưỡng (E56, E60) hoặc Hỗ trợ vô sinh (N97).",
+    "CANH_BAO": "⛔ [XUẤT TOÁN]: [Vitamin E] — ICD/XML1 không khớp chỉ định. Chỉ định: Incepavit 400 Capsule — Thiếu hụt dinh dưỡng (E56, E60) hoặc Hỗ trợ vô sinh (N97).",
     "GHI_CHU": "Đã gộp dòng trùng [Vitamin E] ICD-10",
     "NGUON_DU_LIEU": "DuLieu_LUAT_THUOC (9).xlsx"
   },

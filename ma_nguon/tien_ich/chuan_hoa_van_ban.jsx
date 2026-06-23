@@ -1,3 +1,5 @@
+import { rutGonPhanHoiQuyTac } from './rut_gon_phan_hoi_quy_tac';
+
 const WINDOWS_1252_FORWARD = new Map([
   ['\u20AC', 0x80], ['\u201A', 0x82], ['\u0192', 0x83], ['\u201E', 0x84],
   ['\u2026', 0x85], ['\u2020', 0x86], ['\u2021', 0x87], ['\u02C6', 0x88],
@@ -137,7 +139,10 @@ export const chuanHoaCanhBaoGiamDinh = (item) => {
   const next = { ...item };
   CANH_BAO_FIELDS.forEach((field) => {
     if (typeof next[field] === 'string') {
-      next[field] = chuanHoaVanBanLoiFont(next[field]);
+      const daChuanFont = chuanHoaVanBanLoiFont(next[field]);
+      next[field] = field === 'canh_bao' || field === 'noi_dung'
+        ? rutGonPhanHoiQuyTac(daChuanFont)
+        : daChuanFont;
     }
   });
   return next;
@@ -152,7 +157,10 @@ export const chuanHoaBaoCaoViPham = (danhSach) =>
     const next = { ...item };
     BAO_CAO_FIELDS.forEach((field) => {
       if (typeof next[field] === 'string') {
-        next[field] = chuanHoaVanBanLoiFont(next[field]);
+        const daChuanFont = chuanHoaVanBanLoiFont(next[field]);
+        next[field] = field === 'CANH_BAO'
+          ? rutGonPhanHoiQuyTac(daChuanFont)
+          : daChuanFont;
       }
     });
     return next;

@@ -13,7 +13,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { rongSidebarCap, useLayoutMode } from '../tien_ich/diem_anh_man_hinh';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as XLSX from 'xlsx';
 import { CD } from '../tien_ich/chu_de_giao_dien';
@@ -141,8 +142,8 @@ const chuanHoaCotLuat = (raw) => {
 };
 
 const ManHinhQuanLyLuat = ({ navigation }) => {
-  const { width: winW } = useWindowDimensions();
-  const rongSidebar = winW < 420 ? 196 : winW < 768 ? 232 : 268;
+  const { dungBoCucDoc, width: winW } = useLayoutMode();
+  const rongSidebar = Math.min(268, rongSidebarCap(winW));
 
   const [danhSachTab, setDanhSachTab] = useState(DANH_SACH_TAB_MAC_DINH);
   const [tabHienTai, setTabHienTai] = useState(DANH_SACH_TAB_MAC_DINH[0].id);
@@ -697,8 +698,8 @@ const ManHinhQuanLyLuat = ({ navigation }) => {
       </View>
 
       <View style={styles.khung_chuc_nang}>
-        <View style={styles.khung_chinh_luat}>
-          <View style={[styles.sidebar_luat, { width: rongSidebar }]}>
+        <View style={[styles.khung_chinh_luat, dungBoCucDoc && styles.khung_chinh_luat_doc]}>
+          <View style={[styles.sidebar_luat, dungBoCucDoc ? styles.sidebar_luat_doc : { width: rongSidebar }]}>
             <Text style={styles.chu_sidebar_tieu_de_luat}>Chọn tệp luật</Text>
             <ScrollView
               style={styles.sidebar_scroll_luat}
@@ -953,6 +954,9 @@ const styles = StyleSheet.create({
     minHeight: 0,
     minWidth: 0,
   },
+  khung_chinh_luat_doc: {
+    flexDirection: 'column',
+  },
   sidebar_luat: {
     alignSelf: 'stretch',
     flexDirection: 'column',
@@ -963,6 +967,13 @@ const styles = StyleSheet.create({
     borderRightColor: CD.border.glass_md,
     backgroundColor: 'rgba(0,0,0,0.22)',
     ...Platform.select({ web: { boxSizing: 'border-box' } }),
+  },
+  sidebar_luat_doc: {
+    width: '100%',
+    maxHeight: 260,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: CD.border.glass_md,
   },
   chu_sidebar_tieu_de_luat: {
     fontSize: 13,
