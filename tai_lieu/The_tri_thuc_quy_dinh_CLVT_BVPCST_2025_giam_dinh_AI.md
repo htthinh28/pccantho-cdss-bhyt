@@ -1,11 +1,11 @@
-# THẺ TRI THỨC: QUY ĐỊNH CHỤP CẮT LỚP VI TÍNH (CLVT) — BV QUỐC TẾ PHƯƠNG CHÂU SÓC TRĂNG (2025) — PHỤC VỤ KIỂM TRA / AI
+# THẺ TRI THỨC: QUY ĐỊNH CHỤP CẮT LỚP VI TÍNH (CLVT) — BV QUỐC TẾ PHƯƠNG CHÂU CẦN THƠ (2025) — PHỤC VỤ KIỂM TRA / AI
 
 Phiên bản: 1.0  
 Ngày nhập kho tri thức: 10/04/2026  
 
 ## 1. Nguồn và phạm vi
 
-- **Văn bản:** *Quyết định* ban hành *Quy định chụp cắt lớp vi tính tại Bệnh viện Quốc tế Phương Châu Sóc Trăng* — Cần Thơ, **ngày 03 tháng 10 năm 2025** (số hiệu trên bản gốc: `/QĐ.BVPCST.2025`; điền đủ khi trích dẫn hành chính).
+- **Văn bản:** *Quyết định* ban hành *Quy định chụp cắt lớp vi tính tại Bệnh viện Quốc tế Phương Châu Cần Thơ* — Cần Thơ, **ngày 03 tháng 10 năm 2025** (số hiệu trên bản gốc: `/QĐ.BVPCST.2025`; điền đủ khi trích dẫn hành chính).
 - **Căn cứ pháp lý nêu trong văn bản:** Thông tư **35/2016/TT-BYT** (danh mục, tỷ lệ, điều kiện TT DVKT BHYT); Quyết định **2775/QĐ-BYT ngày 29/08/2025** — tài liệu chuyên môn *Hướng dẫn quy trình kỹ thuật chẩn đoán hình ảnh — Điện quang, Tập 1*.
 - **Neo danh mục BHYT:** **Điều 1** quy định áp dụng chụp CLVT **từ 1–32 dãy** theo **Khoản 3 Danh mục 1** TT 35/2016/TT-BYT tại đơn vị.
 

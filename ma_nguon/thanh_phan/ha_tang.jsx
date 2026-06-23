@@ -1,7 +1,7 @@
 /**
  * DANH MỤC HẠ TẦNG VÀ HỆ THỐNG PHỤ TRỢ (FACILITY & INFRASTRUCTURE)
  * Phục vụ báo cáo năng lực KBCB BHYT và Quản trị rủi ro cơ sở vật chất (JCI FMS)
- * Dữ liệu: Bệnh viện Quốc tế Phương Châu Sóc Trăng
+ * Dữ liệu: Bệnh viện Quốc tế Phương Châu Cần Thơ
  */
 
 export const DANH_MUC_HA_TANG = {
@@ -65,7 +65,7 @@ export const DANH_MUC_HA_TANG = {
     },
     QUAN_LY_RAC_THAI: {
       RAC_Y_TE: { KHOI_LUONG_THANG: 665, DON_VI: "kg", DOI_TAC_XU_LY: "Công ty TNHH SX-TM-DV Môi trường Việt Xanh" },
-      RAC_SINH_HOAT: { KHOI_LUONG_THANG: 23, DON_VI: "m3", DOI_TAC_XU_LY: "Công ty Cổ phần công trình đô thị Sóc Trăng" },
+      RAC_SINH_HOAT: { KHOI_LUONG_THANG: 23, DON_VI: "m3", DOI_TAC_XU_LY: "Công ty Cổ phần công trình đô thị Cần Thơ" },
       RAC_TAI_CHE: { KHOI_LUONG_THANG: 502, DON_VI: "kg", DOI_TAC_XU_LY: "Công ty TNHH Đầu tư Dịch vụ Thương mại Mai Nguyên" }
     },
     AN_TOAN_BUC_XA: "Đạt chứng nhận An toàn bức xạ"

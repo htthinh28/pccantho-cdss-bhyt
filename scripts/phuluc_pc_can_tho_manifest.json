@@ -1,0 +1,27 @@
+{
+  "updated_at": "2026-06-23T12:04:09.670Z",
+  "source_dir": "C:/Users/admin/Documents/Google Drive/BHYT/PC CT",
+  "ma_cskcb": 92114,
+  "counts": {
+    "dvkt": 5022,
+    "thuoc": 486,
+    "vtyt": 536,
+    "nhan_su": 332,
+    "thiet_bi": 100,
+    "khoa": 26,
+    "phamvi_mapping": 516,
+    "staff_mapping": 5022,
+    "mapping_co_nguoi_th": 3326,
+    "mapping_khong_nv": 1696
+  },
+  "outputs": {
+    "dvkt": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\dich_vu_ky_thuat.jsx",
+    "thuoc": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\thuoc_mau_cp.jsx",
+    "vtyt": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\vat_tu_y_te.jsx",
+    "nhanSu": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\nhan_su.jsx",
+    "thietBi": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\trang_thiet_bi.jsx",
+    "khoa": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\dm_khoals_m01dm.jsx",
+    "mapping": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\thanh_phan\\mapping_nguoi_hanh_nghe.jsx",
+    "phamvi": "C:\\Users\\admin\\Documents\\Google Drive\\ung_dung_cdss_bhyt\\ma_nguon\\tien_ich\\dvkt_phamvi_mapping_seed.jsx"
+  }
+}

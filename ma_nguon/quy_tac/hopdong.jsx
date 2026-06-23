@@ -23,7 +23,7 @@ export const kiemTraHopDong = (xml1, xml3) => {
   if (!hopDong || !xml1) return danhSachLỗi;
 
   // Giả định các tham số này có thể được KHTH cấu hình trên giao diện Web:
-  // (Mặc định lấy theo Hợp đồng Phương Châu Sóc Trăng 2026)
+  // (Mặc định lấy theo Hợp đồng Phương Châu Cần Thơ 2026)
   const DIEU_TRI_BAN_NGAY_HOP_LE = hopDong.DIEU_TRI_BAN_NGAY === "Có" || false; 
   const KHAM_NGOAI_GIO_HOP_LE = hopDong.KHAM_NGOAI_GIO === "Có" || false;
   const maLoaiKcb = chuanHoaMaLoaiKcb(xml1.MA_LOAI_KCB);

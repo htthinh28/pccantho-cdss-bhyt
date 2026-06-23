@@ -235,7 +235,7 @@ const ManHinhDangNhap = ({ navigation }) => {
               </View>
 
               <Text style={styles.brand_name}>PHƯƠNG CHÂU</Text>
-              <Text style={styles.brand_subtitle}>BỆNH VIỆN QUỐC TẾ SÓC TRĂNG</Text>
+              <Text style={styles.brand_subtitle}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU CẦN THƠ</Text>
 
               <View style={styles.brand_divider} />
 

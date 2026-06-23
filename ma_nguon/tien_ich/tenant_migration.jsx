@@ -128,7 +128,7 @@ export const damBaoMigrationTenant = async () => {
     const profile = layTenantProfile();
     const legacyAliases = Array.isArray(profile?.legacyOrgAliases)
       ? profile.legacyOrgAliases
-      : (orgId === 'phuongchau_soc_trang' ? ['phuongchau'] : []);
+      : (orgId === 'phuongchau_can_tho' || orgId === 'phuongchau_soc_trang' ? ['phuongchau', 'phuongchau_soc_trang'] : []);
 
     let migratedKeys = 0;
     const legacyKeys = await collectLegacyKeys();

@@ -3373,7 +3373,7 @@ const locCanhBaoDuongTinhGiaTheoNguCanh = (hoSo, dsLỗi, dm) => {
         if (ma === 'HC_224' && (xml8.length === 0 || !dong || IS_EMPTY(dong?.MA_PT_VIEN) || IS_EMPTY(dong?.MA_PHU_MO))) return false;
         if (ma === 'HC_242' && tongChiCanBang) return false;
         if (ma === 'DM-DVKT-03' && laDongDichVuGiuong(dong)) return false;
-        if (ma === 'HD_06' && !IS_EMPTY(xml1.MA_CSKCB) && /94170/.test(`${canhBao} ${dieuKien}`)) return false;
+        if (ma === 'HD_06' && !IS_EMPTY(xml1.MA_CSKCB) && /92114/.test(`${canhBao} ${dieuKien}`)) return false;
         if (ma === 'HD_09' && IS_EMPTY(xml1.MA_TTDV)) return false;
         if (ma === 'CK_03' && !['1', '01'].includes(maLoaiKcb)) return false;
         if (ma === 'THUOC_400' && !coThuoc) return false;

@@ -101,3 +101,5 @@ temp_*_extract*.txt
 
 # Dataset SFT sinh từ script (có thể lớn / nhạy cảm nội bộ)
 training_data/generated/
+
+.vercel

@@ -5,9 +5,9 @@
 
 export const THONG_TIN_CO_SO = {
   // --- THÔNG TIN HÀNH CHÍNH CƠ BẢN ---
-  MA_CSKCB: "94170", 
-  TEN_CSKCB: "Bệnh viện Quốc tế Phương Châu Sóc Trăng", 
-  DON_VI_THU_HUONG: "Chi Nhánh Công Ty TNHH MTV Phương Châu Sóc Trăng",
+  MA_CSKCB: "92114", 
+  TEN_CSKCB: "Bệnh viện Quốc tế Phương Châu Cần Thơ", 
+  DON_VI_THU_HUONG: "Chi Nhánh Công Ty TNHH MTV Phương Châu Cần Thơ",
   
   // --- PHÂN TUYẾN & CHUYÊN MÔN ---
   CAP_CHUYEN_MON: "Cơ bản", 
@@ -23,7 +23,7 @@ export const THONG_TIN_CO_SO = {
   FAX: "02993526868",
   EMAIL: "khth.st@phuongchau.com",
   MA_SO_THUE: "2200750211-001",
-  TAI_KHOAN_NGAN_HANG: "115884686868 tại VietinBank Chi Nhánh Sóc Trăng",
+  TAI_KHOAN_NGAN_HANG: "115884686868 tại VietinBank Chi Nhánh Cần Thơ",
   
   // --- NHÂN SỰ CHỦ CHỐT ---
   GIAM_DOC: "Dư Huỳnh Hồng Ngọc",

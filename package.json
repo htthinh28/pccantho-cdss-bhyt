@@ -18,6 +18,7 @@
     "vercel:build": "npm run tai_lieu:prepare && expo export --platform web",
     "dvkt:supplement-m05": "node ./scripts/update_dvkt_noi_bo_from_excel.js --supplement=\"C:/Users/admin/Downloads/FileDichVuBV Cập nhật tháng 5 (1).xlsx\"",
     "dvkt:update-m05-full": "node ./scripts/update_dvkt_noi_bo_from_excel.js",
+    "phuluc:build-pc-can-tho": "node ./scripts/build_phuluc_pc_can_tho.mjs",
     "start:lan": "node server.js",
     "py:install": "python -m pip install -r python_service/requirements.txt",
     "py:install:ai": "python -m pip install -r python_service/requirements-ai.txt",

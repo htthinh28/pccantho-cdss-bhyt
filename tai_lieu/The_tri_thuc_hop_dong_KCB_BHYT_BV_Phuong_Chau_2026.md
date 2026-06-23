@@ -22,8 +22,8 @@ Khi cập nhật hợp đồng năm sau hoặc đổi CSKCB, chỉ cần trỏ s
 | Ngày ký | **29/12/2025**, tại **BHXH cơ sở Phú Lợi** |
 | Hiệu lực | **01/01/2026** — **31/12/2026** |
 | Bên A | Bảo hiểm xã hội **cơ sở Phú Lợi** (Cần Thơ) |
-| Bên B | Chi nhánh Công ty TNHH MTV Phương Châu Sóc Trăng — **Bệnh viện Quốc tế Phương Châu Sóc Trăng** |
-| Mã CSKCB | **`94170`** — mã **MA_CSKCB** chuẩn XML/BHXH cho *Bệnh viện Quốc tế Phương Châu Sóc Trăng* (đồng bộ `THONG_TIN_CO_SO`, luật `HD_06`). Bản trích `Hop_dong_plain.txt` có thể ghi **94027**; khi kiểm tra ưu tiên **94170**. |
+| Bên B | Chi nhánh Công ty TNHH MTV Phương Châu Cần Thơ — **Bệnh viện Quốc tế Phương Châu Cần Thơ** |
+| Mã CSKCB | **`94170`** — mã **MA_CSKCB** chuẩn XML/BHXH cho *Bệnh viện Quốc tế Phương Châu Cần Thơ* (đồng bộ `THONG_TIN_CO_SO`, luật `HD_06`). Bản trích `Hop_dong_plain.txt` có thể ghi **94027**; khi kiểm tra ưu tiên **94170**. |
 | GPHĐ | **303/BYT-GPHĐ** ngày **03/12/2025** |
 | Phụ lục kèm HĐ | **6 bảng** theo **QĐ 3618/QĐ-BHXH** ngày **12/12/2022** |
 

@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
 const ORG_PREFIX = 'CDSS_ORG_';
-const LEGACY_ORG_MAP = { phuongchau: 'phuongchau_soc_trang' };
+const LEGACY_ORG_MAP = { phuongchau: 'phuongchau_can_tho', phuongchau_soc_trang: 'phuongchau_can_tho' };
 
 const chuanHoaOrgId = (raw) => {
   const token = String(raw || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
@@ -97,7 +97,8 @@ const testSourceIntegration = () => {
 };
 
 const testLegacyAlias = () => {
-  assert.strictEqual(chuanHoaOrgId('phuongchau'), 'phuongchau_soc_trang');
+  assert.strictEqual(chuanHoaOrgId('phuongchau'), 'phuongchau_can_tho');
+  assert.strictEqual(chuanHoaOrgId('phuongchau_soc_trang'), 'phuongchau_can_tho');
   assert.strictEqual(chuanHoaOrgId('phuongchau_can_tho'), 'phuongchau_can_tho');
 };
 

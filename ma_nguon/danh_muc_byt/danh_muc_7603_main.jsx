@@ -625,7 +625,7 @@ const DanhMucBYTMain = ({ navigation }) => {
         <View style={styles.top_brand_trung_tam}>
           <Image source={{ uri: LOGO_PC }} style={styles.logo_header} resizeMode="contain" />
           <View style={{ alignItems: 'center' }}>
-            <Text style={styles.top_brand_text_main}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU SÓC TRĂNG</Text>
+            <Text style={styles.top_brand_text_main}>BỆNH VIỆN QUỐC TẾ PHƯƠNG CHÂU CẦN THƠ</Text>
             <Text style={styles.top_brand_text_sub}>HỆ THỐNG DANH MỤC DÙNG CHUNG BỘ Y TẾ (QĐ 7603)</Text>
           </View>
         </View>
