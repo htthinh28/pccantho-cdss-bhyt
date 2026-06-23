@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { tenantGetItem, tenantRemoveItem, tenantSetItem } from './tenant_storage';
 
 const SESSION_ACCOUNT_KEY = 'USER_ACCOUNT';
 const SESSION_ROLE_KEY = 'USER_ROLE';
@@ -16,13 +16,13 @@ const docGiaTriPhien = async (key) => {
     }
   }
 
-  const asyncValue = await AsyncStorage.getItem(key).catch(() => '');
+  const asyncValue = await tenantGetItem(key).catch(() => '');
   return String(asyncValue || '');
 };
 
 const ghiGiaTriPhien = async (key, value) => {
   const normalizedValue = String(value || '');
-  const tasks = [AsyncStorage.setItem(key, normalizedValue).catch(() => {})];
+  const tasks = [tenantSetItem(key, normalizedValue).catch(() => {})];
 
   if (laMoiTruongWeb()) {
     tasks.push((async () => {
@@ -38,7 +38,7 @@ const ghiGiaTriPhien = async (key, value) => {
 };
 
 const xoaGiaTriPhien = async (key) => {
-  const tasks = [AsyncStorage.removeItem(key).catch(() => {})];
+  const tasks = [tenantRemoveItem(key).catch(() => {})];
 
   if (laMoiTruongWeb()) {
     tasks.push((async () => {

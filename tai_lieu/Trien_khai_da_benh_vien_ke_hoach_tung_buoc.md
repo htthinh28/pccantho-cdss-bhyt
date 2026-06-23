@@ -1,8 +1,19 @@
 # Kế hoạch triển khai đa bệnh viện — từng bước, lint/audit, và hồ sơ cần cung cấp
 
-Phiên bản: 1.0  
+Phiên bản: 1.1  
 Ngày: 2026-05-25  
 Phạm vi: Khung ứng dụng chung + danh mục nội bộ riêng từng BV + đăng nhập 2 cấp (bệnh viện → nhân viên)
+
+### Bốn cơ sở đã đăng ký (`config/tenants/registry.json`)
+
+| org_id | Tên |
+|--------|-----|
+| `pc_soc_trang` | Bệnh viện Quốc tế Phương Châu Sóc Trăng (legacy, Firebase `phuongchau`) |
+| `pc_can_tho` | Bệnh viện Quốc tế Phương Châu Cần Thơ |
+| `pc_sa_dec` | Bệnh viện Phương Châu Sa Đéc |
+| `phuong_nam` | Bệnh viện Phương Nam |
+
+**Chính sách danh mục (đã code):** `pc_soc_trang` = `legacy_bundle` (giữ DM hiện tại). Ba BV còn lại = `tenant_pack_only` (xóa trống DM; tắt quy tắc chuyên BV PCST — DM-*, DMBV-*, DVKT-OP-*, CDHA/CK/CHUYEN_DE…; giữ ON quy tắc chung XML/HC/THUOC; nạp pack Excel sau).
 
 ---
 

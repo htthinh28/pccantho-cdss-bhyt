@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { tenantGetItem, tenantRemoveItem, tenantSetItem } from './tenant_storage';
 
 export const RBAC_KEYS = {
   RESOURCES: 'RBAC_RESOURCES_V1',
@@ -23,12 +23,12 @@ const docStorage = async (key) => {
     }
   }
 
-  return AsyncStorage.getItem(key);
+  return tenantGetItem(key);
 };
 
 const ghiStorage = async (key, value) => {
   const normalizedValue = String(value || '');
-  const tasks = [AsyncStorage.setItem(key, normalizedValue).catch(() => {})];
+  const tasks = [tenantSetItem(key, normalizedValue).catch(() => {})];
 
   if (laMoiTruongWeb()) {
     tasks.push((async () => {
@@ -44,7 +44,7 @@ const ghiStorage = async (key, value) => {
 };
 
 const xoaStorage = async (key) => {
-  const tasks = [AsyncStorage.removeItem(key).catch(() => {})];
+  const tasks = [tenantRemoveItem(key).catch(() => {})];
 
   if (laMoiTruongWeb()) {
     tasks.push((async () => {

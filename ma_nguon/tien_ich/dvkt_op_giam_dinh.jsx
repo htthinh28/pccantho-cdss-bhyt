@@ -23,6 +23,7 @@ import {
 } from './firebase_cloud_bhyt';
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
 import { layDanhSachLuatCongKhamHardcoded } from './luat_cong_kham_hardcoded';
+import { choPhepSeedDanhMucTuCode } from './tenant_context';
 import { layDanhSachLuatDuLieuHardcoded } from './luat_du_lieu_hardcoded';
 import { layDanhSachLuatGiamDinhChuyenDeHardcoded } from './luat_giam_dinh_chuyen_de_hardcoded';
 import { layDanhSachLuatGiuongHardcoded } from './luat_giuong_hardcoded';
@@ -888,6 +889,8 @@ const toCompiledRule = (rule) => {
 const buildEngineConfig = async () => {
   if (cacheConfig) return cacheConfig;
 
+  const choPhepBv = await choPhepSeedDanhMucTuCode();
+
   const [rulesRaw, dmkt, internalApprovalRows, equipment, staff, servicePractitionerMap, phamviMap, indicationMap, contraRows, equipDvktMap, mapTrangThaiNoiBo] = await Promise.all([
     loadTable(DVKT_ENGINE_STORAGE_KEYS.RULES, 'CDSS_DATA_LUAT_CDHA'),
     loadTable(DVKT_ENGINE_STORAGE_KEYS.DMKT, 'DANH_MUC_DVKT_M05'),
@@ -903,7 +906,8 @@ const buildEngineConfig = async () => {
   ]);
 
   const rules = normalizeRules(rulesRaw);
-  const activeRules = locTrungRuleTheoYNgia((rules.length > 0 ? rules : DEFAULT_DVKT_RULES)
+  const ruleNguon = rules.length > 0 ? rules : (choPhepBv ? DEFAULT_DVKT_RULES : []);
+  const activeRules = locTrungRuleTheoYNgia(ruleNguon
     .filter((r) => isRuleOn(r.STATUS))
     .filter((r) => toUpper(r.RULE_CODE || r.MA_LUAT || '') !== 'DVKT-OP-12')
     .filter((r) => isQuyTacNoiBoDangBat(r.RULE_CODE || r.MA_LUAT || '', mapTrangThaiNoiBo, true))
@@ -917,7 +921,7 @@ const buildEngineConfig = async () => {
 
   const dmktRows = mergeDvktRowsWithBuiltin(
     [...giuongBkMapped, ...(Array.isArray(dmkt) ? dmkt : [])],
-    DANH_MUC_DVKT_M05,
+    choPhepBv ? DANH_MUC_DVKT_M05 : [],
   );
   /** Không trộn DM M05: slot legacy (nếu còn dùng) chỉ phản ánh Giường & khám BV + bản sao đồng bộ DVKT_INTERNAL_APPROVAL. */
   const internalApprovalRowsResolved = mergeDvktRowsWithBuiltin(

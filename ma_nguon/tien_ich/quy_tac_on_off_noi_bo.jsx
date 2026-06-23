@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { tenantGetItem, tenantSetItem } from './tenant_storage';
 import {
   chuanHoaKhoaMaLuatOnOff,
   khopMaLuatTheoMau,
@@ -342,9 +342,7 @@ const toObjectFromItems = (items) => {
 };
 
 export const taiMapTrangThaiQuyTacNoiBo = async () => {
-  let raw;
-  if (laMoiTruongWeb()) raw = window.localStorage.getItem(KEY_ON_OFF_QUY_TAC_NOI_BO);
-  else raw = await AsyncStorage.getItem(KEY_ON_OFF_QUY_TAC_NOI_BO);
+  const raw = await tenantGetItem(KEY_ON_OFF_QUY_TAC_NOI_BO);
 
   const parsed = parseJsonAnToan(raw, {});
   if (Array.isArray(parsed)) return toObjectFromItems(parsed);
@@ -385,8 +383,7 @@ export const luuMapTrangThaiQuyTacNoiBo = async (statusMap = {}) => {
     items: Object.entries(normalized).map(([MA_LUAT, TRANG_THAI]) => ({ MA_LUAT, TRANG_THAI })),
   };
   const raw = JSON.stringify(payload);
-  if (laMoiTruongWeb()) window.localStorage.setItem(KEY_ON_OFF_QUY_TAC_NOI_BO, raw);
-  else await AsyncStorage.setItem(KEY_ON_OFF_QUY_TAC_NOI_BO, raw);
+  await tenantSetItem(KEY_ON_OFF_QUY_TAC_NOI_BO, raw);
   return normalized;
 };
 
@@ -394,9 +391,7 @@ export const luuMapTrangThaiQuyTacNoiBo = async (statusMap = {}) => {
  * Ghi đè nội dung hiển thị cho quy tắc mẫu (BUILTIN): { [maNorm]: { TEN_QUY_TAC?, CANH_BAO?, NHOM_CANH_BAO?, CHI_TIET_CANH_BAO?, DIEU_KIEN?, TAG_CANH_BAO?, TAG_NGUON_CANH_BAO? } }
  */
 export const taiMapGhiDeNoiDungQuyTacNoiBo = async () => {
-  let raw;
-  if (laMoiTruongWeb()) raw = window.localStorage.getItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO);
-  else raw = await AsyncStorage.getItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO);
+  const raw = await tenantGetItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO);
   const parsed = parseJsonAnToan(raw, {});
   if (parsed?.overrides && typeof parsed.overrides === 'object' && !Array.isArray(parsed.overrides)) {
     const o = {};
@@ -425,16 +420,13 @@ export const luuMapGhiDeNoiDungQuyTacNoiBo = async (overrides = {}) => {
     overrides: { ...(overrides || {}) },
   };
   const raw = JSON.stringify(payload);
-  if (laMoiTruongWeb()) window.localStorage.setItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO, raw);
-  else await AsyncStorage.setItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO, raw);
+  await tenantSetItem(KEY_GHI_DE_NOI_DUNG_QUY_TAC_NOI_BO, raw);
   return payload.overrides;
 };
 
 /** Trả về Set mã luật (chuẩn hóa) đã ẩn khỏi UI quản trị */
 export const taiTapMaLuatAnKhoiQuanLyNoiBo = async () => {
-  let raw;
-  if (laMoiTruongWeb()) raw = window.localStorage.getItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO);
-  else raw = await AsyncStorage.getItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO);
+  const raw = await tenantGetItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO);
   const parsed = parseJsonAnToan(raw, {});
   const items = Array.isArray(parsed?.items) ? parsed.items : (Array.isArray(parsed) ? parsed : []);
   return new Set(
@@ -449,8 +441,7 @@ export const luuTapMaLuatAnKhoiQuanLyNoiBo = async (tap) => {
   const items = arr.map((x) => chuanHoaKhoaMaLuatOnOff(x)).filter(Boolean);
   const payload = { version: 1, updated_at: new Date().toISOString(), items };
   const raw = JSON.stringify(payload);
-  if (laMoiTruongWeb()) window.localStorage.setItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO, raw);
-  else await AsyncStorage.setItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO, raw);
+  await tenantSetItem(KEY_AN_KHOI_QUAN_LY_QUY_TAC_NOI_BO, raw);
   return new Set(items);
 };
 

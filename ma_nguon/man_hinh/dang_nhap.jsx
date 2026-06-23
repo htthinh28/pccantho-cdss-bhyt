@@ -4,7 +4,8 @@
  * JCI Standard SQE.1: Kiểm soát truy cập nghiêm ngặt.
  */
 
-import { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
 import {
     Alert,
     KeyboardAvoidingView,
@@ -20,8 +21,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ChanTrangUngDung from '../thanh_phan/chan_trang_ung_dung';
 import { CD } from '../tien_ich/chu_de_giao_dien';
 import { capNhatTaiKhoanTheoEmail, docDanhSachTaiKhoan, ghiNhatKyHeThong, luuDanhSachTaiKhoan } from '../tien_ich/nhat_ky_he_thong';
-import { luuPhienDangNhap } from '../tien_ich/phien_dang_nhap';
+import { luuPhienDangNhap, xoaPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import { layVaiTroPhienHieuLuc, taiRBAC } from '../tien_ich/rbac_engine';
+import {
+  docTenantSession,
+  layBrandingDangNhap,
+  layTenCoSoHienTai,
+  xoaTenantSession,
+} from '../tien_ich/tenant_context';
+
+const brandingKhoiTao = () => {
+  const b = layBrandingDangNhap();
+  return {
+    tenCoSo: b.displayName,
+    brandTieuDe: b.tieuDe,
+    brandPhuDe: b.phuDe,
+  };
+};
 
 const ADMIN_EMAIL = 'htthinh28@gmail.com';
 const ADMIN_LEGACY_PASSWORD = 'Tramanh@2010##';
@@ -33,10 +49,52 @@ const ManHinhDangNhap = ({ navigation }) => {
   const [hienMatKhau, setHienMatKhau] = useState(false);
   const [thongBaoDangNhap, setThongBaoDangNhap] = useState('');
   const [loaiThongBao, setLoaiThongBao] = useState('info');
+  const [tenCoSo, setTenCoSo] = useState(() => brandingKhoiTao().tenCoSo);
+  const [brandTieuDe, setBrandTieuDe] = useState(() => brandingKhoiTao().brandTieuDe);
+  const [brandPhuDe, setBrandPhuDe] = useState(() => brandingKhoiTao().brandPhuDe);
+
+  const taiThongTinCoSo = useCallback(async () => {
+    try {
+      const session = await docTenantSession();
+      const b = layBrandingDangNhap(session);
+      if (!b.displayName) {
+        const ten = await layTenCoSoHienTai();
+        const b2 = layBrandingDangNhap({ displayName: ten, shortName: '' });
+        setTenCoSo(b2.displayName || ten);
+        setBrandTieuDe(b2.tieuDe);
+        setBrandPhuDe(b2.phuDe);
+        return;
+      }
+      setTenCoSo(b.displayName);
+      setBrandTieuDe(b.tieuDe);
+      setBrandPhuDe(b.phuDe);
+    } catch {
+      const b = brandingKhoiTao();
+      setTenCoSo(b.tenCoSo);
+      setBrandTieuDe(b.brandTieuDe);
+      setBrandPhuDe(b.brandPhuDe);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      taiThongTinCoSo();
+    }, [taiThongTinCoSo]),
+  );
 
   const capNhatThongBao = (noiDung, loai = 'info') => {
     setThongBaoDangNhap(String(noiDung || ''));
     setLoaiThongBao(loai);
+  };
+
+  const doiBenhVien = async () => {
+    await xoaPhienDangNhap();
+    await xoaTenantSession();
+    if (navigation?.reset) {
+      navigation.reset({ index: 0, routes: [{ name: 'ChonBenhVien' }] });
+      return;
+    }
+    navigation?.replace?.('ChonBenhVien');
   };
 
   const dieuHuongSauDangNhap = () => {
@@ -232,8 +290,10 @@ const ManHinhDangNhap = ({ navigation }) => {
                 <Text style={styles.brand_icon_txt}>🏥</Text>
               </View>
 
-              <Text style={styles.brand_name}>PHƯƠNG CHÂU</Text>
-              <Text style={styles.brand_subtitle}>BỆNH VIỆN QUỐC TẾ SÓC TRĂNG</Text>
+              <Text style={styles.brand_name}>{brandTieuDe || 'CDSS BHYT'}</Text>
+              <Text style={styles.brand_subtitle} numberOfLines={4}>
+                {brandPhuDe || tenCoSo || 'Bệnh viện'}
+              </Text>
 
               <View style={styles.brand_divider} />
 
@@ -273,13 +333,23 @@ const ManHinhDangNhap = ({ navigation }) => {
                   <View style={styles.brand_icon_ring_sm}>
                     <Text style={{ fontSize: 32 }}>🏥</Text>
                   </View>
-                  <Text style={styles.mobile_brand_name}>CDSS PHƯƠNG CHÂU</Text>
-                  <Text style={styles.mobile_brand_sub}>Hệ Thống BHYT & Lâm Sàng</Text>
+                  <Text style={styles.mobile_brand_name} numberOfLines={3}>
+                    {brandPhuDe || tenCoSo || 'CDSS BHYT'}
+                  </Text>
+                  <Text style={styles.mobile_brand_sub}>
+                    {brandTieuDe ? `CDSS · ${brandTieuDe}` : 'Hệ Thống BHYT & Lâm Sàng'}
+                  </Text>
                 </View>
               )}
 
               <Text style={styles.form_title}>{isWeb ? 'Đăng nhập hệ thống' : 'Xác thực tài khoản'}</Text>
+              {!!tenCoSo && (
+                <Text style={styles.form_org} numberOfLines={2}>{tenCoSo}</Text>
+              )}
               <Text style={styles.form_sub}>Nhập thông tin xác thực để tiếp tục</Text>
+              <TouchableOpacity onPress={doiBenhVien} style={styles.doi_bv_link}>
+                <Text style={styles.doi_bv_txt}>← Đổi bệnh viện / cơ sở</Text>
+              </TouchableOpacity>
 
               {/* Input: Tài khoản */}
               <View style={styles.input_group}>
@@ -461,7 +531,16 @@ const styles = StyleSheet.create({
   mobile_brand_sub: { fontSize: 18, color: CD.text.secondary, marginTop: 4, fontFamily: CD.font.family },
 
   form_title: { fontSize: 30, fontWeight: '800', color: CD.text.primary, fontFamily: CD.font.family, marginBottom: 8 },
-  form_sub: { fontSize: 18, color: CD.text.muted, fontFamily: CD.font.family, marginBottom: 36 },
+  form_sub: { fontSize: 18, color: CD.text.muted, fontFamily: CD.font.family, marginBottom: 12 },
+  form_org: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1565C0',
+    fontFamily: CD.font.family,
+    marginBottom: 8,
+  },
+  doi_bv_link: { alignSelf: 'flex-start', marginBottom: 24 },
+  doi_bv_txt: { fontSize: 14, color: '#C2185B', fontWeight: '600' },
 
   input_group: { marginBottom: 24 },
   input_label: { fontSize: 18, fontWeight: '700', color: CD.text.secondary, fontFamily: CD.font.family, marginBottom: 10 },

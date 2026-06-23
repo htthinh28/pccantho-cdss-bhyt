@@ -26,6 +26,7 @@ import { CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13 as TT_12_2026_BTC_DIEU10_K1 } from
 import { docDanhMucTuKho } from './kho_du_lieu';
 import { kiemTraDinhDangXML } from './kiem_tra_xml';
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
+import { choPhepFallbackLuatHardcodedSocTrang } from './tenant_context';
 import { layDanhSachLuatCongKhamHardcoded } from './luat_cong_kham_hardcoded';
 import { layDanhSachLuatDuLieuHardcoded } from './luat_du_lieu_hardcoded';
 import {
@@ -5554,12 +5555,14 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
 const taiDanhSachTabLuatDong = async () => {
     if (Array.isArray(cache_DanhSachTabLuatDong) && cache_DanhSachTabLuatDong.length > 0) return cache_DanhSachTabLuatDong;
     await donDepDuLieuLegacyLuatHardcoded();
-    await Promise.all([
+    const choPhepBv = await choPhepFallbackLuatHardcodedSocTrang();
+    const seedTasks = [
         damBaoSeedLuatDuLieuMuc1(),
         damBaoSeedLuatHanhChinhMuc2(),
-        damBaoSeedLuatPtttMuc11(),
         damBaoSeedLuatThuocMuc8(),
-    ]);
+    ];
+    if (choPhepBv) seedTasks.push(damBaoSeedLuatPtttMuc11());
+    await Promise.all(seedTasks);
     const tatCaStorageKeys = await AsyncStorage.getAllKeys().catch(() => []);
     const tabIdsDong = (Array.isArray(tatCaStorageKeys) ? tatCaStorageKeys : [])
         .filter((key) => key.startsWith('CDSS_DATA_') && !key.includes('_CHUNK_') && !key.endsWith('_CHUNKS'))
@@ -5571,6 +5574,7 @@ const taiDanhSachTabLuatDong = async () => {
 
 const taiRuleDongTheoTabId = async (tabId) => {
     const normalizedTabId = String(tabId || '').trim().toUpperCase();
+    const choPhepBv = await choPhepFallbackLuatHardcodedSocTrang();
     const tronNguonRuleKhongTrung = (...sources) => {
         const seen = new Set();
         const out = [];
@@ -5628,6 +5632,7 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_CDHA' || normalizedTabId === 'XML3') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_CDHA', 'XML3', 'LUAT_GIAM_DINH_CHUYEN_DE', 'GIAM_DINH_CHUYEN_DE']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return tronNguonRuleKhongTrung(
             layDanhSachLuatCdhaHardcoded(),
             layDanhSachLuatGiamDinhChuyenDeHardcoded(),
@@ -5636,6 +5641,7 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_GIAM_DINH_CHUYEN_DE' || normalizedTabId === 'GIAM_DINH_CHUYEN_DE') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_GIAM_DINH_CHUYEN_DE', 'GIAM_DINH_CHUYEN_DE', 'LUAT_CDHA', 'XML3']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return tronNguonRuleKhongTrung(
             layDanhSachLuatCdhaHardcoded(),
             layDanhSachLuatGiamDinhChuyenDeHardcoded(),
@@ -5644,21 +5650,25 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_CONG_KHAM' || normalizedTabId === 'KHAM_BENH') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_CONG_KHAM', 'KHAM_BENH']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return layDanhSachLuatCongKhamHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_NHAN_SU' || normalizedTabId === 'HAU_PHAU') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_NHAN_SU', 'HAU_PHAU']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return layDanhSachLuatNhanSuHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_GIUONG' || normalizedTabId === 'NOI_TRU') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_GIUONG', 'NOI_TRU']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return layDanhSachLuatGiuongHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_HOP_DONG' || normalizedTabId === 'XUAT_VIEN') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_HOP_DONG', 'XUAT_VIEN']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
+        if (!choPhepBv) return [];
         return layDanhSachLuatHopDongHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_PTTT' || normalizedTabId === 'PTTT') {

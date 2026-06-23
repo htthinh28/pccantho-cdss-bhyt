@@ -18,8 +18,16 @@ import {
 import { docDanhSachTaiKhoan } from '../tien_ich/nhat_ky_he_thong';
 import { coPhienDangNhapHopLe, docPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import { coQuyenManHinh, taiRBAC } from '../tien_ich/rbac_engine';
+import {
+  coTenantSessionHopLe,
+  khoiTaoTenantSauChonBv,
+  layOrgIdMacDinh,
+  layTenantTheoOrgId,
+  resolveTenantKey,
+} from '../tien_ich/tenant_context';
 
 // 1. NHÓM MÀN HÌNH HỆ THỐNG & TỔNG QUAN
+import ManHinhChonBenhVien from '../man_hinh/chon_benh_vien';
 import ManHinhDangNhap from '../man_hinh/dang_nhap';
 import ManHinhDoiMatKhau from '../man_hinh/doi_mat_khau';
 import ManHinhHelperHeThong from '../man_hinh/helper_he_thong';
@@ -62,6 +70,8 @@ import { CAU_HINH_LIEN_KET } from './cau_hinh_lien_ket';
 const Stack = createNativeStackNavigator();
 const KHOA_DIEU_HUONG = 'CDSS_NAV_STATE_V1';
 
+const docKhoaDieuHuong = async () => resolveTenantKey(KHOA_DIEU_HUONG);
+
 const layManHinhDangMo = (state) => {
   if (!state || !Array.isArray(state.routes) || typeof state.index !== 'number') return '';
   const route = state.routes[state.index];
@@ -80,9 +90,17 @@ const DieuHuongChinh = () => {
     const tenManHinh = layManHinhDangMo(state);
     if (!tenManHinh || !navRef.current) return;
 
-    const daDangNhap = await coPhienDangNhapHopLe();
-    if (!daDangNhap && tenManHinh !== 'DangNhap') {
+    const coTenant = await coTenantSessionHopLe();
+    if (!coTenant && tenManHinh !== 'ChonBenhVien') {
       await AsyncStorage.removeItem(KHOA_DIEU_HUONG).catch(() => {});
+      navRef.current.resetRoot({ index: 0, routes: [{ name: 'ChonBenhVien' }] });
+      return;
+    }
+
+    const daDangNhap = await coPhienDangNhapHopLe();
+    if (coTenant && !daDangNhap && tenManHinh !== 'DangNhap' && tenManHinh !== 'ChonBenhVien') {
+      const navKey = await docKhoaDieuHuong();
+      await AsyncStorage.removeItem(navKey).catch(() => {});
       navRef.current.resetRoot({ index: 0, routes: [{ name: 'DangNhap' }] });
       return;
     }
@@ -128,13 +146,22 @@ const DieuHuongChinh = () => {
 
     const khoiPhucDieuHuong = async () => {
       try {
+        const envOrg = layOrgIdMacDinh();
+        if (envOrg && layTenantTheoOrgId(envOrg)) {
+          const coTenant = await coTenantSessionHopLe();
+          if (!coTenant) {
+            await khoiTaoTenantSauChonBv(envOrg);
+          }
+        }
+
         const daDangNhap = await coPhienDangNhapHopLe();
         const duongDanKhoiTao = await Linking.getInitialURL();
         const coDeepLink = typeof duongDanKhoiTao === 'string'
           && duongDanKhoiTao.trim() !== ''
           && !duongDanKhoiTao.endsWith('/');
         if (!coDeepLink && daDangNhap) {
-          const trangThaiLuu = await AsyncStorage.getItem(KHOA_DIEU_HUONG);
+          const navKey = await docKhoaDieuHuong();
+          const trangThaiLuu = await AsyncStorage.getItem(navKey);
           if (trangThaiLuu && conHieuLuc) {
             setTrangThaiKhoiPhuc(JSON.parse(trangThaiLuu));
           }
@@ -178,12 +205,14 @@ const DieuHuongChinh = () => {
         baoVeDieuHuong(navRef.current?.getRootState()).catch(() => {});
       }}
       onStateChange={(state) => {
-        AsyncStorage.setItem(KHOA_DIEU_HUONG, JSON.stringify(state)).catch(() => {});
+        docKhoaDieuHuong()
+          .then((navKey) => AsyncStorage.setItem(navKey, JSON.stringify(state)))
+          .catch(() => {});
         baoVeDieuHuong(state).catch(() => {});
       }}
     >
       <Stack.Navigator 
-        initialRouteName="DangNhap" 
+        initialRouteName="ChonBenhVien" 
         screenOptions={{ 
           headerShown: false, // Sử dụng Header tùy biến của Phương Châu
           animation: 'slide_from_right', 
@@ -191,6 +220,7 @@ const DieuHuongChinh = () => {
         }}
       >
         {/* --- PHÂN HỆ TRUY CẬP & HỆ THỐNG --- */}
+        <Stack.Screen name="ChonBenhVien" component={ManHinhChonBenhVien} />
         <Stack.Screen name="DangNhap" component={ManHinhDangNhap} />
         <Stack.Screen name="DoiMatKhau" component={ManHinhDoiMatKhau} />
         <Stack.Screen name="TongQuan" component={ManHinhTongQuan} />
