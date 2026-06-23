@@ -23,6 +23,7 @@ import { CD } from '../tien_ich/chu_de_giao_dien';
 import { capNhatTaiKhoanTheoEmail, docDanhSachTaiKhoan, ghiNhatKyHeThong, luuDanhSachTaiKhoan } from '../tien_ich/nhat_ky_he_thong';
 import { luuPhienDangNhap } from '../tien_ich/phien_dang_nhap';
 import { damBaoMigratePhanQuyen, layVaiTroPhienHieuLuc, taiRBAC } from '../tien_ich/rbac_engine';
+import { damBaoTaiKhoanBuiltinSeed } from '../tien_ich/tai_khoan_builtin_seed';
 
 const ADMIN_EMAIL = 'htthinh28@gmail.com';
 const ADMIN_LEGACY_PASSWORD = 'Tramanh@2010##';
@@ -91,6 +92,7 @@ const ManHinhDangNhap = ({ navigation }) => {
       try {
         await damBaoMigratePhanQuyen();
         dsUsers = await docDanhSachTaiKhoan();
+        dsUsers = await damBaoTaiKhoanBuiltinSeed(dsUsers);
       } catch (storageError) {
         if (tkChuan === ADMIN_EMAIL && mk === ADMIN_LEGACY_PASSWORD) {
           await dangNhapKhanCapAdmin('storage-unavailable');
