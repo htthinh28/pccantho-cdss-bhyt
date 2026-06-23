@@ -1,11 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import {
-  tenantGetItem,
-  tenantMultiGet,
-  tenantMultiRemove,
-  tenantRemoveItem,
-  tenantSetItem,
-} from './tenant_storage';
 import {
     COT_BYT_PL10_DOI_TUONG,
     DU_LIEU_BYT_PL10_DOI_TUONG,
@@ -69,7 +63,6 @@ import {
     PHIEN_BAN_DVKT_PHAMVI_MAPPING,
 } from './dvkt_phamvi_mapping_seed';
 import { capNhatDanhMuc, docDanhMucTuKho } from './kho_du_lieu';
-import { choPhepSeedDanhMucTuCode } from './tenant_context';
 import DU_LIEU_TUONG_TAC_THUOC_SEED from '../chuyen_mon/tuong_tac_thuoc/du_lieu_tuong_tac_thuoc.seed.json';
 
 const LOCAL_CHUNK_SIZE = 320000;
@@ -317,21 +310,21 @@ const taoLoiVuotQuotaStorage = (baseKey, error) => {
 const ghiPayloadVaoStorageKey = async (targetBaseKey, payload) => {
   let totalChunks = 0;
   if (payload.length <= LOCAL_CHUNK_SIZE) {
-    await tenantSetItem(targetBaseKey, payload);
+    await AsyncStorage.setItem(targetBaseKey, payload);
     return { totalChunks };
   }
 
   totalChunks = Math.ceil(payload.length / LOCAL_CHUNK_SIZE);
-  await tenantSetItem(`${targetBaseKey}_CHUNKS`, String(totalChunks));
+  await AsyncStorage.setItem(`${targetBaseKey}_CHUNKS`, String(totalChunks));
   for (let index = 0; index < totalChunks; index += 1) {
     const chunk = payload.slice(index * LOCAL_CHUNK_SIZE, (index + 1) * LOCAL_CHUNK_SIZE);
-    await tenantSetItem(`${targetBaseKey}_CHUNK_${index}`, chunk);
+    await AsyncStorage.setItem(`${targetBaseKey}_CHUNK_${index}`, chunk);
   }
   return { totalChunks };
 };
 
 const ghiManifestDanhMuc = async (baseKey, activeSlot) => {
-  await tenantSetItem(
+  await AsyncStorage.setItem(
     getManifestKey(baseKey),
     JSON.stringify({
       version: 1,
@@ -357,10 +350,10 @@ const parseManifest = (raw) => {
 };
 
 const docPayloadTheoKhoa = async (baseKey) => {
-  const chunkCount = Number(await tenantGetItem(`${baseKey}_CHUNKS`)) || 0;
+  const chunkCount = Number(await AsyncStorage.getItem(`${baseKey}_CHUNKS`)) || 0;
   if (chunkCount > 0) {
     const chunkKeys = Array.from({ length: chunkCount }, (_, index) => `${baseKey}_CHUNK_${index}`);
-    const chunkPairs = await tenantMultiGet(chunkKeys);
+    const chunkPairs = await AsyncStorage.multiGet(chunkKeys);
     let payload = '';
     chunkPairs.forEach(([, value]) => {
       if (value) payload += value;
@@ -368,7 +361,7 @@ const docPayloadTheoKhoa = async (baseKey) => {
     if (payload) return payload;
   }
 
-  return String((await tenantGetItem(baseKey)) || '');
+  return String((await AsyncStorage.getItem(baseKey)) || '');
 };
 
 const docMangTheoBaseKey = async (baseKey) => parseChunkedPayload(await docPayloadTheoKhoa(baseKey));
@@ -378,17 +371,17 @@ const removeChunkedKey = async (key) => {
   if (!baseKey) return;
 
   try {
-    const oldChunkCount = Number(await tenantGetItem(`${baseKey}_CHUNKS`)) || 0;
+    const oldChunkCount = Number(await AsyncStorage.getItem(`${baseKey}_CHUNKS`)) || 0;
     if (oldChunkCount > 0) {
       const chunkKeys = Array.from({ length: oldChunkCount }, (_, index) => `${baseKey}_CHUNK_${index}`);
-      await tenantMultiRemove(chunkKeys);
+      await AsyncStorage.multiRemove(chunkKeys);
     }
   } catch {
     // ignore cleanup error
   }
 
-  await tenantRemoveItem(`${baseKey}_CHUNKS`).catch(() => {});
-  await tenantRemoveItem(baseKey).catch(() => {});
+  await AsyncStorage.removeItem(`${baseKey}_CHUNKS`).catch(() => {});
+  await AsyncStorage.removeItem(baseKey).catch(() => {});
 };
 
 const removeSlotArtifacts = async (baseKey, slot) => {
@@ -397,7 +390,7 @@ const removeSlotArtifacts = async (baseKey, slot) => {
 };
 
 const docMangDanhMucTheoManifest = async (baseKey) => {
-  const manifest = parseManifest(await tenantGetItem(getManifestKey(baseKey)));
+  const manifest = parseManifest(await AsyncStorage.getItem(getManifestKey(baseKey)));
   if (!manifest) return null;
 
   const activeSlot = manifest.activeSlot || STORAGE_SLOT_A;
@@ -447,7 +440,7 @@ export const docMangDanhMucTuStorage = async (key) => {
       if (manifestData) {
         const rows = normalizeArray(manifestData.rows);
         if (manifestData.repaired) {
-          await tenantSetItem(
+          await AsyncStorage.setItem(
             getManifestKey(baseKey),
             JSON.stringify({
               version: 1,
@@ -499,7 +492,7 @@ export const ghiMangDanhMucVaoStorage = async (key, rows, options = {}) => {
 
   const payload = JSON.stringify(data);
 
-  const manifest = parseManifest(await tenantGetItem(getManifestKey(baseKey)));
+  const manifest = parseManifest(await AsyncStorage.getItem(getManifestKey(baseKey)));
   const activeSlot = manifest?.activeSlot || STORAGE_SLOT_A;
   const nextSlot = getAlternateSlot(manifest?.activeSlot || STORAGE_SLOT_A);
   const targetBaseKey = getSlotBaseKey(baseKey, nextSlot);
@@ -739,10 +732,8 @@ export const taiBoDuLieuDanhMuc = async ({
     }
   }
 
-  const duocPhepSeedTuCode = await choPhepSeedDanhMucTuCode();
   if (
-    duocPhepSeedTuCode
-    && (
+    (
       data.length === 0
       || isLegacyInternalKhoaSeed(dataKey, data)
       || isLegacyInternalDrugSeed(dataKey, data)
@@ -767,12 +758,7 @@ export const taiBoDuLieuDanhMuc = async ({
     }
   }
 
-  if (
-    duocPhepSeedTuCode
-    && (columns.length === 0 || seededFromCode)
-    && Array.isArray(codeSeed?.columns)
-    && codeSeed.columns.length > 0
-  ) {
+  if ((columns.length === 0 || seededFromCode) && Array.isArray(codeSeed?.columns) && codeSeed.columns.length > 0) {
     columns = normalizeArray(codeSeed.columns);
     await ghiMangDanhMucVaoStorage(columnsKey, columns);
   }

@@ -17,8 +17,7 @@ import {
     writeBatch,
 } from 'firebase/firestore';
 import { DVKT_DATASET_SCHEMA_VERSION, danhGiaConflictPolicyTaiXuong } from './config_dataset_versioning';
-import { layFirebaseOrgIdTuCache } from './tenant_context';
-import appConfig from '../../app.json';
+  import appConfig from '../../app.json';
 
 const LOCAL_CHUNK_SIZE = 320000;
 const FIRESTORE_INLINE_LIMIT = 700000;
@@ -224,12 +223,7 @@ const resolveFirebaseConfig = () => {
   const messagingSenderId = chonGiaTriCauHinh(runtimeCfg.messagingSenderId, staticCfg.messagingSenderId, getEnv('EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'));
   const appId = chonGiaTriCauHinh(runtimeCfg.appId, staticCfg.appId, getEnv('EXPO_PUBLIC_FIREBASE_APP_ID'));
   const enabledRaw = chonGiaTriCauHinh(runtimeCfg.enabled, staticCfg.enabled, getEnv('EXPO_PUBLIC_FIREBASE_ENABLED'));
-  const orgIdRaw = chonGiaTriCauHinh(
-    layFirebaseOrgIdTuCache(),
-    runtimeCfg.orgId,
-    staticCfg.orgId,
-    getEnv('EXPO_PUBLIC_FIREBASE_ORG_ID'),
-  );
+  const orgIdRaw = chonGiaTriCauHinh(runtimeCfg.orgId, staticCfg.orgId, getEnv('EXPO_PUBLIC_FIREBASE_ORG_ID'));
   const authModeRaw = chonGiaTriCauHinh(runtimeCfg.authMode, staticCfg.authMode, getEnv('EXPO_PUBLIC_FIREBASE_AUTH_MODE'));
   const authEmail = normalizeSecretValue(chonGiaTriCauHinh(runtimeCfg.authEmail, staticCfg.authEmail, getEnv('EXPO_PUBLIC_FIREBASE_AUTH_EMAIL')));
   const authPassword = normalizeSecretValue(chonGiaTriCauHinh(runtimeCfg.authPassword, staticCfg.authPassword, getEnv('EXPO_PUBLIC_FIREBASE_AUTH_PASSWORD')));

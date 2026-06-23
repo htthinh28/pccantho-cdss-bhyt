@@ -27,7 +27,6 @@ import { CHUOI_TRICH_DAN_TT12_2026_D10_VA_D13 as TT_12_2026_BTC_DIEU10_K1 } from
 import { docDanhMucTuKho } from './kho_du_lieu';
 import { kiemTraDinhDangXML } from './kiem_tra_xml';
 import { layDanhSachLuatCdhaHardcoded } from './luat_cdha_hardcoded';
-import { choPhepFallbackLuatHardcodedSocTrang } from './tenant_context';
 import { layDanhSachLuatCongKhamHardcoded } from './luat_cong_kham_hardcoded';
 import { layDanhSachLuatDuLieuHardcoded } from './luat_du_lieu_hardcoded';
 import {
@@ -56,6 +55,7 @@ import { giamDinhCv302Bhyt } from './giam_dinh_cv302_bhyt';
 import { giamDinhCv4262Bhyt } from './giam_dinh_cv4262_bhyt';
 import { giamDinhCv3231Bhyt } from './giam_dinh_cv3231_bhyt';
 import { giamDinhBsMotCchnNhieuChuyenKhoaCongKham } from './giam_dinh_cong_kham_cchn';
+import { buildDmKhamHeThong } from './dm_cong_kham_catalog';
 import { laMotLanKcbDuoi15PhanTramLcs as laMotLanKcbDuoi15PhanTramLCS } from './muc_luong_co_so_bhyt';
 import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
@@ -1445,11 +1445,12 @@ const taoMetaTuBangMappingIcdThuoc = (rowsRaw) => {
 
 const taiDanhMucHeThong = async () => {
     if (cache_DanhMucHeThong) {
-        const [phacRows, tuongTacRowsRaw, mappingRowsDrug, mappingRowsCd] = await Promise.all([
+        const [phacRows, tuongTacRowsRaw, mappingRowsDrug, mappingRowsCd, congKhamBvRows] = await Promise.all([
             fetchChunkedData('CDSS_DATA_PHAC_DO_V3'),
             fetchChunkedData('DANH_MUC_TUONG_TAC_THUOC'),
             fetchChunkedData(KHOA_CATALOG_ICD_DRUG),
             fetchChunkedData(KHOA_CATALOG_ICD_DRUG_CONTRA),
+            fetchChunkedData('DANH_MUC_CONG_KHAM_BV'),
         ]);
         const mappingRows = [
             ...(Array.isArray(mappingRowsDrug) ? mappingRowsDrug : []),
@@ -1466,6 +1467,8 @@ const taiDanhMucHeThong = async () => {
             ...taoMetaTuongTacThuocTuBang(tuongTacRows),
             ...taoMetaTuBangMappingIcdThuoc(mappingRows),
             DM_TUONG_TAC_THUOC_ROWS: tuongTacRows,
+            DM_KHAM: buildDmKhamHeThong(congKhamBvRows),
+            DM_CONG_KHAM_BV_ROWS: Array.isArray(congKhamBvRows) ? congKhamBvRows : [],
         };
         if (!Array.isArray(base.DM_ICD10_CAP_CUU_ROWS) || base.DM_ICD10_CAP_CUU_ROWS.length === 0) {
             base.DM_ICD10_CAP_CUU_ROWS = DANH_MUC_ICD10_CAP_CUU;
@@ -1473,7 +1476,7 @@ const taiDanhMucHeThong = async () => {
         return base;
     }
     try {
-        const [icd10Arr, dvktArr, thuocArr, vtytArr, khoaArrRaw, icdKeDonTren30NgayArr, nhanSuArr, icdCapCuuArr, maTheQuyenLoiArr, thuocDieuKienTtArr] = await Promise.all([
+        const [icd10Arr, dvktArr, thuocArr, vtytArr, khoaArrRaw, icdKeDonTren30NgayArr, nhanSuArr, icdCapCuuArr, maTheQuyenLoiArr, thuocDieuKienTtArr, congKhamBvArr] = await Promise.all([
             fetchChunkedData('DANH_MUC_ICD10'),
             fetchChunkedData('DANH_MUC_DVKT_M05'),
             fetchChunkedData('DANH_MUC_THUOC_MAU_M03'),
@@ -1484,6 +1487,7 @@ const taiDanhMucHeThong = async () => {
             fetchChunkedData('DANH_MUC_ICD10_CAP_CUU'),
             fetchChunkedData('DANH_MUC_MA_THE_QUYEN_LOI'),
             fetchChunkedData('DANH_MUC_THUOC_DIEU_KIEN_TT'),
+            fetchChunkedData('DANH_MUC_CONG_KHAM_BV'),
         ]);
         const [pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10,pl11,pl12] = await Promise.all([
             fetchChunkedData('BYT_7603_PL1_DVKT'), fetchChunkedData('BYT_7603_PL2_KHAM'),
@@ -1551,6 +1555,8 @@ const taiDanhMucHeThong = async () => {
             DM_ICD10_KE_DON_TREN_30_NGAY: icdKeDonTren30NgayArr.map((i) => i['Mã bệnh theo ICD 10'] || i['Ma benh theo ICD 10'] || i['MA_BENH_THEO_ICD_10'] || ''),
             DM_BENH_MAN_TINH: icdKeDonTren30NgayArr.map((i) => i['Mã bệnh theo ICD 10'] || i['Ma benh theo ICD 10'] || i['MA_BENH_THEO_ICD_10'] || ''),
             DM_DVKT: dvktArr.map(i => i['MA_DICH_VU'] || ''),
+            DM_KHAM: buildDmKhamHeThong(congKhamBvArr),
+            DM_CONG_KHAM_BV_ROWS: Array.isArray(congKhamBvArr) ? congKhamBvArr : [],
             DM_THUOC: thuocArr.map(i => i['MA_THUOC'] || ''),
             DM_VTYT: vtytArr.map(i => i['MA_VAT_TU'] || ''),
             DM_KHOA: khoaArr.map(i => i['MA_KHOA'] || ''),
@@ -5636,14 +5642,12 @@ const taoBoXuLyRuleDongDacBiet = (rule, conditionStr = '') => {
 const taiDanhSachTabLuatDong = async () => {
     if (Array.isArray(cache_DanhSachTabLuatDong) && cache_DanhSachTabLuatDong.length > 0) return cache_DanhSachTabLuatDong;
     await donDepDuLieuLegacyLuatHardcoded();
-    const choPhepBv = await choPhepFallbackLuatHardcodedSocTrang();
-    const seedTasks = [
+    await Promise.all([
         damBaoSeedLuatDuLieuMuc1(),
         damBaoSeedLuatHanhChinhMuc2(),
+        damBaoSeedLuatPtttMuc11(),
         damBaoSeedLuatThuocMuc8(),
-    ];
-    if (choPhepBv) seedTasks.push(damBaoSeedLuatPtttMuc11());
-    await Promise.all(seedTasks);
+    ]);
     const tatCaStorageKeys = await AsyncStorage.getAllKeys().catch(() => []);
     const tabIdsDong = (Array.isArray(tatCaStorageKeys) ? tatCaStorageKeys : [])
         .filter((key) => key.startsWith('CDSS_DATA_') && !key.includes('_CHUNK_') && !key.endsWith('_CHUNKS'))
@@ -5655,7 +5659,6 @@ const taiDanhSachTabLuatDong = async () => {
 
 const taiRuleDongTheoTabId = async (tabId) => {
     const normalizedTabId = String(tabId || '').trim().toUpperCase();
-    const choPhepBv = await choPhepFallbackLuatHardcodedSocTrang();
     const tronNguonRuleKhongTrung = (...sources) => {
         const seen = new Set();
         const out = [];
@@ -5713,7 +5716,6 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_CDHA' || normalizedTabId === 'XML3') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_CDHA', 'XML3', 'LUAT_GIAM_DINH_CHUYEN_DE', 'GIAM_DINH_CHUYEN_DE']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return tronNguonRuleKhongTrung(
             layDanhSachLuatCdhaHardcoded(),
             layDanhSachLuatGiamDinhChuyenDeHardcoded(),
@@ -5722,7 +5724,6 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_GIAM_DINH_CHUYEN_DE' || normalizedTabId === 'GIAM_DINH_CHUYEN_DE') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_GIAM_DINH_CHUYEN_DE', 'GIAM_DINH_CHUYEN_DE', 'LUAT_CDHA', 'XML3']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return tronNguonRuleKhongTrung(
             layDanhSachLuatCdhaHardcoded(),
             layDanhSachLuatGiamDinhChuyenDeHardcoded(),
@@ -5731,25 +5732,21 @@ const taiRuleDongTheoTabId = async (tabId) => {
     if (normalizedTabId === 'LUAT_CONG_KHAM' || normalizedTabId === 'KHAM_BENH') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_CONG_KHAM', 'KHAM_BENH']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return layDanhSachLuatCongKhamHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_NHAN_SU' || normalizedTabId === 'HAU_PHAU') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_NHAN_SU', 'HAU_PHAU']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return layDanhSachLuatNhanSuHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_GIUONG' || normalizedTabId === 'NOI_TRU') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_GIUONG', 'NOI_TRU']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return layDanhSachLuatGiuongHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_HOP_DONG' || normalizedTabId === 'XUAT_VIEN') {
         const rowsQuanTri = await taiTheoDanhSachTabUngVien(['LUAT_HOP_DONG', 'XUAT_VIEN']);
         if (rowsQuanTri.length > 0) return rowsQuanTri;
-        if (!choPhepBv) return [];
         return layDanhSachLuatHopDongHardcoded().map(chuanHoaRuleDong);
     }
     if (normalizedTabId === 'LUAT_PTTT' || normalizedTabId === 'PTTT') {

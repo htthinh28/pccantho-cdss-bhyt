@@ -31,8 +31,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { chuanHoaHoSoCanhBao } from './chuan_hoa_van_ban';
-import { layTenIndexedDbHoSo } from './tenant_context';
-import { tenantGetItem, tenantRemoveItem, tenantSetItem } from './tenant_storage';
 import { xuLyFileXML130Va4210 } from './xml_helper';
 
 const laMoiTruongWeb = () => Platform.OS === 'web' || typeof window !== 'undefined' || typeof document !== 'undefined';
@@ -155,7 +153,7 @@ export const layThongTinDungLuongKho = async () => {
 // ============================================================================
 // PHẦN 1: INDEXEDDB — DÙNG TRÊN WEB
 // ============================================================================
-const IDB_NAME_LEGACY = 'CDSS_HO_SO_DB';
+const IDB_NAME = 'CDSS_HO_SO_DB';
 const IDB_STORE = 'ho_so';
 const IDB_STORE_DANH_MUC = 'danh_muc';
 /** Lịch sử các lần kiểm tra theo MA_BN (cùng IndexedDB/ổ đĩa như trên) — không xóa khi xóa kho làm việc. */
@@ -171,12 +169,10 @@ const IDB_VERSION = 6;
 const PHIEN_BAN_HO_SO_GD_GON = 2;
 
 let _dbCache = null;
-let _dbCacheName = '';
 
-const _openDB = async () => {
-  const dbName = (await layTenIndexedDbHoSo()) || IDB_NAME_LEGACY;
-  if (_dbCache && _dbCacheName === dbName && _dbCache.version === IDB_VERSION) {
-    return _dbCache;
+const _openDB = () => {
+  if (_dbCache && _dbCache.version === IDB_VERSION) {
+    return Promise.resolve(_dbCache);
   }
   if (_dbCache) {
     try {
@@ -185,7 +181,6 @@ const _openDB = async () => {
       /* ignore */
     }
     _dbCache = null;
-    _dbCacheName = '';
   }
   return new Promise((resolve, reject) => {
     const indexedDb = getIndexedDb();
@@ -194,7 +189,7 @@ const _openDB = async () => {
       return;
     }
 
-    const req = indexedDb.open(dbName, IDB_VERSION);
+    const req = indexedDb.open(IDB_NAME, IDB_VERSION);
     req.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains(IDB_STORE)) {
@@ -219,7 +214,6 @@ const _openDB = async () => {
     req.onsuccess = (e) => {
       const openedDb = e.target.result;
       _dbCache = openedDb;
-      _dbCacheName = dbName;
       // Huỷ cache nếu có phiên bản mới
       openedDb.onversionchange = () => {
         try { openedDb.close(); } catch {}
@@ -1167,23 +1161,20 @@ const laKhoaDanhMucUngDung = (key = '') => {
   return KHO_DANH_MUC_PREFIXES.some((prefix) => raw.startsWith(prefix));
 };
 const chuanHoaDuLieuDanhMuc = (value) => (Array.isArray(value) ? value : []);
-const storageMultiSet = async (pairs = []) => {
-  await Promise.all((pairs || []).map(([k, v]) => tenantSetItem(k, v)));
-};
 const docJsonChunkTheoKhoa = async (key) => {
   const baseKey = chuanHoaKhoaChunk(key);
   if (!baseKey) return null;
-  const chunkCount = Number(await tenantGetItem(`${baseKey}_CHUNKS`)) || 0;
+  const chunkCount = Number(await AsyncStorage.getItem(`${baseKey}_CHUNKS`)) || 0;
   if (chunkCount > 0) {
     const chunkKeys = Array.from({ length: chunkCount }, (_, index) => `${baseKey}_CHUNK_${index}`);
-    const chunkPairs = await tenantMultiGet(chunkKeys);
+    const chunkPairs = await AsyncStorage.multiGet(chunkKeys);
     let payload = '';
     chunkPairs.forEach(([, raw]) => {
       if (raw) payload += String(raw);
     });
     return parseJsonAnToan(payload);
   }
-  return parseJsonAnToan(await tenantGetItem(baseKey));
+  return parseJsonAnToan(await AsyncStorage.getItem(baseKey));
 };
 const docJsonChunkTuLocalStorageDongBo = (key) => {
   const baseKey = chuanHoaKhoaChunk(key);
@@ -1209,15 +1200,15 @@ const luuJsonChunkTheoKhoa = async (key, value, chunkBytes = DETAIL_CHUNK_BYTES)
 
   const payload = JSON.stringify(value ?? []);
   const keyMeta = `${baseKey}_CHUNKS`;
-  const oldChunkCount = Number(await tenantGetItem(keyMeta)) || 0;
+  const oldChunkCount = Number(await AsyncStorage.getItem(keyMeta)) || 0;
 
   if (payload.length <= chunkBytes) {
-    await tenantSetItem(baseKey, payload);
+    await AsyncStorage.setItem(baseKey, payload);
     const dsCanXoa = [keyMeta];
     for (let index = 0; index < oldChunkCount; index += 1) {
       dsCanXoa.push(`${baseKey}_CHUNK_${index}`);
     }
-    if (dsCanXoa.length > 0) await tenantMultiRemove(dsCanXoa);
+    if (dsCanXoa.length > 0) await AsyncStorage.multiRemove(dsCanXoa);
     return true;
   }
 
@@ -1226,25 +1217,25 @@ const luuJsonChunkTheoKhoa = async (key, value, chunkBytes = DETAIL_CHUNK_BYTES)
   chunks.forEach((chunk, index) => {
     pairs.push([`${baseKey}_CHUNK_${index}`, chunk]);
   });
-  await storageMultiSet(pairs);
+  await AsyncStorage.multiSet(pairs);
 
   const dsCanXoa = [baseKey];
   for (let index = chunks.length; index < oldChunkCount; index += 1) {
     dsCanXoa.push(`${baseKey}_CHUNK_${index}`);
   }
-  if (dsCanXoa.length > 0) await tenantMultiRemove(dsCanXoa);
+  if (dsCanXoa.length > 0) await AsyncStorage.multiRemove(dsCanXoa);
   return true;
 };
 
 const xoaJsonChunkTheoKhoa = async (key) => {
   const baseKey = chuanHoaKhoaChunk(key);
   if (!baseKey) return false;
-  const oldChunkCount = Number(await tenantGetItem(`${baseKey}_CHUNKS`)) || 0;
+  const oldChunkCount = Number(await AsyncStorage.getItem(`${baseKey}_CHUNKS`)) || 0;
   const dsCanXoa = [`${baseKey}_CHUNKS`, baseKey];
   for (let index = 0; index < oldChunkCount; index += 1) {
     dsCanXoa.push(`${baseKey}_CHUNK_${index}`);
   }
-  await tenantMultiRemove(dsCanXoa).catch(() => {});
+  await AsyncStorage.multiRemove(dsCanXoa).catch(() => {});
   return true;
 };
 
@@ -1297,7 +1288,7 @@ const migrateDanhMucWebToIndexedDb = async ({ force = false } = {}) => {
  * Web: IndexedDB (dung lượng GB). Mobile: AsyncStorage (phân mảnh).
  */
 const docDanhSachMaLKMobile = async () => {
-  const indexData = await tenantGetItem(KHO_INDEX_KEY);
+  const indexData = await AsyncStorage.getItem(KHO_INDEX_KEY);
   if (!indexData) return [];
   return chuanHoaDanhSachMaLK(parseJsonAnToan(indexData) || []);
 };
@@ -1446,7 +1437,7 @@ export const luuHoSoVaoKho = async (danhSachHoSoMoi) => {
         }));
         if (!dsMaLK.includes(maLK)) dsMaLK.push(maLK);
       }
-      await tenantSetItem(KHO_INDEX_KEY, JSON.stringify(chuanHoaDanhSachMaLK(dsMaLK)));
+      await AsyncStorage.setItem(KHO_INDEX_KEY, JSON.stringify(chuanHoaDanhSachMaLK(dsMaLK)));
     }
 
     for (const hoSo of danhSachHoSoMoi) {
@@ -1844,7 +1835,7 @@ export const xoaToanBoKho = async () => {
       for (const maLK of dsMaLK) {
         await xoaChiTietHoSoMobile(maLK);
       }
-      await tenantRemoveItem(KHO_INDEX_KEY);
+      await AsyncStorage.removeItem(KHO_INDEX_KEY);
     }
     console.log('[KHO_DU_LIEU] Đã xóa toàn bộ kho lưu trữ.');
     return true;

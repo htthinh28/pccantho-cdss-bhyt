@@ -58,6 +58,7 @@
     "qa:reon-muc8-hoat-chat": "node ./scripts/reon_muc8_ma_hoat_chat_rules.mjs",
     "catalog:icd10-tt06": "node ./scripts/build_icd10_tt06_catalog.mjs",
     "catalog:icd10-ma-kep": "node ./scripts/build_icd10_ma_kep_catalog.mjs",
+    "catalog:dm-cong-kham": "node ./scripts/build_dm_cong_kham_catalog.mjs",
     "tai_lieu:prepare": "node ./scripts/prepare_tai_lieu.mjs",
     "docs:docx": "python scripts/export_docs_to_docx.py",
     "chuyen-de:sync-placeholder-registry": "node ./scripts/sync_chuyen_de_placeholder_registry.mjs",

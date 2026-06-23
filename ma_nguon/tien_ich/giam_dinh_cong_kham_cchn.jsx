@@ -1,9 +1,10 @@
 /**
  * Giám định công khám: một bác sỹ / một CCHN thực hiện nhiều loại công khám (chuyên khoa) trong cùng lượt.
  * Mã quy tắc: CK_59 (built-in LAYER 4).
+ * Chỉ áp dụng dòng XML3 có MA_DICH_VU thuộc DM_KHAM (danh mục công khám BV) — không heuristic DVKT/MA_NHOM.
  */
 
-import { laDongCongKhamXml3 } from './du_lieu_cv3231_phamvi';
+import { laMaThuocDmCongKhamCk59, taoTapMaCongKham } from './dm_cong_kham_catalog';
 
 export const CO_SO_PHAP_LY_CK59 =
   'VBHN 17/2018/NĐ-CP Điều 3 khoản 1 điểm b; TT 32/2023/TT-BYT phạm vi hành nghề; QĐ 130/QĐ-BHXH — thanh toán công khám đúng phạm vi CCHN';
@@ -24,15 +25,7 @@ const laDongBhThanhToan = (row) => {
   return tyLe > 0;
 };
 
-const taoTapDanhMucTuMang = (arr) => {
-  const s = new Set();
-  if (!Array.isArray(arr)) return s;
-  arr.forEach((item) => {
-    const ma = normMa(item?.MA_DICH_VU || item?.MA || item?.ma || item);
-    if (ma) s.add(ma);
-  });
-  return s;
-};
+const taoTapDanhMucTuMang = (arr) => taoTapMaCongKham(arr);
 
 const layMaHanhNgheThucHien = (row, xml1) => {
   const nguoi = String(row?.NGUOI_THUC_HIEN || '').split(';')[0].trim();
@@ -79,19 +72,13 @@ export const giamDinhBsMotCchnNhieuChuyenKhoaCongKham = (hoSo, dm = {}) => {
   const dmKham = taoTapDanhMucTuMang(dm?.DM_KHAM);
   const mapNhanSu = dm?.MAP_NHAN_SU instanceof Map ? dm.MAP_NHAN_SU : new Map();
 
+  if (!dmKham.size) return ds;
+
   const dongCongKham = [];
   rawXml3.forEach((row, index) => {
     if (!laDongBhThanhToan(row)) return;
-    const line = {
-      maTuongDuong: row.MA_DICH_VU || row.MA_DV,
-      tenDvkt: row.TEN_DICH_VU || row.TEN_DVKT,
-      maNhom: row.MA_NHOM,
-    };
-    const ma = normMa(line.maTuongDuong);
-    const laKham = laDongCongKhamXml3(line, dmKham)
-      || (dmKham.size > 0 && dmKham.has(ma))
-      || /CONG\s*KHAM|KHAM\s*BENH|^KHAM\s/i.test(UPPER(line.tenDvkt));
-    if (!laKham || !ma) return;
+    const ma = normMa(row.MA_DICH_VU || row.MA_DV);
+    if (!laMaThuocDmCongKhamCk59(ma, dmKham)) return;
 
     const perfId = layMaHanhNgheThucHien(row, xml1);
     if (!perfId) return;
@@ -99,7 +86,7 @@ export const giamDinhBsMotCchnNhieuChuyenKhoaCongKham = (hoSo, dm = {}) => {
     dongCongKham.push({
       index,
       ma,
-      ten: String(line.tenDvkt || '').trim(),
+      ten: String(row.TEN_DICH_VU || row.TEN_DVKT || '').trim(),
       chuyenKhoa: layNhomChuyenKhoaCongKham(ma),
       cchnKey: resolveCchnKeyCongKham(perfId, mapNhanSu),
       perfId,
