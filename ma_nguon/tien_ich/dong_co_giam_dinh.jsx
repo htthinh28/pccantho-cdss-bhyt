@@ -54,6 +54,7 @@ import { laCapCuuTheoXml1, viPhamQuy_tacCapCuuIcd10 } from './giam_dinh_icd10_ca
 import { giamDinhCv302Bhyt } from './giam_dinh_cv302_bhyt';
 import { giamDinhCv4262Bhyt } from './giam_dinh_cv4262_bhyt';
 import { giamDinhCv3231Bhyt } from './giam_dinh_cv3231_bhyt';
+import { giamDinhBsMotCchnNhieuChuyenKhoaCongKham } from './giam_dinh_cong_kham_cchn';
 import { laMotLanKcbDuoi15PhanTramLcs as laMotLanKcbDuoi15PhanTramLCS } from './muc_luong_co_so_bhyt';
 import { tachChuoiNhieuMa } from './catalog_mapping_chuoi_ma';
 import { hopNhatQuyTacTrungTheoDoiTuong } from './hop_nhat_quy_tac_trung_lap';
@@ -6586,6 +6587,7 @@ export const chayGiamDinhToanDienV15 = async (hoSo) => {
     allLỗi = allLỗi.concat(giamDinhCongKhamTmhVaNoiSoiTrungMocXml3(hoSo));
     allLỗi = allLỗi.concat(giamDinhCv4262Bhyt(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhCv3231Bhyt(hoSo, danhMuc));
+    allLỗi = allLỗi.concat(giamDinhBsMotCchnNhieuChuyenKhoaCongKham(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhGiuong(hoSo, danhMuc));
     allLỗi = allLỗi.concat(giamDinhPTTT(hoSo));
     allLỗi = allLỗi.concat(giamDinhChuyenTuyen(hoSo));

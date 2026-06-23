@@ -200,6 +200,7 @@ const DANH_MUC_QUY_TAC_NOI_BO_THEO_NHOM = Object.freeze([
   { tab_id: 'LUAT_CDHA', ma_luat: 'CHUYEN_DE*', ten_quy_tac: 'Bảng luật Kiểm tra chuyên đề nạp từ Excel (CHUYEN_DE*)' },
 
   { tab_id: 'LUAT_CONG_KHAM', ma_luat: 'CK-*', ten_quy_tac: 'Bảng luật Công khám nạp từ Excel (CK-*)' },
+  { tab_id: 'LUAT_CONG_KHAM', ma_luat: 'CK_59', ten_quy_tac: 'BS một CCHN — nhiều loại công khám / chuyên khoa (CK_59)' },
 
   { tab_id: 'LUAT_NHAN_SU', ma_luat: 'NS-*', ten_quy_tac: 'Bảng luật Nhân sự nạp từ Excel (NS-*)' },
 
