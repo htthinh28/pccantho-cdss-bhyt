@@ -3,7 +3,8 @@
  * Tiêu chuẩn JCI: MCI.3 (Toàn vẹn dữ liệu) & QPS (Cải thiện chất lượng)
  */
 
-import { CAU_TRUC_DU_LIEU } from '../quy_tac/quyluat_cautrucdulieu/quyluat_cau_truc_du_lieu';
+import { CAU_TRUC_DU_LIEU, layQuyTacKiemTraChoXml1 } from '../quy_tac/quyluat_cautrucdulieu/quyluat_cau_truc_du_lieu';
+import { laApDungSuaDoi3176ChoXml1, laSoDangKyUbndHopLe } from '../tien_ich/quy_dinh_3176_sua_doi_2026';
 
 export const kiemTraToanDienHoSo = (hoSo) => {
   let danhSachLỗi = [];
@@ -85,11 +86,12 @@ export const kiemTraToanDienHoSo = (hoSo) => {
   };
 
   // --- LỚP 2: KIỂM TRA CẤU TRÚC VÀ GIÁ TRỊ TỪNG BẢNG ---
-  const quetTungBang = (tenXML, duLieu) => {
+  const quetTungBang = (tenXML, duLieu, xml1 = null) => {
     if (!duLieu) return;
-    const quyTac = CAU_TRUC_DU_LIEU[tenXML].quy_tac;
+    const quyTac = xml1 ? layQuyTacKiemTraChoXml1(tenXML, xml1) : CAU_TRUC_DU_LIEU[tenXML].quy_tac;
     const cotChuan = CAU_TRUC_DU_LIEU[tenXML].cot;
     const mangDuLieu = Array.isArray(duLieu) ? duLieu : [duLieu];
+    const apDungSuaDoi3176 = xml1 ? laApDungSuaDoi3176ChoXml1(xml1) : false;
 
     mangDuLieu.forEach((row, index) => {
       // 1. Kiểm tra thừa/thiếu cột so với QĐ 3176
@@ -116,6 +118,20 @@ export const kiemTraToanDienHoSo = (hoSo) => {
         // Kiểm tra độ dài
         if (rule.maxLength && String(val).length > rule.maxLength) {
           danhSachLỗi.push({ phan_loai: tenXML, muc_do: 'Warning', noi_dung: `Dòng ${index + 1}: ${field} vượt quá ${rule.maxLength} ký tự.` });
+        }
+
+        if (
+          tenXML === 'XML2' &&
+          field === 'SO_DANG_KY' &&
+          apDungSuaDoi3176 &&
+          val &&
+          !laSoDangKyUbndHopLe(val)
+        ) {
+          danhSachLỗi.push({
+            phan_loai: tenXML,
+            muc_do: 'Warning',
+            noi_dung: `Dòng ${index + 1}: SO_DANG_KY bắt đầu bằng UBND phải theo mã UBND.YYYY.X.S (QĐ sửa đổi 3176, từ 01/7/2026).`,
+          });
         }
 
         // Chuẩn hóa kiểm tra thời gian theo thành phần: năm-tháng-ngày-giờ-phút
@@ -272,11 +288,12 @@ export const kiemTraToanDienHoSo = (hoSo) => {
   };
 
   // THỰC THI KIỂM TRA
-  quetTungBang('XML1', hoSo.xml1);
-  quetTungBang('XML2', hoSo.xml2);
-  quetTungBang('XML3', hoSo.xml3);
-  quetTungBang('XML4', hoSo.xml4);
-  quetTungBang('XML5', hoSo.xml5);
+  const xml1 = hoSo.xml1 || hoSo.XML1 || null;
+  quetTungBang('XML1', hoSo.xml1, xml1);
+  quetTungBang('XML2', hoSo.xml2, xml1);
+  quetTungBang('XML3', hoSo.xml3, xml1);
+  quetTungBang('XML4', hoSo.xml4, xml1);
+  quetTungBang('XML5', hoSo.xml5, xml1);
   quetTungBang('XML6', hoSo.xml6);
   kiemTraLogicLienKet();
 
