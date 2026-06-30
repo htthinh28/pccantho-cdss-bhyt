@@ -10,6 +10,8 @@ import { DANH_SACH_COT_XML3, QUY_TAC_KIEM_TRA_XML3 } from './xml3';
 import { DANH_SACH_COT_XML4, QUY_TAC_KIEM_TRA_XML4 } from './xml4';
 import { DANH_SACH_COT_XML5, QUY_TAC_KIEM_TRA_XML5 } from './xml5';
 import { DANH_SACH_COT_XML6, QUY_TAC_KIEM_TRA_XML6 } from './xml6';
+import { apDungQuyTacKiemTraTheoNgay } from '../../tien_ich/quy_dinh_3176_sua_doi_2026';
+import { mocNgayYmdTuXml1 } from '../../tien_ich/muc_luong_co_so_bhyt';
 
 /**
  * CẤU TRÚC TỔNG HỢP: Dùng bởi bo_kiem_tra_xml.jsx để validate toàn diện.
@@ -23,6 +25,21 @@ export const CAU_TRUC_DU_LIEU = {
   XML5: { cot: DANH_SACH_COT_XML5, quy_tac: QUY_TAC_KIEM_TRA_XML5 },
   XML6: { cot: DANH_SACH_COT_XML6, quy_tac: QUY_TAC_KIEM_TRA_XML6 },
 };
+
+/**
+ * Quy tắc kiểm tra theo mốc ngày KCB (QĐ sửa đổi 3176/2026 — không đổi danh mục cột).
+ * @param {string} tenBang — XML1…XML6
+ * @param {string} [ngayYmd] — YYYYMMDD; mặc định giữ giới hạn cũ nếu thiếu
+ */
+export const layQuyTacKiemTraTheoNgay = (tenBang, ngayYmd = '') => {
+  const key = String(tenBang || '').toUpperCase();
+  const quyTacGoc = CAU_TRUC_DU_LIEU[key]?.quy_tac || {};
+  return apDungQuyTacKiemTraTheoNgay(quyTacGoc, ngayYmd);
+};
+
+/** Quy tắc kiểm tra theo XML1 (NGAY_VAO / NGAY_RA / NGAY_TTOAN). */
+export const layQuyTacKiemTraChoXml1 = (tenBang, xml1 = {}) =>
+  layQuyTacKiemTraTheoNgay(tenBang, mocNgayYmdTuXml1(xml1));
 
 // 1. DANH MỤC CẤU TRÚC CÁC BẢNG (Dễ dàng thêm trường mà không cần sửa logic hàm)
 const CAU_TRUC_HE_THONG = {

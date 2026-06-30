@@ -1,8 +1,13 @@
 /**
  * CẤU TRÚC DỮ LIỆU XML3: CHỈ TIÊU CHI TIẾT DỊCH VỤ KỸ THUẬT VÀ VẬT TƯ Y TẾ
- * Căn cứ pháp lý: QĐ 3176/QĐ-BYT (2024), sửa đổi QĐ 4750/QĐ-BYT và QĐ 130/QĐ-BYT
+ * Căn cứ pháp lý: QĐ 3176/QĐ-BYT (2024), sửa đổi QĐ 4750/QĐ-BYT và QĐ 130/QĐ-BYT;
+ * bổ sung QĐ sửa đổi 3176 (29/06/2026, áp dụng 01/07/2026): MUC_HUONG ≤4 ký tự.
  * Tiêu chuẩn JCI: Chương COP (Chăm sóc người bệnh) & ASC (Gây mê và Phẫu thuật)
  */
+
+/** Độ dài tối đa MUC_HUONG — trước 01/7/2026: 3; từ 01/7/2026: 4 (QĐ sửa đổi 3176). */
+export const MUC_HUONG_XML3_MAX_LENGTH_CU = 3;
+export const MUC_HUONG_XML3_MAX_LENGTH_MOI = 4;
 
 export const DANH_SACH_COT_XML3 = [
   'MA_LK', 'STT', 'MA_DICH_VU', 'MA_PTTT_QT', 'MA_VAT_TU', 'MA_NHOM', 
@@ -40,7 +45,13 @@ export const QUY_TAC_KIEM_TRA_XML3 = {
   THANH_TIEN_BV: { required: true, maxLength: 15, type: 'number', mo_ta: 'Số tiền thanh toán theo giá của bệnh viện' },
   THANH_TIEN_BH: { required: true, maxLength: 15, type: 'number', mo_ta: 'Mức giá do quỹ BHYT thanh toán' },
   T_TRANTT: { required: false, maxLength: 15, type: 'number', mo_ta: 'Mức thanh toán BHYT của VTYT (mức trần)' },
-  MUC_HUONG: { required: true, maxLength: 3, type: 'number', mo_ta: 'Mức hưởng BHYT tương ứng' },
+  MUC_HUONG: {
+    required: true,
+    maxLength: MUC_HUONG_XML3_MAX_LENGTH_CU,
+    maxLengthMoi: MUC_HUONG_XML3_MAX_LENGTH_MOI,
+    type: 'number',
+    mo_ta: 'Mức hưởng BHYT tương ứng (≤3 ký tự trước 01/7/2026; ≤4 ký tự từ 01/7/2026)',
+  },
   T_NGUONKHAC_NSNN: { required: false, maxLength: 15, type: 'number', mo_ta: 'Số tiền DVKT/VTYT được NSNN hỗ trợ' },
   T_NGUONKHAC_VTNN: { required: false, maxLength: 15, type: 'number', mo_ta: 'Số tiền được viện trợ ngoài nước hỗ trợ' },
   T_NGUONKHAC_VTTN: { required: false, maxLength: 15, type: 'number', mo_ta: 'Số tiền được viện trợ trong nước hỗ trợ' },
